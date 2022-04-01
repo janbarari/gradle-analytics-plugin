@@ -1,6 +1,6 @@
 <img src="plugin-logo.png" alt="plugin logo" width="128"/>
 
-##Build Analytics Plugin
+## Build Analytics Plugin
 Do you want to know what is happening with your gradle build?
 
 
