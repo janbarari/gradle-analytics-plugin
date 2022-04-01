@@ -3,7 +3,6 @@
 ## Gradle Analytics Plugin
 Do you want to know what is happening with your gradle build?
 
-
 License
 ---
 Copyright © 2022 [Janbarari](https://github.com/janbarari)  
