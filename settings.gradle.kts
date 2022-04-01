@@ -1,2 +1,2 @@
-rootProject.name = "build-analytics-plugin"
+rootProject.name = "gradle-analytics-plugin"
 
