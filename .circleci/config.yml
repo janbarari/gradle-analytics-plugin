@@ -11,8 +11,7 @@ jobs:
       - run:
           name: build
           command: ./gradlew jacocoTestReport --stacktrace --info
-      - codecov/upload:
-          file: build/reports/jacoco/test/*.xml
+      - codecov/upload
 workflows:
   build-workflow:
     jobs:
