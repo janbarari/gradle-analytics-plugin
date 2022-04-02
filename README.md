@@ -7,7 +7,7 @@
 <a href="https://github.com/janbarari/gradle-analytics-plugin">
     <img src="https://img.shields.io/github/stars/janbarari/gradle-analytics-plugin.svg?label=Stars"/>
 </a>  
-<a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=[RF]">Request Feature</a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=[RB]">Report Bug</a>
+<a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=RF:">Request Feature</a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=RB:">Report Bug</a>
 <br />  
 Hey 👋, Mark this repo in your browser, see you soon ;D
 
