@@ -1,4 +1,4 @@
-version: 2.1
+version: '2.1'
 orbs:
   codecov: codecov/codecov@3.2.2
 executor: machine
@@ -7,21 +7,17 @@ jobs:
     machine:
       image: ubuntu-2004:202201-02
 
-    working_directory: ~/repo
-
-    environment:
-      JVM_OPTS: -Xmx2G
-      TERM: dumb
-
     steps:
       - checkout
       - run:
           name: build
           command: ./gradlew jacocoTestReport --stacktrace --info
-      #- codecov/upload:
-      #    file: build/reports/jacoco/test/*.xml
+          - codecov/upload
+
 workflows:
-  version: 2.1
   build-workflow:
     jobs:
       - build
+
+      #- codecov/upload:
+      #    file: build/reports/jacoco/test/*.xml
