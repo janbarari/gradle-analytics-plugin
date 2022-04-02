@@ -10,13 +10,7 @@ jobs:
       - checkout
       - run:
           name: build
-          command: ./gradlew assemble jacocoTestReport --stacktrace --info
-      - codecov/upload:
-          file: build/reports/jacoco/test/*.xml
-      - store_test_results:
-          path: build/reports/tests/
-      - store_artifacts:
-          path: build/reports/tests/
+          command: ./gradlew assemble
 
 workflows:
   build-workflow:

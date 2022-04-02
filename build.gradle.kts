@@ -13,13 +13,13 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+}
+
 tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
-}
-
-jacoco {
-    toolVersion = "0.8.7"
 }
 
 tasks.jacocoTestReport {
@@ -28,8 +28,4 @@ tasks.jacocoTestReport {
         csv.required.set(true)
         html.required.set(true)
     }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
