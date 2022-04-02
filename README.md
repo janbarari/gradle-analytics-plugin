@@ -5,10 +5,16 @@
 [![codecov](https://codecov.io/gh/janbarari/gradle-analytics-plugin/branch/develop/graph/badge.svg)](https://codecov.io/gh/janbarari/gradle-analytics-plugin)
 <img src="https://img.shields.io/github/license/janbarari/gradle-analytics-plugin.svg?label=License"/>
 <a href="https://github.com/janbarari/gradle-analytics-plugin">
-<img src="https://img.shields.io/github/stars/janbarari/gradle-analytics-plugin.svg?label=Stars"/>
-</a>
+    <img src="https://img.shields.io/github/stars/janbarari/gradle-analytics-plugin.svg?label=Stars"/>
+</a>  
 
-Hey mark this repo in your browser, see you soon ;D
+<a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new">
+Request Feature
+</a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new">
+Report Bug
+</a>  
+
+Hey 👋, Mark this repo in your browser, see you soon ;D
 
 License
 ---
