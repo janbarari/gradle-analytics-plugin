@@ -12,8 +12,7 @@ Request Feature
 </a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new">
 Report Bug
 </a>
-<br />
-<br />    
+<br />  
 Hey 👋, Mark this repo in your browser, see you soon ;D
 
 License
