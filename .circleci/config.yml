@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
           name: build
-          command: ./gradlew assmeble jacocoTestReport --stacktrace --info
+          command: ./gradlew assemble jacocoTestReport --stacktrace --info
       - codecov/upload:
           file: build/reports/jacoco/test/*.xml
       - store_test_results:
