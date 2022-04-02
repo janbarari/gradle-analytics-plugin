@@ -6,15 +6,13 @@
 <img src="https://img.shields.io/github/license/janbarari/gradle-analytics-plugin.svg?label=License"/>
 <a href="https://github.com/janbarari/gradle-analytics-plugin">
     <img src="https://img.shields.io/github/stars/janbarari/gradle-analytics-plugin.svg?label=Stars"/>
-</a>  
-
+</a>
 <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new">
 Request Feature
 </a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new">
 Report Bug
-</a>  
-  
-  
+</a>
+---
 Hey 👋, Mark this repo in your browser, see you soon ;D
 
 License
