@@ -6,7 +6,6 @@ jobs:
   build:
     machine:
       image: ubuntu-2004:202201-02
-
     steps:
       - checkout
       - run:
@@ -14,7 +13,6 @@ jobs:
           command: ./gradlew jacocoTestReport --stacktrace --info
       - codecov/upload:
           file: build/reports/jacoco/test/*.xml
-
 workflows:
   build-workflow:
     jobs:
