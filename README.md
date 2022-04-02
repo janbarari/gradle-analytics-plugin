@@ -8,8 +8,7 @@
 <img src="https://img.shields.io/github/stars/janbarari/gradle-analytics-plugin.svg?label=Stars"/>
 </a>
 
-
-Do you want to know what is happening with your gradle build?
+Hey mark this repo in your browser, see you soon ;D
 
 License
 ---
