@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
     kotlin("jvm") version "1.6.10"
     jacoco
     id("java-gradle-plugin")
