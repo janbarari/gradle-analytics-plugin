@@ -29,6 +29,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
     compileOnly(gradleApi())
+    implementation(project(":core"))
 }
 
 tasks.withType<KotlinCompile> {
@@ -52,7 +53,7 @@ gradlePlugin {
     plugins {
         create("io.github.janbarari.gradle-analytics-plugin") {
             id = "io.github.janbarari.gradle-analytics-plugin"
-            implementationClass = "io.github.janbarari.CamelPlugin"
+            implementationClass = "io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin"
         }
     }
 }
