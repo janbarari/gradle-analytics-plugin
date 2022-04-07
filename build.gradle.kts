@@ -1,27 +1,36 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val pluginId: String by project
+val pluginDisplayName: String by project
+val pluginDescription: String by project
+val pluginImplementationClass: String by project
+val pluginDeclarationName: String by project
+val projectGroup: String by project
+val projectVersion: String by project
+
 plugins {
-    id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
+    `java-gradle-plugin`
     kotlin("jvm") version "1.6.10"
+    `maven-publish`
+    id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
     jacoco
-    id("java-gradle-plugin")
 }
+
+group = projectGroup
+version = projectVersion
 
 repositories {
     mavenCentral()
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+gradlePlugin {
+    plugins {
+        create(pluginDeclarationName) {
+            id = pluginId
+            displayName = pluginDisplayName
+            description = pluginDescription
+            implementationClass = pluginImplementationClass
+        }
     }
 }
 
@@ -32,8 +41,18 @@ dependencies {
     implementation(project(":core"))
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xopt-in=kotlin.RequiresOptIn")
+        jvmTarget = "11"
+    }
+}
+
+plugins.withType<JavaPlugin>().configureEach {
+    extensions.configure<JavaPluginExtension> {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
 }
 
 tasks.test {
@@ -49,11 +68,14 @@ tasks.jacocoTestReport {
     }
 }
 
-gradlePlugin {
-    plugins {
-        create("io.github.janbarari.gradle-analytics-plugin") {
-            id = "io.github.janbarari.gradle-analytics-plugin"
-            implementationClass = "io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin"
+publishing {
+    publications {
+        repositories {
+            mavenLocal()
         }
     }
+}
+
+tasks.wrapper {
+    distributionType = Wrapper.DistributionType.BIN
 }

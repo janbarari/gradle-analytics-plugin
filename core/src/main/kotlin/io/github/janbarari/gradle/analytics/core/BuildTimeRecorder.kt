@@ -3,8 +3,10 @@ package io.github.janbarari.gradle.analytics.core
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
+import org.gradle.internal.operations.OperationStartEvent
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
+import org.gradle.tooling.events.OperationDescriptor
 import org.gradle.tooling.events.task.TaskFinishEvent
 import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
