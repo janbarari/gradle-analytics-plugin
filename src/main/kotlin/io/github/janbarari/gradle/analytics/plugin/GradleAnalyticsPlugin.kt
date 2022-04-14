@@ -15,25 +15,23 @@ class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project> {
 
-    val linearBuilds = hashMapOf<Int, Pair<Long, Long>>()
+    private val linearBuilds = hashMapOf<Int, Pair<Long, Long>>()
 
     override fun apply(project: Project) {
-//        project.gradle.addListener(object : DependencyResolutionListener {
-        test()
-        val clazz = BuildTimeRecorder::class.java
-        val timingRecorder =
-            project.gradle.sharedServices.registerIfAbsent(clazz.simpleName, clazz) {}
-        registry.onTaskCompletion(timingRecorder)
-        //todo gradle plugin apply function
-    }
-
-    fun test() {
+        var isBeforeEvaluationExecuted: Boolean = false
+        project.gradle.beforeSettings {
+            isBeforeEvaluationExecuted = true
+        }
         BuildGlobalListener.listener = {
             parse(it)
+            println("Is before evaluation executed: $isBeforeEvaluationExecuted")
         }
+        val clazz = BuildTimeRecorder::class.java
+        val timingRecorder = project.gradle.sharedServices.registerIfAbsent(clazz.simpleName, clazz) { }
+        registry.onTaskCompletion(timingRecorder)
     }
 
-    fun parse(it: BuildInfo) {
+    private fun parse(it: BuildInfo) {
         val buildDuration = Duration.ofMillis(it.endTime - it.startTime).seconds
         println("Execution Took: $buildDuration seconds")
         var totalUnrealTasksDuration = 0L
@@ -42,7 +40,6 @@ class GradleAnalyticsPlugin @Inject constructor(
         }
         totalUnrealTasksDuration = Duration.ofMillis(totalUnrealTasksDuration).seconds
         println("Total Unreal time is $totalUnrealTasksDuration seconds")
-
         val sortedParallelBuilds = it.tasks.sortedBy { task -> task.startTime }
         sortedParallelBuilds.forEach af@{ parallelTask ->
             if (linearBuilds.isEmpty()) {
@@ -53,8 +50,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
             linearBuilds.forEach { linearTask ->
                 checkIfCanMerge(parallelTask, linearTask)
-                if (parallelTask.startTime > linearTask.value.first &&
-                    parallelTask.endTime > linearTask.value.second) {
+                if (parallelTask.startTime > linearTask.value.first && parallelTask.endTime > linearTask.value.second) {
                     shouldBeAddedItem = Pair(parallelTask.startTime, parallelTask.endTime)
                 }
             }
@@ -67,15 +63,12 @@ class GradleAnalyticsPlugin @Inject constructor(
         linearBuilds.forEach {
             realtime += (it.value.second - it.value.first)
         }
-        var realtimeS = Duration.ofMillis(realtime).seconds
+        val realtimeS = Duration.ofMillis(realtime).seconds
         println("Real value is: " + realtimeS + " seconds")
     }
 
-
-    fun checkIfCanMerge(parallelTask: TaskInfo, linearTask: Map.Entry<Int, Pair<Long, Long>>) {
-        if (parallelTask.startTime <= linearTask.value.second &&
-            parallelTask.endTime >= linearTask.value.second
-        ) {
+    private fun checkIfCanMerge(parallelTask: TaskInfo, linearTask: Map.Entry<Int, Pair<Long, Long>>) {
+        if (parallelTask.startTime <= linearTask.value.second && parallelTask.endTime >= linearTask.value.second) {
             var start = linearTask.value.first
             var end = linearTask.value.second
             if (parallelTask.startTime < linearTask.value.first) {

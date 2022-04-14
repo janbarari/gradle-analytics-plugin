@@ -9,11 +9,11 @@ val projectGroup: String by project
 val projectVersion: String by project
 
 plugins {
-    `java-gradle-plugin`
     kotlin("jvm") version "1.6.10"
-    `maven-publish`
+    id("java-gradle-plugin")
     id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
-    jacoco
+    id("org.gradle.jacoco")
+    id("maven-publish")
 }
 
 group = projectGroup
@@ -23,28 +23,15 @@ repositories {
     mavenCentral()
 }
 
-gradlePlugin {
-    plugins {
-        create(pluginDeclarationName) {
-            id = pluginId
-            displayName = pluginDisplayName
-            description = pluginDescription
-            implementationClass = pluginImplementationClass
-        }
-    }
-}
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
     compileOnly(gradleApi())
-    implementation(project(":core"))
 }
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xopt-in=kotlin.RequiresOptIn")
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 
@@ -76,6 +63,31 @@ publishing {
     }
 }
 
+gradlePlugin {
+    plugins {
+        create(pluginDeclarationName) {
+            id = pluginId
+            displayName = pluginDisplayName
+            description = pluginDescription
+            implementationClass = pluginImplementationClass
+        }
+    }
+}
+
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
+}
+
+tasks.register("publishToLocal") {
+    doLast {
+        exec {
+            commandLine(
+                "./gradlew",
+                "detekt",
+                "build",
+                "test",
+                "publishToMavenLocal"
+            ).args("--info", "--stacktrace")
+        }
+    }
 }
