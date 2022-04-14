@@ -8,12 +8,16 @@ val pluginDeclarationName: String by project
 val projectGroup: String by project
 val projectVersion: String by project
 
+@Suppress(
+    "UnstableApiUsage",
+    "DSL_SCOPE_VIOLATION"
+)
 plugins {
-    kotlin("jvm") version "1.6.10"
-    id("java-gradle-plugin")
-    id("io.gitlab.arturbosch.detekt").version("1.20.0-RC2")
-    id("org.gradle.jacoco")
-    id("maven-publish")
+    kotlin("jvm") version(libs.versions.kotlin)
+    alias(libs.plugins.detekt)
+    `java-gradle-plugin`
+    `maven-publish`
+    jacoco
 }
 
 group = projectGroup
