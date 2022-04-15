@@ -4,7 +4,7 @@
 [![CircleCI](https://circleci.com/gh/janbarari/gradle-analytics-plugin/tree/develop.svg?style=svg)](https://circleci.com/gh/janbarari/gradle-analytics-plugin/tree/develop)
 [![codecov](https://codecov.io/gh/janbarari/gradle-analytics-plugin/branch/develop/graph/badge.svg)](https://codecov.io/gh/janbarari/gradle-analytics-plugin)
 <a href="https://sonarcloud.io/project/overview?id=janbarari_gradle-analytics-plugin">
-<img height=20px src="https://sonarcloud.io/images/project_badges/sonarcloud-white.svg"/>
+<img height=20px src="https://sonarcloud.io/images/project_badges/sonarcloud-black.svg"/>
 </a>
 <img src="https://img.shields.io/github/license/janbarari/gradle-analytics-plugin.svg?label=License"/>
 <a href="https://github.com/janbarari/gradle-analytics-plugin">
