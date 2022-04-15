@@ -7,10 +7,10 @@
 <a href="https://sonarcloud.io/project/overview?id=janbarari_gradle-analytics-plugin">
 <img height=22px src="https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg"/>
 </a>
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=janbarari_gradle-analytics-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=janbarari_gradle-analytics-plugin)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=janbarari_gradle-analytics-plugin&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=janbarari_gradle-analytics-plugin)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=janbarari_gradle-analytics-plugin&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=janbarari_gradle-analytics-plugin)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjanbarari%2Fgradle-analytics-plugin.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjanbarari%2Fgradle-analytics-plugin?ref=badge_small)
-
 
 
 
