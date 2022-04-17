@@ -5,8 +5,8 @@ val pluginDisplayName: String by project
 val pluginDescription: String by project
 val pluginImplementationClass: String by project
 val pluginDeclarationName: String by project
-val projectGroup: String by project
-val projectVersion: String by project
+val pluginGroupPackageName: String by project
+val pluginVersion: String by project
 
 @Suppress(
     "UnstableApiUsage",
@@ -14,14 +14,14 @@ val projectVersion: String by project
 )
 plugins {
     kotlin("jvm") version(libs.versions.kotlin)
-    alias(libs.plugins.detekt)
+    //alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
 }
 
-group = projectGroup
-version = projectVersion
+group = pluginGroupPackageName
+version = pluginVersion
 
 repositories {
     mavenCentral()
@@ -31,6 +31,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
     compileOnly(gradleApi())
+    implementation(libs.koin)
+    implementation(libs.oshi)
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -87,7 +89,6 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
-                "detekt",
                 "build",
                 "test",
                 "publishToMavenLocal"

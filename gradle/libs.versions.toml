@@ -1,7 +1,12 @@
 [versions]
 kotlin = "1.6.20"
+detekt = "1.20.0-RC2"
+koin = "3.1.6"
+oshi = "6.1.6"
 
 [libraries]
+koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
 
 [plugins]
-detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.20.0-RC2" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

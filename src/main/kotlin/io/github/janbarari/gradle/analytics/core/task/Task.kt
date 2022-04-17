@@ -1,9 +1,9 @@
-package io.github.janbarari.gradle.analytics.core
+package io.github.janbarari.gradle.analytics.core.task
 
-data class TaskInfo(
+data class Task(
     val startTime: Long,
     val endTime: Long,
     val path: String,
     val displayName: String,
     val name: String
-)
+): java.io.Serializable
