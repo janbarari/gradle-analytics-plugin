@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.core.task
 
-data class Task(
+data class TaskReport(
     val startTime: Long,
     val endTime: Long,
     val path: String,

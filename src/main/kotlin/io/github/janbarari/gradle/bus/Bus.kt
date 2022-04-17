@@ -12,12 +12,10 @@ object Bus {
     private var observers = ArrayList<Observer>()
 
     @Synchronized
-    fun getObservers(): ArrayList<Observer> {
-        return observers
-    }
+    fun getObservers(): ArrayList<Observer> = observers
 
-    private const val DEFAULT_POST_EVENT_LIMITATION_SIZE_IN_BYTES = 0
-    private var postEventLimitationSizeInBytes: Int = DEFAULT_POST_EVENT_LIMITATION_SIZE_IN_BYTES
+    private const val DEFAULT_EVENT_SIZE_LIMIT_BYTES = 0
+    private var postEventLimitationSizeInBytes: Int = DEFAULT_EVENT_SIZE_LIMIT_BYTES
     private var pendingDroppingObservers: ArrayList<Observer> = arrayListOf()
 
     fun setPostEventSizeLimitation(sizeInBytes: Int) {
@@ -43,10 +41,10 @@ object Bus {
                 val observer = observerIterator.next()
                 if (observerGUID != null) {
                     if (observer.guid == observerGUID) {
-                        postWithThread(observer, event, sender)
+                        postToObserver(observer, event, sender)
                     }
                 } else {
-                    postWithThread(observer, event, sender)
+                    postToObserver(observer, event, sender)
                 }
             }
             dropObserversIfNeeded()
@@ -59,10 +57,12 @@ object Bus {
      */
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> register(observerGUID: String, noinline unit: (T) -> Unit) {
-        getObservers().forEach { observer ->
+        val iterator = getObservers().iterator()
+        while (iterator.hasNext()) {
+            val observer = iterator.next()
             if (observer.guid == observerGUID) {
                 unregister(observerGUID)
-                return@forEach
+                break
             }
         }
         getObservers().add(
@@ -76,10 +76,12 @@ object Bus {
     inline fun <reified T, reified D> registerWithSender(
         observerGUID: String, noinline unit: (T) -> Unit
     ) {
-        getObservers().forEach { observer ->
+        val iterator = getObservers().iterator()
+        while (iterator.hasNext()) {
+            val observer = iterator.next()
             if (observer.guid == observerGUID) {
                 unregister(observerGUID)
-                return@forEach
+                break
             }
         }
         getObservers().add(
@@ -103,14 +105,16 @@ object Bus {
     }
 
     /**
-     * Unregister all observers that KEvent notifies
+     * Unregister all observers
      */
     fun unregisterAll() {
         getObservers().clear()
     }
 
     private fun dropObserversIfNeeded() {
-        pendingDroppingObservers.forEach { droppedObserver ->
+        val iterator = pendingDroppingObservers.iterator()
+        while (iterator.hasNext()) {
+            val droppedObserver = iterator.next()
             val observerIterator = getObservers().iterator()
             while (observerIterator.hasNext()) {
                 val observer = observerIterator.next()
@@ -124,7 +128,7 @@ object Bus {
 
     private fun <T : Any> validateEventType(event: T, validated: () -> Unit) {
         if (event is Serializable) {
-            if (postEventLimitationSizeInBytes > DEFAULT_POST_EVENT_LIMITATION_SIZE_IN_BYTES) {
+            if (postEventLimitationSizeInBytes > DEFAULT_EVENT_SIZE_LIMIT_BYTES) {
                 if (sizeOf(event) < postEventLimitationSizeInBytes) {
                     validated()
                 } else {
@@ -148,7 +152,7 @@ object Bus {
             byteOutputStream.toByteArray().size
         } catch (e: Exception) {
             e.printStackTrace()
-            DEFAULT_POST_EVENT_LIMITATION_SIZE_IN_BYTES
+            DEFAULT_EVENT_SIZE_LIMIT_BYTES
         }
     }
 
@@ -158,12 +162,6 @@ object Bus {
      */
     private fun throwException(exception: Exception) {
         exception.printStackTrace()
-    }
-
-    private fun <T : Any> postWithThread(observer: Observer, event: T, sender: Class<*>?) {
-        if (observer.observerType == event::class.java) {
-            postToObserver(observer, event, sender)
-        }
     }
 
     private fun <T : Any> postToObserver(observer: Observer, event: T, sender: Class<*>?) {

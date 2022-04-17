@@ -15,12 +15,12 @@ abstract class TasksOperation :
         fun getParams(): Property<TasksOperationParams>
     }
 
-    private val executedTasks: MutableCollection<Task> = ConcurrentLinkedQueue()
+    private val executedTaskReports: MutableCollection<TaskReport> = ConcurrentLinkedQueue()
 
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
-            executedTasks.add(
-                Task(
+            executedTaskReports.add(
+                TaskReport(
                     event.result.startTime,
                     event.result.endTime,
                     event.descriptor.taskPath,
@@ -33,7 +33,7 @@ abstract class TasksOperation :
 
     override fun close() {
         val eventGUID = parameters.getParams().get().eventGUID
-        Bus.post(executedTasks as Collection<Task>, eventGUID)
+        Bus.post(executedTaskReports as Collection<TaskReport>, eventGUID)
     }
 
 }

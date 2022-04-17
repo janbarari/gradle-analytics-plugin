@@ -1,33 +1,41 @@
 package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.core.build.BuildInfo
-import io.github.janbarari.gradle.analytics.core.build.BuildObserver
-import io.github.janbarari.gradle.analytics.core.ensurePluginCompatibleWithGradle
-import io.github.janbarari.gradle.analytics.plugin.di.setupKoin
-import io.github.janbarari.gradle.analytics.core.task.Task
+import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
+import io.github.janbarari.gradle.analytics.core.gradlebuild.BuildReport
+import io.github.janbarari.gradle.analytics.core.task.TaskReport
 import io.github.janbarari.gradle.analytics.core.task.TasksOperation
 import io.github.janbarari.gradle.analytics.core.task.TasksOperationParams
+import io.github.janbarari.gradle.analytics.plugin.di.pluginModule
 import io.github.janbarari.gradle.bus.Bus
 import io.github.janbarari.gradle.bus.Observer
 import io.github.janbarari.gradle.os.OperatingSystem
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
+import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.parameter.parametersOf
 import java.time.Duration
 import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
-) : Plugin<Project>, KoinComponent {
+) : Plugin<Project>, KoinComponent, GradleBuild.OnBuildFinishListener {
 
     private val linearTasks = hashMapOf<Int, Pair<Long, Long>>()
     private val operatingSystem by inject<OperatingSystem>()
+    private val gradleBuild by inject<GradleBuild> {
+        parametersOf(this)
+    }
 
     init {
-        setupKoin()
+        startKoin {
+            modules(pluginModule)
+        }
     }
 
     override fun apply(project: Project) {
@@ -36,15 +44,7 @@ class GradleAnalyticsPlugin @Inject constructor(
         println("hardware info, free memory: " + Runtime.getRuntime().freeMemory())
         val sysInfo = oshi.SystemInfo()
         println("gpu details: " + sysInfo.hardware.graphicsCards[1].vendor)
-
-        ensurePluginCompatibleWithGradle()
         initializeTasksOperationListener(project)
-        BuildObserver.setup(onBuildFinishedListener = { buildInfo, duration ->
-            println()
-            println("BUILD PROCESS FINISHED in ${duration.seconds}s")
-            println("%s TASKS EXECUTED".format(buildInfo.getTasksCount()))
-            calculateTaskLinearTime(buildInfo)
-        })
     }
 
     private fun initializeTasksOperationListener(project: Project) {
@@ -56,14 +56,14 @@ class GradleAnalyticsPlugin @Inject constructor(
             spec.parameters.getParams().set(params)
         }
         registry.onTaskCompletion(tasksOperationListener)
-        Bus.register<Collection<Task>>(tasksOperationEventGUID) {
-            BuildObserver.processFinished(BuildInfo(it))
+        Bus.register<Collection<TaskReport>>(tasksOperationEventGUID) {
+            gradleBuild.processFinished(it)
         }
     }
 
-    private fun printTotalParallelDuration(buildInfo: BuildInfo) {
+    private fun printTotalParallelDuration(buildReport: BuildReport) {
         var totalParallelDurationMillis: Long = 0
-        val iterator = buildInfo.executedTasks.iterator()
+        val iterator = buildReport.taskReports.iterator()
         while (iterator.hasNext()) {
             val executedTask = iterator.next()
             totalParallelDurationMillis += (executedTask.endTime - executedTask.startTime)
@@ -72,8 +72,8 @@ class GradleAnalyticsPlugin @Inject constructor(
         println("TOTAL PARALLEL DURATION is ${totalParallelDurationSeconds}s")
     }
 
-    private fun getSortedExecutedTasks(buildInfo: BuildInfo): Collection<Task> {
-        return buildInfo.executedTasks.sortedBy { task -> task.startTime }
+    private fun getSortedExecutedTasks(buildReport: BuildReport): Collection<TaskReport> {
+        return buildReport.taskReports.sortedBy { task -> task.startTime }
     }
 
     private fun printTotalLinearDuration() {
@@ -88,10 +88,10 @@ class GradleAnalyticsPlugin @Inject constructor(
         println("TOTAL LINEAR DURATION is ${totalTasksLinearDurationSeconds}s")
     }
 
-    private fun calculateTaskLinearTime(buildInfo: BuildInfo) {
-        printTotalParallelDuration(buildInfo)
+    private fun calculateTaskLinearTime(buildReport: BuildReport) {
+        printTotalParallelDuration(buildReport)
 
-        val iterator = getSortedExecutedTasks(buildInfo).iterator()
+        val iterator = getSortedExecutedTasks(buildReport).iterator()
         while (iterator.hasNext()) {
 
             val parallelTask = iterator.next()
@@ -151,18 +151,27 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     }
 
-    private fun checkIfCanMerge(parallelTask: Task, linearTask: Map.Entry<Int, Pair<Long, Long>>) {
-        if (parallelTask.startTime <= linearTask.value.second && parallelTask.endTime >= linearTask.value.second) {
+    private fun checkIfCanMerge(parallelTaskReport: TaskReport, linearTask: Map.Entry<Int, Pair<Long, Long>>) {
+        if (parallelTaskReport.startTime <= linearTask.value.second && parallelTaskReport.endTime >= linearTask.value.second) {
             var start = linearTask.value.first
             var end = linearTask.value.second
-            if (parallelTask.startTime < linearTask.value.first) {
-                start = parallelTask.startTime
+            if (parallelTaskReport.startTime < linearTask.value.first) {
+                start = parallelTaskReport.startTime
             }
-            if (parallelTask.endTime > linearTask.value.second) {
-                end = parallelTask.endTime
+            if (parallelTaskReport.endTime > linearTask.value.second) {
+                end = parallelTaskReport.endTime
             }
             linearTasks[linearTask.key] = Pair(start, end)
         }
+    }
+
+    override fun onBuildFinished(buildReport: BuildReport) {
+        println()
+        println("BUILD PROCESS FINISHED in ${buildReport.getDuration().seconds}s")
+        println("%s TASKS EXECUTED".format(buildReport.taskReports.size))
+        calculateTaskLinearTime(buildReport)
+
+        stopKoin()
     }
 
 }
