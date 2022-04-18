@@ -14,7 +14,7 @@ val pluginVersion: String by project
 )
 plugins {
     kotlin("jvm") version(libs.versions.kotlin)
-    //alias(libs.plugins.detekt)
+    alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
@@ -89,10 +89,16 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
+                "detekt",
                 "build",
                 "test",
                 "publishToMavenLocal"
-            ).args("--info", "--stacktrace")
+            ).args("--info")
         }
     }
+}
+
+detekt {
+    config = files("detekt-config.yml")
+    buildUponDefaultConfig = true
 }

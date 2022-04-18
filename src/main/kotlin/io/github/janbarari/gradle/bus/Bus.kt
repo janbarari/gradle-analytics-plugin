@@ -1,8 +1,31 @@
+/**
+ * MIT License
+ * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package io.github.janbarari.gradle.bus
 
 import io.github.janbarari.gradle.bus.exception.NotSerializableException
 import io.github.janbarari.gradle.bus.exception.SizeOutOfRangeException
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.ObjectOutputStream
 import java.io.Serializable
 
@@ -14,7 +37,7 @@ object Bus {
     @Synchronized
     fun getObservers(): ArrayList<Observer> = observers
 
-    private const val DEFAULT_EVENT_SIZE_LIMIT_BYTES = 0
+    private const val DEFAULT_EVENT_SIZE_LIMIT_BYTES = -1
     private var postEventLimitationSizeInBytes: Int = DEFAULT_EVENT_SIZE_LIMIT_BYTES
     private var pendingDroppingObservers: ArrayList<Observer> = arrayListOf()
 
@@ -131,8 +154,6 @@ object Bus {
             if (postEventLimitationSizeInBytes > DEFAULT_EVENT_SIZE_LIMIT_BYTES) {
                 if (sizeOf(event) < postEventLimitationSizeInBytes) {
                     validated()
-                } else {
-                    throwException(SizeOutOfRangeException(postEventLimitationSizeInBytes))
                 }
             } else {
                 validated()
@@ -142,6 +163,7 @@ object Bus {
         }
     }
 
+    @Suppress("SwallowedException")
     private fun <T : Any> sizeOf(event: T): Int {
         return try {
             val byteOutputStream = ByteArrayOutputStream()
@@ -150,9 +172,8 @@ object Bus {
             objectOutputStream.flush()
             objectOutputStream.close()
             byteOutputStream.toByteArray().size
-        } catch (e: Exception) {
-            e.printStackTrace()
-            DEFAULT_EVENT_SIZE_LIMIT_BYTES
+        } catch (e: IOException) {
+            throw SizeOutOfRangeException(postEventLimitationSizeInBytes)
         }
     }
 
@@ -164,6 +185,10 @@ object Bus {
         exception.printStackTrace()
     }
 
+    @Suppress(
+        "TooGenericExceptionCaught",
+        "SwallowedException"
+    )
     private fun <T : Any> postToObserver(observer: Observer, event: T, sender: Class<*>?) {
         try {
             if (observer.sender != null && sender != null) {
@@ -176,7 +201,7 @@ object Bus {
                 }
                 observer.unit.invoke(event)
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             pendingDroppingObservers.add(observer)
         }
     }

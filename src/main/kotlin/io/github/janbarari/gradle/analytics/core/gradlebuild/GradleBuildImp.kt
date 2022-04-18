@@ -20,8 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.utils
+package io.github.janbarari.gradle.analytics.core.gradlebuild
 
-fun Any?.isNull(): Boolean {
-    return this == null
+import io.github.janbarari.gradle.analytics.core.task.TaskReport
+
+class GradleBuildImp(
+    private var buildListener: GradleBuild.OnBuildListener
+) : GradleBuild {
+
+    private var startTime: Long = 0L
+    private var endTime: Long = 0L
+
+    init {
+        startTime = System.currentTimeMillis()
+    }
+
+    override fun processStarted() {
+        startTime = System.currentTimeMillis()
+        buildListener.onBuildStarted()
+    }
+
+    override fun processFinished(taskReports: Collection<TaskReport>) {
+        endTime = System.currentTimeMillis()
+
+        val buildReport = BuildReport(
+            startTime,
+            endTime,
+            taskReports
+        )
+        buildListener.onBuildFinished(buildReport)
+    }
+
 }

@@ -1,0 +1,18 @@
+complexity:
+  active: true
+  TooManyFunctions:
+    active: true
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    thresholdInFiles: 25
+    thresholdInClasses: 25
+    thresholdInInterfaces: 25
+    thresholdInObjects: 25
+    thresholdInEnums: 25
+    ignoreDeprecated: false
+    ignorePrivate: false
+    ignoreOverridden: false
+
+style:
+  active: true
+  SerialVersionUIDInSerializableClass:
+    active: false

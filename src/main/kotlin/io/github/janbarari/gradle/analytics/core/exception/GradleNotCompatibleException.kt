@@ -20,8 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.utils
+package io.github.janbarari.gradle.analytics.core.exception
 
-fun Any?.isNull(): Boolean {
-    return this == null
+class GradleNotCompatibleException(
+    private val title: String, private val minimumRequiredVersion: String
+) : Throwable() {
+    override val message: String
+        get() = "$title is compatible with gradle version $minimumRequiredVersion and above"
 }
+
