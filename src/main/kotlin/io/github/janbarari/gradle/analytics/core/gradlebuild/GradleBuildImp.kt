@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.gradlebuild
 
-import io.github.janbarari.gradle.analytics.core.task.TaskReport
+import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
 
 class GradleBuildImp(
     private var buildListener: GradleBuild.OnBuildListener
@@ -40,13 +40,13 @@ class GradleBuildImp(
         buildListener.onBuildStarted()
     }
 
-    override fun processFinished(taskReports: Collection<TaskReport>) {
+    override fun processFinished(taskLifecycles: Collection<TaskLifecycle>) {
         endTime = System.currentTimeMillis()
 
         val buildReport = BuildReport(
             startTime,
             endTime,
-            taskReports
+            taskLifecycles
         )
         buildListener.onBuildFinished(buildReport)
     }

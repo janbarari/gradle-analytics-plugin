@@ -22,7 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.core.task
 
+import io.github.janbarari.gradle.analytics.core.exception.GradleNotCompatibleException
 import io.github.janbarari.gradle.bus.Bus
+import io.github.janbarari.gradle.utils.GradleVersion
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -31,18 +33,48 @@ import org.gradle.tooling.events.OperationCompletionListener
 import org.gradle.tooling.events.task.TaskFinishEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 
-abstract class TasksOperation :
-    BuildService<TasksOperation.Params>, OperationCompletionListener, AutoCloseable {
+/**
+ * TasksOperationService tracks the task's execution lifecycle and sends
+ * the task's lifecycle report via [Bus] event publisher to the registered
+ * receiver.
+ *
+ * [Bus] need [TasksLifecycleParams.receiverGUID] to send the event to the receiver.
+ */
+abstract class TasksLifecycleService : BuildService<TasksLifecycleService.Params>,
+    OperationCompletionListener, AutoCloseable {
+
     interface Params : BuildServiceParameters {
-        fun getParams(): Property<TasksOperationParams>
+        fun getParams(): Property<TasksLifecycleParams>
     }
 
-    private val executedTaskReports: MutableCollection<TaskReport> = ConcurrentLinkedQueue()
+    private val tasksLifecycleReport: MutableCollection<TaskLifecycle> = ConcurrentLinkedQueue()
 
+    init {
+        ensureGradleVersionIsCompatible()
+    }
+
+    /**
+     * TasksOperationService is compatible with Gradle version 6.1 and above
+     * @throws GradleNotCompatibleException when the Gradle version is not compatible
+     */
+    private fun ensureGradleVersionIsCompatible() {
+        if(!GradleVersion
+                .isCompatibleWith(GradleVersion.GradleVersions.V6_1)) {
+            throw GradleNotCompatibleException(
+                "Gradle-Analytics-Plugin",
+                GradleVersion.GradleVersions.V6_1.versionNumber
+            )
+        }
+    }
+
+    /**
+     * Invoked when each task finished event received.
+     * @param event task finish event
+     */
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
-            executedTaskReports.add(
-                TaskReport(
+            tasksLifecycleReport.add(
+                TaskLifecycle(
                     event.result.startTime,
                     event.result.endTime,
                     event.descriptor.taskPath,
@@ -53,9 +85,12 @@ abstract class TasksOperation :
         }
     }
 
+    /**
+     * Invoked when the Gradle build process finished.
+     */
     override fun close() {
-        val eventGUID = parameters.getParams().get().eventGUID
-        Bus.post(executedTaskReports as Collection<TaskReport>, eventGUID)
+        val eventGUID = parameters.getParams().get().receiverGUID
+        Bus.post(tasksLifecycleReport as Collection<TaskLifecycle>, eventGUID)
     }
 
 }

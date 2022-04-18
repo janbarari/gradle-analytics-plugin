@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.gradlebuild
 
-import io.github.janbarari.gradle.analytics.core.task.TaskReport
+import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
 
 interface GradleBuild {
 
@@ -32,6 +32,6 @@ interface GradleBuild {
     }
 
     fun processStarted()
-    fun processFinished(taskReports: Collection<TaskReport>)
+    fun processFinished(taskLifecycles: Collection<TaskLifecycle>)
 
 }

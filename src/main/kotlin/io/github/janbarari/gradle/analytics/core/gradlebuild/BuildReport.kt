@@ -23,13 +23,13 @@
 package io.github.janbarari.gradle.analytics.core.gradlebuild
 
 import io.github.janbarari.gradle.analytics.core.exception.WrongEndTimeException
-import io.github.janbarari.gradle.analytics.core.task.TaskReport
+import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
 import java.time.Duration
 
 class BuildReport(
     val startTime: Long,
     val endTime: Long,
-    val taskReports: Collection<TaskReport>
+    val taskLifecycles: Collection<TaskLifecycle>
 ): java.io.Serializable {
 
     fun getDuration(): Duration {

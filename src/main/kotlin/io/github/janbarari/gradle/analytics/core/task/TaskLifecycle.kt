@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.task
 
-data class TaskReport(
+data class TaskLifecycle(
     val startTime: Long,
     val endTime: Long,
     val path: String,

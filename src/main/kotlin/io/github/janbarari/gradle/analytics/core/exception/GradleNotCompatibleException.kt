@@ -28,4 +28,3 @@ class GradleNotCompatibleException(
     override val message: String
         get() = "$title is compatible with gradle version $minimumRequiredVersion and above"
 }
-

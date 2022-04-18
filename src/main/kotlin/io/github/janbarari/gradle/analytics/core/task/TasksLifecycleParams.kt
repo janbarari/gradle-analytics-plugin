@@ -22,6 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.core.task
 
-open class TasksOperationParams(
-    val eventGUID: String
+open class TasksLifecycleParams(
+    val receiverGUID: String
 ) : java.io.Serializable

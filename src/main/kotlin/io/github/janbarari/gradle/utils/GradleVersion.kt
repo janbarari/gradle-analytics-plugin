@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.utils
 
 import org.gradle.util.GradleVersion
 
-object GradleVersionValidation {
+object GradleVersion {
 
     enum class GradleVersions(val versionNumber: String) {
         V7_4_2("7.4.2"),
