@@ -24,8 +24,7 @@ package io.github.janbarari.gradle.analytics.plugin
 
 import io.github.janbarari.gradle.analytics.core.gradlebuild.BuildReport
 import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
-import io.github.janbarari.gradle.analytics.plugin.di.pluginModule
-import io.github.janbarari.gradle.os.OperatingSystem
+import io.github.janbarari.gradle.analytics.core.logger.Logger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
@@ -33,13 +32,14 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.parameter.parametersOf
 import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project>, KoinComponent, GradleBuild.OnBuildListener {
+
+    private val logger by inject<Logger>()
 
     init {
         startKoin {
@@ -50,6 +50,7 @@ class GradleAnalyticsPlugin @Inject constructor(
     override fun apply(project: Project) {
         registry
         //todo add logic
+        logger.log("Plugin", "Hello World")
     }
 
     override fun onBuildStarted() {

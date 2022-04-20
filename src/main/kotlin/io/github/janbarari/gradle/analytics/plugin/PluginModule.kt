@@ -20,21 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.gradlebuild
+package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
+import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
+import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuildImp
+import io.github.janbarari.gradle.analytics.core.logger.Logger
+import io.github.janbarari.gradle.analytics.core.logger.LoggerImp
+import io.github.janbarari.gradle.os.OperatingSystem
+import io.github.janbarari.gradle.os.OperatingSystemImp
+import org.koin.dsl.module
 
-/**
- * GradleBuild interface
- */
-interface GradleBuild {
+val pluginModule = module {
 
-    interface OnBuildListener {
-        fun onBuildStarted()
-        fun onBuildFinished(buildReport: BuildReport)
+    single {
+        OperatingSystemImp() as OperatingSystem
     }
 
-    fun processStarted()
-    fun processFinished(taskLifecycles: Collection<TaskLifecycle>)
+    single {
+        LoggerImp() as Logger
+    }
+
+    single { (onBuildListener: GradleBuild.OnBuildListener) ->
+        GradleBuildImp(onBuildListener) as GradleBuild
+    }
 
 }

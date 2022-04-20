@@ -24,6 +24,9 @@ package io.github.janbarari.gradle.analytics.core.gradlebuild
 
 import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
 
+/**
+ * Implementation of [GradleBuild]
+ */
 class GradleBuildImp(
     private var buildListener: GradleBuild.OnBuildListener
 ) : GradleBuild {
