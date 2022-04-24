@@ -31,7 +31,6 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
     compileOnly(gradleApi())
-    implementation(libs.koin)
     implementation(libs.oshi)
 }
 
