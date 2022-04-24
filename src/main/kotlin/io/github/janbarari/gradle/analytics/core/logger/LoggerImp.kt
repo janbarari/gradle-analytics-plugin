@@ -20,21 +20,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.plugin.di
+package io.github.janbarari.gradle.analytics.core.logger
 
-import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
-import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuildImp
-import io.github.janbarari.gradle.os.OperatingSystemImp
-import org.koin.dsl.module
+/**
+ * Implementation of [Logger]
+ */
+class LoggerImp(
+    /**
+     * Mode applied to the logger
+     */
+    private var logMode: Logger.LogMode = Logger.LogMode.INFO
+) : Logger {
 
-val pluginModule = module {
-
-    single {
-        OperatingSystemImp()
+    override fun log(tag: String, message: String): Boolean {
+        if (logMode == Logger.LogMode.INFO) {
+            println(">> $tag: $message")
+            return true
+        }
+        return false
     }
 
-    single { (onBuildListener: GradleBuild.OnBuildListener) ->
-        GradleBuildImp(onBuildListener)
+    override fun error(message: String): Boolean {
+        println("!> $message")
+        return true
     }
 
+    override fun setMode(mode: Logger.LogMode) {
+        logMode = mode
+    }
+
+    override fun getMode(): Logger.LogMode {
+        return logMode
+    }
 }
