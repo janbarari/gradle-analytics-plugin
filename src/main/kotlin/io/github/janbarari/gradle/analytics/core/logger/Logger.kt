@@ -20,21 +20,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.gradlebuild
-
-import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
+package io.github.janbarari.gradle.analytics.core.logger
 
 /**
- * GradleBuild interface
+ * Logger interface
  */
-interface GradleBuild {
+interface Logger {
 
-    interface OnBuildListener {
-        fun onBuildStarted()
-        fun onBuildFinished(buildReport: BuildReport)
+    /**
+     * Logger modes
+     */
+    enum class LogMode {
+        SILENT, INFO
     }
 
-    fun processStarted()
-    fun processFinished(taskLifecycles: Collection<TaskLifecycle>)
+    /**
+     * Prints log message in the console if the [LogMode] is [LogMode.INFO]
+     * @param tag Category title of the log
+     * @param message Message of the log
+     * @return Returns true if [LogMode] is [LogMode.INFO]
+     */
+    fun log(tag: String, message: String): Boolean
+
+    /**
+     * Prints error message in the console
+     */
+    fun error(message: String): Boolean
+
+    /**
+     * Changes the logger type on runtime
+     */
+    fun setMode(mode: LogMode)
+
+    /**
+     * Returns logger mode
+     */
+    fun getMode(): LogMode
 
 }
