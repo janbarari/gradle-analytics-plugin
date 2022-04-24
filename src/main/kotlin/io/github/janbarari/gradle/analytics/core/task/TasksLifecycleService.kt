@@ -22,9 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.task
 
-import io.github.janbarari.gradle.analytics.core.exception.GradleNotCompatibleException
 import io.github.janbarari.gradle.bus.Bus
-import io.github.janbarari.gradle.utils.GradleVersion
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -48,24 +46,6 @@ abstract class TasksLifecycleService : BuildService<TasksLifecycleService.Params
     }
 
     private val tasksLifecycleReport: MutableCollection<TaskLifecycle> = ConcurrentLinkedQueue()
-
-    init {
-        ensureGradleVersionIsCompatible()
-    }
-
-    /**
-     * TasksOperationService is compatible with Gradle version 6.1 and above
-     * @throws GradleNotCompatibleException when the Gradle version is not compatible
-     */
-    private fun ensureGradleVersionIsCompatible() {
-        if(!GradleVersion
-                .isCompatibleWith(GradleVersion.GradleVersions.V6_1)) {
-            throw GradleNotCompatibleException(
-                "Gradle-Analytics-Plugin",
-                GradleVersion.GradleVersions.V6_1.versionNumber
-            )
-        }
-    }
 
     /**
      * Invoked when each task finished event received.

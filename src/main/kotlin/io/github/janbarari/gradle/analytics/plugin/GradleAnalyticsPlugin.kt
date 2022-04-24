@@ -22,34 +22,48 @@
  */
 package io.github.janbarari.gradle.analytics.plugin
 
+import io.github.janbarari.gradle.analytics.core.exception.GradleNotCompatibleException
 import io.github.janbarari.gradle.analytics.core.gradlebuild.BuildReport
 import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
-import io.github.janbarari.gradle.analytics.plugin.di.pluginModule
-import io.github.janbarari.gradle.os.OperatingSystem
+import io.github.janbarari.gradle.analytics.core.task.TasksLifecycleParams
+import io.github.janbarari.gradle.analytics.core.task.TasksLifecycleService
+import io.github.janbarari.gradle.bus.Observer
+import io.github.janbarari.gradle.utils.GradleVersionUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.core.parameter.parametersOf
 import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
-) : Plugin<Project>, KoinComponent, GradleBuild.OnBuildListener {
-
-    init {
-        startKoin {
-            modules(pluginModule)
-        }
-    }
+) : Plugin<Project>, GradleBuild.OnBuildListener {
 
     override fun apply(project: Project) {
-        registry
-        //todo add logic
+        ensureGradleVersionIsCompatible()
+        val receiverGUID = Observer.generateGUID()
+        val tasksLifecycleServiceClazz = TasksLifecycleService::class.java
+        val tasksLifecycleService = project.gradle.sharedServices.registerIfAbsent(
+            tasksLifecycleServiceClazz.simpleName,
+            tasksLifecycleServiceClazz
+        ) { spec ->
+            val params = TasksLifecycleParams(receiverGUID)
+            spec.parameters.getParams().set(params)
+        }
+        registry.onTaskCompletion(tasksLifecycleService)
+    }
+
+    /**
+     * GradleAnalyticsPlugin is compatible with Gradle version 6.1 and above
+     * @throws GradleNotCompatibleException when the Gradle version is not compatible
+     */
+    private fun ensureGradleVersionIsCompatible() {
+        if(!GradleVersionUtils.isCompatibleWith(GradleVersionUtils.GradleVersions.V6_1)) {
+            throw GradleNotCompatibleException(
+                "Gradle-Analytics-Plugin",
+                GradleVersionUtils.GradleVersions.V6_1.versionNumber
+            )
+        }
     }
 
     override fun onBuildStarted() {
@@ -57,7 +71,7 @@ class GradleAnalyticsPlugin @Inject constructor(
     }
 
     override fun onBuildFinished(buildReport: BuildReport) {
-        stopKoin()
+        //todo add logic
     }
 
 }

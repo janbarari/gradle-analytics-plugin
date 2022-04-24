@@ -57,6 +57,6 @@ class DefaultEvent : Serializable {
     }
 
     override fun toString(): String {
-        return "sender:%s;data:%s".format(sender::class.java.name, data.toString())
+        return "DefaultEvent(%s, %s)".format(sender::class.java.name, data.toString())
     }
 }
