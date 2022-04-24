@@ -53,17 +53,17 @@ class GradleAnalyticsPlugin @Inject constructor(
         registry.onTaskCompletion(tasksLifecycleService)
     }
 
-
     /**
      * GradleAnalyticsPlugin is compatible with Gradle version 6.1 and above
      * @throws GradleNotCompatibleException when the Gradle version is not compatible
      */
     private fun ensureGradleVersionIsCompatible() {
-      if(!GradleVersionUtils.isCompatibleWith(GradleVersionUtils.GradleVersions.V6_1)) {
-          throw GradleNotCompatibleException(
-            "Gradle-Analytics-Plugin",
-            GradleVersionUtils.GradleVersions.V6_1.versionNumber
-          )
+        if(!GradleVersionUtils.isCompatibleWith(GradleVersionUtils.GradleVersions.V6_1)) {
+            throw GradleNotCompatibleException(
+                "Gradle-Analytics-Plugin",
+                GradleVersionUtils.GradleVersions.V6_1.versionNumber
+            )
+        }
     }
 
     override fun onBuildStarted() {
