@@ -37,7 +37,7 @@ class Observer(
     }
 
     override fun toString(): String {
-        return "Subscriber($guid, ${observerType::class.java.name})"
+        return "Subscriber($guid, $observerType)"
     }
 
 }

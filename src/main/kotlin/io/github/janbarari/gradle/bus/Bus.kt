@@ -23,13 +23,11 @@
 package io.github.janbarari.gradle.bus
 
 import io.github.janbarari.gradle.bus.exception.NotSerializableException
-import io.github.janbarari.gradle.bus.exception.SizeOutOfRangeException
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.io.ObjectOutputStream
 import java.io.Serializable
 
 object Bus {
+
+    private var isTestMode: Boolean = false
 
     @Volatile
     private var observers = ArrayList<Observer>()
@@ -37,12 +35,18 @@ object Bus {
     @Synchronized
     fun getObservers(): ArrayList<Observer> = observers
 
-    private const val DEFAULT_EVENT_SIZE_LIMIT_BYTES = -1
-    private var postEventLimitationSizeInBytes: Int = DEFAULT_EVENT_SIZE_LIMIT_BYTES
     private var pendingDroppingObservers: ArrayList<Observer> = arrayListOf()
 
-    fun setPostEventSizeLimitation(sizeInBytes: Int) {
-        postEventLimitationSizeInBytes = sizeInBytes
+    fun enableTestMode() {
+        isTestMode = true
+    }
+
+    fun disableTestMode() {
+        isTestMode = false
+    }
+
+    fun isTestMode(): Boolean {
+        return isTestMode
     }
 
     fun post(event: Any) {
@@ -151,29 +155,9 @@ object Bus {
 
     private fun <T : Any> validateEventType(event: T, validated: () -> Unit) {
         if (event is Serializable) {
-            if (postEventLimitationSizeInBytes > DEFAULT_EVENT_SIZE_LIMIT_BYTES) {
-                if (sizeOf(event) < postEventLimitationSizeInBytes) {
-                    validated()
-                }
-            } else {
-                validated()
-            }
+            validated()
         } else {
             throwException(NotSerializableException())
-        }
-    }
-
-    @Suppress("SwallowedException")
-    private fun <T : Any> sizeOf(event: T): Int {
-        return try {
-            val byteOutputStream = ByteArrayOutputStream()
-            val objectOutputStream = ObjectOutputStream(byteOutputStream)
-            objectOutputStream.writeObject(event)
-            objectOutputStream.flush()
-            objectOutputStream.close()
-            byteOutputStream.toByteArray().size
-        } catch (e: IOException) {
-            throw SizeOutOfRangeException(postEventLimitationSizeInBytes)
         }
     }
 
@@ -181,8 +165,10 @@ object Bus {
      * Exceptions will be throwing at debugging mode. And for prevent app crash,
      * all exceptions will be just print in stack trace at release mode
      */
-    private fun throwException(exception: Exception) {
-        exception.printStackTrace()
+    private fun throwException(exception: Throwable) {
+        if (isTestMode) {
+            throw exception
+        }
     }
 
     @Suppress(
@@ -202,6 +188,7 @@ object Bus {
                 observer.unit.invoke(event)
             }
         } catch (e: Throwable) {
+            throwException(e)
             pendingDroppingObservers.add(observer)
         }
     }

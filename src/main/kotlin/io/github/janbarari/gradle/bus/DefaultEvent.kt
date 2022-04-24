@@ -27,19 +27,19 @@ import kotlin.collections.HashMap
 
 class DefaultEvent : Serializable {
 
-    private var sender: Any
+    private var sender: Class<*>
     private var data = HashMap<String, Any>()
 
-    constructor(sender: Any) {
+    constructor(sender: Class<*>) {
         this.sender = sender
     }
 
-    private constructor(sender: Any, data: HashMap<String, Any>) {
+    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
         this.sender = sender
         this.data = data
     }
 
-    fun getSender(): Any {
+    fun getSender(): Class<*> {
         return sender
     }
 
@@ -57,6 +57,6 @@ class DefaultEvent : Serializable {
     }
 
     override fun toString(): String {
-        return "DefaultEvent(%s, %s)".format(sender::class.java.name, data.toString())
+        return "DefaultEvent(%s, %s)".format(sender, data.toString())
     }
 }
