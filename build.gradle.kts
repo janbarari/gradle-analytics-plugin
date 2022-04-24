@@ -100,4 +100,7 @@ tasks.register("publishToLocal") {
 detekt {
     config = files("detekt-config.yml")
     buildUponDefaultConfig = true
+    source = files(
+        "src/main/kotlin"
+    )
 }
