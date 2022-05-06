@@ -22,7 +22,11 @@
  */
 package io.github.janbarari.gradle.bus.exception
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class SizeOutOfRangeException(private val eventLimitSize: Int) : Exception() {
     override val message: String
-        get() = "Only events with smaller than $eventLimitSize byte size can be transferred by Bus"
+        get() = "Only events with smaller than $eventLimitSize byte size can be transferred by Bus."
 }

@@ -20,32 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.data.database.exception
 
-import java.util.UUID
-
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
-
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
-
-    }
-
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
-
+class DatabaseConfigNotDefinedException: Throwable() {
+    override val message: String = "databaseConfig required inputs are not defined," +
+            " please add the databaseConfig in build script."
 }

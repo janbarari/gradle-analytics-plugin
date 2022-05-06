@@ -25,6 +25,10 @@ package io.github.janbarari.gradle.bus
 import java.io.Serializable
 import kotlin.collections.HashMap
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class DefaultEvent : Serializable {
 
     private var sender: Class<*>
@@ -57,6 +61,6 @@ class DefaultEvent : Serializable {
     }
 
     override fun toString(): String {
-        return "DefaultEvent(%s, %s)".format(sender, data.toString())
+        return "DefaultEvent($sender, $data)"
     }
 }

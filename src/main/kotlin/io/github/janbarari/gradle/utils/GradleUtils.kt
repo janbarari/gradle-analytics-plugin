@@ -24,9 +24,15 @@ package io.github.janbarari.gradle.utils
 
 import org.gradle.util.GradleVersion
 
-object GradleVersionUtils {
-
-    enum class GradleVersions(val versionNumber: String) {
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class GradleUtils {
+    /**
+     * List of official Gradle versions.
+     */
+    enum class Versions(val versionNumber: String) {
         V7_4_2("7.4.2"),
         V7_4_1("7.4.1"),
         V7_4("7.4"),
@@ -63,10 +69,17 @@ object GradleVersionUtils {
         V6_1("6.1")
     }
 
-    fun isCompatibleWith(version: GradleVersions): Boolean {
-        val currentGradleVersion = GradleVersion.current()
-        val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
-        return currentGradleVersion > minimumRequiredGradleVersion
+    companion object {
+        /**
+         * Checks the project Gradle version is above the entered gradle version.
+         * @return true/false If Gradle version is compatible.
+         */
+        fun isCompatibleWith(version: Versions): Boolean {
+            val projectGradleVersion = GradleVersion.current()
+            val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
+            return projectGradleVersion > minimumRequiredGradleVersion
+        }
+
     }
 
 }

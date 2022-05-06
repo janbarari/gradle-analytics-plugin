@@ -22,6 +22,10 @@
  */
 package io.github.janbarari.gradle.bus.exception
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class NotSerializableException : Exception() {
     override val message: String
         get() = "Your event is not serializable, " +

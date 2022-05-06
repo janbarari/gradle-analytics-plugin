@@ -25,6 +25,10 @@ package io.github.janbarari.gradle.bus
 import io.github.janbarari.gradle.bus.exception.NotSerializableException
 import java.io.Serializable
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 object Bus {
 
     private var isTestMode: Boolean = false

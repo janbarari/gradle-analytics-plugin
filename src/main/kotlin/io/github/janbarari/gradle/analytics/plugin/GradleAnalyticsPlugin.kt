@@ -27,8 +27,9 @@ import io.github.janbarari.gradle.analytics.core.gradlebuild.BuildReport
 import io.github.janbarari.gradle.analytics.core.gradlebuild.GradleBuild
 import io.github.janbarari.gradle.analytics.core.task.TasksLifecycleParams
 import io.github.janbarari.gradle.analytics.core.task.TasksLifecycleService
+import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
 import io.github.janbarari.gradle.bus.Observer
-import io.github.janbarari.gradle.utils.GradleVersionUtils
+import io.github.janbarari.gradle.utils.GradleUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
@@ -39,8 +40,19 @@ class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project>, GradleBuild.OnBuildListener {
 
+    private lateinit var extension: GradleAnalyticsPluginExtension
+    private lateinit var database: SQLiteDatabase
+
     override fun apply(project: Project) {
+
         ensureGradleVersionIsCompatible()
+
+        extension = getGradleAnalyticsPluginExtension(project)
+
+        project.gradle.projectsEvaluated {
+            database = SQLiteDatabase(extension.getDatabaseConfig())
+        }
+
         val receiverGUID = Observer.generateGUID()
         val tasksLifecycleServiceClazz = TasksLifecycleService::class.java
         val tasksLifecycleService = project.gradle.sharedServices.registerIfAbsent(
@@ -51,6 +63,7 @@ class GradleAnalyticsPlugin @Inject constructor(
             spec.parameters.getParams().set(params)
         }
         registry.onTaskCompletion(tasksLifecycleService)
+
     }
 
     /**
@@ -58,10 +71,10 @@ class GradleAnalyticsPlugin @Inject constructor(
      * @throws GradleNotCompatibleException when the Gradle version is not compatible
      */
     private fun ensureGradleVersionIsCompatible() {
-        if(!GradleVersionUtils.isCompatibleWith(GradleVersionUtils.GradleVersions.V6_1)) {
+        if(!GradleUtils.isCompatibleWith(GradleUtils.Versions.V6_1)) {
             throw GradleNotCompatibleException(
                 "Gradle-Analytics-Plugin",
-                GradleVersionUtils.GradleVersions.V6_1.versionNumber
+                GradleUtils.Versions.V6_1.versionNumber
             )
         }
     }
@@ -72,6 +85,14 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     override fun onBuildFinished(buildReport: BuildReport) {
         //todo add logic
+    }
+
+    private fun getGradleAnalyticsPluginExtension(project: Project): GradleAnalyticsPluginExtension {
+        return project.extensions.create(
+            "gradleAnalyticsPlugin",
+            GradleAnalyticsPluginExtension::class.java,
+            project
+        )
     }
 
 }

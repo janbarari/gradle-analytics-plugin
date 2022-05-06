@@ -20,32 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.domain.entity
 
-import java.util.UUID
+import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
+import org.jetbrains.exposed.sql.Table
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the build tasks execution information in the SQLite database.
  */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+object Task : Table("task") {
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
+    val id = long("id").autoIncrement().uniqueIndex()
 
-    }
+    val name = varchar("name", VARCHAR_DEFAULT_LENGTH)
 
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
+    val path = varchar("path", VARCHAR_DEFAULT_LENGTH)
+
+    val module = varchar("module", VARCHAR_DEFAULT_LENGTH)
+
+    val startedAt = long("started_at")
+
+    val finishedAt = long("finished_at")
+
+    val buildNumber = long("build_number") references Build.number
+
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
 
 }

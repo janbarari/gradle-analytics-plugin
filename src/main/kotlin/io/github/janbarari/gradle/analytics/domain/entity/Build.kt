@@ -20,32 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.domain.entity
 
-import java.util.UUID
+import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
+import org.jetbrains.exposed.sql.Table
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the various builds executed by IDE in the SQLite database.
  */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+object Build : Table("build") {
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
+    /**
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table
+     */
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    }
+    /**
+     * The build started timestamp.
+     */
+    val startedAt = long("started_at")
 
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
+    /**
+     * The build finished timestamp
+     */
+    val finishedAt = long("finished_at")
 
+    /**
+     * The configuration finished timestamp.
+     */
+    val configurationFinishedAt = long("configuration_finished_at")
+
+    /**
+     * The execution terminal/command-prompt command.
+     */
+    val cmd = varchar("cmd", VARCHAR_DEFAULT_LENGTH).nullable()
+
+    /**
+     * The executor operating system name.
+     */
+    val os = varchar("os", VARCHAR_DEFAULT_LENGTH).nullable()
+
+    override val primaryKey = PrimaryKey(number)
 }

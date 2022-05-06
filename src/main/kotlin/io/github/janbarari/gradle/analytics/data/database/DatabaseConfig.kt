@@ -20,32 +20,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.data.database
 
-import java.util.UUID
+import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConfigNotDefinedException
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+class DatabaseConfig {
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
+    /**
+     * [url] can be the SQLite server URL or local database file path
+     *
+     * Required!
+     */
+    lateinit var url: String
+
+    /**
+     * [user] database username
+     *
+     * Required!
+     */
+    lateinit var user: String
+
+    /**
+     * [password] database user password
+     */
+    var password: String = ""
+
+    /**
+     * [isQueryLogEnabled] Enable/disable the database query logs.
+     */
+    var isQueryLogEnabled: Boolean = false
+
+    /**
+     * Ensures the required inputs are exist.
+     * @throws DatabaseConfigNotDefinedException If the required inputs are not exist.
+     */
+    @kotlin.jvm.Throws(DatabaseConfigNotDefinedException::class)
+    fun ensureRequiredInputsExist() {
+        if (this::url.isInitialized.not() ||
+                this::user.isInitialized.not()) {
+            throw DatabaseConfigNotDefinedException()
         }
-
-    }
-
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
     }
 
 }
