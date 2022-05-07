@@ -19,7 +19,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the number column`() {
+    fun `check the number column`() {
         //Check the column name is `number`
         assertEquals("number", Build.number.name)
         //Check the column type is `Long`
@@ -29,7 +29,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the startedAt column`() {
+    fun `check the startedAt column`() {
         //Check the column name is `started_at`
         assertEquals("started_at", Build.startedAt.name)
         //Check the column type is `Long`
@@ -37,7 +37,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the finishedAt column`() {
+    fun `check the finishedAt column`() {
         //Check the column name is `finished_at`
         assertEquals("finished_at", Build.finishedAt.name)
         //Check the column type is `Long`
@@ -45,7 +45,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the configurationFinishedAt column`() {
+    fun `check the configurationFinishedAt column`() {
         //Check the column name is `configuration_finished_at`
         assertEquals("configuration_finished_at", Build.configurationFinishedAt.name)
         //Check the column type is `Long`
@@ -53,7 +53,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the cmd column`() {
+    fun `check the cmd column`() {
         //Check the column name is `cmd`
         assertEquals("cmd", Build.cmd.name)
         //Check the column type is `Varchar`
@@ -61,7 +61,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the os column`() {
+    fun `check the os column`() {
         //Check the column name is `os`
         assertEquals("os", Build.os.name)
         //Check the column type is `Varchar`
@@ -69,7 +69,7 @@ class BuildTest {
     }
 
     @Test
-    fun `Check the table primary-key`() {
+    fun `check the table primary-key`() {
         assertEquals("number", Build.primaryKey.columns.first().name)
     }
 

@@ -17,4 +17,16 @@ class NullExtensionsTest {
         assertEquals(false, nullObj.isNull())
     }
 
+    @Test
+    fun `check isNotNull function returns true if object is not null`() {
+        val nullObj: String = "This variable is not null"
+        assertEquals(true, nullObj.isNotNull())
+    }
+
+    @Test
+    fun `check isNotNull function returns false if object is null`() {
+        val nullObj: String? = null
+        assertEquals(false, nullObj.isNotNull())
+    }
+
 }

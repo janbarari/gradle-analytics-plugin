@@ -19,7 +19,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the id column`() {
+    fun `check the id column`() {
         //Check the column name is `id`
         assertEquals("id", Task.id.name)
         //Check the column type is `Long`
@@ -29,7 +29,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the name column`() {
+    fun `check the name column`() {
         //Check the column name is `name`
         assertEquals("name", Task.name.name)
         //Check the column type is `Varchar`
@@ -37,7 +37,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the path column`() {
+    fun `check the path column`() {
         //Check the column name is `path`
         assertEquals("path", Task.path.name)
         //Check the column type is `Varchar`
@@ -45,7 +45,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the module column`() {
+    fun `check the module column`() {
         //Check the column name is `module`
         assertEquals("module", Task.module.name)
         //Check the column type is `Varchar`
@@ -53,7 +53,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the startedAt column`() {
+    fun `check the startedAt column`() {
         //Check the column name is `started_at`
         assertEquals("started_at", Task.startedAt.name)
         //Check the column type is `Long`
@@ -61,7 +61,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the finishedAt column`() {
+    fun `check the finishedAt column`() {
         //Check the column name is `finished_at`
         assertEquals("finished_at", Task.finishedAt.name)
         //Check the column type is `Long`
@@ -69,7 +69,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the buildNumber column`() {
+    fun `check the buildNumber column`() {
         //Check the column name is `build_number`
         assertEquals("build_number", Task.buildNumber.name)
         //Check the column type is `Long`
@@ -82,7 +82,7 @@ class TaskTest {
     }
 
     @Test
-    fun `Check the table primary-key`() {
+    fun `check the table primary-key`() {
         assertEquals("id", Task.primaryKey.columns.first().name)
     }
 
