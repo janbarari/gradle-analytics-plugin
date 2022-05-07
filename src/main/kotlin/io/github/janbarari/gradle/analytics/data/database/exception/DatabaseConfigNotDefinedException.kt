@@ -22,6 +22,10 @@
  */
 package io.github.janbarari.gradle.analytics.data.database.exception
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class DatabaseConfigNotDefinedException: Throwable() {
     override val message: String = "databaseConfig required inputs are not defined," +
             " please add the databaseConfig in build script."

@@ -24,6 +24,10 @@ package io.github.janbarari.gradle.analytics.data.database
 
 import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConfigNotDefinedException
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class DatabaseConfig {
 
     /**

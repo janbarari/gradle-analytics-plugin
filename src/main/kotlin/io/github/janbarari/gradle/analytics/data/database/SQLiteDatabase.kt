@@ -31,6 +31,10 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class SQLiteDatabase {
 
     private var config: DatabaseConfig
