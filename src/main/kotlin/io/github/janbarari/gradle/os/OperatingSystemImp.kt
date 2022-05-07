@@ -32,7 +32,6 @@ import oshi.software.os.OperatingSystem
 class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
 
     private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
-    private val deviceInfo = SystemInfo().hardware.processor.processorIdentifier.processorID
 
     override fun getName(): String {
         return systemInfo.family
