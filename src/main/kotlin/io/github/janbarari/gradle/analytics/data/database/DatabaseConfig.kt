@@ -27,39 +27,43 @@ import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConf
 class DatabaseConfig {
 
     /**
-     * [url] can be the SQLite server URL or local database file path
+     * The SQLite server URL or local database file path, It will create the local
+     * database file if the database is not exists.
      *
      * Required!
+     *
+     * local database path example: "/build/temporary.db"
      */
     lateinit var url: String
 
     /**
-     * [user] database username
+     * Database username.
      *
      * Required!
      */
     lateinit var user: String
 
     /**
-     * [password] database user password
+     * Database user password.
      */
     var password: String = ""
 
     /**
-     * [isQueryLogEnabled] Enable/disable the database query logs.
+     * Enables or disables the database query logs.
      */
     var isQueryLogEnabled: Boolean = false
 
     /**
-     * Ensures the required inputs are exist.
+     * Ensures the required inputs are exists.
      * @throws DatabaseConfigNotDefinedException If the required inputs are not exist.
      */
     @kotlin.jvm.Throws(DatabaseConfigNotDefinedException::class)
-    fun ensureRequiredInputsExist() {
+    fun ensureRequiredInputsExist(): Boolean {
         if (this::url.isInitialized.not() ||
                 this::user.isInitialized.not()) {
             throw DatabaseConfigNotDefinedException()
         }
+        return true
     }
 
 }
