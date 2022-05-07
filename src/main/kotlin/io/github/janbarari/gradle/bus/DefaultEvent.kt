@@ -43,19 +43,31 @@ class DefaultEvent : Serializable {
         this.data = data
     }
 
+    /**
+     * Represents the event sender class.
+     */
     fun getSender(): Class<*> {
         return sender
     }
 
+    /**
+     * Checks the key-value exists in the event or not.
+     */
     fun containsKey(key: String): Boolean {
         return data.containsKey(key)
     }
 
+    /**
+     * Adds a key-value in the event body.
+     */
     fun put(key: String, value: Any): DefaultEvent {
         data[key] = value
         return DefaultEvent(sender, data)
     }
 
+    /**
+     * Returns the key-value
+     */
     operator fun get(key: String): Any {
         return data[key]!!
     }
