@@ -26,14 +26,14 @@ import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
 import org.jetbrains.exposed.sql.Table
 
 /**
- * This table represents how to hold the various builds executed by IDE in the SQLite database.
+ * This table represents how to hold the various build in the SQLite database.
  */
 object Build : Table("build") {
 
     /**
      * The unique auto-generated number which represents the build-number.
      *
-     * It also is the primary-key of the table
+     * It also is the primary-key of the table.
      */
     val number = long("number").autoIncrement().uniqueIndex()
 

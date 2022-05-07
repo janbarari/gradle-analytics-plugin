@@ -26,24 +26,46 @@ import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
 import org.jetbrains.exposed.sql.Table
 
 /**
- * This table represents how to hold the build tasks execution information in the SQLite database.
+ * This table represents how to hold the task information in the SQLite database.
  */
 object Task : Table("task") {
 
+    /**
+     * The unique auto-generated number which represents the executed task id in the table.
+     *
+     * It also is the primary-key of the table.
+     */
     val id = long("id").autoIncrement().uniqueIndex()
 
+    /**
+     * Represents the name of the task.
+     */
     val name = varchar("name", VARCHAR_DEFAULT_LENGTH)
 
+    /**
+     * Represents the task full path.
+     */
     val path = varchar("path", VARCHAR_DEFAULT_LENGTH)
 
+    /**
+     * Represents the module of the task.
+     */
     val module = varchar("module", VARCHAR_DEFAULT_LENGTH)
 
+    /**
+     * The task execution started timestamp.
+     */
     val startedAt = long("started_at")
 
+    /**
+     * The task execution finished timestamp.
+     */
     val finishedAt = long("finished_at")
 
+    /**
+     * Every task is a subtree of a build, This is the build number identifier number.
+     */
     val buildNumber = long("build_number") references Build.number
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
-
 }
