@@ -20,12 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.task
+package io.github.janbarari.gradle.utils
 
-data class TaskLifecycle(
-    val startTime: Long,
-    val endTime: Long,
-    val path: String,
-    val displayName: String,
-    val name: String
-): java.io.Serializable
+/**
+ * Returns true if the object is null.
+ */
+fun Any?.isNull(): Boolean {
+    return this == null
+}
+
+/**
+ * Returns true if the object is not null.
+ */
+fun Any?.isNotNull(): Boolean {
+    return this != null
+}

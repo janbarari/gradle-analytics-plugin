@@ -20,38 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.gradlebuild
-
-import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
+package io.github.janbarari.gradle.analytics.core.buildscanner.model
 
 /**
- * Implementation of [GradleBuild]
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-class GradleBuildImp(
-    private var buildListener: GradleBuild.OnBuildListener
-) : GradleBuild {
-
-    private var startTime: Long = 0L
-    private var endTime: Long = 0L
-
-    init {
-        startTime = System.currentTimeMillis()
-    }
-
-    override fun processStarted() {
-        startTime = System.currentTimeMillis()
-        buildListener.onBuildStarted()
-    }
-
-    override fun processFinished(taskLifecycles: Collection<TaskLifecycle>) {
-        endTime = System.currentTimeMillis()
-
-        val buildReport = BuildReport(
-            startTime,
-            endTime,
-            taskLifecycles
-        )
-        buildListener.onBuildFinished(buildReport)
-    }
-
-}
+data class OsInfo(
+    val name: String
+) : java.io.Serializable

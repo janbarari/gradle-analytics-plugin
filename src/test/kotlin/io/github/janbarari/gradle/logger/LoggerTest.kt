@@ -1,5 +1,7 @@
-package io.github.janbarari.gradle.analytics.core.logger
+package io.github.janbarari.gradle.logger
 
+import io.github.janbarari.gradle.logger.Logger
+import io.github.janbarari.gradle.logger.LoggerImp
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance

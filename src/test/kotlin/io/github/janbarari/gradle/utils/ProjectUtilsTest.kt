@@ -3,14 +3,14 @@ package io.github.janbarari.gradle.utils
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class GradleUtilsTest {
+class ProjectUtilsTest {
 
     /**
      * Note: This test will be successful if the project Gradle version is above 6.1
      */
     @Test
     fun `Check isCompatibleWith() works fine when project gradle is above 6_1`() {
-        val result = GradleUtils.isCompatibleWith(GradleUtils.Versions.V6_1)
+        val result = ProjectUtils.isCompatibleWith(ProjectUtils.GradleVersions.V6_1)
         assertEquals(true, result)
     }
 
@@ -19,18 +19,18 @@ class GradleUtilsTest {
      */
     @Test
     fun `Check isCompatibleWith() works fine when project gradle is below 7_4_2`() {
-        val result = GradleUtils.isCompatibleWith(GradleUtils.Versions.V7_4_2)
+        val result = ProjectUtils.isCompatibleWith(ProjectUtils.GradleVersions.V7_4_2)
         assertEquals(false, result)
     }
 
     @Test
     fun `Check gradle version number returns correct value`() {
-        assertEquals("6.1", GradleUtils.Versions.V6_1.versionNumber)
+        assertEquals("6.1", ProjectUtils.GradleVersions.V6_1.versionNumber)
     }
 
     @Test
     fun `Check GradleUtils class instance creating`() {
-        val instance = GradleUtils()
+        val instance = ProjectUtils()
         assert(true)
     }
 

@@ -20,9 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.exception
+package io.github.janbarari.gradle.logger
 
-class WrongEndTimeException : Throwable() {
-    override val message: String
-        get() = "BuildReport end-time can't be smaller than start-time."
+/**
+ * Implementation of [Logger].
+ *
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class LoggerImp(
+    /**
+     * Default applied logger mode.
+     */
+    private var logMode: Logger.LogMode = Logger.LogMode.INFO
+) : Logger {
+
+    override fun log(title: String, message: String): Boolean {
+        if (logMode == Logger.LogMode.INFO) {
+            println(">> $title > $message")
+            return true
+        }
+        return false
+    }
+
+    override fun log(title: String, subtitle: String, message: String): Boolean {
+        if (logMode == Logger.LogMode.INFO) {
+            println(">> $title > $subtitle > $message")
+            return true
+        }
+        return false
+    }
+
+    override fun error(message: String): Boolean {
+        println("!> $message")
+        return true
+    }
+
+    override fun setMode(mode: Logger.LogMode) {
+        logMode = mode
+    }
+
+    override fun getMode(): Logger.LogMode {
+        return logMode
+    }
 }

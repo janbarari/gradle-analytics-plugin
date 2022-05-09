@@ -20,8 +20,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.task
+package io.github.janbarari.gradle.analytics.core.buildscanner.service
 
-open class TasksLifecycleParams(
-    val receiverGUID: String
-) : java.io.Serializable
+import org.gradle.BuildResult
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
+import org.gradle.internal.InternalBuildListener
+
+/**
+ * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
+ *
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class BuildConfigurationService : InternalBuildListener {
+
+    companion object {
+        var CONFIGURED_AT: Long = 0L
+
+        fun reset() {
+            CONFIGURED_AT = 0L
+        }
+
+    }
+
+    init {
+        reset()
+    }
+
+    override fun settingsEvaluated(settings: Settings) {
+        // called when the root project settings evaluated.
+    }
+
+    override fun projectsLoaded(gradle: Gradle) {
+        // called when projects files loaded.
+    }
+
+    override fun projectsEvaluated(gradle: Gradle) {
+        CONFIGURED_AT = System.currentTimeMillis()
+    }
+
+    @Deprecated("Deprecated")
+    override fun buildFinished(result: BuildResult) {
+        // This method is deprecated, Execution process are handled by [BuildExecutionService]
+    }
+
+}

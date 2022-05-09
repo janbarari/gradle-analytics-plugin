@@ -20,36 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.logger
+package io.github.janbarari.gradle.analytics.core.buildscanner.model
 
 /**
- * Implementation of [Logger]
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-class LoggerImp(
-    /**
-     * Mode applied to the logger
-     */
-    private var logMode: Logger.LogMode = Logger.LogMode.INFO
-) : Logger {
-
-    override fun log(tag: String, message: String): Boolean {
-        if (logMode == Logger.LogMode.INFO) {
-            println(">> $tag: $message")
-            return true
-        }
-        return false
-    }
-
-    override fun error(message: String): Boolean {
-        println("!> $message")
-        return true
-    }
-
-    override fun setMode(mode: Logger.LogMode) {
-        logMode = mode
-    }
-
-    override fun getMode(): Logger.LogMode {
-        return logMode
-    }
-}
+data class HardwareInfo(
+    val availableMemory: Long,
+    val maximumMemoryCapacity: Long
+) : java.io.Serializable

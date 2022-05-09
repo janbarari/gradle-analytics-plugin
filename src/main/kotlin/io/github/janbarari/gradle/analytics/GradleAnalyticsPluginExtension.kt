@@ -20,21 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.gradlebuild
+package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
+import io.github.janbarari.gradle.analytics.data.database.DatabaseConfig
+import org.gradle.api.Project
 
 /**
- * GradleBuild interface
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-interface GradleBuild {
+open class GradleAnalyticsPluginExtension(val project: Project) {
 
-    interface OnBuildListener {
-        fun onBuildStarted()
-        fun onBuildFinished(buildReport: BuildReport)
+    private var databaseConfig: DatabaseConfig = DatabaseConfig()
+
+    fun databaseConfig(block: DatabaseConfig.() -> Unit) {
+        databaseConfig = DatabaseConfig().also(block)
     }
 
-    fun processStarted()
-    fun processFinished(taskLifecycles: Collection<TaskLifecycle>)
+    fun getDatabaseConfig(): DatabaseConfig = databaseConfig
 
 }

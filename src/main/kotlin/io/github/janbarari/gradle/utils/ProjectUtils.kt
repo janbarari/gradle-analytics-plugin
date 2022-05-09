@@ -28,11 +28,11 @@ import org.gradle.util.GradleVersion
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class GradleUtils {
+class ProjectUtils {
     /**
      * List of official Gradle versions.
      */
-    enum class Versions(val versionNumber: String) {
+    enum class GradleVersions(val versionNumber: String) {
         V7_4_2("7.4.2"),
         V7_4_1("7.4.1"),
         V7_4("7.4"),
@@ -74,7 +74,7 @@ class GradleUtils {
          * Checks the project Gradle version is above the entered gradle version.
          * @return true/false If Gradle version is compatible.
          */
-        fun isCompatibleWith(version: Versions): Boolean {
+        fun isCompatibleWith(version: GradleVersions): Boolean {
             val projectGradleVersion = GradleVersion.current()
             val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
             return projectGradleVersion > minimumRequiredGradleVersion

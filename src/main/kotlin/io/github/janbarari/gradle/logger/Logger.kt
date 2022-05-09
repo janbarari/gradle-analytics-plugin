@@ -20,11 +20,55 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.exception
+package io.github.janbarari.gradle.logger
 
-class GradleNotCompatibleException(
-    private val title: String, private val minimumRequiredVersion: String
-) : Throwable() {
-    override val message: String
-        get() = "$title is compatible with gradle version $minimumRequiredVersion and above"
+/**
+ * Logger interface
+ *
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+interface Logger {
+
+    /**
+     * Logger modes.
+     */
+    enum class LogMode {
+        SILENT, INFO
+    }
+
+    /**
+     * Prints log in the console if the [LogMode] is [LogMode.INFO].
+     *
+     * @param title category/title of the log.
+     * @param message the log message.
+     * @return returns true if the operation was successful.
+     */
+    fun log(title: String, message: String): Boolean
+
+    /**
+     * Prints log in the console if the [LogMode] is [LogMode.INFO].
+     *
+     * @param title the log title.
+     * @param subtitle the log subtitle.
+     * @param message the log message.
+     * @return returns true if the operation was successful.
+     */
+    fun log(title: String, subtitle: String, message: String): Boolean
+
+    /**
+     * Prints error message in the console.
+     */
+    fun error(message: String): Boolean
+
+    /**
+     * Changes the logger mode.
+     */
+    fun setMode(mode: LogMode)
+
+    /**
+     * Returns logger mode.
+     */
+    fun getMode(): LogMode
+
 }

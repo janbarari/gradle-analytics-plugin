@@ -20,23 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.gradlebuild
+package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.core.exception.WrongEndTimeException
-import io.github.janbarari.gradle.analytics.core.task.TaskLifecycle
-import java.time.Duration
-
-class BuildReport(
-    val startTime: Long,
-    val endTime: Long,
-    val taskLifecycles: Collection<TaskLifecycle>
-): java.io.Serializable {
-
-    fun getDuration(): Duration {
-        if (endTime < startTime) {
-            throw WrongEndTimeException()
-        }
-        return Duration.ofMillis(endTime - startTime)
-    }
-
+class GradleIncompatibleException(
+    private val title: String, private val minimumRequiredVersion: String
+) : Throwable() {
+    override val message: String
+        get() = "$title is compatible with gradle version $minimumRequiredVersion and above"
 }
