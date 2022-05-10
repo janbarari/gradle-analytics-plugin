@@ -29,6 +29,10 @@ import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 import javax.inject.Inject
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 @Suppress("UnstableApiUsage")
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
