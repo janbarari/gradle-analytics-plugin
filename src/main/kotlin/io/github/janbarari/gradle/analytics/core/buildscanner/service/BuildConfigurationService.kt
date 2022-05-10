@@ -14,65 +14,55 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.core.buildscanner.service
 
-import java.io.Serializable
-import kotlin.collections.HashMap
+import org.gradle.BuildResult
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
+import org.gradle.internal.InternalBuildListener
 
 /**
+ * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DefaultEvent : Serializable {
+class BuildConfigurationService : InternalBuildListener {
 
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
+    companion object {
+        var CONFIGURED_AT: Long = 0L
 
-    constructor(sender: Class<*>) {
-        this.sender = sender
+        fun reset() {
+            CONFIGURED_AT = 0L
+        }
+
     }
 
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
+    init {
+        reset()
     }
 
-    /**
-     * Represents the event sender class.
-     */
-    fun getSender(): Class<*> {
-        return sender
+    override fun settingsEvaluated(settings: Settings) {
+        // called when the root project settings evaluated.
     }
 
-    /**
-     * Checks the key-value exists in the event or not.
-     */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
+    override fun projectsLoaded(gradle: Gradle) {
+        // called when projects files loaded.
     }
 
-    /**
-     * Adds a key-value in the event body.
-     */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
+    override fun projectsEvaluated(gradle: Gradle) {
+        CONFIGURED_AT = System.currentTimeMillis()
     }
 
-    /**
-     * Returns the key-value
-     */
-    operator fun get(key: String): Any {
-        return data[key]!!
+    @Deprecated("Deprecated")
+    override fun buildFinished(result: BuildResult) {
+        // This method is deprecated, Execution process are handled by [BuildExecutionService]
     }
 
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
 }

@@ -25,11 +25,15 @@ package io.github.janbarari.gradle.os
 import oshi.SystemInfo
 import oshi.software.os.OperatingSystem
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
 
     private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
 
-    override fun getType(): String {
+    override fun getName(): String {
         return systemInfo.family
     }
 

@@ -14,65 +14,43 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
-
-import java.io.Serializable
-import kotlin.collections.HashMap
+package io.github.janbarari.gradle.analytics.core.buildscanner.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DefaultEvent : Serializable {
+data class TaskInfo(
+    val startedAt: Long,
+    val finishedAt: Long,
+    val path: String,
+    val displayName: String,
+    val name: String
+) : java.io.Serializable {
 
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
+    /**
+     * Returns the task execution duration in milliseconds.
+     */
+    fun getDuration(): Long {
+        if (finishedAt < startedAt) return 0L
+        return finishedAt - startedAt
     }
 
     /**
-     * Represents the event sender class.
+     * Returns the task module name.
      */
-    fun getSender(): Class<*> {
-        return sender
+    fun getModule(): String {
+        val module = path.split(":")
+        return if (module.size > 2) module.toList()
+            .dropLast(1)
+            .joinToString(separator = ":")
+        else "no_module"
     }
 
-    /**
-     * Checks the key-value exists in the event or not.
-     */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
-
-    /**
-     * Adds a key-value in the event body.
-     */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
-
-    /**
-     * Returns the key-value
-     */
-    operator fun get(key: String): Any {
-        return data[key]!!
-    }
-
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
 }

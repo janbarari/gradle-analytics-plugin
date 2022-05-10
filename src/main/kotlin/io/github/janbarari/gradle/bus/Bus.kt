@@ -25,43 +25,83 @@ package io.github.janbarari.gradle.bus
 import io.github.janbarari.gradle.bus.exception.NotSerializableException
 import java.io.Serializable
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 object Bus {
 
+    /**
+     * By default, any exception thrown in event receivers will be printed in the console
+     * and won't crash the project build.
+     *
+     * In order to test the [Bus] this flag should be set to `true`.
+     */
     private var isTestMode: Boolean = false
 
     @Volatile
     private var observers = ArrayList<Observer>()
 
+    /**
+     * Returns all the registered observers in [Bus].
+     */
     @Synchronized
     fun getObservers(): ArrayList<Observer> = observers
 
+    /**
+     * Collects the unreferenced observers to be removed in the [Bus] drop cycle.
+     */
     private var pendingDroppingObservers: ArrayList<Observer> = arrayListOf()
 
+    /**
+     * Enables test mode.
+     */
     fun enableTestMode() {
         isTestMode = true
     }
 
+    /**
+     * Disables test mode
+     */
     fun disableTestMode() {
         isTestMode = false
     }
 
+    /**
+     * Represents the test mode.
+     */
     fun isTestMode(): Boolean {
         return isTestMode
     }
 
+    /**
+     * Posts the raw event to all observers.
+     * @param event Event should be a serializable object.
+     */
     fun post(event: Any) {
         post(null, event, null)
     }
 
+    /**
+     * Posts the raw event to a specific observer.
+     * @param event Event should be a serializable object.
+     * @param observerGUID Observer GUID.
+     */
     fun post(event: Any, observerGUID: String) {
         post(observerGUID, event, null)
     }
 
-    inline fun <reified D> postWithSender(event: Any, observerGUID: String) {
-        post(observerGUID, event, D::class.java)
+    /**
+     * Posts the raw event and sender information to a specific observer.
+     * @param event event should be a serializable object.
+     * @param observerGUID observer GUID.
+     * @param sender sender class object.
+     */
+    fun post(event: Any, observerGUID: String, sender: Class<*>) {
+        post(observerGUID, event, sender)
     }
 
-    fun <T : Any> post(observerGUID: String?, event: T, sender: Class<*>?) {
+    private fun <T : Any> post(observerGUID: String?, event: T, sender: Class<*>?) {
         validateEventType(event) {
             val observerIterator = getObservers().iterator()
             while (observerIterator.hasNext()) {
@@ -79,8 +119,8 @@ object Bus {
     }
 
     /**
-     * Add new observer
-     * @param observerGUID every observer should have an GUID to unregister if needed
+     * Register a new observer.
+     * @param observerGUID every observer should have a GUID to unregister if needed.
      */
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T> register(observerGUID: String, noinline unit: (T) -> Unit) {
@@ -99,9 +139,17 @@ object Bus {
         )
     }
 
+    /**
+     * Register a new observer.
+     *
+     * Note: This observer only receives the event posted by a specific sender.
+     *
+     * @param observerGUID every observer should have a GUID to unregister if needed.
+     * @param sender sender class object.
+     */
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T, reified D> registerWithSender(
-        observerGUID: String, noinline unit: (T) -> Unit
+    inline fun <reified T> register(
+        observerGUID: String, sender: Class<*>, noinline unit: (T) -> Unit
     ) {
         val iterator = getObservers().iterator()
         while (iterator.hasNext()) {
@@ -113,13 +161,14 @@ object Bus {
         }
         getObservers().add(
             Observer(
-                T::class.java, observerGUID, unit as (Any) -> Unit, D::class.java
+                T::class.java, observerGUID, unit as (Any) -> Unit, sender
             )
         )
     }
 
     /**
-     * @param observerGUID Unregister the observer
+     * Unregister a single observer.
+     * @param observerGUID observer GUID.
      */
     fun unregister(observerGUID: String) {
         val observerIterator = getObservers().iterator()
@@ -132,12 +181,15 @@ object Bus {
     }
 
     /**
-     * Unregister all observers
+     * Unregister all observers.
      */
     fun unregisterAll() {
         getObservers().clear()
     }
 
+    /**
+     * Drops the unreferenced/crashed observers.
+     */
     private fun dropObserversIfNeeded() {
         val iterator = pendingDroppingObservers.iterator()
         while (iterator.hasNext()) {
@@ -153,6 +205,10 @@ object Bus {
         pendingDroppingObservers.clear()
     }
 
+    /**
+     * Checks the event is validated.
+     * Step 1: Checks the event object is serializable.
+     */
     private fun <T : Any> validateEventType(event: T, validated: () -> Unit) {
         if (event is Serializable) {
             validated()
@@ -162,8 +218,8 @@ object Bus {
     }
 
     /**
-     * Exceptions will be throwing at debugging mode. And for prevent app crash,
-     * all exceptions will be just print in stack trace at release mode
+     * Exceptions will be thrown at debugging mode. And for preventing app crashes,
+     * all exceptions will be just printed in stack trace at release mode.
      */
     private fun throwException(exception: Throwable) {
         if (isTestMode) {
@@ -171,6 +227,9 @@ object Bus {
         }
     }
 
+    /**
+     * Posts the event to the observers.
+     */
     @Suppress(
         "TooGenericExceptionCaught",
         "SwallowedException"

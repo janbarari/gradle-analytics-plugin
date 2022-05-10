@@ -14,38 +14,29 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics
 
-import java.util.UUID
+import io.github.janbarari.gradle.analytics.data.database.DatabaseConfig
+import org.gradle.api.Project
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+open class GradleAnalyticsPluginExtension(val project: Project) {
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
+    private var databaseConfig: DatabaseConfig = DatabaseConfig()
 
+    fun databaseConfig(block: DatabaseConfig.() -> Unit) {
+        databaseConfig = DatabaseConfig().also(block)
     }
 
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
+    fun getDatabaseConfig(): DatabaseConfig = databaseConfig
 
 }

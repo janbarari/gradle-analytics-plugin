@@ -20,59 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
-
-import java.io.Serializable
-import kotlin.collections.HashMap
+package io.github.janbarari.gradle.analytics.data.database.exception
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DefaultEvent : Serializable {
-
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
-    }
-
-    /**
-     * Represents the event sender class.
-     */
-    fun getSender(): Class<*> {
-        return sender
-    }
-
-    /**
-     * Checks the key-value exists in the event or not.
-     */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
-
-    /**
-     * Adds a key-value in the event body.
-     */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
-
-    /**
-     * Returns the key-value
-     */
-    operator fun get(key: String): Any {
-        return data[key]!!
-    }
-
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
+class DatabaseConfigNotDefinedException: Throwable() {
+    override val message: String = "databaseConfig required inputs are not defined," +
+            " please add the databaseConfig in build script."
 }

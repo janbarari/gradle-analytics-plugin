@@ -22,15 +22,18 @@
  */
 package io.github.janbarari.gradle.os
 
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 interface OperatingSystem {
-
     /**
-     * Returns device operating system type name
+     * Returns device operating system name.
      */
-    fun getType(): String
+    fun getName(): String
 
     /**
-     * Returns device operating system manufacturer name
+     * Returns device operating system manufacturer.
      */
     fun getManufacturer(): String
 

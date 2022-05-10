@@ -20,59 +20,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.domain.entity
 
-import java.io.Serializable
-import kotlin.collections.HashMap
+import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
+import org.jetbrains.exposed.sql.Table
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the various build in the SQLite database.
  */
-class DefaultEvent : Serializable {
-
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
-    }
+object Build : Table("build") {
 
     /**
-     * Represents the event sender class.
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table.
      */
-    fun getSender(): Class<*> {
-        return sender
-    }
+    val number = long("number").autoIncrement().uniqueIndex()
 
     /**
-     * Checks the key-value exists in the event or not.
+     * The build started timestamp.
      */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
+    val startedAt = long("started_at")
 
     /**
-     * Adds a key-value in the event body.
+     * The build finished timestamp
      */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
+    val finishedAt = long("finished_at")
 
     /**
-     * Returns the key-value
+     * The configuration finished timestamp.
      */
-    operator fun get(key: String): Any {
-        return data[key]!!
-    }
+    val configurationFinishedAt = long("configuration_finished_at")
 
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
+    /**
+     * The execution terminal/command-prompt command.
+     */
+    val cmd = varchar("cmd", VARCHAR_DEFAULT_LENGTH).nullable()
+
+    /**
+     * The executor operating system name.
+     */
+    val os = varchar("os", VARCHAR_DEFAULT_LENGTH).nullable()
+
+    override val primaryKey = PrimaryKey(number)
 }

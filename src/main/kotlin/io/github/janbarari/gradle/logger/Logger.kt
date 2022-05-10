@@ -14,65 +14,61 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
-
-import java.io.Serializable
-import kotlin.collections.HashMap
+package io.github.janbarari.gradle.logger
 
 /**
+ * Logger interface
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DefaultEvent : Serializable {
+interface Logger {
 
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
+    /**
+     * Logger modes.
+     */
+    enum class LogMode {
+        SILENT, INFO
     }
 
     /**
-     * Represents the event sender class.
+     * Prints log in the console if the [LogMode] is [LogMode.INFO].
+     *
+     * @param title category/title of the log.
+     * @param message the log message.
+     * @return returns true if the operation was successful.
      */
-    fun getSender(): Class<*> {
-        return sender
-    }
+    fun log(title: String, message: String): Boolean
 
     /**
-     * Checks the key-value exists in the event or not.
+     * Prints log in the console if the [LogMode] is [LogMode.INFO].
+     *
+     * @param title the log title.
+     * @param subtitle the log subtitle.
+     * @param message the log message.
+     * @return returns true if the operation was successful.
      */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
+    fun log(title: String, subtitle: String, message: String): Boolean
 
     /**
-     * Adds a key-value in the event body.
+     * Prints error message in the console.
      */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
+    fun error(message: String): Boolean
 
     /**
-     * Returns the key-value
+     * Changes the logger mode.
      */
-    operator fun get(key: String): Any {
-        return data[key]!!
-    }
+    fun setMode(mode: LogMode)
 
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
+    /**
+     * Returns logger mode.
+     */
+    fun getMode(): LogMode
+
 }

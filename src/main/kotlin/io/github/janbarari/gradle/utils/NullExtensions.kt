@@ -14,38 +14,24 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
-
-import java.util.UUID
+package io.github.janbarari.gradle.utils
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Returns true if the object is null.
  */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+fun Any?.isNull(): Boolean {
+    return this == null
+}
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
-
-    }
-
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
-
+/**
+ * Returns true if the object is not null.
+ */
+fun Any?.isNotNull(): Boolean {
+    return this != null
 }

@@ -20,59 +20,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.data.database
 
-import java.io.Serializable
-import kotlin.collections.HashMap
+import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConfigNotDefinedException
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DefaultEvent : Serializable {
-
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
-    }
+class DatabaseConfig {
 
     /**
-     * Represents the event sender class.
+     * The SQLite server URL or local database file path, It will create the local
+     * database file if the database is not exists.
+     *
+     * Required!
+     *
+     * local database path example: "/build/temporary.db"
      */
-    fun getSender(): Class<*> {
-        return sender
-    }
+    lateinit var url: String
 
     /**
-     * Checks the key-value exists in the event or not.
+     * Database username.
+     *
+     * Required!
      */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
+    lateinit var user: String
 
     /**
-     * Adds a key-value in the event body.
+     * Database user password.
      */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
+    var password: String = ""
 
     /**
-     * Returns the key-value
+     * Enables or disables the database query logs.
      */
-    operator fun get(key: String): Any {
-        return data[key]!!
+    var isQueryLogEnabled: Boolean = false
+
+    /**
+     * Ensures the required inputs are exists.
+     * @throws DatabaseConfigNotDefinedException If the required inputs are not exist.
+     */
+    @kotlin.jvm.Throws(DatabaseConfigNotDefinedException::class)
+    fun ensureRequiredInputsExist(): Boolean {
+        if (this::url.isInitialized.not() ||
+                this::user.isInitialized.not()) {
+            throw DatabaseConfigNotDefinedException()
+        }
+        return true
     }
 
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
 }

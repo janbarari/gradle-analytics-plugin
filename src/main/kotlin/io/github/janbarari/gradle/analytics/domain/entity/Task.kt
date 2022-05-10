@@ -20,59 +20,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
+package io.github.janbarari.gradle.analytics.domain.entity
 
-import java.io.Serializable
-import kotlin.collections.HashMap
+import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
+import org.jetbrains.exposed.sql.Table
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the task information in the SQLite database.
  */
-class DefaultEvent : Serializable {
-
-    private var sender: Class<*>
-    private var data = HashMap<String, Any>()
-
-    constructor(sender: Class<*>) {
-        this.sender = sender
-    }
-
-    private constructor(sender: Class<*>, data: HashMap<String, Any>) {
-        this.sender = sender
-        this.data = data
-    }
+object Task : Table("task") {
 
     /**
-     * Represents the event sender class.
+     * The unique auto-generated number which represents the executed task id in the table.
+     *
+     * It also is the primary-key of the table.
      */
-    fun getSender(): Class<*> {
-        return sender
-    }
+    val id = long("id").autoIncrement().uniqueIndex()
 
     /**
-     * Checks the key-value exists in the event or not.
+     * Represents the name of the task.
      */
-    fun containsKey(key: String): Boolean {
-        return data.containsKey(key)
-    }
+    val name = varchar("name", VARCHAR_DEFAULT_LENGTH)
 
     /**
-     * Adds a key-value in the event body.
+     * Represents the task full path.
      */
-    fun put(key: String, value: Any): DefaultEvent {
-        data[key] = value
-        return DefaultEvent(sender, data)
-    }
+    val path = varchar("path", VARCHAR_DEFAULT_LENGTH)
 
     /**
-     * Returns the key-value
+     * Represents the module of the task.
      */
-    operator fun get(key: String): Any {
-        return data[key]!!
-    }
+    val module = varchar("module", VARCHAR_DEFAULT_LENGTH)
 
-    override fun toString(): String {
-        return "DefaultEvent($sender, $data)"
-    }
+    /**
+     * The task execution started timestamp.
+     */
+    val startedAt = long("started_at")
+
+    /**
+     * The task execution finished timestamp.
+     */
+    val finishedAt = long("finished_at")
+
+    /**
+     * Every task is a subtree of a build, This is the build number identifier number.
+     */
+    val buildNumber = long("build_number") references Build.number
+
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
