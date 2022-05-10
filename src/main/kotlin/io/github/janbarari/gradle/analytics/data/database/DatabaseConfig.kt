@@ -70,4 +70,8 @@ class DatabaseConfig {
         return true
     }
 
+    override fun toString(): String {
+        return "DatabaseConfig(url=$url, user=$user, password=$password, isQueryLogEnabled=$isQueryLogEnabled)"
+    }
+
 }

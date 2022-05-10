@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.analytics.core.buildscanner.BuildScannerService
+import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -38,11 +39,16 @@ class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project> {
 
-    private lateinit var extension: GradleAnalyticsPluginExtension
+    companion object {
+        private const val PLUGIN_DISPLAY_NAME = "GradleAnalyticsPlugin"
+        private const val PLUGIN_EXTENSION_NAME = "gradleAnalyticsPlugin"
+    }
 
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
-        extension = createPluginExtension(project)
+        setupPluginExtension(project) {
+            SQLiteDatabase.connect(it.getDatabaseConfig())
+        }
         BuildScannerService(project.gradle, registry)
     }
 
@@ -53,18 +59,25 @@ class GradleAnalyticsPlugin @Inject constructor(
     private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
-            throw GradleIncompatibleException("Gradle-Analytics-Plugin", requiredGradleVersion.versionNumber)
+            throw GradleIncompatibleException(PLUGIN_DISPLAY_NAME, requiredGradleVersion.versionNumber)
         }
     }
 
     /**
-     * Creates plugin extension.
-     * @return returns the extension instance.
+     * Setups plugin extension.
      */
-    private fun createPluginExtension(project: Project): GradleAnalyticsPluginExtension {
-        return project
-            .extensions
-            .create("gradleAnalyticsPlugin", GradleAnalyticsPluginExtension::class.java, project)
+    private fun setupPluginExtension(
+        project: Project,
+        onEvaluated: (extension: GradleAnalyticsPluginExtension) -> Unit
+    ) {
+        val extension = project.extensions.create(
+            PLUGIN_EXTENSION_NAME,
+            GradleAnalyticsPluginExtension::class.java,
+            project
+        )
+        project.gradle.projectsEvaluated {
+            onEvaluated(extension)
+        }
     }
 
 }

@@ -10,7 +10,7 @@ class SQLiteDatabaseTest {
         dc.isQueryLogEnabled = true
         dc.url = "build/temporary_lt.db"
         dc.user = "root"
-        SQLiteDatabase(dc)
+        SQLiteDatabase.connect(dc)
         assert(true)
     }
 
@@ -20,7 +20,7 @@ class SQLiteDatabaseTest {
         dc.isQueryLogEnabled = false
         dc.url = "build/temporary_lf.db"
         dc.user = "root"
-        SQLiteDatabase(dc)
+        SQLiteDatabase.connect(dc)
         assert(true)
     }
 

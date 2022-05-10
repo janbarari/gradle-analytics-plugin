@@ -35,20 +35,16 @@ import org.jetbrains.exposed.sql.transactions.transaction
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class SQLiteDatabase {
+object SQLiteDatabase {
 
-    private var config: DatabaseConfig
-
-    constructor(config: DatabaseConfig) {
-        this.config = config
-        connect()
-        createEntities(Build, Task)
-    }
+    var isConnected: Boolean = false
+    private lateinit var config: DatabaseConfig
 
     /**
      * Opens a connection to the SQLite local or remote database.
      */
-    private fun connect() {
+    fun connect(config: DatabaseConfig) {
+        this.config = config
         config.ensureRequiredInputsExist()
         Database.connect(
             url = "jdbc:sqlite:${config.url}",
@@ -56,6 +52,8 @@ class SQLiteDatabase {
             user = config.user,
             password = config.password
         )
+        createEntities(Build, Task)
+        isConnected = true
     }
 
     /**

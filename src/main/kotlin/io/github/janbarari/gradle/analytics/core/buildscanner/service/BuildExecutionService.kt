@@ -27,6 +27,7 @@ import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
@@ -150,6 +151,8 @@ abstract class BuildExecutionService :
         println("EXECUTION FINISHED AT: ${info.finishedAt}(${info.getExecutionDuration().toSeconds()}s)")
         println("TOTAL FINISHED AT: ${info.finishedAt}(${info.getTotalDuration().toSeconds()}s)")
         println("${info.executedTasks.size} TASKS EXECUTED")
+
+        println("is database connected? ${SQLiteDatabase.isConnected}")
     }
 
 }
