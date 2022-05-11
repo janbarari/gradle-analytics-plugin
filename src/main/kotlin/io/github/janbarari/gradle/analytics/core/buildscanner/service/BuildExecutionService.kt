@@ -27,6 +27,7 @@ import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.core.print.ConsolePrinter
 import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import org.gradle.api.services.BuildService
@@ -143,16 +144,10 @@ abstract class BuildExecutionService :
             hardwareInfo
         )
 
-        println("BUILD INFORMATION")
-        println("STARTED AT: ${info.startedAt}")
-        println("INITIALIZED AT: ${info.initializedAt}(${info.getInitializationDuration().toMillis()}ms)")
-        println("CONFIGURED AT: ${info.configuredAt}(${info.getConfigurationDuration().toMillis()})ms")
-        println("DEPENDENCIES RESOLVED IN ${info.getTotalDependenciesResolveDuration().toMillis()}ms")
-        println("EXECUTION FINISHED AT: ${info.finishedAt}(${info.getExecutionDuration().toSeconds()}s)")
-        println("TOTAL FINISHED AT: ${info.finishedAt}(${info.getTotalDuration().toSeconds()}s)")
-        println("${info.executedTasks.size} TASKS EXECUTED")
+        ConsolePrinter.printBuildInfo(info)
 
         println("is database connected? ${SQLiteDatabase.isConnected}")
     }
+
 
 }
