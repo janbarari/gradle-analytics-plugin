@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConf
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DatabaseConfig {
+class DatabaseConfig: java.io.Serializable {
 
     /**
      * The SQLite server URL or local database file path, It will create the local

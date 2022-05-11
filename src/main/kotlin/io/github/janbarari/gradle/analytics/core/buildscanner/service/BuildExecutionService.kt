@@ -27,8 +27,10 @@ import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.data.database.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
 import io.github.janbarari.gradle.os.OperatingSystemImp
+import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.tooling.events.FinishEvent
@@ -45,7 +47,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 abstract class BuildExecutionService :
     BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
-    interface Params : BuildServiceParameters
+    interface Params : BuildServiceParameters {
+        val databaseConfig: Property<DatabaseConfig>
+    }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
@@ -152,7 +156,7 @@ abstract class BuildExecutionService :
         println("TOTAL FINISHED AT: ${info.finishedAt}(${info.getTotalDuration().toSeconds()}s)")
         println("${info.executedTasks.size} TASKS EXECUTED")
 
-        println("is database connected? ${SQLiteDatabase.isConnected}")
+        SQLiteDatabase(parameters.databaseConfig.get())
     }
 
 }
