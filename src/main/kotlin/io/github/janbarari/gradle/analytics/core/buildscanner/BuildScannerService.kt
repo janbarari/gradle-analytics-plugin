@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.buildscanner
 
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginExtension
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildExecutionService
@@ -36,7 +37,8 @@ import org.gradle.build.event.BuildEventsListenerRegistry
 @Suppress("UnstableApiUsage")
 class BuildScannerService(
     private var gradle: Gradle,
-    private var registry: BuildEventsListenerRegistry
+    private var registry: BuildEventsListenerRegistry,
+    private var pluginExtension: GradleAnalyticsPluginExtension
 ) {
 
     init {
@@ -47,13 +49,15 @@ class BuildScannerService(
     }
 
     private fun setupExecutionService() {
-        val buildExecutionService = gradle.sharedServices.registerIfAbsent(
-            BuildExecutionService::class.java.simpleName,
-            BuildExecutionService::class.java
-        ) {
-            // Assign the execution service parameters
+        gradle.projectsEvaluated {
+            val buildExecutionService = gradle.sharedServices.registerIfAbsent(
+                BuildExecutionService::class.java.simpleName,
+                BuildExecutionService::class.java
+            ) { spec ->
+                spec.parameters.databaseConfig.set(pluginExtension.getDatabaseConfig())
+            }
+            registry.onTaskCompletion(buildExecutionService)
         }
-        registry.onTaskCompletion(buildExecutionService)
     }
 
     private fun setupInitializationService() {

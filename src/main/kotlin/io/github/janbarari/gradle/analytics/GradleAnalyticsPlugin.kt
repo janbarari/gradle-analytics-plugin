@@ -46,10 +46,8 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
-        setupPluginExtension(project) {
-            SQLiteDatabase.connect(it.getDatabaseConfig())
-        }
-        BuildScannerService(project.gradle, registry)
+        val pluginExtension = setupPluginExtension(project)
+        BuildScannerService(project.gradle, registry, pluginExtension)
     }
 
     /**
@@ -65,19 +63,15 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     /**
      * Setups plugin extension.
+     *
+     * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupPluginExtension(
-        project: Project,
-        onEvaluated: (extension: GradleAnalyticsPluginExtension) -> Unit
-    ) {
-        val extension = project.extensions.create(
+    private fun setupPluginExtension(project: Project) : GradleAnalyticsPluginExtension {
+        return project.extensions.create(
             PLUGIN_EXTENSION_NAME,
             GradleAnalyticsPluginExtension::class.java,
             project
         )
-        project.gradle.projectsEvaluated {
-            onEvaluated(extension)
-        }
     }
 
 }

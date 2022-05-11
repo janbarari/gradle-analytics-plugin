@@ -29,31 +29,36 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-object SQLiteDatabase {
+class SQLiteDatabase {
 
-    var isConnected: Boolean = false
-    private lateinit var config: DatabaseConfig
+    private var config: DatabaseConfig
+    private lateinit var _database: Database
+
+    constructor(config: DatabaseConfig) {
+        this.config = config
+        connect()
+        createEntities(Build, Task)
+    }
 
     /**
      * Opens a connection to the SQLite local or remote database.
      */
-    fun connect(config: DatabaseConfig) {
-        this.config = config
+    private fun connect() {
         config.ensureRequiredInputsExist()
-        Database.connect(
+        _database = Database.connect(
             url = "jdbc:sqlite:${config.url}",
             driver = "org.sqlite.JDBC",
             user = config.user,
             password = config.password
         )
-        createEntities(Build, Task)
-        isConnected = true
+        println("Database Connected!")
     }
 
     /**
@@ -66,6 +71,13 @@ object SQLiteDatabase {
             }
             SchemaUtils.create(*entities)
         }
+    }
+
+    /**
+     * Disconnects the database.
+     */
+    fun disconnect() {
+        TransactionManager.closeAndUnregister(_database)
     }
 
 }
