@@ -32,10 +32,10 @@ dependencies {
     testImplementation(kotlin("test"))
     compileOnly(gradleApi())
     implementation(libs.oshi)
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
-    implementation("org.jetbrains.exposed", "exposed-core", "0.38.1")
-    implementation("org.jetbrains.exposed", "exposed-dao", "0.38.1")
-    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.38.1")
+    implementation(libs.sqlite.driver)
+    implementation(libs.mysql.driver)
+    implementation(libs.jetbrains.exposed.core)
+    implementation(libs.jetbrains.exposed.jdbc)
 }
 
 tasks.withType<KotlinCompile>().configureEach {
