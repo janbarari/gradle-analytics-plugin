@@ -23,7 +23,8 @@
 package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.analytics.core.buildscanner.BuildScannerService
-import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
+import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
+import io.github.janbarari.gradle.analytics.extension.PluginExtension
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -31,6 +32,9 @@ import org.gradle.build.event.BuildEventsListenerRegistry
 import javax.inject.Inject
 
 /**
+ * A free Gradle plugin for analytics of your projects. Provides unique visual and
+ * text metrics in HTML format.
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
@@ -40,24 +44,26 @@ class GradleAnalyticsPlugin @Inject constructor(
 ) : Plugin<Project> {
 
     companion object {
-        private const val PLUGIN_DISPLAY_NAME = "GradleAnalyticsPlugin"
-        private const val PLUGIN_EXTENSION_NAME = "gradleAnalyticsPlugin"
+        const val PLUGIN_NAME = "gradleAnalyticsPlugin"
     }
 
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
         val pluginExtension = setupPluginExtension(project)
-        BuildScannerService(project.gradle, registry, pluginExtension)
+        BuildScannerService(project, registry, pluginExtension)
     }
 
     /**
-     * GradleAnalyticsPlugin is compatible with Gradle version 6.1 and above
-     * @throws GradleIncompatibleException when the Gradle version is not compatible
+     * The plugin is compatible with Gradle version 6.1 and above, This function ensures
+     * the plugin Gradle version is compatible with the user project version.
+     *
+     * @throws IncompatibleVersionException when the Gradle version is not compatible.
      */
+    @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
-            throw GradleIncompatibleException(PLUGIN_DISPLAY_NAME, requiredGradleVersion.versionNumber)
+            throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
         }
     }
 
@@ -66,10 +72,10 @@ class GradleAnalyticsPlugin @Inject constructor(
      *
      * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupPluginExtension(project: Project) : GradleAnalyticsPluginExtension {
+    private fun setupPluginExtension(project: Project) : PluginExtension {
         return project.extensions.create(
-            PLUGIN_EXTENSION_NAME,
-            GradleAnalyticsPluginExtension::class.java,
+            PLUGIN_NAME,
+            PluginExtension::class.java,
             project
         )
     }

@@ -20,27 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.os
+package io.github.janbarari.gradle.analytics.domain.entity
 
-import oshi.SystemInfo
-import oshi.software.os.OperatingSystem
+import org.jetbrains.exposed.sql.Table
 
 /**
- * Implementation of [io.github.janbarari.gradle.os.OperatingSystem].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the daily build records in the SQLite database.
  */
-class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
+object SqliteDailyBuildTable : Table("daily_build") {
 
-    private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
+    /**
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table.
+     */
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    override fun getName(): String {
-        return systemInfo.family
-    }
+    val createdAt = long("created_at")
 
-    override fun getManufacturer(): String {
-        return systemInfo.manufacturer
-    }
+    val value = text("value")
+
+    override val primaryKey = PrimaryKey(number)
 
 }

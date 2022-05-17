@@ -22,14 +22,18 @@
  */
 package io.github.janbarari.gradle.analytics.core.buildscanner.service
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.BuildInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
-import io.github.janbarari.gradle.analytics.core.print.ConsolePrinter
-import io.github.janbarari.gradle.analytics.data.database.SQLiteDatabase
+import io.github.janbarari.gradle.analytics.core.console.ConsolePrinter
+import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
+import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.tooling.events.FinishEvent
@@ -46,7 +50,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 abstract class BuildExecutionService :
     BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
-    interface Params : BuildServiceParameters
+    interface Params : BuildServiceParameters {
+        val databaseConfig: Property<DatabaseExtension>
+        val envCI: Property<Boolean>
+    }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
@@ -146,8 +153,14 @@ abstract class BuildExecutionService :
 
         ConsolePrinter.printBuildInfo(info)
 
-        println("is database connected? ${SQLiteDatabase.isConnected}")
-    }
+        val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
 
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+        val jsonAdapter = moshi.adapter(BuildInfo::class.java)
+
+        database.insertBuild(jsonAdapter.toJson(info))
+    }
 
 }

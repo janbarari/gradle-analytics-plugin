@@ -23,14 +23,14 @@
 package io.github.janbarari.gradle.utils
 
 /**
- * Returns true if the object is null.
+ * Returns True, If the object is null.
  */
 fun Any?.isNull(): Boolean {
     return this == null
 }
 
 /**
- * Returns true if the object is not null.
+ * Returns True, If the object is not null.
  */
 fun Any?.isNotNull(): Boolean {
     return this != null

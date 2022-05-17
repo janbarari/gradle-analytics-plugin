@@ -22,12 +22,12 @@
  */
 package io.github.janbarari.gradle.analytics.core.buildscanner
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginExtension
+import io.github.janbarari.gradle.analytics.extension.PluginExtension
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildExecutionService
 import io.github.janbarari.gradle.analytics.core.buildscanner.service.BuildInitializationService
-import org.gradle.api.invocation.Gradle
+import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
 /**
@@ -36,40 +36,43 @@ import org.gradle.build.event.BuildEventsListenerRegistry
  */
 @Suppress("UnstableApiUsage")
 class BuildScannerService(
-    private var gradle: Gradle,
+    private var project: Project,
     private var registry: BuildEventsListenerRegistry,
-    private var pluginExtension: GradleAnalyticsPluginExtension
+    private var pluginExtension: PluginExtension
 ) {
 
     init {
-        setupExecutionService()
         setupInitializationService()
-        setupConfigurationService()
         setupDependencyResolutionService()
+        setupConfigurationService()
+        setupExecutionService()
     }
 
     private fun setupExecutionService() {
-        gradle.projectsEvaluated {
-            val buildExecutionService = gradle.sharedServices.registerIfAbsent(
+        project.gradle.projectsEvaluated {
+            val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
                 BuildExecutionService::class.java.simpleName,
                 BuildExecutionService::class.java
             ) { spec ->
-                spec.parameters.databaseConfig.set(pluginExtension.getDatabaseConfig())
+                with(spec.parameters) {
+                    databaseConfig.set(pluginExtension.getDatabaseExtension())
+                    envCI.set(project.providers.environmentVariable("CI").isPresent)
+                }
             }
             registry.onTaskCompletion(buildExecutionService)
         }
     }
 
     private fun setupInitializationService() {
-        gradle.addBuildListener(BuildInitializationService(gradle))
+        project.gradle.addBuildListener(BuildInitializationService(project.gradle))
     }
 
     private fun setupConfigurationService() {
-        gradle.addBuildListener(BuildConfigurationService())
+        project.gradle.addBuildListener(BuildConfigurationService())
     }
 
     private fun setupDependencyResolutionService() {
-        gradle.addBuildListener(BuildDependencyResolutionService())
+        project.gradle.addBuildListener(BuildDependencyResolutionService())
     }
 
 }

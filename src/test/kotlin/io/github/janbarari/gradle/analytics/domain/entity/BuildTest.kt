@@ -21,56 +21,16 @@ class BuildTest {
     @Test
     fun `check the number column`() {
         //Check the column name is `number`
-        assertEquals("number", Build.number.name)
+        assertEquals("number", MysqlDailyBuildTable.number.name)
         //Check the column type is `Long`
-        assert(Build.number::class.java == longColumn::class.java)
+        assert(MysqlDailyBuildTable.number::class.java == longColumn::class.java)
         //Check the column is auto increment
-        assert(Build.number.autoIncColumnType?.isAutoInc ?: false)
-    }
-
-    @Test
-    fun `check the startedAt column`() {
-        //Check the column name is `started_at`
-        assertEquals("started_at", Build.startedAt.name)
-        //Check the column type is `Long`
-        assert(Build.startedAt::class.java == longColumn::class.java)
-    }
-
-    @Test
-    fun `check the finishedAt column`() {
-        //Check the column name is `finished_at`
-        assertEquals("finished_at", Build.finishedAt.name)
-        //Check the column type is `Long`
-        assert(Build.finishedAt::class.java == longColumn::class.java)
-    }
-
-    @Test
-    fun `check the configurationFinishedAt column`() {
-        //Check the column name is `configuration_finished_at`
-        assertEquals("configuration_finished_at", Build.configurationFinishedAt.name)
-        //Check the column type is `Long`
-        assert(Build.configurationFinishedAt::class.java == longColumn::class.java)
-    }
-
-    @Test
-    fun `check the cmd column`() {
-        //Check the column name is `cmd`
-        assertEquals("cmd", Build.cmd.name)
-        //Check the column type is `Varchar`
-        assert(Build.cmd::class.java == varcharColumn::class.java)
-    }
-
-    @Test
-    fun `check the os column`() {
-        //Check the column name is `os`
-        assertEquals("os", Build.os.name)
-        //Check the column type is `Varchar`
-        assert(Build.os::class.java == varcharColumn::class.java)
+        assert(MysqlDailyBuildTable.number.autoIncColumnType?.isAutoInc ?: false)
     }
 
     @Test
     fun `check the table primary-key`() {
-        assertEquals("number", Build.primaryKey.columns.first().name)
+        assertEquals("number", MysqlDailyBuildTable.primaryKey.columns.first().name)
     }
 
 }

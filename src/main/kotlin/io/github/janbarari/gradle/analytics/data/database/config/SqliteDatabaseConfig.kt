@@ -14,12 +14,36 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain
+package io.github.janbarari.gradle.analytics.data.database.config
 
-const val VARCHAR_DEFAULT_LENGTH: Int = 255
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
+
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+
+    init {
+        also(block)
+    }
+
+    /**
+     * Database file path.
+     *
+     * Note: The plugin will create the database if needed.
+     */
+    lateinit var path: String
+
+    /**
+     * Database name, Default name is `gradleAnalyticsPlugin`
+     */
+    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
+
+}

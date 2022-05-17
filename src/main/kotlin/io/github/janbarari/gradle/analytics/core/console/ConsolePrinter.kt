@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.print
+package io.github.janbarari.gradle.analytics.core.console
 
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.BuildInfo
 

@@ -20,47 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.entity
-
-import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
-import org.jetbrains.exposed.sql.Table
+package io.github.janbarari.gradle.analytics.data.database.config
 
 /**
- * This table represents how to hold the various build in the SQLite database.
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-object Build : Table("build") {
+open class DatabaseConfig : java.io.Serializable {
 
     /**
-     * The unique auto-generated number which represents the build-number.
-     *
-     * It also is the primary-key of the table.
+     * Database query logs flag, Default is `False`.
      */
-    val number = long("number").autoIncrement().uniqueIndex()
+    var isQueryLogEnabled: Boolean = false
 
     /**
-     * The build started timestamp.
+     * Database user, Default is `root`.
      */
-    val startedAt = long("started_at")
+    var user: String = "root"
 
     /**
-     * The build finished timestamp
+     * Database password, Default is empty.
      */
-    val finishedAt = long("finished_at")
+    var password: String = ""
 
-    /**
-     * The configuration finished timestamp.
-     */
-    val configurationFinishedAt = long("configuration_finished_at")
-
-    /**
-     * The execution terminal/command-prompt command.
-     */
-    val cmd = varchar("cmd", VARCHAR_DEFAULT_LENGTH).nullable()
-
-    /**
-     * The executor operating system name.
-     */
-    val os = varchar("os", VARCHAR_DEFAULT_LENGTH).nullable()
-
-    override val primaryKey = PrimaryKey(number)
 }

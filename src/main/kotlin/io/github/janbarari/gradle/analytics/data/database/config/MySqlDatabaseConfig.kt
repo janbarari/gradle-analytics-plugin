@@ -20,27 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.os
-
-import oshi.SystemInfo
-import oshi.software.os.OperatingSystem
+package io.github.janbarari.gradle.analytics.data.database.config
 
 /**
- * Implementation of [io.github.janbarari.gradle.os.OperatingSystem].
- *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
+class MySqlDatabaseConfig(block: MySqlDatabaseConfig.() -> Unit): DatabaseConfig() {
 
-    private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
-
-    override fun getName(): String {
-        return systemInfo.family
+    companion object {
+        private const val DEFAULT_MYSQL_PORT = 3306
     }
 
-    override fun getManufacturer(): String {
-        return systemInfo.manufacturer
+    init {
+        also(block)
     }
+
+    /**
+     * Host IP.
+     */
+    lateinit var hostIp: String
+
+    /**
+     * Database name
+     */
+    lateinit var name: String
+
+    /**
+     * Connection port, Default port is `3306`.
+     */
+    var port: Int = DEFAULT_MYSQL_PORT
 
 }

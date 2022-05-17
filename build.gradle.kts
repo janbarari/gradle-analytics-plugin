@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.mysql.driver)
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
+    implementation(libs.moshi)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

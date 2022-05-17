@@ -20,11 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.analytics.exception
 
-class GradleIncompatibleException(
-    private val title: String, private val minimumRequiredVersion: String
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
+
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class IncompatibleVersionException(
+    private val minimumRequiredVersion: String
 ) : Throwable() {
-    override val message: String
-        get() = "$title is compatible with gradle version $minimumRequiredVersion and above"
+    override val message: String get() = "${GradleAnalyticsPlugin.PLUGIN_NAME} is compatible with" +
+            " gradle version $minimumRequiredVersion and above"
 }
