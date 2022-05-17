@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.entity
 
-import io.github.janbarari.gradle.analytics.domain.MediumTextColumnType
+import io.github.janbarari.gradle.analytics.data.database.MediumTextColumnType
 import org.jetbrains.exposed.sql.Table
 
 /**

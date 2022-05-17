@@ -22,20 +22,17 @@
  */
 package io.github.janbarari.gradle.analytics.data.database
 
+import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.entity.MysqlDailyBuildTable
-import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
-import org.jetbrains.exposed.sql.transactions.transaction
-import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.entity.SqliteDailyBuildTable
+import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
+import io.github.janbarari.gradle.utils.Clock
 import io.github.janbarari.gradle.utils.isNotNull
 import io.github.janbarari.gradle.utils.isNull
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * @author Mehdi-Janbarari
@@ -126,6 +123,27 @@ class Database(
                 }
             }
 
+        }
+    }
+
+    fun isTodayBuildAdded(): Boolean {
+        if (this::_database.isInitialized.not()) {
+            return false
+        }
+        return transaction {
+            if (databaseConfig is MySqlDatabaseConfig) {
+                val queryResult = MysqlDailyBuildTable.select {
+                    MysqlDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
+                }
+                return@transaction queryResult.count() > 0
+            }
+            if (databaseConfig is SqliteDatabaseConfig) {
+                val queryResult = SqliteDailyBuildTable.select {
+                    SqliteDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
+                }
+                return@transaction queryResult.count() > 0
+            }
+            return@transaction false
         }
     }
 

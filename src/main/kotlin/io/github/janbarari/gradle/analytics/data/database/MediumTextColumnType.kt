@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain
+package io.github.janbarari.gradle.analytics.data.database
 
 import org.jetbrains.exposed.sql.IColumnType
 import org.jetbrains.exposed.sql.TextColumnType

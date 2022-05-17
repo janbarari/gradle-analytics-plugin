@@ -31,6 +31,7 @@ import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
 import io.github.janbarari.gradle.analytics.core.console.ConsolePrinter
 import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import org.gradle.api.provider.Property
@@ -158,9 +159,10 @@ abstract class BuildExecutionService :
         val moshi = Moshi.Builder()
             .addLast(KotlinJsonAdapterFactory())
             .build()
-        val jsonAdapter = moshi.adapter(BuildInfo::class.java)
+        val jsonAdapter = moshi.adapter(BuildMetric::class.java)
 
-        database.insertBuild(jsonAdapter.toJson(info))
+
+
     }
 
 }
