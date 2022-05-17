@@ -20,23 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.analytics.extension
 
-import io.github.janbarari.gradle.analytics.data.database.DatabaseConfig
 import org.gradle.api.Project
 
 /**
+ * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class GradleAnalyticsPluginExtension(val project: Project) {
+open class PluginExtension(val project: Project) {
 
-    private var databaseConfig: DatabaseConfig = DatabaseConfig()
+    private var databaseExtension: DatabaseExtension = DatabaseExtension()
 
-    fun databaseConfig(block: DatabaseConfig.() -> Unit) {
-        databaseConfig = DatabaseConfig().also(block)
+    fun database(block: DatabaseExtension.() -> Unit) {
+        databaseExtension = DatabaseExtension().also(block)
     }
 
-    fun getDatabaseConfig(): DatabaseConfig = databaseConfig
+    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
 
 }

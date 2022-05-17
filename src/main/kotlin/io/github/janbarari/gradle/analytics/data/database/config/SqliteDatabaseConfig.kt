@@ -20,47 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.entity
+package io.github.janbarari.gradle.analytics.data.database.config
 
-import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
-import org.jetbrains.exposed.sql.Table
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 
 /**
- * This table represents how to hold the various build in the SQLite database.
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-object Build : Table("build") {
+class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+
+    init {
+        also(block)
+    }
 
     /**
-     * The unique auto-generated number which represents the build-number.
+     * Database file path.
      *
-     * It also is the primary-key of the table.
+     * Note: The plugin will create the database if needed.
      */
-    val number = long("number").autoIncrement().uniqueIndex()
+    lateinit var path: String
 
     /**
-     * The build started timestamp.
+     * Database name, Default name is `gradleAnalyticsPlugin`
      */
-    val startedAt = long("started_at")
+    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
 
-    /**
-     * The build finished timestamp
-     */
-    val finishedAt = long("finished_at")
-
-    /**
-     * The configuration finished timestamp.
-     */
-    val configurationFinishedAt = long("configuration_finished_at")
-
-    /**
-     * The execution terminal/command-prompt command.
-     */
-    val cmd = varchar("cmd", VARCHAR_DEFAULT_LENGTH).nullable()
-
-    /**
-     * The executor operating system name.
-     */
-    val os = varchar("os", VARCHAR_DEFAULT_LENGTH).nullable()
-
-    override val primaryKey = PrimaryKey(number)
 }

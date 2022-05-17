@@ -2,9 +2,18 @@
 kotlin = "1.6.20"
 detekt = "1.20.0-RC2"
 oshi = "6.1.6"
+sqlite_driver = "3.36.0.3"
+mysql_driver = "8.0.29"
+jetbrains_exposed = "0.38.1"
+moshi = "1.13.0"
 
 [libraries]
 oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
+sqlite_driver = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite_driver" }
+mysql_driver = { module = "mysql:mysql-connector-java", version.ref = "mysql_driver" }
+jetbrains_exposed_core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "jetbrains_exposed" }
+jetbrains_exposed_jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "jetbrains_exposed" }
+moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

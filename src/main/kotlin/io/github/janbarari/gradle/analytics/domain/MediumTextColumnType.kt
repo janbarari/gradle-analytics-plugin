@@ -14,33 +14,21 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.os
+package io.github.janbarari.gradle.analytics.domain
 
-import oshi.SystemInfo
-import oshi.software.os.OperatingSystem
+import org.jetbrains.exposed.sql.IColumnType
+import org.jetbrains.exposed.sql.TextColumnType
 
 /**
- * Implementation of [io.github.janbarari.gradle.os.OperatingSystem].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Since the MySql database `text` column can only save a text with a maximum
+ * 65kb size. this is an extension structure to hold big text values for it.
  */
-class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
-
-    private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
-
-    override fun getName(): String {
-        return systemInfo.family
-    }
-
-    override fun getManufacturer(): String {
-        return systemInfo.manufacturer
-    }
-
+class MediumTextColumnType : IColumnType by TextColumnType() {
+    override fun sqlType(): String = "MEDIUMTEXT"
 }

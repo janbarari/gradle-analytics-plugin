@@ -23,6 +23,8 @@
 package io.github.janbarari.gradle.os
 
 /**
+ * OperatingSystem interface.
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */

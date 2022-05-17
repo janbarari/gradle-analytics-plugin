@@ -22,50 +22,25 @@
  */
 package io.github.janbarari.gradle.analytics.domain.entity
 
-import io.github.janbarari.gradle.analytics.domain.VARCHAR_DEFAULT_LENGTH
+import io.github.janbarari.gradle.analytics.domain.MediumTextColumnType
 import org.jetbrains.exposed.sql.Table
 
 /**
- * This table represents how to hold the task information in the SQLite database.
+ * This table represents how to hold the daily build records in the MySql database.
  */
-object Task : Table("task") {
+object MysqlDailyBuildTable : Table("daily_build") {
 
     /**
-     * The unique auto-generated number which represents the executed task id in the table.
+     * The unique auto-generated number which represents the build-number.
      *
      * It also is the primary-key of the table.
      */
-    val id = long("id").autoIncrement().uniqueIndex()
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    /**
-     * Represents the name of the task.
-     */
-    val name = varchar("name", VARCHAR_DEFAULT_LENGTH)
+    val createdAt = long("created_at")
 
-    /**
-     * Represents the task full path.
-     */
-    val path = varchar("path", VARCHAR_DEFAULT_LENGTH)
+    val value = registerColumn<String>("value", MediumTextColumnType())
 
-    /**
-     * Represents the module of the task.
-     */
-    val module = varchar("module", VARCHAR_DEFAULT_LENGTH)
+    override val primaryKey = PrimaryKey(number)
 
-    /**
-     * The task execution started timestamp.
-     */
-    val startedAt = long("started_at")
-
-    /**
-     * The task execution finished timestamp.
-     */
-    val finishedAt = long("finished_at")
-
-    /**
-     * Every task is a subtree of a build, This is the build number identifier number.
-     */
-    val buildNumber = long("build_number") references Build.number
-
-    override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

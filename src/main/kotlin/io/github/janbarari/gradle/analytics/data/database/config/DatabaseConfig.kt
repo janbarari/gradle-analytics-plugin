@@ -20,54 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database
-
-import io.github.janbarari.gradle.analytics.data.database.exception.DatabaseConfigNotDefinedException
+package io.github.janbarari.gradle.analytics.data.database.config
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class DatabaseConfig {
+open class DatabaseConfig : java.io.Serializable {
 
     /**
-     * The SQLite server URL or local database file path, It will create the local
-     * database file if the database is not exists.
-     *
-     * Required!
-     *
-     * local database path example: "/build/temporary.db"
-     */
-    lateinit var url: String
-
-    /**
-     * Database username.
-     *
-     * Required!
-     */
-    lateinit var user: String
-
-    /**
-     * Database user password.
-     */
-    var password: String = ""
-
-    /**
-     * Enables or disables the database query logs.
+     * Database query logs flag, Default is `False`.
      */
     var isQueryLogEnabled: Boolean = false
 
     /**
-     * Ensures the required inputs are exists.
-     * @throws DatabaseConfigNotDefinedException If the required inputs are not exist.
+     * Database user, Default is `root`.
      */
-    @kotlin.jvm.Throws(DatabaseConfigNotDefinedException::class)
-    fun ensureRequiredInputsExist(): Boolean {
-        if (this::url.isInitialized.not() ||
-                this::user.isInitialized.not()) {
-            throw DatabaseConfigNotDefinedException()
-        }
-        return true
-    }
+    var user: String = "root"
+
+    /**
+     * Database password, Default is empty.
+     */
+    var password: String = ""
 
 }

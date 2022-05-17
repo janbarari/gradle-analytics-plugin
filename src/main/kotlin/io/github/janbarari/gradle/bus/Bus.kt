@@ -35,7 +35,7 @@ object Bus {
      * By default, any exception thrown in event receivers will be printed in the console
      * and won't crash the project build.
      *
-     * In order to test the [Bus] this flag should be set to `true`.
+     * In order to test the [io.github.janbarari.gradle.bus.Bus] this flag should be set to `True`.
      */
     private var isTestMode: Boolean = false
 
@@ -43,13 +43,13 @@ object Bus {
     private var observers = ArrayList<Observer>()
 
     /**
-     * Returns all the registered observers in [Bus].
+     * Returns all the registered observers in [io.github.janbarari.gradle.bus.Bus].
      */
     @Synchronized
     fun getObservers(): ArrayList<Observer> = observers
 
     /**
-     * Collects the unreferenced observers to be removed in the [Bus] drop cycle.
+     * Collects the unreferenced observers to be removed in the [io.github.janbarari.gradle.bus.Bus] drop cycle.
      */
     private var pendingDroppingObservers: ArrayList<Observer> = arrayListOf()
 

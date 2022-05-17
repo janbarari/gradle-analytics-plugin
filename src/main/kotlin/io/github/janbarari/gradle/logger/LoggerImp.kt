@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.logger
 
 /**
- * Implementation of [Logger].
+ * Implementation of [io.github.janbarari.gradle.logger.Logger].
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0

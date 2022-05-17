@@ -22,12 +22,18 @@
  */
 package io.github.janbarari.gradle.analytics.core.buildscanner.service
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.BuildInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.core.console.ConsolePrinter
+import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
+import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.tooling.events.FinishEvent
@@ -44,7 +50,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 abstract class BuildExecutionService :
     BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
-    interface Params : BuildServiceParameters
+    interface Params : BuildServiceParameters {
+        val databaseConfig: Property<DatabaseExtension>
+        val envCI: Property<Boolean>
+    }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
@@ -142,14 +151,16 @@ abstract class BuildExecutionService :
             hardwareInfo
         )
 
-        println("BUILD INFORMATION")
-        println("STARTED AT: ${info.startedAt}")
-        println("INITIALIZED AT: ${info.initializedAt}(${info.getInitializationDuration().toMillis()}ms)")
-        println("CONFIGURED AT: ${info.configuredAt}(${info.getConfigurationDuration().toMillis()})ms")
-        println("DEPENDENCIES RESOLVED IN ${info.getTotalDependenciesResolveDuration().toMillis()}ms")
-        println("EXECUTION FINISHED AT: ${info.finishedAt}(${info.getExecutionDuration().toSeconds()}s)")
-        println("TOTAL FINISHED AT: ${info.finishedAt}(${info.getTotalDuration().toSeconds()}s)")
-        println("${info.executedTasks.size} TASKS EXECUTED")
+        ConsolePrinter.printBuildInfo(info)
+
+        val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
+
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+        val jsonAdapter = moshi.adapter(BuildInfo::class.java)
+
+        database.insertBuild(jsonAdapter.toJson(info))
     }
 
 }

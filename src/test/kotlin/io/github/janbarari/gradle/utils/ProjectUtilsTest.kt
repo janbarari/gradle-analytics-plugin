@@ -30,8 +30,7 @@ class ProjectUtilsTest {
 
     @Test
     fun `Check GradleUtils class instance creating`() {
-        val instance = ProjectUtils()
-        assert(true)
+
     }
 
 }
