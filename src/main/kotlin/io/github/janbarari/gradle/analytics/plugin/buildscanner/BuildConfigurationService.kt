@@ -20,26 +20,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.analytics.plugin.buildscanner
 
-import java.time.LocalDate
-import java.time.ZoneId
+import org.gradle.BuildResult
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
+import org.gradle.internal.InternalBuildListener
 
 /**
+ * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-object Clock {
+class BuildConfigurationService : InternalBuildListener {
 
-    private const val ONE_SECOND_IN_MILLIS = 1000
-    private const val ONE_DAY_IN_MILLIS = 86_400_000
+    companion object {
+        var CONFIGURED_AT: Long = 0L
 
-    fun getDayStartMs(): Long {
-        return LocalDate.now().atStartOfDay(ZoneId.of("UTC")).toEpochSecond() * ONE_SECOND_IN_MILLIS
+        fun reset() {
+            CONFIGURED_AT = 0L
+        }
+
     }
 
-    fun getDayEndMs(): Long {
-        return getDayStartMs() + ONE_DAY_IN_MILLIS
+    init {
+        reset()
+    }
+
+    override fun settingsEvaluated(settings: Settings) {
+        // called when the root project settings evaluated.
+    }
+
+    override fun projectsLoaded(gradle: Gradle) {
+        // called when projects files loaded.
+    }
+
+    override fun projectsEvaluated(gradle: Gradle) {
+        CONFIGURED_AT = System.currentTimeMillis()
+    }
+
+    @Deprecated("Deprecated")
+    override fun buildFinished(result: BuildResult) {
+        // This method is deprecated, Execution process are handled by [BuildExecutionService]
     }
 
 }

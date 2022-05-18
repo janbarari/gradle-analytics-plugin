@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.plugin.configuration.DatabaseExtension
+import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
@@ -17,7 +17,6 @@ class DatabaseTest {
         }
         runBlocking {
             val db = Database(databaseExtension, false)
-            println(db.isTodayBuildAdded())
         }
 
     }

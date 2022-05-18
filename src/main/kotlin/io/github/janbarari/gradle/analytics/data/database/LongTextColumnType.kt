@@ -29,6 +29,19 @@ import org.jetbrains.exposed.sql.TextColumnType
  * Since the MySql database `text` column can only save a text with a maximum
  * 65kb size. this is an extension structure to hold big text values for it.
  */
-class MediumTextColumnType : IColumnType by TextColumnType() {
-    override fun sqlType(): String = "MEDIUMTEXT"
+class LongTextColumnType : IColumnType by TextColumnType() {
+
+    companion object {
+        var longTextType: LongTextType = LongTextType.TEXT
+
+        enum class LongTextType(val value: String) {
+            TEXT("TEXT"),
+            MEDIUMTEXT("MEDIUMTEXT")
+        }
+    }
+
+    override fun sqlType(): String {
+        return longTextType.value
+    }
+
 }

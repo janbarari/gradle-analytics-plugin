@@ -22,8 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
-
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0

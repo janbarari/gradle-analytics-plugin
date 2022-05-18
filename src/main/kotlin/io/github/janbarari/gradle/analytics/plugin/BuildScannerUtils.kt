@@ -22,11 +22,11 @@
  */
 package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.plugin.configuration.PluginExtension
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.service.BuildConfigurationService
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.service.BuildDependencyResolutionService
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.service.BuildExecutionService
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.service.BuildInitializationService
+import io.github.janbarari.gradle.analytics.plugin.config.PluginExtension
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.BuildConfigurationService
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.BuildDependencyResolutionService
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.BuildExecutionService
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.BuildInitializationService
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 

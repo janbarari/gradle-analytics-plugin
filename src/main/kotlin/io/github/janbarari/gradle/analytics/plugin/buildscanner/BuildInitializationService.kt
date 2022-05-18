@@ -20,48 +20,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.plugin.buildscanner.service
+package io.github.janbarari.gradle.analytics.plugin.buildscanner
 
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.DependencyResolveInfo
 import org.gradle.BuildResult
-import org.gradle.api.artifacts.DependencyResolutionListener
-import org.gradle.api.artifacts.ResolvableDependencies
+import org.gradle.api.Project
+import org.gradle.api.ProjectEvaluationListener
+import org.gradle.api.ProjectState
 import org.gradle.api.initialization.Settings
+import org.gradle.api.internal.GradleInternal
 import org.gradle.api.invocation.Gradle
 import org.gradle.internal.InternalBuildListener
-import java.util.concurrent.ConcurrentHashMap
+import org.gradle.internal.scan.time.BuildScanBuildStartedTime
 
 /**
- * Records the build dependencies resolve information to use by [BuildExecutionService].
+ * Track and holds the build start and initialization finish timestamp to use by [BuildExecutionService].
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class BuildDependencyResolutionService : InternalBuildListener, DependencyResolutionListener {
+class BuildInitializationService(
+    private val gradle: Gradle
+) : InternalBuildListener, ProjectEvaluationListener {
 
     companion object {
-        var dependenciesResolveInfo: ConcurrentHashMap<String, DependencyResolveInfo> =
-            ConcurrentHashMap<String, DependencyResolveInfo>()
+        var STARTED_AT: Long = 0L
+        var INITIALIZED_AT: Long = 0L
 
         fun reset() {
-            dependenciesResolveInfo.clear()
+            STARTED_AT = 0L
+            INITIALIZED_AT = 0L
         }
-
     }
 
     init {
         reset()
     }
 
-    override fun beforeResolve(dependencies: ResolvableDependencies) {
-        dependenciesResolveInfo[dependencies.path] = DependencyResolveInfo(
-            dependencies.path,
-            startedAt = System.currentTimeMillis()
-        )
+    override fun beforeEvaluate(project: Project) {
+        assignInitializationTimestamp()
     }
 
-    override fun afterResolve(dependencies: ResolvableDependencies) {
-        dependenciesResolveInfo[dependencies.path]?.finishedAt = System.currentTimeMillis()
+    override fun afterEvaluate(project: Project, state: ProjectState) {
+        assignInitializationTimestamp()
+    }
+
+    private fun assignInitializationTimestamp() {
+        if (INITIALIZED_AT == 0L) {
+            INITIALIZED_AT = System.currentTimeMillis()
+        }
     }
 
     override fun settingsEvaluated(settings: Settings) {
@@ -73,12 +79,20 @@ class BuildDependencyResolutionService : InternalBuildListener, DependencyResolu
     }
 
     override fun projectsEvaluated(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        STARTED_AT = getStartTimestamp()
     }
 
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+    }
+
+    /**
+     * Returns the build start timestamp from [BuildScanBuildStartedTime].
+     */
+    private fun getStartTimestamp(): Long {
+        val buildStartedTimeService = (gradle as GradleInternal).services.get(BuildScanBuildStartedTime::class.java)
+        return buildStartedTimeService?.buildStartedTime ?: System.currentTimeMillis()
     }
 
 }

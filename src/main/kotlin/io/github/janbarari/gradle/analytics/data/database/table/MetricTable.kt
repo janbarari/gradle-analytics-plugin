@@ -14,30 +14,30 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.plugin.configuration
+package io.github.janbarari.gradle.analytics.data.database.table
 
-import org.gradle.api.Project
+import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
+import org.jetbrains.exposed.sql.Table
 
-/**
- * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
-open class PluginExtension(val project: Project) {
+object MetricTable : Table("metric") {
 
-    private var databaseExtension: DatabaseExtension = DatabaseExtension()
+    /**
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table.
+     */
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    fun database(block: DatabaseExtension.() -> Unit) {
-        databaseExtension = DatabaseExtension().also(block)
-    }
+    val createdAt = long("created_at")
 
-    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
+    val value = registerColumn<String>("value", LongTextColumnType())
+
+    override val primaryKey = PrimaryKey(number)
 
 }

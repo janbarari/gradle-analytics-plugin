@@ -14,33 +14,21 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.table
+package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.analytics.data.database.MediumTextColumnType
-import org.jetbrains.exposed.sql.Table
+fun longMean(vararg input: Long): Long {
+    return input.sum() / input.size
+}
 
-/**
- * This table represents how to hold the daily build records in the MySql database.
- */
-object MysqlDailyBuildTable : Table("daily_build") {
-
-    /**
-     * The unique auto-generated number which represents the build-number.
-     *
-     * It also is the primary-key of the table.
-     */
-    val number = long("number").autoIncrement().uniqueIndex()
-
-    val createdAt = long("created_at")
-
-    val value = registerColumn<String>("value", MediumTextColumnType())
-
-    override val primaryKey = PrimaryKey(number)
-
+fun longMedian(values: List<Long>) = values.sorted().let {
+    if (it.size % 2 == 0)
+        (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
+    else
+        it[it.size / 2]
 }

@@ -4,5 +4,5 @@ import com.squareup.moshi.Json
 
 data class InitializationMetric(
     @Json(name = "average")
-    val average: Long = 0L
+    var average: Long = 0L
 ): java.io.Serializable

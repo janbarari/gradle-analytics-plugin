@@ -22,12 +22,10 @@
  */
 package io.github.janbarari.gradle.analytics.data.database.table
 
+import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
 import org.jetbrains.exposed.sql.Table
 
-/**
- * This table represents how to hold the daily build records in the SQLite database.
- */
-object SqliteDailyBuildTable : Table("daily_build") {
+object TemporaryMetricTable : Table("temporary_metric") {
 
     /**
      * The unique auto-generated number which represents the build-number.
@@ -38,7 +36,7 @@ object SqliteDailyBuildTable : Table("daily_build") {
 
     val createdAt = long("created_at")
 
-    val value = text("value")
+    val value = registerColumn<String>("value", LongTextColumnType())
 
     override val primaryKey = PrimaryKey(number)
 

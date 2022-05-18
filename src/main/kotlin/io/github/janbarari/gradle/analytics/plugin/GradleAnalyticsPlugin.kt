@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.plugin.configuration.PluginExtension
+import io.github.janbarari.gradle.analytics.plugin.config.PluginExtension
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project

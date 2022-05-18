@@ -22,43 +22,38 @@
  */
 package io.github.janbarari.gradle.analytics.data.database
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig
-import io.github.janbarari.gradle.analytics.data.database.table.MysqlDailyBuildTable
-import io.github.janbarari.gradle.analytics.data.database.table.SqliteDailyBuildTable
-import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.plugin.configuration.DatabaseExtension
-import io.github.janbarari.gradle.utils.Clock
+import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
+import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
+import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
 import io.github.janbarari.gradle.utils.isNotNull
 import io.github.janbarari.gradle.utils.isNull
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.transactionManager
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@SuppressWarnings("WildcardImport")
 class Database(
     config: DatabaseExtension,
     private var isCI: Boolean
 ) {
 
-    private lateinit var _database: org.jetbrains.exposed.sql.Database
+    private lateinit var _database: Database
     private var databaseConfig: DatabaseConfig? = null
-    private var moshi: Moshi
-    private var jsonAdapter: JsonAdapter<BuildMetric>
 
     init {
         connect(config)
-        moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
-        jsonAdapter = moshi.adapter(BuildMetric::class.java)
     }
 
     private fun connect(config: DatabaseExtension) {
@@ -74,14 +69,16 @@ class Database(
 
         when (databaseConfig) {
             is MySqlDatabaseConfig -> {
+                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
                 connectToMysqlDatabase(databaseConfig as MySqlDatabaseConfig)
-                createTables(MysqlDailyBuildTable)
             }
             is SqliteDatabaseConfig -> {
+                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
                 connectSqliteDatabase(databaseConfig as SqliteDatabaseConfig)
-                createTables(SqliteDailyBuildTable)
             }
         }
+
+        createTables(MetricTable, TemporaryMetricTable)
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConfig) {
@@ -114,122 +111,17 @@ class Database(
         }
     }
 
-    private fun isConnected(): Boolean {
+    fun isConnected(): Boolean {
         return this::_database.isInitialized
     }
 
-    fun saveNewMetric(metric: BuildMetric): Boolean {
-        if (!isConnected()) return false
-
-        return transaction {
-
-            if (databaseConfig is MySqlDatabaseConfig) {
-
-                val queryResult = MysqlDailyBuildTable.insert {
-                    it[createdAt] = System.currentTimeMillis()
-                    it[value] = jsonAdapter.toJson(metric)
-                }
-                return@transaction queryResult.insertedCount == 1
-
-            }
-
-            if (databaseConfig is SqliteDatabaseConfig) {
-
-                val queryResult = SqliteDailyBuildTable.insert {
-                    it[MysqlDailyBuildTable.createdAt] = System.currentTimeMillis()
-                    it[MysqlDailyBuildTable.value] = jsonAdapter.toJson(metric)
-                }
-                return@transaction queryResult.insertedCount == 1
-
-            }
-
-            return@transaction false
-
-        }
-    }
-
-    fun isTodayMetricExists(): Boolean {
-        if (!isConnected()) return false
-
-        return transaction {
-
-            if (databaseConfig is MySqlDatabaseConfig) {
-
-                val queryResult = MysqlDailyBuildTable.select {
-                    MysqlDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
-                }
-                return@transaction queryResult.count() > 0
-
-            }
-
-            if (databaseConfig is SqliteDatabaseConfig) {
-
-                val queryResult = SqliteDailyBuildTable.select {
-                    SqliteDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
-                }
-                return@transaction queryResult.count() > 0
-
-            }
-
-            return@transaction false
-
-        }
-    }
-
-    fun getTodayMetric(): Pair<BuildMetric, Long>? {
-        if (!isConnected()) return null
-
-        return transaction {
-
-            if (databaseConfig is MySqlDatabaseConfig) {
-                val queryResult = MysqlDailyBuildTable.select {
-                    MysqlDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
-                }.single()
-                return@transaction Pair(
-                    jsonAdapter.fromJson(queryResult[MysqlDailyBuildTable.value])!!,
-                    queryResult[MysqlDailyBuildTable.number]
-                )
-            }
-
-            if (databaseConfig is SqliteDatabaseConfig) {
-                val queryResult = SqliteDailyBuildTable.select {
-                    SqliteDailyBuildTable.createdAt greaterEq Clock.getCurrentDayMillis()
-                }.single()
-                return@transaction Pair(
-                    jsonAdapter.fromJson(queryResult[SqliteDailyBuildTable.value])!!,
-                    queryResult[SqliteDailyBuildTable.number]
-                )
-            }
-
-            return@transaction null
-
-        }
-    }
-
-    fun updateExistingMetric(number: Long, metric: BuildMetric): Boolean {
-        return transaction {
-            when(databaseConfig) {
-                is MySqlDatabaseConfig -> {
-                    val queryResult = MysqlDailyBuildTable.update({
-                        MysqlDailyBuildTable.number eq number
-                    }) {
-                        it[value] = jsonAdapter.toJson(metric)
-                    }
-                    return@transaction queryResult == 1
-                }
-
-                is SqliteDatabaseConfig -> {
-                    val queryResult = SqliteDailyBuildTable.update({
-                        SqliteDailyBuildTable.number eq number
-                    }) {
-                        it[value] = jsonAdapter.toJson(metric)
-                    }
-                    return@transaction queryResult == 1
-                }
-
-            }
-            return@transaction false
-        }
+    fun <T> transaction(statement: Transaction.() -> T): T {
+        return transaction(
+            _database.transactionManager.defaultIsolationLevel,
+            _database.transactionManager.defaultRepetitionAttempts,
+            _database,
+            statement
+        )
     }
 
 }
