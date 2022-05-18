@@ -14,43 +14,32 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.model
+package io.github.janbarari.gradle.analytics.data.database.table
+
+import org.jetbrains.exposed.sql.Table
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * This table represents how to hold the daily build records in the SQLite database.
  */
-data class TaskInfo(
-    val startedAt: Long,
-    val finishedAt: Long,
-    val path: String,
-    val displayName: String,
-    val name: String
-) : java.io.Serializable {
+object SqliteDailyBuildTable : Table("daily_build") {
 
     /**
-     * Returns the task execution duration in milliseconds.
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table.
      */
-    fun getDuration(): Long {
-        if (finishedAt < startedAt) return 0L
-        return finishedAt - startedAt
-    }
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    /**
-     * Returns the task module name.
-     */
-    fun getModule(): String {
-        val module = path.split(":")
-        return if (module.size > 2) module.toList()
-            .dropLast(1)
-            .joinToString(separator = ":")
-        else "no_module"
-    }
+    val createdAt = long("created_at")
+
+    val value = text("value")
+
+    override val primaryKey = PrimaryKey(number)
 
 }

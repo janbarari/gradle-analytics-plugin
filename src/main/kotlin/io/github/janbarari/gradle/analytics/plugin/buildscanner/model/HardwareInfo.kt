@@ -20,24 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.extension
-
-import org.gradle.api.Project
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.model
 
 /**
- * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class PluginExtension(val project: Project) {
-
-    private var databaseExtension: DatabaseExtension = DatabaseExtension()
-
-    fun database(block: DatabaseExtension.() -> Unit) {
-        databaseExtension = DatabaseExtension().also(block)
-    }
-
-    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
-
-}
+data class HardwareInfo(
+    val availableMemory: Long,
+    val maximumMemoryCapacity: Long
+) : java.io.Serializable

@@ -20,24 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.model
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-data class DependencyResolveInfo(
+data class TaskInfo(
+    val startedAt: Long,
+    val finishedAt: Long,
     val path: String,
-    var startedAt: Long = 0L,
-    var finishedAt: Long = 0L
+    val displayName: String,
+    val name: String
 ) : java.io.Serializable {
 
     /**
-     * Returns the resolve duration in milliseconds.
+     * Returns the task execution duration in milliseconds.
      */
     fun getDuration(): Long {
         if (finishedAt < startedAt) return 0L
         return finishedAt - startedAt
+    }
+
+    /**
+     * Returns the task module name.
+     */
+    fun getModule(): String {
+        val module = path.split(":")
+        return if (module.size > 2) module.toList()
+            .dropLast(1)
+            .joinToString(separator = ":")
+        else "no_module"
     }
 
 }

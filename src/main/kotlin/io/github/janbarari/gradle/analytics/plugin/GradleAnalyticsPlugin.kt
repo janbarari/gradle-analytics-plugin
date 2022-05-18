@@ -20,11 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.analytics.plugin
 
-import io.github.janbarari.gradle.analytics.core.buildscanner.BuildScannerService
-import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
-import io.github.janbarari.gradle.analytics.extension.PluginExtension
+import io.github.janbarari.gradle.analytics.plugin.configuration.PluginExtension
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -50,7 +48,7 @@ class GradleAnalyticsPlugin @Inject constructor(
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
         val pluginExtension = setupPluginExtension(project)
-        BuildScannerService(project, registry, pluginExtension)
+        setupBuildScannerServices(project, registry, pluginExtension)
     }
 
     /**

@@ -20,49 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.service
+package io.github.janbarari.gradle.analytics.plugin.configuration
 
-import org.gradle.BuildResult
-import org.gradle.api.initialization.Settings
-import org.gradle.api.invocation.Gradle
-import org.gradle.internal.InternalBuildListener
+import org.gradle.api.Project
 
 /**
- * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
+ * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class BuildConfigurationService : InternalBuildListener {
+open class PluginExtension(val project: Project) {
 
-    companion object {
-        var CONFIGURED_AT: Long = 0L
+    private var databaseExtension: DatabaseExtension = DatabaseExtension()
 
-        fun reset() {
-            CONFIGURED_AT = 0L
-        }
-
+    fun database(block: DatabaseExtension.() -> Unit) {
+        databaseExtension = DatabaseExtension().also(block)
     }
 
-    init {
-        reset()
-    }
-
-    override fun settingsEvaluated(settings: Settings) {
-        // called when the root project settings evaluated.
-    }
-
-    override fun projectsLoaded(gradle: Gradle) {
-        // called when projects files loaded.
-    }
-
-    override fun projectsEvaluated(gradle: Gradle) {
-        CONFIGURED_AT = System.currentTimeMillis()
-    }
-
-    @Deprecated("Deprecated")
-    override fun buildFinished(result: BuildResult) {
-        // This method is deprecated, Execution process are handled by [BuildExecutionService]
-    }
+    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
 
 }

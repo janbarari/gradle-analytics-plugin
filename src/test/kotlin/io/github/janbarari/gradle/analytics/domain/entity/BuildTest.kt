@@ -1,5 +1,6 @@
 package io.github.janbarari.gradle.analytics.domain.entity
 
+import io.github.janbarari.gradle.analytics.data.database.table.MysqlDailyBuildTable
 import org.jetbrains.exposed.sql.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

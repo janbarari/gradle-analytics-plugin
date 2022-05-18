@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.service
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.service
 
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.DependencyResolveInfo
 import org.gradle.BuildResult
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies

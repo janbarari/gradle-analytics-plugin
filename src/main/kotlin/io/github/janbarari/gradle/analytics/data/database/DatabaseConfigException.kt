@@ -14,23 +14,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.exception
-
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
+package io.github.janbarari.gradle.analytics.data.database
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class IncompatibleVersionException(
-    private val minimumRequiredVersion: String
-) : Throwable() {
-    override val message: String get() = "${GradleAnalyticsPlugin.PLUGIN_NAME} is compatible with" +
-            " gradle version $minimumRequiredVersion and above"
+class DatabaseConfigException(msg: String): Throwable() {
+    override val message: String = msg
 }

@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
+import io.github.janbarari.gradle.analytics.plugin.configuration.DatabaseExtension
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 

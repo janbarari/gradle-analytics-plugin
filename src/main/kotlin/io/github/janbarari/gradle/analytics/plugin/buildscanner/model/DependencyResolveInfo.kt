@@ -20,13 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.model
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-data class HardwareInfo(
-    val availableMemory: Long,
-    val maximumMemoryCapacity: Long
-) : java.io.Serializable
+data class DependencyResolveInfo(
+    val path: String,
+    var startedAt: Long = 0L,
+    var finishedAt: Long = 0L
+) : java.io.Serializable {
+
+    /**
+     * Returns the resolve duration in milliseconds.
+     */
+    fun getDuration(): Long {
+        if (finishedAt < startedAt) return 0L
+        return finishedAt - startedAt
+    }
+
+}

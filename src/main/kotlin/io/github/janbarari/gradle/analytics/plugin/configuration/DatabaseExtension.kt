@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.extension
+package io.github.janbarari.gradle.analytics.plugin.configuration
 
 import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig

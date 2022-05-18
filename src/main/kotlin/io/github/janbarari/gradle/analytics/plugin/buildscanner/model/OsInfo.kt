@@ -14,32 +14,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.entity
-
-import org.jetbrains.exposed.sql.Table
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.model
 
 /**
- * This table represents how to hold the daily build records in the SQLite database.
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-object SqliteDailyBuildTable : Table("daily_build") {
-
-    /**
-     * The unique auto-generated number which represents the build-number.
-     *
-     * It also is the primary-key of the table.
-     */
-    val number = long("number").autoIncrement().uniqueIndex()
-
-    val createdAt = long("created_at")
-
-    val value = text("value")
-
-    override val primaryKey = PrimaryKey(number)
-
-}
+data class OsInfo(
+    val name: String
+) : java.io.Serializable

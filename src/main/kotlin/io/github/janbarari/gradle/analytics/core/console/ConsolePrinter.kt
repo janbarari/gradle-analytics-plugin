@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.core.console
 
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.BuildInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.BuildInfo
 
 /**
  * @author Mehdi-Janbarari

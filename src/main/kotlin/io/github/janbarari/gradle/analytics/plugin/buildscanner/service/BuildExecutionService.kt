@@ -20,19 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.core.buildscanner.service
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.service
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.BuildInfo
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.OsInfo
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.TaskInfo
-import io.github.janbarari.gradle.analytics.core.buildscanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.BuildInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.OsInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.TaskInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.DependencyResolveInfo
 import io.github.janbarari.gradle.analytics.core.console.ConsolePrinter
 import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.data.repository.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
+import io.github.janbarari.gradle.analytics.plugin.configuration.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -155,14 +158,14 @@ abstract class BuildExecutionService :
         ConsolePrinter.printBuildInfo(info)
 
         val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
+        val repo: DatabaseRepository = DatabaseRepositoryImp(database)
+        val saveMetricUseCase = SaveMetricUseCase(repo)
 
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
-        val jsonAdapter = moshi.adapter(BuildMetric::class.java)
+        saveMetricUseCase.execute(
+            BuildMetric(
 
-
-
+            )
+        )
     }
 
 }

@@ -4,5 +4,5 @@ import com.squareup.moshi.Json
 
 data class BuildMetric(
     @Json(name = "initialization_metric")
-    val initializationMetric: InitializationMetric? = null
+    var initializationMetric: InitializationMetric? = null
 ): java.io.Serializable
