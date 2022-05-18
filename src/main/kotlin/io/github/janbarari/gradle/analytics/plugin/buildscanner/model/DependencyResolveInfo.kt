@@ -14,36 +14,30 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
-
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+package io.github.janbarari.gradle.analytics.plugin.buildscanner.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+data class DependencyResolveInfo(
+    val path: String,
+    var startedAt: Long = 0L,
+    var finishedAt: Long = 0L
+) : java.io.Serializable {
 
-    init {
-        also(block)
+    /**
+     * Returns the resolve duration in milliseconds.
+     */
+    fun getDuration(): Long {
+        if (finishedAt < startedAt) return 0L
+        return finishedAt - startedAt
     }
-
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
 
 }

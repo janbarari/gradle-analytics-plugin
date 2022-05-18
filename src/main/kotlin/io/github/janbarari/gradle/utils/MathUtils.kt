@@ -14,36 +14,21 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
+package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+fun longMean(vararg input: Long): Long {
+    return input.sum() / input.size
+}
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
-
-    init {
-        also(block)
-    }
-
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
-
+fun longMedian(values: List<Long>) = values.sorted().let {
+    if (it.size % 2 == 0)
+        (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
+    else
+        it[it.size / 2]
 }

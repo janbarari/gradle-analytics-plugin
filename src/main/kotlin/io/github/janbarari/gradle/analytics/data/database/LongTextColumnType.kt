@@ -14,36 +14,34 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
+package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+import org.jetbrains.exposed.sql.IColumnType
+import org.jetbrains.exposed.sql.TextColumnType
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Since the MySql database `text` column can only save a text with a maximum
+ * 65kb size. this is an extension structure to hold big text values for it.
  */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+class LongTextColumnType : IColumnType by TextColumnType() {
 
-    init {
-        also(block)
+    companion object {
+        var longTextType: LongTextType = LongTextType.TEXT
+
+        enum class LongTextType(val value: String) {
+            TEXT("TEXT"),
+            MEDIUMTEXT("MEDIUMTEXT")
+        }
     }
 
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
+    override fun sqlType(): String {
+        return longTextType.value
+    }
 
 }

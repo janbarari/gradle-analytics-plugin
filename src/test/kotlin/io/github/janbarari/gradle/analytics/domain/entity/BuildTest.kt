@@ -1,5 +1,6 @@
 package io.github.janbarari.gradle.analytics.domain.entity
 
+import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import org.jetbrains.exposed.sql.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -21,16 +22,16 @@ class BuildTest {
     @Test
     fun `check the number column`() {
         //Check the column name is `number`
-        assertEquals("number", MysqlDailyBuildTable.number.name)
+        assertEquals("number", MetricTable.number.name)
         //Check the column type is `Long`
-        assert(MysqlDailyBuildTable.number::class.java == longColumn::class.java)
+        assert(MetricTable.number::class.java == longColumn::class.java)
         //Check the column is auto increment
-        assert(MysqlDailyBuildTable.number.autoIncColumnType?.isAutoInc ?: false)
+        assert(MetricTable.number.autoIncColumnType?.isAutoInc ?: false)
     }
 
     @Test
     fun `check the table primary-key`() {
-        assertEquals("number", MysqlDailyBuildTable.primaryKey.columns.first().name)
+        assertEquals("number", MetricTable.primaryKey.columns.first().name)
     }
 
 }

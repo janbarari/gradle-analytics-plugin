@@ -20,30 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
+package io.github.janbarari.gradle.analytics.data.database.table
 
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
+import org.jetbrains.exposed.sql.Table
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
-
-    init {
-        also(block)
-    }
+object MetricTable : Table("metric") {
 
     /**
-     * Database file path.
+     * The unique auto-generated number which represents the build-number.
      *
-     * Note: The plugin will create the database if needed.
+     * It also is the primary-key of the table.
      */
-    lateinit var path: String
+    val number = long("number").autoIncrement().uniqueIndex()
 
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
+    val createdAt = long("created_at")
+
+    val value = registerColumn<String>("value", LongTextColumnType())
+
+    override val primaryKey = PrimaryKey(number)
 
 }

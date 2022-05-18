@@ -20,30 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
-
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+package io.github.janbarari.gradle.analytics.data.database
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
-
-    init {
-        also(block)
-    }
-
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
-
+class DatabaseConfigException(msg: String): Throwable() {
+    override val message: String = msg
 }

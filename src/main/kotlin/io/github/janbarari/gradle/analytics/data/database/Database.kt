@@ -22,31 +22,34 @@
  */
 package io.github.janbarari.gradle.analytics.data.database
 
+import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig
 import io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig
-import io.github.janbarari.gradle.analytics.domain.entity.MysqlDailyBuildTable
-import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
-import org.jetbrains.exposed.sql.transactions.transaction
-import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
-import io.github.janbarari.gradle.analytics.domain.entity.SqliteDailyBuildTable
+import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
+import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
+import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
 import io.github.janbarari.gradle.utils.isNotNull
 import io.github.janbarari.gradle.utils.isNull
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.transactionManager
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@SuppressWarnings("WildcardImport")
 class Database(
     config: DatabaseExtension,
     private var isCI: Boolean
 ) {
 
-    private lateinit var _database: org.jetbrains.exposed.sql.Database
+    private lateinit var _database: Database
     private var databaseConfig: DatabaseConfig? = null
 
     init {
@@ -66,14 +69,16 @@ class Database(
 
         when (databaseConfig) {
             is MySqlDatabaseConfig -> {
+                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
                 connectToMysqlDatabase(databaseConfig as MySqlDatabaseConfig)
-                createTables(MysqlDailyBuildTable)
             }
             is SqliteDatabaseConfig -> {
+                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
                 connectSqliteDatabase(databaseConfig as SqliteDatabaseConfig)
-                createTables(SqliteDailyBuildTable)
             }
         }
+
+        createTables(MetricTable, TemporaryMetricTable)
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConfig) {
@@ -106,27 +111,17 @@ class Database(
         }
     }
 
-    fun insertBuild(jsonValue: String) {
-        if (this::_database.isInitialized.not()) {
-            return
-        }
-        transaction {
+    fun isConnected(): Boolean {
+        return this::_database.isInitialized
+    }
 
-            if (databaseConfig is MySqlDatabaseConfig) {
-                MysqlDailyBuildTable.insert {
-                    it[createdAt] = System.currentTimeMillis()
-                    it[value] = jsonValue
-                }
-            }
-
-            if (databaseConfig is SqliteDatabaseConfig) {
-                SqliteDailyBuildTable.insert {
-                    it[MysqlDailyBuildTable.createdAt] = System.currentTimeMillis()
-                    it[MysqlDailyBuildTable.value] = jsonValue
-                }
-            }
-
-        }
+    fun <T> transaction(statement: Transaction.() -> T): T {
+        return transaction(
+            _database.transactionManager.defaultIsolationLevel,
+            _database.transactionManager.defaultRepetitionAttempts,
+            _database,
+            statement
+        )
     }
 
 }

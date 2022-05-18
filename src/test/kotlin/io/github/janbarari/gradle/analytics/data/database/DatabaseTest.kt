@@ -1,8 +1,7 @@
 package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig
-import io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig
-import io.github.janbarari.gradle.analytics.extension.DatabaseExtension
+import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 
 class DatabaseTest {
@@ -10,11 +9,16 @@ class DatabaseTest {
     @Test
     fun `check the database creates successfully with isQueryLogEnabled=true`() {
 
-        DatabaseExtension().apply {
-            local = mysql {
-
+        val databaseExtension = DatabaseExtension()
+        databaseExtension.apply {
+            local = sqlite {
+                path = "/Users/workstation/workstation/github/janbarari/satellitestracker"
             }
         }
+        runBlocking {
+            val db = Database(databaseExtension, false)
+        }
+
     }
 
 }

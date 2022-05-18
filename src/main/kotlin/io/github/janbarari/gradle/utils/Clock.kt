@@ -14,36 +14,32 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
+package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+object Clock {
 
-    init {
-        also(block)
+    private const val ONE_SECOND_IN_MILLIS = 1000
+    private const val ONE_DAY_IN_MILLIS = 86_400_000
+
+    fun getDayStartMs(): Long {
+        return LocalDate.now().atStartOfDay(ZoneId.of("UTC")).toEpochSecond() * ONE_SECOND_IN_MILLIS
     }
 
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
+    fun getDayEndMs(): Long {
+        return getDayStartMs() + ONE_DAY_IN_MILLIS
+    }
 
 }

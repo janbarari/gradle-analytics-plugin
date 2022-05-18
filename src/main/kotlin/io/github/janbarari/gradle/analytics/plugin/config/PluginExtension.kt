@@ -14,36 +14,30 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.config
+package io.github.janbarari.gradle.analytics.plugin.config
 
-import io.github.janbarari.gradle.analytics.plugin.GradleAnalyticsPlugin
+import org.gradle.api.Project
 
 /**
+ * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
+open class PluginExtension(val project: Project) {
 
-    init {
-        also(block)
+    private var databaseExtension: DatabaseExtension = DatabaseExtension()
+
+    fun database(block: DatabaseExtension.() -> Unit) {
+        databaseExtension = DatabaseExtension().also(block)
     }
 
-    /**
-     * Database file path.
-     *
-     * Note: The plugin will create the database if needed.
-     */
-    lateinit var path: String
-
-    /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
-     */
-    var name: String = GradleAnalyticsPlugin.PLUGIN_NAME
+    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
 
 }
