@@ -1,0 +1,23 @@
+%root-project-name%
+
+%task-path%
+
+%branch%
+
+%time-period-title%
+%time-period-start%
+%time-period-end%
+
+%reported-at%
+
+%is-ci%
+
+%plugin-version%
+
+%initialization-max-value% --> 3000
+%initialization-median-values% --> [1000, 2000, 3000]
+%initialization-median-labels% --> ["A", "B", "C"]
+
+%configuration-max-value% --> 3000
+%configuration-median-values% --> [1000, 2000, 3000]
+%configuration-median-labels% --> ["A", "B", "C"]

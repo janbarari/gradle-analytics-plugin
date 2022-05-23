@@ -31,7 +31,11 @@ import io.github.janbarari.gradle.analytics.domain.usecase.InitializationMetricM
 import io.github.janbarari.gradle.analytics.domain.usecase.InitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.*
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.BuildInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.TaskInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.OsInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.plugin.buildscanner.model.DependencyResolveInfo
 import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import org.gradle.api.provider.Property
