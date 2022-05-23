@@ -20,26 +20,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.analytics.scanner
 
-import java.io.InputStream
-import java.net.URL
+import org.gradle.BuildResult
+import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
+import org.gradle.internal.InternalBuildListener
 
 /**
- * Due to https://bugs.openjdk.java.net/browse/JDK-6947916 and https://bugs.openjdk.java.net/browse/JDK-8155607,
- * it is necessary to disallow caches to maintain stability on JDK 8 and 11 (and possibly more).
- * Otherwise, simultaneous invocations of Detekt in the same VM can fail spuriously. A similar bug is referenced
- * in https://github.com/detekt/detekt/issues/3396. The performance regression is likely unnoticeable.
- * Due to https://github.com/detekt/detekt/issues/4332 it is included for all JDKs.
+ * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
+ *
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-fun URL.openSafeStream(): InputStream {
-    return openConnection().apply { useCaches = false }.getInputStream()
-}
+class BuildConfigurationService : InternalBuildListener {
 
-fun <T> Class<T>.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
-}
+    companion object {
+        var CONFIGURED_AT: Long = 0L
 
-fun ClassLoader.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
+        fun reset() {
+            CONFIGURED_AT = 0L
+        }
+
+    }
+
+    init {
+        reset()
+    }
+
+    override fun settingsEvaluated(settings: Settings) {
+        // called when the root project settings evaluated.
+    }
+
+    override fun projectsLoaded(gradle: Gradle) {
+        // called when projects files loaded.
+    }
+
+    override fun projectsEvaluated(gradle: Gradle) {
+        CONFIGURED_AT = System.currentTimeMillis()
+    }
+
+    @Deprecated("Deprecated")
+    override fun buildFinished(result: BuildResult) {
+        // This method is deprecated, Execution process are handled by [BuildExecutionService]
+    }
+
 }

@@ -20,26 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.analytics.configuration
 
-import java.io.InputStream
-import java.net.URL
+import org.gradle.api.Project
 
 /**
- * Due to https://bugs.openjdk.java.net/browse/JDK-6947916 and https://bugs.openjdk.java.net/browse/JDK-8155607,
- * it is necessary to disallow caches to maintain stability on JDK 8 and 11 (and possibly more).
- * Otherwise, simultaneous invocations of Detekt in the same VM can fail spuriously. A similar bug is referenced
- * in https://github.com/detekt/detekt/issues/3396. The performance regression is likely unnoticeable.
- * Due to https://github.com/detekt/detekt/issues/4332 it is included for all JDKs.
+ * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
+ *
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
  */
-fun URL.openSafeStream(): InputStream {
-    return openConnection().apply { useCaches = false }.getInputStream()
-}
+open class PluginExtension(val project: Project) {
 
-fun <T> Class<T>.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
-}
+    private var databaseExtension: DatabaseExtension = DatabaseExtension()
 
-fun ClassLoader.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
+    fun database(block: DatabaseExtension.() -> Unit) {
+        databaseExtension = DatabaseExtension().also(block)
+    }
+
+    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
+
 }

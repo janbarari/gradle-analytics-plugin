@@ -14,32 +14,17 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.analytics
 
-import java.io.InputStream
-import java.net.URL
+object Constants {
 
-/**
- * Due to https://bugs.openjdk.java.net/browse/JDK-6947916 and https://bugs.openjdk.java.net/browse/JDK-8155607,
- * it is necessary to disallow caches to maintain stability on JDK 8 and 11 (and possibly more).
- * Otherwise, simultaneous invocations of Detekt in the same VM can fail spuriously. A similar bug is referenced
- * in https://github.com/detekt/detekt/issues/3396. The performance regression is likely unnoticeable.
- * Due to https://github.com/detekt/detekt/issues/4332 it is included for all JDKs.
- */
-fun URL.openSafeStream(): InputStream {
-    return openConnection().apply { useCaches = false }.getInputStream()
-}
+    const val PLUGIN_NAME = "gradleAnalyticsPlugin"
+    const val REPORT_ANALYTICS_TASK_NAME = "reportAnalytics"
 
-fun <T> Class<T>.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
-}
-
-fun ClassLoader.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
 }

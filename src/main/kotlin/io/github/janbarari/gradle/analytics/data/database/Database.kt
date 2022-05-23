@@ -22,21 +22,20 @@
  */
 package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.data.database.config.DatabaseConfig
-import io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig
-import io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig
+import io.github.janbarari.gradle.analytics.configuration.MySqlDatabase
+import io.github.janbarari.gradle.analytics.configuration.SqliteDatabase
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
-import io.github.janbarari.gradle.analytics.plugin.config.DatabaseExtension
+import io.github.janbarari.gradle.analytics.configuration.DatabaseExtension
 import io.github.janbarari.gradle.utils.isNotNull
 import io.github.janbarari.gradle.utils.isNull
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
 
 /**
@@ -50,7 +49,7 @@ class Database(
 ) {
 
     private lateinit var _database: Database
-    private var databaseConfig: DatabaseConfig? = null
+    private var databaseConfig: io.github.janbarari.gradle.analytics.configuration.Database? = null
 
     init {
         connect(config)
@@ -68,20 +67,20 @@ class Database(
         }
 
         when (databaseConfig) {
-            is MySqlDatabaseConfig -> {
+            is MySqlDatabase -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
-                connectToMysqlDatabase(databaseConfig as MySqlDatabaseConfig)
+                connectToMysqlDatabase(databaseConfig as MySqlDatabase)
             }
-            is SqliteDatabaseConfig -> {
+            is SqliteDatabase -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
-                connectSqliteDatabase(databaseConfig as SqliteDatabaseConfig)
+                connectSqliteDatabase(databaseConfig as SqliteDatabase)
             }
         }
 
         createTables(MetricTable, TemporaryMetricTable)
     }
 
-    private fun connectToMysqlDatabase(config: MySqlDatabaseConfig) {
+    private fun connectToMysqlDatabase(config: MySqlDatabase) {
         _database = org.jetbrains.exposed.sql.Database.connect(
             url = "jdbc:mysql://${config.hostIp}:${config.port}/${config.name}",
             driver = "com.mysql.cj.jdbc.Driver",
@@ -90,7 +89,7 @@ class Database(
         )
     }
 
-    private fun connectSqliteDatabase(config: SqliteDatabaseConfig) {
+    private fun connectSqliteDatabase(config: SqliteDatabase) {
         _database = org.jetbrains.exposed.sql.Database.connect(
             url = "jdbc:sqlite:${config.path}/${config.name}.db",
             driver = "org.sqlite.JDBC",
