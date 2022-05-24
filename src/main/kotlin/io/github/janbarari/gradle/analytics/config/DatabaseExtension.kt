@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.configuration
+package io.github.janbarari.gradle.analytics.config
 
 /**
  * @author Mehdi-Janbarari
@@ -32,7 +32,7 @@ class DatabaseExtension : java.io.Serializable {
      * It is the database config of user local machine, this variable should be initialized
      * with one of the database configs that the plugin supports.
      */
-    var local: Database? = null
+    var local: DatabaseConfig? = null
 
     /**
      * It is the database config of CI. Should be initialized
@@ -42,14 +42,14 @@ class DatabaseExtension : java.io.Serializable {
      *
      * Note: please make sure the CI has an environment variable named `CI`.
      */
-    var ci: Database? = null
+    var ci: DatabaseConfig? = null
 
     /**
      * Factory method for create a new instance
      * of [io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig].
      */
-    fun mysql(block: MySqlDatabase.() -> Unit): MySqlDatabase {
-        return MySqlDatabase {
+    fun mysql(block: MySqlDatabaseConfig.() -> Unit): MySqlDatabaseConfig {
+        return MySqlDatabaseConfig {
             also(block)
         }
     }
@@ -58,8 +58,8 @@ class DatabaseExtension : java.io.Serializable {
      * Factory method for create a new instance
      * of [io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig].
      */
-    fun sqlite(block: SqliteDatabase.() -> Unit): SqliteDatabase {
-        return SqliteDatabase {
+    fun sqlite(block: SqliteDatabaseConfig.() -> Unit): SqliteDatabaseConfig {
+        return SqliteDatabaseConfig {
             also(block)
         }
     }

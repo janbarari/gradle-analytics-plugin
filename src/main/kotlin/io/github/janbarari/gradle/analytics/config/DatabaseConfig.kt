@@ -20,13 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.configuration
+package io.github.janbarari.gradle.analytics.config
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class Database : java.io.Serializable {
+open class DatabaseConfig : java.io.Serializable {
 
     /**
      * Database query logs flag, Default is `False`.

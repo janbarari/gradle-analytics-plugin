@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.Constants.PLUGIN_NAME
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
 
 /**
  * @author Mehdi-Janbarari

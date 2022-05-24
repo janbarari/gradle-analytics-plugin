@@ -35,12 +35,15 @@ import io.github.janbarari.gradle.analytics.scanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.scanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.scanner.model.DependencyResolveInfo
-import io.github.janbarari.gradle.analytics.configuration.DatabaseExtension
+import io.github.janbarari.gradle.analytics.config.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import io.github.janbarari.gradle.utils.GitUtils
+import io.github.janbarari.gradle.utils.isNull
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
+import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
 import org.gradle.tooling.events.task.TaskFinishEvent
@@ -58,7 +61,9 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     interface Params : BuildServiceParameters {
         val databaseConfig: Property<DatabaseExtension>
         val envCI: Property<Boolean>
-        val requestedTasks: Property<List<String>>
+        val requestedTasks: ListProperty<String>
+        val trackingTasks: ListProperty<String>
+        val trackingBranches: ListProperty<String>
     }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
@@ -125,7 +130,25 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         executedTasks.clear()
     }
 
+    private fun isCiProcessNotTrackable(): Boolean {
+        return parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get() == true
+    }
+
+    private fun isLocalProcessNotTrackable(): Boolean {
+        return parameters.envCI.get() == false && parameters.databaseConfig.get().local.isNull()
+    }
+
     private fun onExecutionFinished(tasks: Collection<TaskInfo>) {
+        if (isCiProcessNotTrackable() || isLocalProcessNotTrackable()) {
+            println("Not Tracked since CI database configuration is not defined for CI machine")
+            return
+        }
+
+        if (isProcessTrackable().not() || isBranchTrackable().not()) {
+            println("Process not trackable")
+            return
+        }
+
         val startedAt = BuildInitializationService.STARTED_AT
         val initializedAt = BuildInitializationService.INITIALIZED_AT
         val configuredAt = BuildConfigurationService.CONFIGURED_AT
@@ -167,6 +190,40 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         val result = saveTemporaryUseCase.execute(metric)
         if (result) saveMetricUseCase.execute(metric)
+    }
+
+    private fun isProcessTrackable(): Boolean {
+        var result = false
+
+        val trackingTasksIterator = parameters.trackingTasks.get().iterator()
+        val requestedTasksIterator = parameters.requestedTasks.get().iterator()
+
+        while (trackingTasksIterator.hasNext()) {
+            val trackingTask = trackingTasksIterator.next()
+
+            var combinedRequestedTasks = ""
+            while (requestedTasksIterator.hasNext()) {
+                val requestedTask = requestedTasksIterator.next()
+                combinedRequestedTasks += requestedTask
+            }
+
+            if(trackingTask == combinedRequestedTasks) result = true
+        }
+
+        return result
+    }
+
+    private fun isBranchTrackable(): Boolean {
+        var result = false
+        val trackingBranchesIterator = parameters.trackingBranches.get().iterator()
+        val currentBranch = GitUtils.getCurrentBranch()
+        while (trackingBranchesIterator.hasNext()) {
+            val trackingBranch = trackingBranchesIterator.next()
+            if (currentBranch == trackingBranch) {
+                result = true
+            }
+        }
+        return result
     }
 
 }

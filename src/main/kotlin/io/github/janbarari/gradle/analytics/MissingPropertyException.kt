@@ -14,30 +14,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.configuration
-
-import org.gradle.api.Project
+package io.github.janbarari.gradle.analytics
 
 /**
- * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class PluginExtension(val project: Project) {
-
-    private var databaseExtension: DatabaseExtension = DatabaseExtension()
-
-    fun database(block: DatabaseExtension.() -> Unit) {
-        databaseExtension = DatabaseExtension().also(block)
-    }
-
-    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
-
+class MissingPropertyException(msg: String): Throwable() {
+    override val message: String = msg
 }

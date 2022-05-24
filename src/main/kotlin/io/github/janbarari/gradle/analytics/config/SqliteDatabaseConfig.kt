@@ -14,41 +14,36 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.logger
+package io.github.janbarari.gradle.analytics.config
+
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-object Logger {
+class SqliteDatabaseConfig(block: SqliteDatabaseConfig.() -> Unit): DatabaseConfig() {
 
-    var isEnabled: Boolean = true
-
-    fun log(title: String, message: String): Boolean {
-        if (isEnabled) {
-            println(">> $title > $message")
-            return true
-        }
-        return false
+    init {
+        also(block)
     }
 
-    fun log(title: String, subtitle: String, message: String): Boolean {
-        if (isEnabled) {
-            println(">> $title > $subtitle > $message")
-            return true
-        }
-        return false
-    }
+    /**
+     * Database file path.
+     *
+     * Note: The plugin will create the database if needed.
+     */
+    lateinit var path: String
 
-    fun error(message: String): Boolean {
-        println("!> $message")
-        return true
-    }
+    /**
+     * Database name, Default name is `gradleAnalyticsPlugin`
+     */
+    var name: String = PLUGIN_NAME
 
 }

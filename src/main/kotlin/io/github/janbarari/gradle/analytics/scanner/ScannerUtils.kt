@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
-import io.github.janbarari.gradle.analytics.configuration.PluginExtension
+import io.github.janbarari.gradle.analytics.config.PluginExtension
 import io.github.janbarari.gradle.utils.getRequestedTasks
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
@@ -50,6 +50,8 @@ private fun setupExecutionService(
                 databaseConfig.set(pluginExtension.getDatabaseExtension())
                 envCI.set(project.providers.environmentVariable("CI").isPresent)
                 requestedTasks.set(project.gradle.getRequestedTasks())
+                trackingTasks.set(pluginExtension.trackingTasks)
+                trackingBranches.set(pluginExtension.trackingBranches)
             }
         }
         registry.onTaskCompletion(buildExecutionService)

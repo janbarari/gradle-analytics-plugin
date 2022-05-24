@@ -22,22 +22,51 @@
  */
 package io.github.janbarari.gradle.analytics
 
+import io.github.janbarari.gradle.logger.Logger
 import io.github.janbarari.gradle.utils.getSafeResourceAsStream
+import io.github.janbarari.gradle.utils.isNull
 import io.github.janbarari.gradle.utils.openSafeStream
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
 import java.io.File
 
-class ReportAnalyticsTask: DefaultTask() {
+abstract class ReportAnalyticsTask: DefaultTask() {
 
-    override fun doLast(action: Action<in Task>): Task {
-        println(hasProperty("branch"))
-        println(hasProperty("task"))
-        println(hasProperty("period"))
-        report()
-        return super.doLast(action)
+    companion object {
+        private const val TASK_NAME = "reportAnalytics"
+
+        private const val BRANCH_PROP = "branch"
+        private const val PERIOD_PROP = "period"
+        private const val TASK_PROP = "task"
+
+        fun register(project: Project) {
+            project.tasks.register(TASK_NAME, ReportAnalyticsTask::class.java)
+        }
+    }
+
+    @set:Option(option = "branch", description = "Branch deee")
+    @get:Input
+    var branch: String = ""
+
+    @set:Option(option = "task", description = "Task deee")
+    @get:Input
+    var task: String = ""
+
+    @set:Option(option = "period", description = "Period deee")
+    @get:Input
+    var period: String = ""
+
+    @TaskAction
+    fun execute() {
+        Logger.log("ReportAnalyticsTask", branch)
+        Logger.log("ReportAnalyticsTask", period.toString())
+        Logger.log("ReportAnalyticsTask", task)
     }
 
     fun report() {
@@ -106,6 +135,52 @@ class ReportAnalyticsTask: DefaultTask() {
 
             }
 
+    }
+
+    /**
+     * Ensures the task required properties are presented.
+     *
+     * @throws MissingPropertyException if a property is not presented.
+     */
+    @kotlin.jvm.Throws(MissingPropertyException::class)
+    fun ensurePropertiesPresented() {
+        if (hasProperty(BRANCH_PROP).not() ||
+            hasProperty(PERIOD_PROP).not() ||
+            hasProperty(TASK_PROP).not() ) {
+            throw MissingPropertyException(
+                "$TASK_NAME task properties are missing. " +
+                        "Please ensure `branch`, `period` and `task` property is presented!"
+            )
+        }
+    }
+
+    /**
+     *
+     * @throws InvalidPropertyException if a property invalid.
+     */
+    @kotlin.jvm.Throws(InvalidPropertyException::class)
+    fun ensurePropertiesValid() {
+        ensureBranchPropertyValid()
+        ensurePeriodPropertyValid()
+        ensureTaskPropertyValid()
+    }
+
+    fun ensureBranchPropertyValid() {
+        val branchProp = property(BRANCH_PROP) as String
+        if (branchProp.contains(" "))
+            throw InvalidPropertyException("`branch` property is not valid!")
+    }
+
+    fun ensurePeriodPropertyValid() {
+        val periodProp = property(PERIOD_PROP) as String
+        if (periodProp.toIntOrNull().isNull())
+            throw InvalidPropertyException("`period` property is not valid!, Period should be a number between 1 to 12")
+    }
+
+    fun ensureTaskPropertyValid() {
+        val taskProp = property(TASK_PROP) as String
+        if (taskProp.startsWith(":").not() || taskProp.contains(" "))
+            throw InvalidPropertyException("`task` property is not valid!")
     }
 
 }

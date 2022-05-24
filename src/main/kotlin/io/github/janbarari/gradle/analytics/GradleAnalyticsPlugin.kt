@@ -22,12 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.Constants.PLUGIN_NAME
-import io.github.janbarari.gradle.analytics.Constants.REPORT_ANALYTICS_TASK_NAME
-import io.github.janbarari.gradle.analytics.configuration.PluginExtension
+import io.github.janbarari.gradle.analytics.config.PluginExtension
 import io.github.janbarari.gradle.analytics.scanner.setupScannerServices
 import io.github.janbarari.gradle.utils.ProjectUtils
-import io.github.janbarari.gradle.utils.getRequestedTasks
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
@@ -45,12 +42,15 @@ class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project> {
 
+    companion object {
+        const val PLUGIN_NAME = "gradleAnalyticsPlugin"
+    }
+
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
         val pluginExtension = setupPluginExtension(project)
         registerTasks(project)
         setupScannerServices(project, registry, pluginExtension)
-        println(project.gradle.getRequestedTasks())
     }
 
     /**
@@ -84,7 +84,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      * Registers the plugin custom tasks.
      */
     private fun registerTasks(project: Project) {
-        project.tasks.register(REPORT_ANALYTICS_TASK_NAME, ReportAnalyticsTask::class.java)
+        ReportAnalyticsTask.register(project)
     }
 
 }

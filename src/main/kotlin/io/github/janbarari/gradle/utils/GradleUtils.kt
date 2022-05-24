@@ -14,41 +14,20 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.configuration
+package io.github.janbarari.gradle.utils
+
+import org.gradle.api.invocation.Gradle
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
+ * sent them to Gradle to start the build process.
  */
-class MySqlDatabase(block: MySqlDatabase.() -> Unit): Database() {
-
-    companion object {
-        private const val DEFAULT_MYSQL_PORT = 3306
-    }
-
-    init {
-        also(block)
-    }
-
-    /**
-     * Host IP.
-     */
-    lateinit var hostIp: String
-
-    /**
-     * Database name
-     */
-    lateinit var name: String
-
-    /**
-     * Connection port, Default port is `3306`.
-     */
-    var port: Int = DEFAULT_MYSQL_PORT
-
+fun Gradle.getRequestedTasks(): List<String> {
+    return startParameter.taskNames
 }

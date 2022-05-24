@@ -20,11 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.analytics.config
 
-object Constants {
+/**
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
+class MySqlDatabaseConfig(block: MySqlDatabaseConfig.() -> Unit): DatabaseConfig() {
 
-    const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-    const val REPORT_ANALYTICS_TASK_NAME = "reportAnalytics"
+    companion object {
+        private const val DEFAULT_MYSQL_PORT = 3306
+    }
+
+    init {
+        also(block)
+    }
+
+    /**
+     * Host IP.
+     */
+    lateinit var hostIp: String
+
+    /**
+     * Database name
+     */
+    lateinit var name: String
+
+    /**
+     * Connection port, Default port is `3306`.
+     */
+    var port: Int = DEFAULT_MYSQL_PORT
 
 }

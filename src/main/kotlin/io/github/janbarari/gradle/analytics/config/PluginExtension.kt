@@ -20,47 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.logger
+package io.github.janbarari.gradle.analytics.config
+
+import org.gradle.api.Project
 
 /**
- * Implementation of [io.github.janbarari.gradle.logger.Logger].
+ * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class LoggerImp(
-    /**
-     * Default applied logger mode.
-     */
-    private var logMode: Logger.LogMode = Logger.LogMode.INFO
-) : Logger {
+open class PluginExtension(val project: Project) {
 
-    override fun log(title: String, message: String): Boolean {
-        if (logMode == Logger.LogMode.INFO) {
-            println(">> $title > $message")
-            return true
-        }
-        return false
+    private var databaseExtension: DatabaseExtension = DatabaseExtension()
+
+    var trackingTasks: List<String> = listOf()
+
+    var trackingBranches: List<String> = listOf()
+
+    fun database(block: DatabaseExtension.() -> Unit) {
+        databaseExtension = DatabaseExtension().also(block)
     }
 
-    override fun log(title: String, subtitle: String, message: String): Boolean {
-        if (logMode == Logger.LogMode.INFO) {
-            println(">> $title > $subtitle > $message")
-            return true
-        }
-        return false
-    }
+    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
 
-    override fun error(message: String): Boolean {
-        println("!> $message")
-        return true
-    }
-
-    override fun setMode(mode: Logger.LogMode) {
-        logMode = mode
-    }
-
-    override fun getMode(): Logger.LogMode {
-        return logMode
-    }
 }
