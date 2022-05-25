@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
@@ -35,7 +36,6 @@ import io.github.janbarari.gradle.analytics.scanner.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.model.OsInfo
 import io.github.janbarari.gradle.analytics.scanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.scanner.model.DependencyResolveInfo
-import io.github.janbarari.gradle.analytics.config.DatabaseExtension
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.utils.isNull
@@ -43,7 +43,6 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
-import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
 import org.gradle.tooling.events.task.TaskFinishEvent
@@ -59,7 +58,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     AutoCloseable {
 
     interface Params : BuildServiceParameters {
-        val databaseConfig: Property<DatabaseExtension>
+        val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
         val envCI: Property<Boolean>
         val requestedTasks: ListProperty<String>
         val trackingTasks: ListProperty<String>

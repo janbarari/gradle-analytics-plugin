@@ -1,7 +1,5 @@
 package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.utils.isNotNull
-import io.github.janbarari.gradle.utils.isNull
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

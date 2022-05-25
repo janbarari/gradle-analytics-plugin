@@ -22,8 +22,8 @@
  */
 package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.config.PluginExtension
 import io.github.janbarari.gradle.analytics.scanner.setupScannerServices
+import io.github.janbarari.gradle.analytics.task.ReportAnalyticsTask
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -44,26 +44,27 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
+        const val PLUGIN_VERSION = "1.0.0"
     }
 
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
-        val pluginExtension = setupPluginExtension(project)
-        registerTasks(project)
-        setupScannerServices(project, registry, pluginExtension)
+        val configuration = setupPluginConfiguration(project)
+        registerTasks(project, configuration)
+        setupScannerServices(project, registry, configuration)
     }
 
     /**
      * The plugin is compatible with Gradle version 6.1 and above, This function ensures
      * the plugin Gradle version is compatible with the user project version.
      *
-     * @throws GradleVersionException when the Gradle version is not compatible.
+     * @throws IncompatibleVersionException when the Gradle version is not compatible.
      */
-    @kotlin.jvm.Throws(GradleVersionException::class)
+    @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
-            throw GradleVersionException(requiredGradleVersion.versionNumber)
+            throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
         }
     }
 
@@ -72,10 +73,10 @@ class GradleAnalyticsPlugin @Inject constructor(
      *
      * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupPluginExtension(project: Project) : PluginExtension {
+    private fun setupPluginConfiguration(project: Project) : GradleAnalyticsPluginConfig {
         return project.extensions.create(
             PLUGIN_NAME,
-            PluginExtension::class.java,
+            GradleAnalyticsPluginConfig::class.java,
             project
         )
     }
@@ -83,8 +84,8 @@ class GradleAnalyticsPlugin @Inject constructor(
     /**
      * Registers the plugin custom tasks.
      */
-    private fun registerTasks(project: Project) {
-        ReportAnalyticsTask.register(project)
+    private fun registerTasks(project: Project, configuration: GradleAnalyticsPluginConfig) {
+        ReportAnalyticsTask.register(project, configuration)
     }
 
 }

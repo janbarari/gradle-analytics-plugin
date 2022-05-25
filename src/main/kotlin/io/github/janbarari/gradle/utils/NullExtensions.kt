@@ -35,3 +35,17 @@ fun Any?.isNull(): Boolean {
 fun Any?.isNotNull(): Boolean {
     return this != null
 }
+
+/**
+ * Invokes the lambda function if the object is NOT null.
+ */
+fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
+    if (this != null) block(this)
+}
+
+/**
+ * Invokes the lambda function if the object is null.
+ */
+fun <T: Any> T?.whenNull(block: () -> Unit) {
+    if(this == null) block()
+}

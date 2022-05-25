@@ -20,35 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.config
+package io.github.janbarari.gradle.analytics.task
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class MySqlDatabaseConfig(block: MySqlDatabaseConfig.() -> Unit): DatabaseConfig() {
-
-    companion object {
-        private const val DEFAULT_MYSQL_PORT = 3306
-    }
-
-    init {
-        also(block)
-    }
-
-    /**
-     * Host IP.
-     */
-    lateinit var hostIp: String
-
-    /**
-     * Database name
-     */
-    lateinit var name: String
-
-    /**
-     * Connection port, Default port is `3306`.
-     */
-    var port: Int = DEFAULT_MYSQL_PORT
-
+class InvalidPropertyException(msg: String): Throwable() {
+    override val message: String = msg
 }

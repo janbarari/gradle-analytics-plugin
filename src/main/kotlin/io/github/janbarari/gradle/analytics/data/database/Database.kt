@@ -22,11 +22,12 @@
  */
 package io.github.janbarari.gradle.analytics.data.database
 
-import io.github.janbarari.gradle.analytics.config.MySqlDatabaseConfig
-import io.github.janbarari.gradle.analytics.config.SqliteDatabaseConfig
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.data.database.connection.DatabaseConnection
+import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
-import io.github.janbarari.gradle.analytics.config.DatabaseExtension
 import io.github.janbarari.gradle.utils.isNotNull
 import io.github.janbarari.gradle.utils.isNull
 import org.jetbrains.exposed.sql.Table
@@ -44,18 +45,18 @@ import org.jetbrains.exposed.sql.transactions.transactionManager
  */
 @SuppressWarnings("WildcardImport")
 class Database(
-    config: DatabaseExtension,
+    config: GradleAnalyticsPluginConfig.DatabaseConfig,
     private var isCI: Boolean
 ) {
 
     private lateinit var _database: Database
-    private var databaseConfig: io.github.janbarari.gradle.analytics.config.DatabaseConfig? = null
+    private var databaseConfig: DatabaseConnection? = null
 
     init {
         connect(config)
     }
 
-    private fun connect(config: DatabaseExtension) {
+    private fun connect(config: GradleAnalyticsPluginConfig.DatabaseConfig) {
         databaseConfig = config.local
 
         if (isCI && config.ci.isNotNull()) {
@@ -67,21 +68,21 @@ class Database(
         }
 
         when (databaseConfig) {
-            is MySqlDatabaseConfig -> {
+            is MySqlDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
-                connectToMysqlDatabase(databaseConfig as MySqlDatabaseConfig)
+                connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
             }
-            is SqliteDatabaseConfig -> {
+            is SqliteDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
-                connectSqliteDatabase(databaseConfig as SqliteDatabaseConfig)
+                connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
             }
         }
 
         createTables(MetricTable, TemporaryMetricTable)
     }
 
-    private fun connectToMysqlDatabase(config: MySqlDatabaseConfig) {
-        _database = org.jetbrains.exposed.sql.Database.connect(
+    private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {
+        _database = Database.connect(
             url = "jdbc:mysql://${config.hostIp}:${config.port}/${config.name}",
             driver = "com.mysql.cj.jdbc.Driver",
             user = config.user,
@@ -89,8 +90,8 @@ class Database(
         )
     }
 
-    private fun connectSqliteDatabase(config: SqliteDatabaseConfig) {
-        _database = org.jetbrains.exposed.sql.Database.connect(
+    private fun connectSqliteDatabase(config: SqliteDatabaseConnection) {
+        _database = Database.connect(
             url = "jdbc:sqlite:${config.path}/${config.name}.db",
             driver = "org.sqlite.JDBC",
             user = config.user,
@@ -103,9 +104,7 @@ class Database(
      */
     private fun createTables(vararg entities: Table) {
         transaction {
-            if (databaseConfig!!.isQueryLogEnabled) {
-                addLogger(StdOutSqlLogger)
-            }
+            addLogger(StdOutSqlLogger)
             SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = true)
         }
     }

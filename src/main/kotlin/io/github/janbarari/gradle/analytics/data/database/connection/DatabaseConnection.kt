@@ -14,23 +14,28 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
-
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
+package io.github.janbarari.gradle.analytics.data.database.connection
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class GradleVersionException(
-    private val minimumRequiredVersion: String
-) : Throwable() {
-    override val message: String get() = "$PLUGIN_NAME is compatible with" +
-            " gradle version $minimumRequiredVersion and above."
+open class DatabaseConnection : java.io.Serializable {
+
+    /**
+     * Database user, Default is `root`.
+     */
+    var user: String = "root"
+
+    /**
+     * Database password, Default is empty.
+     */
+    var password: String = ""
+
 }

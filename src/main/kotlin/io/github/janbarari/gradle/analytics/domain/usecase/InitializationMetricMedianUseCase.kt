@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
-import io.github.janbarari.gradle.analytics.domain.base.UseCaseNoInput
+import io.github.janbarari.gradle.analytics.domain.core.UseCaseNoInput
 import io.github.janbarari.gradle.analytics.domain.metric.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.utils.longMedian

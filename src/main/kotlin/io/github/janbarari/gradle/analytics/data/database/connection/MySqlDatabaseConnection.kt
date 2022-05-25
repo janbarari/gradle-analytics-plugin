@@ -20,12 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.analytics.data.database.connection
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class MissingPropertyException(msg: String): Throwable() {
-    override val message: String = msg
+class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
+
+    companion object {
+        private const val DEFAULT_MYSQL_PORT = 3306
+    }
+
+    init {
+        also(block)
+    }
+
+    /**
+     * Host IP.
+     */
+    lateinit var hostIp: String
+
+    /**
+     * Database name
+     */
+    lateinit var name: String
+
+    /**
+     * Connection port, Default port is `3306`.
+     */
+    var port: Int = DEFAULT_MYSQL_PORT
+
 }

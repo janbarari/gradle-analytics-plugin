@@ -14,10 +14,10 @@
 
 %plugin-version%
 
-%initialization-max-value% --> 3000
-%initialization-median-values% --> [1000, 2000, 3000]
-%initialization-median-labels% --> ["A", "B", "C"]
+%initialization-max-value%
+%initialization-median-values%
+%initialization-median-labels%
 
-%configuration-max-value% --> 3000
-%configuration-median-values% --> [1000, 2000, 3000]
-%configuration-median-labels% --> ["A", "B", "C"]
+%configuration-max-value%
+%configuration-median-values%
+%configuration-median-labels%

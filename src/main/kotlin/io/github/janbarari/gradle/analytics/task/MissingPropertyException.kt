@@ -20,27 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.config
+package io.github.janbarari.gradle.analytics.task
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class DatabaseConfig : java.io.Serializable {
-
-    /**
-     * Database query logs flag, Default is `False`.
-     */
-    var isQueryLogEnabled: Boolean = false
-
-    /**
-     * Database user, Default is `root`.
-     */
-    var user: String = "root"
-
-    /**
-     * Database password, Default is empty.
-     */
-    var password: String = ""
-
+class MissingPropertyException(msg: String): Throwable() {
+    override val message: String = msg
 }

@@ -20,28 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.config
+package io.github.janbarari.gradle.analytics
 
-import org.gradle.api.Project
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
 
 /**
- * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-open class PluginExtension(val project: Project) {
-
-    private var databaseExtension: DatabaseExtension = DatabaseExtension()
-
-    var trackingTasks: List<String> = listOf()
-
-    var trackingBranches: List<String> = listOf()
-
-    fun database(block: DatabaseExtension.() -> Unit) {
-        databaseExtension = DatabaseExtension().also(block)
-    }
-
-    fun getDatabaseExtension(): DatabaseExtension = databaseExtension
-
+class IncompatibleVersionException(
+    private val minimumRequiredVersion: String
+) : Throwable() {
+    override val message: String get() = "$PLUGIN_NAME is compatible with" +
+            " gradle version $minimumRequiredVersion and above."
 }

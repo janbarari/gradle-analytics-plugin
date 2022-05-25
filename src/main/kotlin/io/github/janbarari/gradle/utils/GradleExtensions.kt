@@ -14,18 +14,33 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle.utils
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.invocation.Gradle
+import org.gradle.api.provider.Provider
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
+ * sent them to Gradle to start the build process.
  */
-class InvalidPropertyException(msg: String): Throwable() {
-    override val message: String = msg
+fun Gradle.getRequestedTasks(): List<String> {
+    return startParameter.taskNames
+}
+
+fun Project.envCI(): Provider<String> {
+    return providers.environmentVariable("CI")
+}
+
+inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
+    project.tasks.register(name, T::class.java) {
+        it.also(block)
+    }
 }

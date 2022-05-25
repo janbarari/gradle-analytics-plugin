@@ -22,24 +22,29 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
-import io.github.janbarari.gradle.analytics.config.PluginExtension
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.utils.envCI
 import io.github.janbarari.gradle.utils.getRequestedTasks
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
 @Suppress("UnstableApiUsage")
-fun setupScannerServices(project: Project, registry: BuildEventsListenerRegistry, pluginExtension: PluginExtension) {
+fun setupScannerServices(
+    project: Project,
+    registry: BuildEventsListenerRegistry,
+    configuration: GradleAnalyticsPluginConfig
+) {
     setupInitializationService(project)
     setupDependencyResolutionService(project)
     setupConfigurationService(project)
-    setupExecutionService(project, registry, pluginExtension)
+    setupExecutionService(project, registry, configuration)
 }
 
 @Suppress("UnstableApiUsage")
 private fun setupExecutionService(
     project: Project,
     registry: BuildEventsListenerRegistry,
-    pluginExtension: PluginExtension
+    configuration: GradleAnalyticsPluginConfig
 ) {
     project.gradle.projectsEvaluated {
         val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
@@ -47,11 +52,11 @@ private fun setupExecutionService(
             BuildExecutionService::class.java
         ) { spec ->
             with(spec.parameters) {
-                databaseConfig.set(pluginExtension.getDatabaseExtension())
-                envCI.set(project.providers.environmentVariable("CI").isPresent)
+                databaseConfig.set(configuration.getDatabase())
+                envCI.set(project.envCI().isPresent)
                 requestedTasks.set(project.gradle.getRequestedTasks())
-                trackingTasks.set(pluginExtension.trackingTasks)
-                trackingBranches.set(pluginExtension.trackingBranches)
+                trackingTasks.set(configuration.trackingTasks)
+                trackingBranches.set(configuration.trackingBranches)
             }
         }
         registry.onTaskCompletion(buildExecutionService)
