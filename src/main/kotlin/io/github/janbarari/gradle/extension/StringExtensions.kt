@@ -20,32 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.extension
 
-/**
- * Returns True, If the object is null.
- */
-fun Any?.isNull(): Boolean {
-    return this == null
-}
-
-/**
- * Returns True, If the object is not null.
- */
-fun Any?.isNotNull(): Boolean {
-    return this != null
-}
-
-/**
- * Invokes the lambda function if the object is NOT null.
- */
-fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
-    if (this != null) block(this)
-}
-
-/**
- * Invokes the lambda function if the object is null.
- */
-fun <T: Any> T?.whenNull(block: () -> Unit) {
-    if(this == null) block()
+fun String.hasSpace(): Boolean {
+    return this.contains(" ")
 }

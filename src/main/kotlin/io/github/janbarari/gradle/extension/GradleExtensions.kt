@@ -20,8 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.extension
 
-fun String.hasSpace(): Boolean {
-    return this.contains(" ")
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.invocation.Gradle
+import org.gradle.api.provider.Provider
+
+/**
+ * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
+ * sent them to Gradle to start the build process.
+ */
+fun Gradle.getRequestedTasks(): List<String> {
+    return startParameter.taskNames
+}
+
+fun Project.envCI(): Provider<String> {
+    return providers.environmentVariable("CI")
+}
+
+inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
+    project.tasks.register(name, T::class.java) {
+        it.also(block)
+    }
 }

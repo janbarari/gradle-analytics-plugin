@@ -14,38 +14,38 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.bus
-
-import java.util.UUID
+package io.github.janbarari.gradle.extension
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Returns True, If the object is null.
  */
-class Observer(
-    var observerType: Class<*>,
-    var guid: String,
-    var unit: (Any) -> Unit,
-    var sender: Class<*>? = null) {
+fun Any?.isNull(): Boolean {
+    return this == null
+}
 
-    companion object {
-        /**
-         * Generates a unique GUID string.
-         */
-        fun generateGUID(): String {
-            return UUID.randomUUID().toString()
-        }
+/**
+ * Returns True, If the object is not null.
+ */
+fun Any?.isNotNull(): Boolean {
+    return this != null
+}
 
-    }
+/**
+ * Invokes the lambda function if the object is NOT null.
+ */
+fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
+    if (this != null) block(this)
+}
 
-    override fun toString(): String {
-        return "Observer($guid, $observerType)"
-    }
-
+/**
+ * Invokes the lambda function if the object is null.
+ */
+fun <T: Any> T?.whenNull(block: () -> Unit) {
+    if(this == null) block()
 }

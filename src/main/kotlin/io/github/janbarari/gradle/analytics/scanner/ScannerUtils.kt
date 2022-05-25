@@ -23,8 +23,8 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.utils.envCI
-import io.github.janbarari.gradle.utils.getRequestedTasks
+import io.github.janbarari.gradle.extension.envCI
+import io.github.janbarari.gradle.extension.getRequestedTasks
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 

@@ -38,7 +38,7 @@ import io.github.janbarari.gradle.analytics.scanner.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.scanner.model.DependencyResolveInfo
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import io.github.janbarari.gradle.utils.GitUtils
-import io.github.janbarari.gradle.utils.isNull
+import io.github.janbarari.gradle.extension.isNull
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService

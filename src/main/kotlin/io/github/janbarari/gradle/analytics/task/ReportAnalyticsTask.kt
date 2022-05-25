@@ -24,11 +24,11 @@ package io.github.janbarari.gradle.analytics.task
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_VERSION
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.utils.envCI
-import io.github.janbarari.gradle.utils.hasSpace
-import io.github.janbarari.gradle.utils.isNull
+import io.github.janbarari.gradle.extension.envCI
+import io.github.janbarari.gradle.extension.hasSpace
+import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.openSafeStream
-import io.github.janbarari.gradle.utils.registerTask
+import io.github.janbarari.gradle.extension.registerTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
@@ -38,6 +38,12 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 
+/**
+ * A Gradle task that generates the report based on `git branch`, `time period` and `task name`.
+ *
+ * A quick instruction about how to invoke the task:
+ * `./gradlew reportAnalytics --branch="{your-branch}" --task="{your-task}" --period="{a-number-between-1-to-12}"`
+ */
 abstract class ReportAnalyticsTask : DefaultTask() {
 
     companion object {
@@ -56,15 +62,15 @@ abstract class ReportAnalyticsTask : DefaultTask() {
 
     @set:Option(option = "branch", description = "Git branch name")
     @get:Input
-    var branch: String = ""
+    var branchArgument: String = ""
 
     @set:Option(option = "task", description = "Tracking task name")
     @get:Input
-    var task: String = ""
+    var taskArgument: String = ""
 
     @set:Option(option = "period", description = "Number of months")
     @get:Input
-    var period: String = ""
+    var periodArgument: String = ""
 
     @get:Input
     abstract val projectNameProperty: Property<String>
@@ -81,41 +87,49 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     abstract val trackingBranchesProperty: ListProperty<String>
 
+    /**
+     * Invokes when the task execution process started.
+     */
     @TaskAction
     fun execute() {
-        ensureBranchValid()
-        ensurePeriodValid()
-        ensureTaskValid()
-        //report()
-        println("project name: ${projectNameProperty.get()}")
-        println("envCI: ${envCIProperty.get().isPresent}")
-        println("outputPath: ${outputPathProperty.get()}")
-        println("tracking tasks: ${trackingTasksProperty.get()}")
-        println("tracking branches: ${trackingBranchesProperty.get()}")
+        ensureBranchArgumentValid()
+        ensurePeriodArgumentValid()
+        ensureTaskArgumentValid()
     }
 
-    private fun ensureBranchValid() {
-        if (branch.isEmpty()) throw MissingPropertyException("`--branch` is not present!")
-        if (branch.hasSpace()) throw InvalidPropertyException("`--branch` is not valid!")
+    /**
+     * Ensures the `--branch` input argument is set and valid.
+     */
+    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
+    private fun ensureBranchArgumentValid() {
+        if (branchArgument.isEmpty()) throw MissingPropertyException("`--branch` is not present!")
+        if (branchArgument.hasSpace()) throw InvalidPropertyException("`--branch` is not valid!")
     }
 
-    private fun ensurePeriodValid() {
-        if (period.isEmpty()) throw MissingPropertyException("`--period` is not present!")
-        if (period.toIntOrNull()
-                .isNull()
-        ) throw InvalidPropertyException("`--period` is not valid!, Period should be a number between 1 to 12.")
+    /**
+     * Ensures the `--period` input argument is set and valid.
+     */
+    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
+    private fun ensurePeriodArgumentValid() {
+        if (periodArgument.isEmpty()) throw MissingPropertyException("`--period` is not present!")
+        if (periodArgument.toIntOrNull().isNull())
+            throw InvalidPropertyException("`--period` is not valid!, Period should be a number between 1 to 12.")
     }
 
-    private fun ensureTaskValid() {
-        if (task.isEmpty()) throw MissingPropertyException("`--task` is not present!")
-        if (task.startsWith(":").not()) throw InvalidPropertyException("`--task` is not valid!")
+    /**
+     * Ensures the `--task` input argument is set and valid.
+     */
+    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
+    private fun ensureTaskArgumentValid() {
+        if (taskArgument.isEmpty()) throw MissingPropertyException("`--task` is not present!")
+        if (taskArgument.startsWith(":").not()) throw InvalidPropertyException("`--task` is not valid!")
     }
 
     fun report() {
 
-        val rootProjectName = "fsfsfs"
+        val rootProjectName = projectNameProperty.get()
 
-        val timePeriodTitle = "$period Months"
+        val timePeriodTitle = "$periodArgument Months"
         val timePeriodStart = "21/04/2022"
         val timePeriodEnd = "23/07/2022"
         val reportedAt = "May 23, 2022 13:06 PM UTC"
@@ -130,11 +144,19 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         val configurationMedianValues = "[3000, 2000, 2600, 3400, 5000]"
         val configurationMedianLabels = "[\"A\", \"B\", \"C\", \"D\", \"E\"]"
 
-        javaClass.getResource("/index-template.html")!!.openSafeStream().bufferedReader().use { it.readText() }
-            .replace("%root-project-name%", rootProjectName).replace("%task-path%", task).replace("%branch%", branch)
-            .replace("%time-period-title%", timePeriodTitle).replace("%time-period-start%", timePeriodStart)
-            .replace("%time-period-end%", timePeriodEnd).replace("%reported-at%", reportedAt).replace("%is-ci%", isCI)
-            .replace("%plugin-version%", pluginVersion).replace("%initialization-max-value%", initializationMaxValue)
+        javaClass
+            .getResource("/index-template.html")!!
+            .openSafeStream().bufferedReader().use { it.readText() }
+            .replace("%root-project-name%", rootProjectName)
+            .replace("%task-path%", taskArgument)
+            .replace("%branch%", branchArgument)
+            .replace("%time-period-title%", timePeriodTitle)
+            .replace("%time-period-start%", timePeriodStart)
+            .replace("%time-period-end%", timePeriodEnd)
+            .replace("%reported-at%", reportedAt)
+            .replace("%is-ci%", isCI)
+            .replace("%plugin-version%", pluginVersion)
+            .replace("%initialization-max-value%", initializationMaxValue)
             .replace("%initialization-median-values%", initializationMedianValues)
             .replace("%initialization-median-labels%", initializationMedianLabels)
             .replace("%configuration-max-value%", configurationMaxValue)

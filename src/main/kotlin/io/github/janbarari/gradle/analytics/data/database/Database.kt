@@ -28,8 +28,8 @@ import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDataba
 import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
-import io.github.janbarari.gradle.utils.isNotNull
-import io.github.janbarari.gradle.utils.isNull
+import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.isNull
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.SchemaUtils

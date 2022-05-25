@@ -22,13 +22,17 @@
  */
 package io.github.janbarari.gradle.utils
 
-fun longMean(vararg input: Long): Long {
-    return input.sum() / input.size
-}
+object MathUtils {
 
-fun longMedian(values: List<Long>) = values.sorted().let {
-    if (it.size % 2 == 0)
-        (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
-    else
-        it[it.size / 2]
+    fun longMean(vararg input: Long): Long {
+        return input.sum() / input.size
+    }
+
+    fun longMedian(values: List<Long>) = values.sorted().let {
+        if (it.size % 2 == 0)
+            (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
+        else
+            it[it.size / 2]
+    }
+
 }
