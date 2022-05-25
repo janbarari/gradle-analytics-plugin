@@ -24,13 +24,16 @@ package io.github.janbarari.gradle.analytics.task
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_VERSION
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.utils.envCI
 import io.github.janbarari.gradle.utils.hasSpace
 import io.github.janbarari.gradle.utils.isNull
 import io.github.janbarari.gradle.utils.openSafeStream
 import io.github.janbarari.gradle.utils.registerTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -40,17 +43,13 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     companion object {
         private const val TASK_NAME = "reportAnalytics"
 
-        /**
-         * it.envCI.set(false)
-        it.projectName.set("Mehdi")
-        //val pluginExtension = project.getExtension<PluginExtension>()
-        it.outputPath.set("/Users/workstation/desktop")
-        it.trackingTasks.set(listOf(":app:assembleDebug", "clean", ":app:assembleRelease"))
-        it.trackingBranches.set(listOf("master", "develop"))
-         */
         fun register(project: Project, configuration: GradleAnalyticsPluginConfig) {
             project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
-                test.set(configuration.outputPath)
+                projectNameProperty.set(project.rootProject.name)
+                envCIProperty.set(project.envCI())
+                outputPathProperty.set(configuration.outputPath)
+                trackingTasksProperty.set(configuration.trackingTasks)
+                trackingBranchesProperty.set(configuration.trackingBranches)
             }
         }
     }
@@ -68,7 +67,19 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     var period: String = ""
 
     @get:Input
-    abstract val test: Property<String>
+    abstract val projectNameProperty: Property<String>
+
+    @get:Input
+    abstract val envCIProperty: Property<Provider<String>>
+
+    @get:Input
+    abstract val outputPathProperty: Property<String>
+
+    @get:Input
+    abstract val trackingTasksProperty: ListProperty<String>
+
+    @get:Input
+    abstract val trackingBranchesProperty: ListProperty<String>
 
     @TaskAction
     fun execute() {
@@ -76,7 +87,11 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         ensurePeriodValid()
         ensureTaskValid()
         //report()
-        println("outputPath: ${test.get()}")
+        println("project name: ${projectNameProperty.get()}")
+        println("envCI: ${envCIProperty.get().isPresent}")
+        println("outputPath: ${outputPathProperty.get()}")
+        println("tracking tasks: ${trackingTasksProperty.get()}")
+        println("tracking branches: ${trackingBranchesProperty.get()}")
     }
 
     private fun ensureBranchValid() {
