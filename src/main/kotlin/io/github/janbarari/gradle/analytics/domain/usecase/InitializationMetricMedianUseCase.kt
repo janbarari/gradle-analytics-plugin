@@ -3,7 +3,7 @@ package io.github.janbarari.gradle.analytics.domain.usecase
 import io.github.janbarari.gradle.analytics.domain.core.UseCaseNoInput
 import io.github.janbarari.gradle.analytics.domain.metric.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.utils.longMedian
+import io.github.janbarari.gradle.utils.MathUtils
 
 class InitializationMetricMedianUseCase(
     private val repo: DatabaseRepository
@@ -22,7 +22,7 @@ class InitializationMetricMedianUseCase(
         }
 
         return InitializationMetric(
-            average = longMedian(durations)
+            average = MathUtils.longMedian(durations)
         )
     }
 

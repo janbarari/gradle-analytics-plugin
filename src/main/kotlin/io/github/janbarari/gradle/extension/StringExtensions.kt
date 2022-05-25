@@ -25,3 +25,14 @@ package io.github.janbarari.gradle.extension
 fun String.hasSpace(): Boolean {
     return this.contains(" ")
 }
+
+fun String.removeLast(): String {
+    return substring(0, length - 1)
+}
+
+fun String.toRealPath(): String {
+    if (endsWith("/")) {
+        return removeLast().toRealPath()
+    }
+    return this
+}

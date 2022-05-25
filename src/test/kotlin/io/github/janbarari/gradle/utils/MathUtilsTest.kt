@@ -9,7 +9,7 @@ class MathUtilsTest {
         val dataset1 = arrayListOf<Long>(
             100, 200, 300, 210, 30000
         )
-        println(longMedian(dataset1))
+        println(MathUtils.longMedian(dataset1))
     }
 
 }

@@ -25,10 +25,13 @@ package io.github.janbarari.gradle.analytics.task
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_VERSION
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.extension.envCI
+import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.hasSpace
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.utils.openSafeStream
+import io.github.janbarari.gradle.extension.openSafeStream
 import io.github.janbarari.gradle.extension.registerTask
+import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
@@ -37,6 +40,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import java.io.File
 
 /**
  * A Gradle task that generates the report based on `git branch`, `time period` and `task name`.
@@ -95,6 +99,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         ensureBranchArgumentValid()
         ensurePeriodArgumentValid()
         ensureTaskArgumentValid()
+        report()
     }
 
     /**
@@ -112,8 +117,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     private fun ensurePeriodArgumentValid() {
         if (periodArgument.isEmpty()) throw MissingPropertyException("`--period` is not present!")
-        if (periodArgument.toIntOrNull().isNull())
-            throw InvalidPropertyException("`--period` is not valid!, Period should be a number between 1 to 12.")
+        if (periodArgument.toIntOrNull()
+                .isNull()
+        ) throw InvalidPropertyException("`--period` is not valid!, Period should be a number between 1 to 12.")
     }
 
     /**
@@ -144,9 +150,10 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         val configurationMedianValues = "[3000, 2000, 2600, 3400, 5000]"
         val configurationMedianLabels = "[\"A\", \"B\", \"C\", \"D\", \"E\"]"
 
-        javaClass
-            .getResource("/index-template.html")!!
-            .openSafeStream().bufferedReader().use { it.readText() }
+        javaClass.getResource("/index-template.html")!!
+            .openSafeStream()
+            .bufferedReader()
+            .use { it.readText() }
             .replace("%root-project-name%", rootProjectName)
             .replace("%task-path%", taskArgument)
             .replace("%branch%", branchArgument)
@@ -161,29 +168,30 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             .replace("%initialization-median-labels%", initializationMedianLabels)
             .replace("%configuration-max-value%", configurationMaxValue)
             .replace("%configuration-median-values%", configurationMedianValues)
-            .replace("%configuration-median-labels%", configurationMedianLabels).also {
+            .replace("%configuration-median-labels%", configurationMedianLabels)
+            .also {
 
-//                FileUtils.copyInputStreamToFile(
-//                    javaClass.getSafeResourceAsStream("/res/nunito.ttf"),
-            //                    File("$outputPath/$reportedAt/res/nunito.ttf")
-//                )
-//
-//                FileUtils.copyInputStreamToFile(
-//                    javaClass.getSafeResourceAsStream("/res/chart.js"),
-            //                    File("$outputPath/$reportedAt/res/chart.js")
-//                )
-//
-//                FileUtils.copyInputStreamToFile(
-//                    javaClass.getSafeResourceAsStream("/res/plugin-logo.png"),
-//                    File("$outputPath/$reportedAt/res/plugin-logo.png")
-//                )
-//
-//                FileUtils.copyInputStreamToFile(
-//                    javaClass.getSafeResourceAsStream("/res/styles.css"),
-            //                    File("$outputPath/$reportedAt/res/styles.css")
-//                )
-//
-//                File("$outputPath/$reportedAt/index.html").writeText(it)
+                FileUtils.copyInputStreamToFile(
+                    javaClass.getSafeResourceAsStream("/res/nunito.ttf"),
+                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/nunito.ttf")
+                )
+
+                FileUtils.copyInputStreamToFile(
+                    javaClass.getSafeResourceAsStream("/res/chart.js"),
+                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/chart.js")
+                )
+
+                FileUtils.copyInputStreamToFile(
+                    javaClass.getSafeResourceAsStream("/res/plugin-logo.png"),
+                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/plugin-logo.png")
+                )
+
+                FileUtils.copyInputStreamToFile(
+                    javaClass.getSafeResourceAsStream("/res/styles.css"),
+                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/styles.css")
+                )
+
+                File("${outputPathProperty.get().toRealPath()}/$reportedAt/index.html").writeText(it)
 
             }
 
