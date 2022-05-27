@@ -22,17 +22,44 @@
  */
 package io.github.janbarari.gradle.utils
 
+/**
+ * A collection of mathematics functions.
+ * @author Mehdi-Janbarari
+ * @since 1.0.0
+ */
 object MathUtils {
 
-    fun longMean(vararg input: Long): Long {
-        return input.sum() / input.size
+    /**
+     * Calculates the mean of a long dataset.
+     */
+    fun longMean(vararg dataset: Long): Long {
+        return longMean(dataset.toList())
     }
 
-    fun longMedian(values: List<Long>) = values.sorted().let {
-        if (it.size % 2 == 0)
-            (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
-        else
-            it[it.size / 2]
+    /**
+     * Calculates the mean of a long dataset.
+     */
+    fun longMean(dataset: List<Long>): Long {
+        if (dataset.isEmpty()) return 0
+        return dataset.sum() / dataset.size
+    }
+
+    /**
+     * Calculates the median of a long dataset.
+     */
+    fun longMedian(dataset: List<Long>): Long {
+        if (dataset.isEmpty()) return 0
+        return dataset.sorted().let {
+            if (it.size % 2 == 0) (it[it.size / 2] + it[(it.size - 1) / 2]) / 2
+            else it[it.size / 2]
+        }
+    }
+
+    /**
+     * Calculates the median of a long dataset.
+     */
+    fun longMedian(vararg values: Long): Long {
+        return longMedian(values.toList())
     }
 
 }
