@@ -20,13 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.scanner.model
+package io.github.janbarari.gradle.analytics.domain.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-data class HardwareInfo(
-    val availableMemory: Long,
-    val maximumMemoryCapacity: Long
-) : java.io.Serializable
+data class TaskInfo(
+    val startedAt: Long,
+    val finishedAt: Long,
+    val path: String,
+    val displayName: String,
+    val name: String
+) : java.io.Serializable {
+
+    /**
+     * Returns the task execution duration in milliseconds.
+     */
+    fun getDuration(): Long {
+        if (finishedAt < startedAt) return 0L
+        return finishedAt - startedAt
+    }
+
+    /**
+     * Returns the task module name.
+     */
+    fun getModule(): String {
+        val module = path.split(":")
+        return if (module.size > 2) module.toList()
+            .dropLast(1)
+            .joinToString(separator = ":")
+        else "no_module"
+    }
+
+}

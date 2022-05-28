@@ -20,17 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.task
+package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_VERSION
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.configurationmetric.ConfigurationMetricReportStage
+import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
+import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricRenderStage
+import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricReportStage
 import io.github.janbarari.gradle.extension.envCI
-import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.hasSpace
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.openSafeStream
 import io.github.janbarari.gradle.extension.registerTask
+import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.utils.DateTimeUtils
 import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -60,6 +69,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 outputPathProperty.set(configuration.outputPath)
                 trackingTasksProperty.set(configuration.trackingTasks)
                 trackingBranchesProperty.set(configuration.trackingBranches)
+                databaseConfig.set(configuration.getDatabaseConfig())
             }
         }
     }
@@ -90,6 +100,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
 
     @get:Input
     abstract val trackingBranchesProperty: ListProperty<String>
+
+    @get:Input
+    abstract val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
 
     /**
      * Invokes when the task execution process started.
@@ -131,69 +144,59 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         if (taskArgument.startsWith(":").not()) throw InvalidPropertyException("`--task` is not valid!")
     }
 
+    private fun getData(): List<BuildMetric> {
+        val database = Database(databaseConfig.get(), envCIProperty.get().isPresent)
+        val repo: DatabaseRepository = DatabaseRepositoryImp(database, branchArgument, taskArgument)
+        return repo.getMetrics(periodArgument.toLong())
+    }
+
+    @Suppress("LongMethod")
     fun report() {
 
-        val rootProjectName = projectNameProperty.get()
+        val data = getData()
 
-        val timePeriodTitle = "$periodArgument Months"
-        val timePeriodStart = "21/04/2022"
-        val timePeriodEnd = "23/07/2022"
-        val reportedAt = "May 23, 2022 13:06 PM UTC"
-        val isCI = "Yes"
-        val pluginVersion = PLUGIN_VERSION
-
-        val initializationMaxValue = "3000"
-        val initializationMedianValues = "[200, 300, 400, 450, 340]"
-        val initializationMedianLabels = "[\"A\", \"B\", \"C\", \"D\", \"E\"]"
-
-        val configurationMaxValue = "8000"
-        val configurationMedianValues = "[3000, 2000, 2600, 3400, 5000]"
-        val configurationMedianLabels = "[\"A\", \"B\", \"C\", \"D\", \"E\"]"
-
-        javaClass.getResource("/index-template.html")!!
-            .openSafeStream()
-            .bufferedReader()
-            .use { it.readText() }
-            .replace("%root-project-name%", rootProjectName)
-            .replace("%task-path%", taskArgument)
-            .replace("%branch%", branchArgument)
-            .replace("%time-period-title%", timePeriodTitle)
-            .replace("%time-period-start%", timePeriodStart)
-            .replace("%time-period-end%", timePeriodEnd)
-            .replace("%reported-at%", reportedAt)
-            .replace("%is-ci%", isCI)
-            .replace("%plugin-version%", pluginVersion)
-            .replace("%initialization-max-value%", initializationMaxValue)
-            .replace("%initialization-median-values%", initializationMedianValues)
-            .replace("%initialization-median-labels%", initializationMedianLabels)
-            .replace("%configuration-max-value%", configurationMaxValue)
-            .replace("%configuration-median-values%", configurationMedianValues)
-            .replace("%configuration-median-labels%", configurationMedianLabels)
-            .also {
-
-                FileUtils.copyInputStreamToFile(
-                    javaClass.getSafeResourceAsStream("/res/nunito.ttf"),
-                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/nunito.ttf")
+        val analyticsReport =
+            AnalyticsReportPipeline(InitializationMetricReportStage(data)).addStage(ConfigurationMetricReportStage(data))
+                .execute(
+                    AnalyticsReport(
+                        branch = branchArgument, requestedTasks = taskArgument
+                    )
                 )
 
-                FileUtils.copyInputStreamToFile(
-                    javaClass.getSafeResourceAsStream("/res/chart.js"),
-                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/chart.js")
-                )
+        println(analyticsReport.toJson())
 
-                FileUtils.copyInputStreamToFile(
-                    javaClass.getSafeResourceAsStream("/res/plugin-logo.png"),
-                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/plugin-logo.png")
-                )
+        val rawHTML: String = javaClass.getResource("/index-template.html")!!.openSafeStream().bufferedReader().use { it.readText() }
+                .replace("%root-project-name%", projectNameProperty.get()).replace("%task-path%", taskArgument)
+                .replace("%branch%", branchArgument).replace("%time-period-title%", "$periodArgument Months")
+                .replace("%time-period-start%", DateTimeUtils.msToDateString(System.currentTimeMillis()))
+                .replace("%time-period-end%", DateTimeUtils.msToDateString(System.currentTimeMillis()))
+                .replace("%reported-at%", DateTimeUtils.msToDateTimeString(System.currentTimeMillis()))
+                .replace("%is-ci%", if (envCIProperty.get().isPresent) "Yes" else "No")
+                .replace("%plugin-version%", PLUGIN_VERSION)
 
-                FileUtils.copyInputStreamToFile(
-                    javaClass.getSafeResourceAsStream("/res/styles.css"),
-                    File("${outputPathProperty.get().toRealPath()}/$reportedAt/res/styles.css")
-                )
+        val renderedHTML = ReportRenderPipeline(InitializationMetricRenderStage(analyticsReport)).execute(rawHTML)
 
-                File("${outputPathProperty.get().toRealPath()}/$reportedAt/index.html").writeText(it)
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/res/nunito.ttf"),
+            File("${outputPathProperty.get().toRealPath()}/res/nunito.ttf")
+        )
 
-            }
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/res/chart.js"),
+            File("${outputPathProperty.get().toRealPath()}/res/chart.js")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/res/plugin-logo.png"),
+            File("${outputPathProperty.get().toRealPath()}/res/plugin-logo.png")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/res/styles.css"),
+            File("${outputPathProperty.get().toRealPath()}/res/styles.css")
+        )
+
+        File("${outputPathProperty.get().toRealPath()}/index.html").writeText(renderedHTML)
 
     }
 

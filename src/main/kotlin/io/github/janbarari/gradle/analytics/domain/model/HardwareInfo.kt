@@ -20,26 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
-
-import java.time.LocalDate
-import java.time.ZoneId
+package io.github.janbarari.gradle.analytics.domain.model
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-object TimeUtils {
-
-    private const val ONE_SECOND_IN_MILLIS = 1000
-    private const val ONE_DAY_IN_MILLIS = 86_400_000
-
-    fun getDayStartMs(): Long {
-        return LocalDate.now().atStartOfDay(ZoneId.of("UTC")).toEpochSecond() * ONE_SECOND_IN_MILLIS
-    }
-
-    fun getDayEndMs(): Long {
-        return getDayStartMs() + ONE_DAY_IN_MILLIS
-    }
-
-}
+data class HardwareInfo(
+    val availableMemory: Long,
+    val maximumMemoryCapacity: Long
+) : java.io.Serializable

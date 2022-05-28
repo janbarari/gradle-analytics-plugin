@@ -20,12 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.task
+package io.github.janbarari.gradle.analytics.reporttask
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class MissingPropertyException(msg: String): Throwable() {
+class InvalidPropertyException(msg: String): Throwable() {
     override val message: String = msg
 }

@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
-import io.github.janbarari.gradle.analytics.scanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
 import org.gradle.BuildResult
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies

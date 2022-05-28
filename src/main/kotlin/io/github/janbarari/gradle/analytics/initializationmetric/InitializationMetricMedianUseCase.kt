@@ -1,15 +1,15 @@
-package io.github.janbarari.gradle.analytics.domain.usecase
+package io.github.janbarari.gradle.analytics.initializationmetric
 
-import io.github.janbarari.gradle.analytics.domain.core.UseCaseNoInput
-import io.github.janbarari.gradle.analytics.domain.metric.InitializationMetric
+import io.github.janbarari.gradle.analytics.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.utils.MathUtils
 
 class InitializationMetricMedianUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<InitializationMetric>() {
+) : UseCase<Pair<String, List<String>>, InitializationMetric>() {
 
-    override fun execute(): InitializationMetric {
+    override fun execute(input: Pair<String, List<String>>): InitializationMetric {
         val durations = arrayListOf<Long>()
         val temporaryMetrics = repo.getTemporaryMetrics()
 

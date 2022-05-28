@@ -25,20 +25,21 @@ package io.github.janbarari.gradle.analytics.scanner
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
-import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.domain.usecase.InitializationMetricMedianUseCase
-import io.github.janbarari.gradle.analytics.domain.usecase.InitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricMedianUseCase
+import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.scanner.model.BuildInfo
-import io.github.janbarari.gradle.analytics.scanner.model.TaskInfo
-import io.github.janbarari.gradle.analytics.scanner.model.OsInfo
-import io.github.janbarari.gradle.analytics.scanner.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.scanner.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.domain.model.OsInfo
+import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
 import io.github.janbarari.gradle.os.OperatingSystemImp
 import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -137,7 +138,10 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         return parameters.envCI.get() == false && parameters.databaseConfig.get().local.isNull()
     }
 
+    @Suppress("ReturnCount")
     private fun onExecutionFinished(tasks: Collection<TaskInfo>) {
+        if (isForbiddenTasksRequested(parameters.requestedTasks.get())) return
+
         if (isCiProcessNotTrackable() || isLocalProcessNotTrackable()) {
             println("Not Tracked since CI database configuration is not defined for CI machine")
             return
@@ -173,15 +177,20 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         )
 
         val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
-        val repo: DatabaseRepository = DatabaseRepositoryImp(database)
+        val repo: DatabaseRepository = DatabaseRepositoryImp(
+            database,
+            GitUtils.getCurrentBranch(),
+            parameters.requestedTasks.get().separateElementsWithSpace()
+        )
         val saveMetricUseCase = SaveMetricUseCase(
             repo, InitializationMetricMedianUseCase(repo)
         )
         val saveTemporaryUseCase = SaveTemporaryMetricUseCase(repo)
 
-        val metric = BuildMetric()
-        metric.branch = GitUtils.getCurrentBranch()
-        metric.requestedTasks = parameters.requestedTasks.get()
+        val metric = BuildMetric(
+            branch = GitUtils.getCurrentBranch(),
+            requestedTasks = parameters.requestedTasks.get()
+        )
 
         metric.initializationMetric = InitializationMetricUseCase().execute(
             info.getInitializationDuration().toMillis()
@@ -189,6 +198,10 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         val result = saveTemporaryUseCase.execute(metric)
         if (result) saveMetricUseCase.execute(metric)
+    }
+
+    private fun isForbiddenTasksRequested(requestedTasks: List<String>): Boolean {
+        return requestedTasks.contains("reportAnalytics")
     }
 
     private fun isProcessTrackable(): Boolean {

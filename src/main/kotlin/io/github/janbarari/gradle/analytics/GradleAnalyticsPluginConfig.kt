@@ -53,7 +53,7 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
         databaseConfig = DatabaseConfig().also(block)
     }
 
-    fun getDatabase(): DatabaseConfig = databaseConfig
+    fun getDatabaseConfig(): DatabaseConfig = databaseConfig
 
     class DatabaseConfig : java.io.Serializable {
 

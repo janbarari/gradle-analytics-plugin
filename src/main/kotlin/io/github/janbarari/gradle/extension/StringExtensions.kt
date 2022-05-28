@@ -36,3 +36,7 @@ fun String.toRealPath(): String {
     }
     return this
 }
+
+fun List<String>.separateElementsWithSpace(): String {
+    return this.joinToString(separator = " ")
+}

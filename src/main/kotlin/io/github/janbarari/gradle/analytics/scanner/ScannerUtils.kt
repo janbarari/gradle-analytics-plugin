@@ -52,7 +52,7 @@ private fun setupExecutionService(
             BuildExecutionService::class.java
         ) { spec ->
             with(spec.parameters) {
-                databaseConfig.set(configuration.getDatabase())
+                databaseConfig.set(configuration.getDatabaseConfig())
                 envCI.set(project.envCI().isPresent)
                 requestedTasks.set(project.gradle.getRequestedTasks())
                 trackingTasks.set(configuration.trackingTasks)

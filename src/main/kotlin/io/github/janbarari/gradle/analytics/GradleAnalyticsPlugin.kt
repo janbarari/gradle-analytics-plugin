@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.analytics.scanner.setupScannerServices
-import io.github.janbarari.gradle.analytics.task.ReportAnalyticsTask
+import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project

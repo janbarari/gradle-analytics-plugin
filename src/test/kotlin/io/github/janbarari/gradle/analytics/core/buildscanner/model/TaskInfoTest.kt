@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.core.buildscanner.model
 
-import io.github.janbarari.gradle.analytics.scanner.model.TaskInfo
+import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import org.junit.jupiter.api.Test
 
 class TaskInfoTest {

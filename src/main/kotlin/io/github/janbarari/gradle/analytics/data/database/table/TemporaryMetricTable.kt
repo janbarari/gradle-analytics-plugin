@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.data.database.table
 
+import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
 import org.jetbrains.exposed.sql.Table
 
@@ -35,6 +36,10 @@ object TemporaryMetricTable : Table("temporary_metric") {
     val number = long("number").autoIncrement().uniqueIndex()
 
     val createdAt = long("created_at")
+
+    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val requestedTasks = varchar("requested_tasks", Database.DEFAULT_VARCHAR_LENGTH)
 
     val value = registerColumn<String>("value", LongTextColumnType())
 

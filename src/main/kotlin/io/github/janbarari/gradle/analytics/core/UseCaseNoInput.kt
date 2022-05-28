@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.domain.core
+package io.github.janbarari.gradle.analytics.core
 
 @SuppressWarnings("UnnecessaryAbstractClass")
 abstract class UseCaseNoInput<OUTPUT> {

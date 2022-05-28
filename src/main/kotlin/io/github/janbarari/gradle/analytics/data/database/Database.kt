@@ -49,6 +49,10 @@ class Database(
     private var isCI: Boolean
 ) {
 
+    companion object {
+        const val DEFAULT_VARCHAR_LENGTH = 256
+    }
+
     private lateinit var _database: Database
     private var databaseConfig: DatabaseConnection? = null
 

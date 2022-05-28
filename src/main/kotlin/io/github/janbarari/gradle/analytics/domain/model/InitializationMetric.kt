@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.domain.metric
+package io.github.janbarari.gradle.analytics.domain.model
 
 import com.squareup.moshi.Json
 

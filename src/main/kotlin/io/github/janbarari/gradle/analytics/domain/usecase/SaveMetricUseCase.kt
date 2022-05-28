@@ -1,8 +1,9 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
-import io.github.janbarari.gradle.analytics.domain.core.UseCase
-import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricMedianUseCase
 
 class SaveMetricUseCase(
     private val repo: DatabaseRepository,
@@ -11,12 +12,14 @@ class SaveMetricUseCase(
 
     override fun execute(new: BuildMetric): Boolean {
         if (repo.isDayMetricExists()) {
-            val tempMetric = BuildMetric()
+            val tempMetric = BuildMetric(new.branch, new.requestedTasks)
 
             val dayMetric = repo.getDayMetric()
             val dayMetricNumber = dayMetric.second
 
-            tempMetric.initializationMetric = initializationMetricMedianUseCase.execute()
+            tempMetric.initializationMetric = initializationMetricMedianUseCase.execute(
+                Pair(new.branch, new.requestedTasks)
+            )
 
             return repo.updateDayMetric(dayMetricNumber, tempMetric)
         }
