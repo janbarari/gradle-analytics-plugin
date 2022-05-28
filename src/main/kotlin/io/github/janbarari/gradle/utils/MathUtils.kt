@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.utils
 
 /**
  * A collection of mathematics functions.
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */

@@ -26,12 +26,14 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 object TerminalUtils {
+
     /**
      * Executes the cmd in terminal.
      *
      * @throws IllegalStateException if the command execution failed.
      */
-    @kotlin.jvm.Throws(IllegalStateException::class)
+    @kotlin.jvm.Throws(Exception::class)
+    @Suppress("TooGenericExceptionCaught")
     fun execCommand(cmd: String): String {
         val runtime = Runtime.getRuntime()
         try {
@@ -39,8 +41,8 @@ object TerminalUtils {
                 InputStreamReader(runtime.exec(cmd).inputStream)
             )
             return reader.readLine()
-        } catch (e: IllegalStateException) {
-            throw IllegalArgumentException("Error executing $cmd.", e)
+        } catch (e: Exception) {
+            throw java.lang.RuntimeException("Error executing $cmd.", e)
         }
     }
 
