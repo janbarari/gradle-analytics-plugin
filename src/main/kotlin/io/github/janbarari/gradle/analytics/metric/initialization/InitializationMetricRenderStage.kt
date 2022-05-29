@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.initializationmetric
+package io.github.janbarari.gradle.analytics.metric.initialization
 
 import io.github.janbarari.gradle.analytics.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport

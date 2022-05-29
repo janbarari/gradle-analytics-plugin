@@ -30,7 +30,7 @@ class DatabaseRepositoryImp(
     override fun saveNewMetric(metric: BuildMetric): Boolean {
         return db.transaction {
             val queryResult = MetricTable.insert {
-                it[createdAt] = System.currentTimeMillis()
+                it[createdAt] = metric.createdAt
                 it[value] = jsonAdapter.toJson(metric)
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()
@@ -42,7 +42,7 @@ class DatabaseRepositoryImp(
     override fun saveTemporaryMetric(metric: BuildMetric): Boolean {
         return db.transaction {
             val queryResult = TemporaryMetricTable.insert {
-                it[createdAt] = System.currentTimeMillis()
+                it[createdAt] = metric.createdAt
                 it[value] = jsonAdapter.toJson(metric)
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()

@@ -44,3 +44,9 @@ fun ClassLoader.getSafeResourceAsStream(name: String): InputStream? {
     return getResource(name)?.openSafeStream()
 }
 
+fun Any.getTextResourceContent(fileName: String): String {
+    return javaClass.getResource("/$fileName")!!
+        .openSafeStream()
+        .bufferedReader()
+        .use { it.readText() }
+}

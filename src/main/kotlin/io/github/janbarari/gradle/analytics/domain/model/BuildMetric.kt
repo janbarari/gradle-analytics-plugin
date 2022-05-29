@@ -7,6 +7,8 @@ data class BuildMetric(
     var branch: String,
     @Json(name = "requestedTasks")
     var requestedTasks: List<String>,
+    @Json(name = "created_at")
+    var createdAt: Long,
     @Json(name = "initialization_metric")
     var initializationMetric: InitializationMetric? = null
 ): java.io.Serializable

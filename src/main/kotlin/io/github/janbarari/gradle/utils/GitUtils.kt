@@ -33,7 +33,7 @@ object GitUtils {
      * @throws IllegalStateException if the command execution failed.
      */
     @kotlin.jvm.Throws(IllegalStateException::class)
-    fun getCurrentBranch(): String {
+    fun currentBranch(): String {
         return TerminalUtils.execCommand("git rev-parse --abbrev-ref HEAD")
     }
 

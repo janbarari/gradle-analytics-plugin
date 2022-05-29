@@ -22,24 +22,22 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_VERSION
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.configurationmetric.ConfigurationMetricReportStage
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricRenderStage
-import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.ConfigurationMetricReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricRenderStage
+import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricReportStage
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
+import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.openSafeStream
 import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.extension.toRealPath
-import io.github.janbarari.gradle.utils.DateTimeUtils
 import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -112,7 +110,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         ensureBranchArgumentValid()
         ensurePeriodArgumentValid()
         ensureTaskArgumentValid()
-        report()
+        generateReport()
     }
 
     /**
@@ -144,60 +142,65 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         if (taskArgument.startsWith(":").not()) throw InvalidPropertyException("`--task` is not valid!")
     }
 
-    private fun getData(): List<BuildMetric> {
+    private fun getBuildMetrics(): List<BuildMetric> {
         val database = Database(databaseConfig.get(), envCIProperty.get().isPresent)
         val repo: DatabaseRepository = DatabaseRepositoryImp(database, branchArgument, taskArgument)
         return repo.getMetrics(periodArgument.toLong())
     }
 
-    @Suppress("LongMethod")
-    fun report() {
+    private fun generateReport() {
+        val rawHTML: String = getTextResourceContent("index-template.html")
+        val data = getBuildMetrics()
 
-        val data = getData()
+        val analyticsReport = AnalyticsReportPipeline(InitializationMetricReportStage(data))
+            .addStage(ConfigurationMetricReportStage(data))
+            .execute(AnalyticsReport(branch = branchArgument, requestedTasks = taskArgument))
 
-        val analyticsReport =
-            AnalyticsReportPipeline(InitializationMetricReportStage(data)).addStage(ConfigurationMetricReportStage(data))
-                .execute(
-                    AnalyticsReport(
-                        branch = branchArgument, requestedTasks = taskArgument
-                    )
-                )
+        val renderedHTML = ReportRenderPipeline(InitialRenderStage.Builder()
+                .data(data)
+                .projectName(projectNameProperty.get())
+                .branch(branchArgument)
+                .period(periodArgument.toLong())
+                .requestedTasks(taskArgument)
+                .isCI(envCIProperty.get().isPresent)
+                .build())
+            .addStage(InitializationMetricRenderStage(analyticsReport))
+            .execute(rawHTML)
 
-        println(analyticsReport.toJson())
+        saveReport(renderedHTML)
 
-        val rawHTML: String = javaClass.getResource("/index-template.html")!!.openSafeStream().bufferedReader().use { it.readText() }
-                .replace("%root-project-name%", projectNameProperty.get()).replace("%task-path%", taskArgument)
-                .replace("%branch%", branchArgument).replace("%time-period-title%", "$periodArgument Months")
-                .replace("%time-period-start%", DateTimeUtils.msToDateString(System.currentTimeMillis()))
-                .replace("%time-period-end%", DateTimeUtils.msToDateString(System.currentTimeMillis()))
-                .replace("%reported-at%", DateTimeUtils.msToDateTimeString(System.currentTimeMillis()))
-                .replace("%is-ci%", if (envCIProperty.get().isPresent) "Yes" else "No")
-                .replace("%plugin-version%", PLUGIN_VERSION)
+    }
 
-        val renderedHTML = ReportRenderPipeline(InitializationMetricRenderStage(analyticsReport)).execute(rawHTML)
+    private fun saveReport(renderedHTML: String) {
+        val fontPath = "res/nunito.ttf"
+        val chartJsPath = "res/chart.js"
+        val logoPath = "res/plugin-logo.png"
+        val stylesPath = "res/styles.css"
+        val indexPath = "index.html"
+        val savePath = "${outputPathProperty.get().toRealPath()}/gradle-analytics-plugin"
 
         FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/res/nunito.ttf"),
-            File("${outputPathProperty.get().toRealPath()}/res/nunito.ttf")
+            javaClass.getSafeResourceAsStream("/$fontPath"),
+            File("$savePath/$fontPath")
         )
 
         FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/res/chart.js"),
-            File("${outputPathProperty.get().toRealPath()}/res/chart.js")
+            javaClass.getSafeResourceAsStream("/$chartJsPath"),
+            File("$savePath/$chartJsPath")
         )
 
         FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/res/plugin-logo.png"),
-            File("${outputPathProperty.get().toRealPath()}/res/plugin-logo.png")
+            javaClass.getSafeResourceAsStream("/$logoPath"),
+            File("$savePath/$logoPath")
         )
 
         FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/res/styles.css"),
-            File("${outputPathProperty.get().toRealPath()}/res/styles.css")
+            javaClass.getSafeResourceAsStream("/$stylesPath"),
+            File("$savePath/$stylesPath")
         )
 
-        File("${outputPathProperty.get().toRealPath()}/index.html").writeText(renderedHTML)
-
+        File("$savePath/$indexPath")
+            .writeText(renderedHTML)
     }
 
 }

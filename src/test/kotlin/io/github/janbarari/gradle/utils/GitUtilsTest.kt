@@ -7,7 +7,7 @@ class GitUtilsTest {
 
     @Test
     fun `check git branch name returns correctly`() {
-        val branchName = GitUtils.getCurrentBranch()
+        val branchName = GitUtils.currentBranch()
         assertTrue {
             branchName.isNotEmpty()
         }

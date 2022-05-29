@@ -23,23 +23,23 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
+import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.OsInfo
+import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricMedianUseCase
-import io.github.janbarari.gradle.analytics.initializationmetric.InitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
-import io.github.janbarari.gradle.analytics.domain.model.OsInfo
-import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
-import io.github.janbarari.gradle.os.OperatingSystemImp
-import io.github.janbarari.gradle.utils.GitUtils
+import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricMedianUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.os.OperatingSystemImp
+import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -55,8 +55,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener,
-    AutoCloseable {
+abstract class BuildExecutionService :
+    BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
     interface Params : BuildServiceParameters {
         val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
@@ -66,7 +66,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val trackingBranches: ListProperty<String>
     }
 
-    private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
+    private val _executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
     init {
         assignStartTimestampIfProcessSkipped()
@@ -110,7 +110,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
      */
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
-            executedTasks.add(
+            _executedTasks.add(
                 TaskInfo(
                     event.result.startTime,
                     event.result.endTime,
@@ -126,70 +126,45 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
      * Called when the build execution process finished.
      */
     override fun close() {
-        onExecutionFinished(executedTasks)
-        executedTasks.clear()
+        onExecutionFinished(_executedTasks)
+        _executedTasks.clear()
     }
 
-    private fun isCiProcessNotTrackable(): Boolean {
-        return parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get() == true
-    }
+    private fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
+        if (isForbiddenTasksRequested() || isDatabaseConfigurationExists().not()) return
+        if (isTaskTrackable().not() || isBranchTrackable().not()) return
 
-    private fun isLocalProcessNotTrackable(): Boolean {
-        return parameters.envCI.get() == false && parameters.databaseConfig.get().local.isNull()
-    }
-
-    @Suppress("ReturnCount")
-    private fun onExecutionFinished(tasks: Collection<TaskInfo>) {
-        if (isForbiddenTasksRequested(parameters.requestedTasks.get())) return
-
-        if (isCiProcessNotTrackable() || isLocalProcessNotTrackable()) {
-            println("Not Tracked since CI database configuration is not defined for CI machine")
-            return
-        }
-
-        if (isProcessTrackable().not() || isBranchTrackable().not()) {
-            println("Process not trackable")
-            return
-        }
-
-        val startedAt = BuildInitializationService.STARTED_AT
-        val initializedAt = BuildInitializationService.INITIALIZED_AT
-        val configuredAt = BuildConfigurationService.CONFIGURED_AT
-        val finishedAt = System.currentTimeMillis()
-
-        val dependenciesResolveInfo: ArrayList<DependencyResolveInfo> = arrayListOf()
-        val iterator = BuildDependencyResolutionService.dependenciesResolveInfo.iterator()
-        while (iterator.hasNext()) {
-            val info = iterator.next()
-            dependenciesResolveInfo.add(info.value)
-        }
+        val info = BuildInfo(
+            startedAt = BuildInitializationService.STARTED_AT,
+            initializedAt = BuildInitializationService.INITIALIZED_AT,
+            configuredAt = BuildConfigurationService.CONFIGURED_AT,
+            finishedAt = System.currentTimeMillis(),
+            osInfo = OsInfo(OperatingSystemImp().getName()),
+            hardwareInfo = HardwareInfo(0, 0),
+            dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
+            executedTasks = executedTasks
+        )
 
         BuildInitializationService.reset()
         BuildConfigurationService.reset()
         BuildDependencyResolutionService.reset()
 
-        val osInfo = OsInfo(OperatingSystemImp().getName())
-
-        val hardwareInfo = HardwareInfo(0, 0)
-
-        val info = BuildInfo(
-            startedAt, initializedAt, configuredAt, dependenciesResolveInfo, tasks, finishedAt, osInfo, hardwareInfo
-        )
-
         val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
         val repo: DatabaseRepository = DatabaseRepositoryImp(
             database,
-            GitUtils.getCurrentBranch(),
+            GitUtils.currentBranch(),
             parameters.requestedTasks.get().separateElementsWithSpace()
         )
+
         val saveMetricUseCase = SaveMetricUseCase(
             repo, InitializationMetricMedianUseCase(repo)
         )
         val saveTemporaryUseCase = SaveTemporaryMetricUseCase(repo)
 
         val metric = BuildMetric(
-            branch = GitUtils.getCurrentBranch(),
-            requestedTasks = parameters.requestedTasks.get()
+            branch = GitUtils.currentBranch(),
+            requestedTasks = parameters.requestedTasks.get(),
+            createdAt = System.currentTimeMillis()
         )
 
         metric.initializationMetric = InitializationMetricUseCase().execute(
@@ -200,11 +175,16 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         if (result) saveMetricUseCase.execute(metric)
     }
 
-    private fun isForbiddenTasksRequested(requestedTasks: List<String>): Boolean {
-        return requestedTasks.contains("reportAnalytics")
+    private fun isDatabaseConfigurationExists(): Boolean {
+        return !(parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get() == true) ||
+                !(parameters.envCI.get() == false && parameters.databaseConfig.get().local.isNull())
     }
 
-    private fun isProcessTrackable(): Boolean {
+    private fun isForbiddenTasksRequested(): Boolean {
+        return parameters.requestedTasks.get().contains("reportAnalytics")
+    }
+
+    private fun isTaskTrackable(): Boolean {
         var result = false
 
         val trackingTasksIterator = parameters.trackingTasks.get().iterator()
@@ -219,7 +199,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
                 combinedRequestedTasks += requestedTask
             }
 
-            if(trackingTask == combinedRequestedTasks) result = true
+            if (trackingTask == combinedRequestedTasks) result = true
         }
 
         return result
@@ -227,14 +207,17 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     private fun isBranchTrackable(): Boolean {
         var result = false
+
         val trackingBranchesIterator = parameters.trackingBranches.get().iterator()
-        val currentBranch = GitUtils.getCurrentBranch()
+        val currentBranch = GitUtils.currentBranch()
+
         while (trackingBranchesIterator.hasNext()) {
             val trackingBranch = trackingBranchesIterator.next()
             if (currentBranch == trackingBranch) {
                 result = true
             }
         }
+
         return result
     }
 
