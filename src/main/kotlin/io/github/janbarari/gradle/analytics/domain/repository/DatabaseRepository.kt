@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.domain.repository
 
-import io.github.janbarari.gradle.analytics.domain.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 
 interface DatabaseRepository {
     fun saveNewMetric(metric: BuildMetric): Boolean
@@ -8,6 +8,7 @@ interface DatabaseRepository {
 
     fun getDayMetric(): Pair<BuildMetric, Long>
     fun isDayMetricExists(): Boolean
+    fun getMetrics(period: Long): List<BuildMetric>
 
     fun updateDayMetric(number: Long, metric: BuildMetric): Boolean
 

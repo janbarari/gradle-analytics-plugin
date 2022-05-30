@@ -23,52 +23,32 @@
 package io.github.janbarari.gradle.logger
 
 /**
- * Logger interface.
- *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-interface Logger {
+object Logger {
 
-    /**
-     * Logger modes.
-     */
-    enum class LogMode {
-        SILENT, INFO
+    var isEnabled: Boolean = true
+
+    fun log(title: String, message: String): Boolean {
+        if (isEnabled) {
+            println(">> $title > $message")
+            return true
+        }
+        return false
     }
 
-    /**
-     * Prints log in the console if the [LogMode] is [LogMode.INFO].
-     *
-     * @param title category/title of the log.
-     * @param message the log message.
-     * @return returns true if the operation was successful.
-     */
-    fun log(title: String, message: String): Boolean
+    fun log(title: String, subtitle: String, message: String): Boolean {
+        if (isEnabled) {
+            println(">> $title > $subtitle > $message")
+            return true
+        }
+        return false
+    }
 
-    /**
-     * Prints log in the console if the [LogMode] is [LogMode.INFO].
-     *
-     * @param title the log title.
-     * @param subtitle the log subtitle.
-     * @param message the log message.
-     * @return returns true if the operation was successful.
-     */
-    fun log(title: String, subtitle: String, message: String): Boolean
-
-    /**
-     * Prints error message in the console.
-     */
-    fun error(message: String): Boolean
-
-    /**
-     * Changes the logger mode.
-     */
-    fun setMode(mode: LogMode)
-
-    /**
-     * Returns logger mode.
-     */
-    fun getMode(): LogMode
+    fun error(message: String): Boolean {
+        println("!> $message")
+        return true
+    }
 
 }

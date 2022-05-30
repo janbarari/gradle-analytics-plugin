@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
+    implementation(libs.commons.io)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

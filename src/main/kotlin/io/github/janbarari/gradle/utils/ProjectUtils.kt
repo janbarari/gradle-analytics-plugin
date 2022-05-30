@@ -28,7 +28,8 @@ import org.gradle.util.GradleVersion
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class ProjectUtils {
+object ProjectUtils {
+
     /**
      * List of official Gradle versions.
      */
@@ -69,18 +70,15 @@ class ProjectUtils {
         V6_1("6.1")
     }
 
-    companion object {
-        /**
-         * Checks the project Gradle version is above the entered gradle version.
-         *
-         * @return True, if Gradle version is compatible.
-         */
-        fun isCompatibleWith(version: GradleVersions): Boolean {
-            val projectGradleVersion = GradleVersion.current()
-            val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
-            return projectGradleVersion > minimumRequiredGradleVersion
-        }
-
+    /**
+     * Checks the project Gradle version is above the entered gradle version.
+     *
+     * @return True, if Gradle version is compatible.
+     */
+    fun isCompatibleWith(version: GradleVersions): Boolean {
+        val projectGradleVersion = GradleVersion.current()
+        val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
+        return projectGradleVersion > minimumRequiredGradleVersion
     }
 
 }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>%root-project-name%-%task-path%-%branch%-%time-period-start%-%time-period-end%</title>
+  <script src="res/chart.js"></script>
+  <link href="res/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <div id="container">
+
+    <img src="res/plugin-logo.png" class="logo-dimensions" />
+    <h1>Gradle Analytics Plugin Report</h1>
+    <h3>
+      Analytics
+      <span class="tag-style-1">%task-path%</span>
+      on branch
+      <span class="tag-style-2">%branch%</span>
+      in
+      <span class="tag-style-3">%time-period-title%</span>
+    </h3>
+
+    <br>
+
+    <h4><span class="gray-text">Time period</span> %time-period-start% ~ %time-period-end%</h4>
+    <h4><span class="gray-text">Reported at</span> %reported-at%</h4>
+    <h4><span class="gray-text">Is on CI/CD</span> %is-ci%</h4>
+    <h4><span class="gray-text">Version</span> %plugin-version%</h4>
+
+    <br>
+
+    <h2>Initialization and Configuration Time</h2>
+    <div class="flex-container mt16">
+
+      <div class="flex-child pw16">
+        <p>Initialization Median Chart</p>
+        <canvas id="initializationChart" style="width:100%;"></canvas>
+        <script type="text/javascript">
+          var _values = %initialization-median-values%;
+          var _labels = %initialization-median-labels%;
+
+          new Chart("initializationChart", {
+            type: "line",
+            data: {
+              labels: _labels,
+              datasets: [
+                {
+                  backgroundColor: "#E1F5FE",
+                  borderColor: "#03A9F4",
+                  data: _values
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              scales: {
+                yAxes: [{
+                  display: true,
+                  stacked: true,
+                  ticks: {
+                    min: 0,
+                    max: %initialization-max-value%
+                  }
+                }]
+              }
+            }
+          });
+        </script>
+      </div>
+
+      <div class="flex-child pw16">
+        <p>Configuration Median Chart</p>
+        <canvas id="configurationChart" style="width:100%;"></canvas>
+        <script type="text/javascript">
+          var _values = %configuration-median-values%;
+          var _labels = %configuration-median-labels%;
+
+          new Chart("configurationChart", {
+            type: "line",
+            data: {
+              labels: _labels,
+              datasets: [
+                {
+                  backgroundColor: "#FCE4EC",
+                  borderColor: "#E91E63",
+                  data: _values
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              scales: {
+                yAxes: [{
+                  display: true,
+                  stacked: true,
+                  ticks: {
+                    min: 0,
+                    max: %configuration-max-value%
+                  }
+                }]
+              }
+            }
+          });
+        </script>
+      </div>
+
+    </div>
+    <p>Please note that the median is the more accurate result than Mean, If you think this is not a valuable
+      result, I highly recommend you to check the mathematics website and see the Mean, Median and Mode diff.</p>
+
+  </div>
+
+</body>
+
+</html>

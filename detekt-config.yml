@@ -12,6 +12,7 @@ complexity:
     ignorePrivate: false
     ignoreOverridden: false
 
+
 style:
   active: true
   SerialVersionUIDInSerializableClass:
