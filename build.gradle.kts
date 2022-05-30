@@ -28,9 +28,12 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     testImplementation(kotlin("test"))
+    testImplementation(libs.mockk)
+
     compileOnly(gradleApi())
+
+    implementation(kotlin("stdlib-jdk8"))
     implementation(libs.oshi)
     implementation(libs.sqlite.driver)
     implementation(libs.mysql.driver)
