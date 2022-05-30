@@ -7,7 +7,7 @@ mysql_driver = "8.0.29"
 jetbrains_exposed = "0.38.1"
 moshi = "1.13.0"
 commons-io = "2.11.0"
-mockk = "v1.12.4"
+mockk = "1.12.4"
 
 [libraries]
 oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
