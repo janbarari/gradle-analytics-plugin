@@ -174,8 +174,8 @@ abstract class BuildExecutionService :
         )
         val saveTemporaryMetricUseCase = SaveTemporaryMetricUseCase(repo)
 
-        val result = saveTemporaryMetricUseCase.execute(metric)
-        if (result) saveMetricUseCase.execute(metric)
+        saveTemporaryMetricUseCase.execute(metric)
+        saveMetricUseCase.execute(metric)
 
         return true
     }

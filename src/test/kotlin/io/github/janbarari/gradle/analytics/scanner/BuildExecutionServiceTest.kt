@@ -4,11 +4,15 @@ import io.github.janbarari.gradle.FakeListProperty
 import io.github.janbarari.gradle.FakeProperty
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.utils.GitUtils
 import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkClass
 import io.mockk.mockkObject
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import kotlin.test.assertEquals
@@ -229,6 +233,89 @@ class BuildExecutionServiceTest {
         )
 
         assertEquals(false, service.onExecutionFinished(fakeExecutedTasks))
+    }
+
+    @Test
+    fun `check oExecutionFinished() return false when requestedTasks are not trackable`() {
+        val service = createService(
+            Param(
+                requestedTasks = listOf(":app:assembleDebug"),
+                databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
+                    local = null
+                },
+                envCI = false,
+                trackingTasks = listOf("clean"),
+                trackingBranches = listOf("remote", "master")
+            )
+        )
+
+        val fakeExecutedTasks = listOf(
+            TaskInfo(10L, 50L, ":app:assembleDebug", "task #1", "task #1"),
+            TaskInfo(0L, 10L, ":app:assembleDebug", "task #2", "task #2"),
+            TaskInfo(30L, 70L, ":app:assembleDebug", "task #3", "task #3"),
+            TaskInfo(20L, 80L, ":app:assembleDebug", "task #4", "task #4"),
+            TaskInfo(44L, 52L, ":app:assembleDebug", "task #5", "task #5")
+        )
+
+        assertEquals(false, service.onExecutionFinished(fakeExecutedTasks))
+    }
+
+    @Test
+    fun `check oExecutionFinished() return false when branch is not trackable`() {
+        val service = createService(
+            Param(
+                requestedTasks = listOf(":app:assembleDebug"),
+                databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
+                    local = null
+                },
+                envCI = false,
+                trackingTasks = listOf(":app:assembleDebug"),
+                trackingBranches = listOf("remote", "master")
+            )
+        )
+
+        val fakeExecutedTasks = listOf(
+            TaskInfo(10L, 50L, ":app:assembleDebug", "task #1", "task #1"),
+            TaskInfo(0L, 10L, ":app:assembleDebug", "task #2", "task #2"),
+            TaskInfo(30L, 70L, ":app:assembleDebug", "task #3", "task #3"),
+            TaskInfo(20L, 80L, ":app:assembleDebug", "task #4", "task #4"),
+            TaskInfo(44L, 52L, ":app:assembleDebug", "task #5", "task #5")
+        )
+
+        mockkObject(GitUtils)
+        every { GitUtils.currentBranch() } returns "feature-1"
+
+        assertEquals(false, service.onExecutionFinished(fakeExecutedTasks))
+    }
+
+    @Test
+    fun `check oExecutionFinished() return true when save process was successful`() {
+        val service = createService(
+            Param(
+                requestedTasks = listOf(":app:assembleDebug"),
+                databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
+                    local = sqlite {
+                        path = "./"
+                    }
+                },
+                envCI = false,
+                trackingTasks = listOf(":app:assembleDebug", ":app:assembleRelease"),
+                trackingBranches = listOf("develop", "master")
+            )
+        )
+
+        val fakeExecutedTasks = listOf(
+            TaskInfo(10L, 50L, ":app:assembleDebug", "task #1", "task #1"),
+            TaskInfo(0L, 10L, ":app:assembleDebug", "task #2", "task #2"),
+            TaskInfo(30L, 70L, ":app:assembleDebug", "task #3", "task #3"),
+            TaskInfo(20L, 80L, ":app:assembleDebug", "task #4", "task #4"),
+            TaskInfo(44L, 52L, ":app:assembleDebug", "task #5", "task #5")
+        )
+
+        mockkObject(GitUtils)
+        every { GitUtils.currentBranch() } returns "develop"
+
+        assertEquals(true, service.onExecutionFinished(fakeExecutedTasks))
     }
 
 }

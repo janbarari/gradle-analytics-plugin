@@ -23,11 +23,13 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
+@ExcludeJacocoGenerated
 @Suppress("UnstableApiUsage")
 fun setupScannerServices(
     project: Project,
@@ -40,6 +42,7 @@ fun setupScannerServices(
     setupExecutionService(project, registry, configuration)
 }
 
+@ExcludeJacocoGenerated
 @Suppress("UnstableApiUsage")
 private fun setupExecutionService(
     project: Project,
@@ -63,14 +66,17 @@ private fun setupExecutionService(
     }
 }
 
+@ExcludeJacocoGenerated
 private fun setupInitializationService(project: Project) {
     project.gradle.addBuildListener(BuildInitializationService(project.gradle))
 }
 
+@ExcludeJacocoGenerated
 private fun setupConfigurationService(project: Project) {
     project.gradle.addBuildListener(BuildConfigurationService())
 }
 
+@ExcludeJacocoGenerated
 private fun setupDependencyResolutionService(project: Project) {
     project.gradle.addBuildListener(BuildDependencyResolutionService())
 }
