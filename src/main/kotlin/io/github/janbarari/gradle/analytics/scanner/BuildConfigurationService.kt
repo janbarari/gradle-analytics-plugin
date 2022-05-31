@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.BuildResult
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
@@ -48,10 +49,12 @@ class BuildConfigurationService : InternalBuildListener {
         reset()
     }
 
+    @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
         // called when the root project settings evaluated.
     }
 
+    @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
         // called when projects files loaded.
     }
@@ -60,6 +63,7 @@ class BuildConfigurationService : InternalBuildListener {
         CONFIGURED_AT = System.currentTimeMillis()
     }
 
+    @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
         // This method is deprecated, Execution process are handled by [BuildExecutionService]

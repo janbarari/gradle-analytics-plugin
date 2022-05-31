@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.BuildResult
 import org.gradle.api.Project
 import org.gradle.api.ProjectEvaluationListener
@@ -70,18 +71,22 @@ class BuildInitializationService(
         }
     }
 
+    @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
     }
 
+    @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
     }
 
+    @ExcludeJacocoGenerated
     override fun projectsEvaluated(gradle: Gradle) {
         STARTED_AT = getStartTimestamp()
     }
 
+    @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
@@ -90,6 +95,7 @@ class BuildInitializationService(
     /**
      * Returns the build start timestamp from [BuildScanBuildStartedTime].
      */
+    @ExcludeJacocoGenerated
     private fun getStartTimestamp(): Long {
         val buildStartedTimeService = (gradle as GradleInternal).services.get(BuildScanBuildStartedTime::class.java)
         return buildStartedTimeService?.buildStartedTime ?: System.currentTimeMillis()
