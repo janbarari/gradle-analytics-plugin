@@ -58,7 +58,7 @@ import java.io.File
 abstract class ReportAnalyticsTask : DefaultTask() {
 
     companion object {
-        private const val TASK_NAME = "reportAnalytics"
+        const val TASK_NAME = "reportAnalytics"
 
         fun register(project: Project, configuration: GradleAnalyticsPluginConfig) {
             project.registerTask<ReportAnalyticsTask>(TASK_NAME) {

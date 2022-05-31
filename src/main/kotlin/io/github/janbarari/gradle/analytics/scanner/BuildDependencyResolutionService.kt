@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.BuildResult
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
@@ -40,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap
 class BuildDependencyResolutionService : InternalBuildListener, DependencyResolutionListener {
 
     companion object {
-        var dependenciesResolveInfo: ConcurrentHashMap<String, DependencyResolveInfo> =
+        val dependenciesResolveInfo: ConcurrentHashMap<String, DependencyResolveInfo> =
             ConcurrentHashMap<String, DependencyResolveInfo>()
 
         fun reset() {
@@ -53,6 +54,7 @@ class BuildDependencyResolutionService : InternalBuildListener, DependencyResolu
         reset()
     }
 
+    @ExcludeJacocoGenerated
     override fun beforeResolve(dependencies: ResolvableDependencies) {
         dependenciesResolveInfo[dependencies.path] = DependencyResolveInfo(
             dependencies.path,
@@ -60,22 +62,27 @@ class BuildDependencyResolutionService : InternalBuildListener, DependencyResolu
         )
     }
 
+    @ExcludeJacocoGenerated
     override fun afterResolve(dependencies: ResolvableDependencies) {
         dependenciesResolveInfo[dependencies.path]?.finishedAt = System.currentTimeMillis()
     }
 
+    @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
     }
 
+    @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
     }
 
+    @ExcludeJacocoGenerated
     override fun projectsEvaluated(gradle: Gradle) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
     }
 
+    @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
         // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
