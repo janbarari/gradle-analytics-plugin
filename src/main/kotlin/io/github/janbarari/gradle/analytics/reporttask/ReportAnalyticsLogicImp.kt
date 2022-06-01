@@ -39,8 +39,7 @@ import java.io.File
 import java.io.IOException
 
 /**
- * In order to make the plugin codes testable and also framework independent. every
- * single class logic that depends on framework should be created on a logic class.
+ * In order to make the [ReportAnalyticsTask] testable and the logic framework independent.
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0
@@ -129,10 +128,9 @@ class ReportAnalyticsLogicImp(
     /**
      * Ensures the `--task` input argument is set and valid.
      */
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
+    @kotlin.jvm.Throws(MissingPropertyException::class)
     override fun ensureTaskArgumentValid(requestedTasksArgument: String) {
         if (requestedTasksArgument.isEmpty()) throw MissingPropertyException("`--task` is not present!")
-        if (requestedTasksArgument.startsWith(":").not()) throw InvalidPropertyException("`--task` is not valid!")
     }
 
 }
