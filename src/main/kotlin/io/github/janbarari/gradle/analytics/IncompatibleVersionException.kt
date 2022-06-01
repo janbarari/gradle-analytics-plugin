@@ -23,11 +23,13 @@
 package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 class IncompatibleVersionException(
     private val minimumRequiredVersion: String
 ) : Throwable() {

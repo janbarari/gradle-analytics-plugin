@@ -37,5 +37,6 @@ package io.github.janbarari.gradle.extension
  */
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.FIELD)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION,
+    AnnotationTarget.CLASS, AnnotationTarget.FIELD)
 annotation class ExcludeJacocoGenerated

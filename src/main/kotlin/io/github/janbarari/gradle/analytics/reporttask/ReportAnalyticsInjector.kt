@@ -47,10 +47,12 @@ class ReportAnalyticsInjector(
     var projectName: String? = null
 )
 
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
     return Database(ensureNotNull(databaseConfig), ensureNotNull(isCI))
 }
 
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
         provideDatabase(),
@@ -59,10 +61,12 @@ fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     )
 }
 
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideGetMetricsUseCase(): GetMetricsUseCase {
     return GetMetricsUseCase(provideDatabaseRepository())
 }
 
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
         provideGetMetricsUseCase(),
