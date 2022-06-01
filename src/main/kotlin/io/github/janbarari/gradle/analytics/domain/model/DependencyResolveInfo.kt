@@ -28,7 +28,7 @@ package io.github.janbarari.gradle.analytics.domain.model
  */
 data class DependencyResolveInfo(
     val path: String,
-    var startedAt: Long = 0L,
+    val startedAt: Long,
     var finishedAt: Long = 0L
 ) : java.io.Serializable {
 

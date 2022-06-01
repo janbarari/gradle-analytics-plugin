@@ -22,10 +22,13 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 data class HardwareInfo(
     val availableMemory: Long,
     val maximumMemoryCapacity: Long
