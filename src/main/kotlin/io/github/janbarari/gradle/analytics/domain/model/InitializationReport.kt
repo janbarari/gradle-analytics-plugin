@@ -1,10 +1,10 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
-import com.squareup.moshi.Json
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-data class InitializationMetric(
-    @Json(name = "average")
-    var average: Long = 0L
+data class InitializationReport(
+    val values: List<Long>,
+    val labels: List<String>,
+    val maxValue: Long
 ): java.io.Serializable

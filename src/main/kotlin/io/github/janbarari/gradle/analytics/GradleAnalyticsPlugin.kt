@@ -22,8 +22,8 @@
  */
 package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.scanner.setupScannerServices
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
+import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -51,7 +51,7 @@ class GradleAnalyticsPlugin @Inject constructor(
         ensureProjectGradleCompatible()
         val configuration = setupPluginConfiguration(project)
         registerTasks(project, configuration)
-        setupScannerServices(project, registry, configuration)
+        ScannerUtils.setupScannerServices(project, registry, configuration)
     }
 
     /**

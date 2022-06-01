@@ -20,12 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.extension
 
 /**
+ * In order to have reliable code coverage sometimes it's needed to exclude some
+ * functions or classes.
+ *
+ * Since Jacoco 0.8.2, developers can exclude classes and methods by annotating
+ * them with a custom annotation with the following properties:
+ *
+ * 1- The name of the annotation should include 'Generated' keyword.
+ * 2- The retention policy of annotation should be runtime or class.
+ *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class InvalidPropertyException(msg: String): Throwable() {
-    override val message: String = msg
-}
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.FUNCTION,
+    AnnotationTarget.CLASS, AnnotationTarget.FIELD)
+annotation class ExcludeJacocoGenerated

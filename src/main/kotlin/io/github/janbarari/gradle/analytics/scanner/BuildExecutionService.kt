@@ -27,7 +27,6 @@ import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
 import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -36,6 +35,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricMedianUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.os.OperatingSystemImp
@@ -55,6 +56,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 abstract class BuildExecutionService :
     BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
@@ -108,6 +110,7 @@ abstract class BuildExecutionService :
      * Called when each task execution is finished.
      * @param event Task finish event
      */
+    @ExcludeJacocoGenerated
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
             _executedTasks.add(
@@ -125,100 +128,23 @@ abstract class BuildExecutionService :
     /**
      * Called when the build execution process finished.
      */
+    @ExcludeJacocoGenerated
     override fun close() {
-        onExecutionFinished(_executedTasks)
-        _executedTasks.clear()
-    }
 
-    private fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
-        if (isForbiddenTasksRequested() || isDatabaseConfigurationExists().not()) return
-        if (isTaskTrackable().not() || isBranchTrackable().not()) return
-
-        val info = BuildInfo(
-            startedAt = BuildInitializationService.STARTED_AT,
-            initializedAt = BuildInitializationService.INITIALIZED_AT,
-            configuredAt = BuildConfigurationService.CONFIGURED_AT,
-            finishedAt = System.currentTimeMillis(),
-            osInfo = OsInfo(OperatingSystemImp().getName()),
-            hardwareInfo = HardwareInfo(0, 0),
-            dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
-            executedTasks = executedTasks
-        )
-
-        BuildInitializationService.reset()
-        BuildConfigurationService.reset()
-        BuildDependencyResolutionService.reset()
-
-        val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
-        val repo: DatabaseRepository = DatabaseRepositoryImp(
-            database,
-            GitUtils.currentBranch(),
-            parameters.requestedTasks.get().separateElementsWithSpace()
-        )
-
-        val saveMetricUseCase = SaveMetricUseCase(
-            repo, InitializationMetricMedianUseCase(repo)
-        )
-        val saveTemporaryUseCase = SaveTemporaryMetricUseCase(repo)
-
-        val metric = BuildMetric(
+        val injector = BuildExecutionInjector(
+            databaseConfig = parameters.databaseConfig.get(),
+            isCI = parameters.envCI.get(),
             branch = GitUtils.currentBranch(),
             requestedTasks = parameters.requestedTasks.get(),
-            createdAt = System.currentTimeMillis()
+            trackingBranches = parameters.trackingBranches.get(),
+            trackingTasks = parameters.trackingTasks.get()
         )
 
-        metric.initializationMetric = InitializationMetricUseCase().execute(
-            info.getInitializationDuration().toMillis()
-        )
-
-        val result = saveTemporaryUseCase.execute(metric)
-        if (result) saveMetricUseCase.execute(metric)
-    }
-
-    private fun isDatabaseConfigurationExists(): Boolean {
-        return !(parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get() == true) ||
-                !(parameters.envCI.get() == false && parameters.databaseConfig.get().local.isNull())
-    }
-
-    private fun isForbiddenTasksRequested(): Boolean {
-        return parameters.requestedTasks.get().contains("reportAnalytics")
-    }
-
-    private fun isTaskTrackable(): Boolean {
-        var result = false
-
-        val trackingTasksIterator = parameters.trackingTasks.get().iterator()
-        val requestedTasksIterator = parameters.requestedTasks.get().iterator()
-
-        while (trackingTasksIterator.hasNext()) {
-            val trackingTask = trackingTasksIterator.next()
-
-            var combinedRequestedTasks = ""
-            while (requestedTasksIterator.hasNext()) {
-                val requestedTask = requestedTasksIterator.next()
-                combinedRequestedTasks += requestedTask
-            }
-
-            if (trackingTask == combinedRequestedTasks) result = true
+        if (injector.provideBuildExecutionLogic().onExecutionFinished(_executedTasks)) {
+            println("New Metric Saved Successfully")
         }
 
-        return result
-    }
-
-    private fun isBranchTrackable(): Boolean {
-        var result = false
-
-        val trackingBranchesIterator = parameters.trackingBranches.get().iterator()
-        val currentBranch = GitUtils.currentBranch()
-
-        while (trackingBranchesIterator.hasNext()) {
-            val trackingBranch = trackingBranchesIterator.next()
-            if (currentBranch == trackingBranch) {
-                result = true
-            }
-        }
-
-        return result
+        _executedTasks.clear()
     }
 
 }

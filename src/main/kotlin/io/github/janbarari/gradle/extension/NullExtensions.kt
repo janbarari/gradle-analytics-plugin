@@ -49,3 +49,9 @@ fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
 fun <T: Any> T?.whenNull(block: () -> Unit) {
     if(this == null) block()
 }
+
+@ExcludeJacocoGenerated
+inline fun <reified T: Any> ensureNotNull(value: T?): T {
+    if (value.isNull()) throw java.lang.NullPointerException("${T::class} can not be null")
+    return value as T
+}

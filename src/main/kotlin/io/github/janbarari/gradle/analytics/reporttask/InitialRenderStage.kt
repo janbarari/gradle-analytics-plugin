@@ -3,6 +3,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.analytics.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
 class InitialRenderStage private constructor(
@@ -61,17 +62,22 @@ class InitialRenderStage private constructor(
     }
 
     override fun process(input: String): String {
-        val oldest = data.last()
-        val newest = data.first()
-        return input.replace("%root-project-name%", projectName)
+        var result = input.replace("%root-project-name%", projectName)
             .replace("%task-path%", requestedTasks)
             .replace("%branch%", branch)
             .replace("%time-period-title%", "$period Months")
-            .replace("%time-period-start%", DateTimeUtils.msToDateString(oldest.createdAt))
-            .replace("%time-period-end%", DateTimeUtils.msToDateString(newest.createdAt))
             .replace("%reported-at%", DateTimeUtils.msToDateTimeString(System.currentTimeMillis()))
             .replace("%is-ci%", if (isCI) "Yes" else "No")
             .replace("%plugin-version%", GradleAnalyticsPlugin.PLUGIN_VERSION)
+
+        if (data.isNotEmpty()) {
+            val oldest = data.last()
+            val newest = data.first()
+            result = result.replace("%time-period-start%", DateTimeUtils.msToDateString(oldest.createdAt))
+                .replace("%time-period-end%", DateTimeUtils.msToDateString(newest.createdAt))
+        }
+
+        return result
     }
 
 }

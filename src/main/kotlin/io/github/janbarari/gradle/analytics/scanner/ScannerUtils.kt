@@ -23,54 +23,56 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
-@Suppress("UnstableApiUsage")
-fun setupScannerServices(
-    project: Project,
-    registry: BuildEventsListenerRegistry,
-    configuration: GradleAnalyticsPluginConfig
-) {
-    setupInitializationService(project)
-    setupDependencyResolutionService(project)
-    setupConfigurationService(project)
-    setupExecutionService(project, registry, configuration)
-}
+@ExcludeJacocoGenerated
+object ScannerUtils {
 
-@Suppress("UnstableApiUsage")
-private fun setupExecutionService(
-    project: Project,
-    registry: BuildEventsListenerRegistry,
-    configuration: GradleAnalyticsPluginConfig
-) {
-    project.gradle.projectsEvaluated {
-        val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
-            BuildExecutionService::class.java.simpleName,
-            BuildExecutionService::class.java
-        ) { spec ->
-            with(spec.parameters) {
-                databaseConfig.set(configuration.getDatabaseConfig())
-                envCI.set(project.envCI().isPresent)
-                requestedTasks.set(project.gradle.getRequestedTasks())
-                trackingTasks.set(configuration.trackingTasks)
-                trackingBranches.set(configuration.trackingBranches)
-            }
-        }
-        registry.onTaskCompletion(buildExecutionService)
+    @Suppress("UnstableApiUsage")
+    fun setupScannerServices(
+        project: Project, registry: BuildEventsListenerRegistry, configuration: GradleAnalyticsPluginConfig
+    ) {
+        setupInitializationService(project)
+        setupDependencyResolutionService(project)
+        setupConfigurationService(project)
+        setupExecutionService(project, registry, configuration)
     }
-}
 
-private fun setupInitializationService(project: Project) {
-    project.gradle.addBuildListener(BuildInitializationService(project.gradle))
-}
+    @Suppress("UnstableApiUsage")
+    private fun setupExecutionService(
+        project: Project, registry: BuildEventsListenerRegistry, configuration: GradleAnalyticsPluginConfig
+    ) {
+        project.gradle.projectsEvaluated {
+            val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
+                BuildExecutionService::class.java.simpleName,
+                BuildExecutionService::class.java
+            ) { spec ->
+                with(spec.parameters) {
+                    databaseConfig.set(configuration.getDatabaseConfig())
+                    envCI.set(project.envCI().isPresent)
+                    requestedTasks.set(project.gradle.getRequestedTasks())
+                    trackingTasks.set(configuration.trackingTasks)
+                    trackingBranches.set(configuration.trackingBranches)
+                }
+            }
+            registry.onTaskCompletion(buildExecutionService)
+        }
+    }
 
-private fun setupConfigurationService(project: Project) {
-    project.gradle.addBuildListener(BuildConfigurationService())
-}
+    private fun setupInitializationService(project: Project) {
+        project.gradle.addBuildListener(BuildInitializationService(project.gradle))
+    }
 
-private fun setupDependencyResolutionService(project: Project) {
-    project.gradle.addBuildListener(BuildDependencyResolutionService())
+    private fun setupConfigurationService(project: Project) {
+        project.gradle.addBuildListener(BuildConfigurationService())
+    }
+
+    private fun setupDependencyResolutionService(project: Project) {
+        project.gradle.addBuildListener(BuildDependencyResolutionService())
+    }
+
 }
