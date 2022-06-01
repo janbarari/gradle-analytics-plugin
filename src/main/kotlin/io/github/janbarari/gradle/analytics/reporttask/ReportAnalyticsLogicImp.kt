@@ -74,7 +74,6 @@ class ReportAnalyticsLogicImp(
     @kotlin.jvm.Throws(IOException::class)
     override fun saveReport(renderedHTML: String): Boolean {
         val fontPath = "res/nunito.ttf"
-        val chartJsPath = "res/chart.js"
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"
         val indexPath = "index.html"
@@ -83,11 +82,6 @@ class ReportAnalyticsLogicImp(
         FileUtils.copyInputStreamToFile(
             javaClass.getSafeResourceAsStream("/$fontPath"),
             File("$savePath/$fontPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$chartJsPath"),
-            File("$savePath/$chartJsPath")
         )
 
         FileUtils.copyInputStreamToFile(

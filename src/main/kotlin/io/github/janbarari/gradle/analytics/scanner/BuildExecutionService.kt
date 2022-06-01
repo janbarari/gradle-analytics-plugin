@@ -23,23 +23,8 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
-import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
-import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricMedianUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricUseCase
-import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.separateElementsWithSpace
-import io.github.janbarari.gradle.os.OperatingSystemImp
 import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
