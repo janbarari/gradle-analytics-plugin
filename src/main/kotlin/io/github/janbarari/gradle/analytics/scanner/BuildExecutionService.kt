@@ -56,6 +56,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 abstract class BuildExecutionService :
     BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
@@ -130,24 +131,16 @@ abstract class BuildExecutionService :
     @ExcludeJacocoGenerated
     override fun close() {
 
-        val db = Database(parameters.databaseConfig.get(), parameters.envCI.get())
-        val repo: DatabaseRepository = DatabaseRepositoryImp(
-            db, GitUtils.currentBranch(), parameters.requestedTasks.get().separateElementsWithSpace()
-        )
-        val initializationMetricMedianUseCase = InitializationMetricMedianUseCase(repo)
-        val saveMetricUseCase = SaveMetricUseCase(repo, initializationMetricMedianUseCase)
-        val saveTemporaryMetricUseCase = SaveTemporaryMetricUseCase(repo)
-        val logic: BuildExecutionLogic = BuildExecutionLogicImp(
-            saveMetricUseCase,
-            saveTemporaryMetricUseCase,
-            parameters.databaseConfig.get(),
-            parameters.envCI.get(),
-            parameters.trackingBranches.get(),
-            parameters.trackingTasks.get(),
-            parameters.requestedTasks.get()
+        val injector = BuildExecutionInjector(
+            databaseConfig = parameters.databaseConfig.get(),
+            isCI = parameters.envCI.get(),
+            branch = GitUtils.currentBranch(),
+            requestedTasks = parameters.requestedTasks.get(),
+            trackingBranches = parameters.trackingBranches.get(),
+            trackingTasks = parameters.trackingTasks.get()
         )
 
-        if (logic.onExecutionFinished(_executedTasks)) {
+        if (injector.provideBuildExecutionLogic().onExecutionFinished(_executedTasks)) {
             println("New Metric Saved Successfully")
         }
 
