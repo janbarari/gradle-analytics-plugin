@@ -3,7 +3,6 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.analytics.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
 class InitialRenderStage private constructor(
@@ -13,7 +12,7 @@ class InitialRenderStage private constructor(
     private val branch: String,
     private val period: Long,
     private val isCI: Boolean
-): Stage<String, String> {
+) : Stage<String, String> {
 
     class Builder {
 
