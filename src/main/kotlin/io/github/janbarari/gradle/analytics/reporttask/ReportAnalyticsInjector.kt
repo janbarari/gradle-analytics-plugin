@@ -27,6 +27,7 @@ import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
@@ -36,6 +37,7 @@ import io.github.janbarari.gradle.extension.ensureNotNull
  * @since 1.0.0
  */
 
+@ExcludeJacocoGenerated
 class ReportAnalyticsInjector(
     var branch: String? = null,
     var requestedTasks: String? = null,

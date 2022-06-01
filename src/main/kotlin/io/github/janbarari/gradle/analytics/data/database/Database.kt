@@ -30,6 +30,7 @@ import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.toRealPath
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -96,7 +97,7 @@ class Database(
 
     private fun connectSqliteDatabase(config: SqliteDatabaseConnection) {
         _database = Database.connect(
-            url = "jdbc:sqlite:${config.path}/${config.name}.db",
+            url = "jdbc:sqlite:${config.path.toRealPath()}/${config.name}.db",
             driver = "org.sqlite.JDBC",
             user = config.user,
             password = config.password
