@@ -31,14 +31,17 @@ import org.gradle.api.provider.Provider
  * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
  * sent them to Gradle to start the build process.
  */
+@ExcludeJacocoGenerated
 fun Gradle.getRequestedTasks(): List<String> {
     return startParameter.taskNames
 }
 
+@ExcludeJacocoGenerated
 fun Project.envCI(): Provider<String> {
     return providers.environmentVariable("CI")
 }
 
+@ExcludeJacocoGenerated
 inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
     project.tasks.register(name, T::class.java) {
         it.also(block)
