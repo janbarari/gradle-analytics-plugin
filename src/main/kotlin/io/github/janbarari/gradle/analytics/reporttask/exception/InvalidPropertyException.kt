@@ -20,12 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.analytics.reporttask.exception
+
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 class InvalidPropertyException(msg: String): Throwable() {
     override val message: String = msg
 }

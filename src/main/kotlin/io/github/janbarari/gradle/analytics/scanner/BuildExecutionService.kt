@@ -129,93 +129,29 @@ abstract class BuildExecutionService :
      */
     @ExcludeJacocoGenerated
     override fun close() {
-        onExecutionFinished(_executedTasks)
-        _executedTasks.clear()
-    }
 
-    fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
-        if (isForbiddenTasksRequested() || !isDatabaseConfigurationValid()) return false
-        if (!isTaskTrackable() || !isBranchTrackable()) return false
-
-        val info = BuildInfo(
-            startedAt = BuildInitializationService.STARTED_AT,
-            initializedAt = BuildInitializationService.INITIALIZED_AT,
-            configuredAt = BuildConfigurationService.CONFIGURED_AT,
-            finishedAt = System.currentTimeMillis(),
-            osInfo = OsInfo(OperatingSystemImp().getName()),
-            hardwareInfo = HardwareInfo(0, 0),
-            dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
-            executedTasks = executedTasks
-        )
-
-        resetDependentServices()
-
-        val metric = BuildMetric(
-            branch = GitUtils.currentBranch(),
-            requestedTasks = parameters.requestedTasks.get(),
-            createdAt = System.currentTimeMillis()
-        ).apply {
-
-            initializationMetric = InitializationMetricUseCase().execute(
-                info.getInitializationDuration().toMillis()
-            )
-
-        }
-
-        val database = Database(parameters.databaseConfig.get(), parameters.envCI.get())
+        val db = Database(parameters.databaseConfig.get(), parameters.envCI.get())
         val repo: DatabaseRepository = DatabaseRepositoryImp(
-            database,
-            GitUtils.currentBranch(),
-            parameters.requestedTasks.get().separateElementsWithSpace()
+            db, GitUtils.currentBranch(), parameters.requestedTasks.get().separateElementsWithSpace()
         )
-
-        val saveMetricUseCase = SaveMetricUseCase(
-            repo, InitializationMetricMedianUseCase(repo)
-        )
+        val initializationMetricMedianUseCase = InitializationMetricMedianUseCase(repo)
+        val saveMetricUseCase = SaveMetricUseCase(repo, initializationMetricMedianUseCase)
         val saveTemporaryMetricUseCase = SaveTemporaryMetricUseCase(repo)
+        val logic: BuildExecutionLogic = BuildExecutionLogicImp(
+            saveMetricUseCase,
+            saveTemporaryMetricUseCase,
+            parameters.databaseConfig.get(),
+            parameters.envCI.get(),
+            parameters.trackingBranches.get(),
+            parameters.trackingTasks.get(),
+            parameters.requestedTasks.get()
+        )
 
-        saveTemporaryMetricUseCase.execute(metric)
-        saveMetricUseCase.execute(metric)
-
-        return true
-    }
-
-    @ExcludeJacocoGenerated
-    fun resetDependentServices() {
-        BuildInitializationService.reset()
-        BuildConfigurationService.reset()
-        BuildDependencyResolutionService.reset()
-    }
-
-    fun isDatabaseConfigurationValid(): Boolean {
-        //return false if local machine executed and the config is not set.
-        if (parameters.databaseConfig.get().local.isNull() && parameters.envCI.get() == false) {
-            return false
+        if (logic.onExecutionFinished(_executedTasks)) {
+            println("New Metric Saved Successfully")
         }
 
-        //return false if CI machine executed and the config is not set.
-        if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get() == true) {
-            return false
-        }
-
-        return true
-    }
-
-    fun isForbiddenTasksRequested(): Boolean {
-        return parameters.requestedTasks.get().contains(ReportAnalyticsTask.TASK_NAME)
-    }
-
-    fun isTaskTrackable(): Boolean {
-        val requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace()
-        return parameters.trackingTasks.get().contains(requestedTasks)
-    }
-
-    /**
-     * Checks the current git branch is listed in tracking branches.
-     * @return true/false
-     */
-    fun isBranchTrackable(): Boolean {
-        return parameters.trackingBranches.get().contains(GitUtils.currentBranch())
+        _executedTasks.clear()
     }
 
 }

@@ -37,7 +37,7 @@ object DateTimeUtils {
 
     const val ONE_SECOND_IN_MILLIS = 1000
     const val ONE_DAY_IN_MILLIS = 86_400_000
-    private val DEFAULT_ZONE: ZoneId = ZoneId.of("UTC")
+    val DEFAULT_ZONE: ZoneId = ZoneId.of("UTC")
 
     fun getDayStartMs(): Long {
         return LocalDate.now().atStartOfDay(DEFAULT_ZONE).toEpochSecond() * ONE_SECOND_IN_MILLIS
@@ -56,12 +56,12 @@ object DateTimeUtils {
 
     fun msToDateString(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
-            .format(DateTimeFormatter.BASIC_ISO_DATE)
+            .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
     }
 
     fun msToDateTimeString(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
-            .format(DateTimeFormatter.ISO_DATE_TIME)
+            .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm a 'UTC'"))
     }
 
 }
