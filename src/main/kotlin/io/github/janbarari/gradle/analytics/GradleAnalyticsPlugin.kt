@@ -49,6 +49,9 @@ class GradleAnalyticsPlugin @Inject constructor(
         const val PLUGIN_VERSION = "1.0.0"
     }
 
+    /**
+     * Gradle will invoke this function once the plugin is added into the project build script.
+     */
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
         val config = setupPluginConfig(project)
