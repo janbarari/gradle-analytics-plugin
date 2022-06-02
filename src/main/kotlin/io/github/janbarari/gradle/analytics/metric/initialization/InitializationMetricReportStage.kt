@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.metric.initialization
 
-import io.github.janbarari.gradle.analytics.core.Stage
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
 import io.github.janbarari.gradle.analytics.domain.model.InitializationReport

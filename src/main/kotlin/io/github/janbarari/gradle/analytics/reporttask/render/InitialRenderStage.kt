@@ -1,7 +1,7 @@
 package io.github.janbarari.gradle.analytics.reporttask.render
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
-import io.github.janbarari.gradle.analytics.core.Stage
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
