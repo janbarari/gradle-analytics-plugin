@@ -3,7 +3,7 @@ package io.github.janbarari.gradle.analytics.metric.initialization
 import io.github.janbarari.gradle.analytics.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.extension.isBigger
+import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
@@ -19,7 +19,7 @@ class InitializationMetricMedianUseCase(
 
         repo.getTemporaryMetrics().whenEach {
             initializationMetric.whenNotNull {
-                average.isBigger(50).whenTrue {
+                average.isBiggerEquals(50).whenTrue {
                     durations.add(average)
                 }
             }

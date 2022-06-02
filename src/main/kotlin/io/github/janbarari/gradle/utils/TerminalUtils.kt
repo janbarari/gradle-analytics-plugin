@@ -25,6 +25,9 @@ package io.github.janbarari.gradle.utils
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+/**
+ * A collection of terminal functions.
+ */
 object TerminalUtils {
 
     /**

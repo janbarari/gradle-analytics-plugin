@@ -30,9 +30,6 @@ import org.gradle.api.Project
 
 /**
  * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 @ExcludeJacocoGenerated
 open class GradleAnalyticsPluginConfig(val project: Project) {

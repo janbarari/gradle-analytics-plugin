@@ -30,8 +30,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * A collection of datetime functions.
  */
 object DateTimeUtils {
 
@@ -39,14 +38,29 @@ object DateTimeUtils {
     const val ONE_DAY_IN_MILLIS = 86_400_000
     val DEFAULT_ZONE: ZoneId = ZoneId.of("UTC")
 
+    /**
+     * Calculates the current day start time in milliseconds.
+     *
+     * Note: Timezone is UTC
+     */
     fun getDayStartMs(): Long {
         return LocalDate.now().atStartOfDay(DEFAULT_ZONE).toEpochSecond() * ONE_SECOND_IN_MILLIS
     }
 
+    /**
+     * Calculates the current day end time in milliseconds.
+     *
+     * Note: Timezone is UTC
+     */
     fun getDayEndMs(): Long {
         return getDayStartMs() + ONE_DAY_IN_MILLIS
     }
 
+    /**
+     * Calculates the before month(s) time in milliseconds.
+     *
+     * Note: Timezone is UTC
+     */
     fun calculateDayInPastMonthsMs(from: Long, months: Long): Long {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(from), DEFAULT_ZONE)
             .minusMonths(months)
@@ -54,11 +68,17 @@ object DateTimeUtils {
             .toEpochSecond() * ONE_SECOND_IN_MILLIS
     }
 
+    /**
+     * Converts time in milliseconds to a formatted date string.
+     */
     fun msToDateString(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
     }
 
+    /**
+     * Converts time in milliseconds to a formatted date & time string.
+     */
     fun msToDateTimeString(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm a 'UTC'"))

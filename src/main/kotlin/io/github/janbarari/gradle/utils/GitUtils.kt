@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.utils
 
 /**
- * Git version control client utils.
+ * A collection of git functions.
  */
 object GitUtils {
 

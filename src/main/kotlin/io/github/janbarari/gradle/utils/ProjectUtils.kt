@@ -25,8 +25,7 @@ package io.github.janbarari.gradle.utils
 import org.gradle.util.GradleVersion
 
 /**
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * A collection of gradle project functions.
  */
 object ProjectUtils {
 
@@ -34,6 +33,7 @@ object ProjectUtils {
      * List of official Gradle versions.
      */
     enum class GradleVersions(val versionNumber: String) {
+        V7_5("7.5"),
         V7_4_2("7.4.2"),
         V7_4_1("7.4.1"),
         V7_4("7.4"),

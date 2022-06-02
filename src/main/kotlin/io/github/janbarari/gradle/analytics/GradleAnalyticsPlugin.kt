@@ -34,9 +34,6 @@ import javax.inject.Inject
 /**
  * A free Gradle plugin for analytics of your projects. Provides unique visual and
  * text metrics in HTML format.
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 @Suppress("UnstableApiUsage")
 @ExcludeJacocoGenerated

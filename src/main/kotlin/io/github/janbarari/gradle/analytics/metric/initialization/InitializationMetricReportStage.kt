@@ -4,7 +4,7 @@ import io.github.janbarari.gradle.analytics.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
 import io.github.janbarari.gradle.analytics.domain.model.InitializationReport
-import io.github.janbarari.gradle.utils.resizeDataset
+import io.github.janbarari.gradle.utils.DatasetUtils
 
 class InitializationMetricReportStage(
     private val metrics: List<BuildMetric>
@@ -16,7 +16,7 @@ class InitializationMetricReportStage(
 
         println("InitializationMetricReportStage metrics=$metrics")
 
-        val values = resizeDataset(metrics.map { it.initializationMetric?.average ?: 0 }, 12)
+        val values = DatasetUtils.resizeDataset(metrics.map { it.initializationMetric?.average ?: 0 }, 12)
 
         println("InitializationMetricReportStage values=$values")
 
