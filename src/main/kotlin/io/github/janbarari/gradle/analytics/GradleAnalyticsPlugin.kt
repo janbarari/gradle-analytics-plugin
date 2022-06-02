@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -38,6 +39,7 @@ import javax.inject.Inject
  * @since 1.0.0
  */
 @Suppress("UnstableApiUsage")
+@ExcludeJacocoGenerated
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
 ) : Plugin<Project> {
