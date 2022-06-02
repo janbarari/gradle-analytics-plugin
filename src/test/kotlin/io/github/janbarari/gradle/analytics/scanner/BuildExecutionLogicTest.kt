@@ -2,11 +2,11 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
+import io.github.janbarari.gradle.analytics.scanner.execution.provideBuildExecutionLogic
 import io.github.janbarari.gradle.utils.GitUtils
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
-import org.gradle.internal.impldep.org.eclipse.jgit.api.Git
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

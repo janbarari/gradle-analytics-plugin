@@ -20,32 +20,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.scanner
+package io.github.janbarari.gradle.analytics.scanner.configuration
 
-import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.BuildResult
-import org.gradle.api.artifacts.DependencyResolutionListener
-import org.gradle.api.artifacts.ResolvableDependencies
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.internal.InternalBuildListener
-import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Records the build dependencies resolve information to use by [BuildExecutionService].
+ * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
  *
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-class BuildDependencyResolutionService : InternalBuildListener, DependencyResolutionListener {
+class BuildConfigurationService : InternalBuildListener {
 
     companion object {
-        val dependenciesResolveInfo: ConcurrentHashMap<String, DependencyResolveInfo> =
-            ConcurrentHashMap<String, DependencyResolveInfo>()
+        var CONFIGURED_AT: Long = 0L
 
         fun reset() {
-            dependenciesResolveInfo.clear()
+            CONFIGURED_AT = 0L
         }
 
     }
@@ -55,37 +50,23 @@ class BuildDependencyResolutionService : InternalBuildListener, DependencyResolu
     }
 
     @ExcludeJacocoGenerated
-    override fun beforeResolve(dependencies: ResolvableDependencies) {
-        dependenciesResolveInfo[dependencies.path] = DependencyResolveInfo(
-            dependencies.path,
-            startedAt = System.currentTimeMillis()
-        )
-    }
-
-    @ExcludeJacocoGenerated
-    override fun afterResolve(dependencies: ResolvableDependencies) {
-        dependenciesResolveInfo[dependencies.path]?.finishedAt = System.currentTimeMillis()
-    }
-
-    @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // called when the root project settings evaluated.
     }
 
     @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // called when projects files loaded.
     }
 
-    @ExcludeJacocoGenerated
     override fun projectsEvaluated(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        CONFIGURED_AT = System.currentTimeMillis()
     }
 
     @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // This method is deprecated, Execution process are handled by [BuildExecutionService]
     }
 
 }

@@ -23,6 +23,10 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
+import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
+import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
+import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks

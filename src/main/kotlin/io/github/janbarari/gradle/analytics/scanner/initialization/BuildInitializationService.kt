@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.scanner
+package io.github.janbarari.gradle.analytics.scanner.initialization
 
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.BuildResult

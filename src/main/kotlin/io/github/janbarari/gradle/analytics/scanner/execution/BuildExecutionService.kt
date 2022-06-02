@@ -20,10 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.scanner
+package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
+import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
@@ -111,7 +113,7 @@ abstract class BuildExecutionService :
     }
 
     /**
-     * Called when the build execution process finished.
+     * Called once the build execution process finished.
      */
     @ExcludeJacocoGenerated
     override fun close() {
