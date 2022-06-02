@@ -1,11 +1,11 @@
-package io.github.janbarari.gradle.analytics.metric.initialization
+package io.github.janbarari.gradle.analytics.metric.initialization.stage
 
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.MathUtils
 
-class InitializationMetricRenderStage(
+class RenderInitializationMetricStage(
     private val analyticsReport: AnalyticsReport
 ): Stage<String, String> {
 

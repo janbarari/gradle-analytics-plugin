@@ -25,3 +25,7 @@ package io.github.janbarari.gradle.core
 interface Stage<I, O> {
     fun process(input: I): O
 }
+
+interface StageNoInput<O> {
+    fun process(): O
+}

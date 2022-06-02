@@ -25,8 +25,8 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.ConfigurationMetricReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricRenderStage
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.stage.RenderInitializationMetricStage
+import io.github.janbarari.gradle.analytics.metric.initialization.stage.ReportInitializationMetricStage
 import io.github.janbarari.gradle.analytics.reporttask.analytics.AnalyticsReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -58,7 +58,7 @@ class ReportAnalyticsLogicImp(
         val rawHTML: String = getTextResourceContent("index-template.html")
         val data = getMetricsUseCase.execute(period)
 
-        val analyticsReport = AnalyticsReportPipeline(InitializationMetricReportStage(data))
+        val analyticsReport = AnalyticsReportPipeline(ReportInitializationMetricStage(data))
             .addStage(ConfigurationMetricReportStage(data))
             .execute(AnalyticsReport(branch = branch, requestedTasks = requestedTasks))
 
@@ -71,7 +71,7 @@ class ReportAnalyticsLogicImp(
                 .requestedTasks(requestedTasks)
                 .isCI(isCI)
                 .build()
-        ).addStage(InitializationMetricRenderStage(analyticsReport)).execute(rawHTML)
+        ).addStage(RenderInitializationMetricStage(analyticsReport)).execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)

@@ -1,24 +1,20 @@
-package io.github.janbarari.gradle.analytics.metric.initialization
+package io.github.janbarari.gradle.analytics.metric.initialization.stage
 
-import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.InitializationReport
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.utils.DatasetUtils
 
-class InitializationMetricReportStage(
+class ReportInitializationMetricStage(
     private val metrics: List<BuildMetric>
-): Stage<AnalyticsReport, AnalyticsReport> {
+) : Stage<AnalyticsReport, AnalyticsReport> {
 
     @Suppress("MagicNumber")
     override fun process(input: AnalyticsReport): AnalyticsReport {
         if (metrics.isEmpty()) return input
 
-        println("InitializationMetricReportStage metrics=$metrics")
-
         val values = DatasetUtils.resizeDataset(metrics.map { it.initializationMetric?.average ?: 0 }, 12)
-
-        println("InitializationMetricReportStage values=$values")
 
         val maxValue = values.maxOf { it }
 
