@@ -4,8 +4,8 @@ import io.github.janbarari.gradle.analytics.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 
-class SaveTemporaryMetricUseCase(private val repo: DatabaseRepository): UseCase<BuildMetric, Boolean>() {
-    override fun execute(input: BuildMetric): Boolean {
+class SaveTemporaryMetricUseCase(private val repo: DatabaseRepository): UseCase<BuildMetric, Long>() {
+    override fun execute(input: BuildMetric): Long {
         return repo.saveTemporaryMetric(input)
     }
 }

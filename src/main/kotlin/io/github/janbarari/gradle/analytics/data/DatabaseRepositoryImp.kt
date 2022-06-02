@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.deleteWhere
 
 class DatabaseRepositoryImp(
@@ -27,7 +28,7 @@ class DatabaseRepositoryImp(
     private var moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     private var jsonAdapter: JsonAdapter<BuildMetric> = moshi.adapter(BuildMetric::class.java)
 
-    override fun saveNewMetric(metric: BuildMetric): Boolean {
+    override fun saveNewMetric(metric: BuildMetric): Long {
         return db.transaction {
             val queryResult = MetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -35,11 +36,11 @@ class DatabaseRepositoryImp(
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()
             }
-            return@transaction queryResult.insertedCount == 1
+            return@transaction queryResult[MetricTable.number]
         }
     }
 
-    override fun saveTemporaryMetric(metric: BuildMetric): Boolean {
+    override fun saveTemporaryMetric(metric: BuildMetric): Long {
         return db.transaction {
             val queryResult = TemporaryMetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -47,7 +48,7 @@ class DatabaseRepositoryImp(
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()
             }
-            return@transaction queryResult.insertedCount == 1
+            return@transaction queryResult[TemporaryMetricTable.number]
         }
     }
 
@@ -107,10 +108,17 @@ class DatabaseRepositoryImp(
 
     override fun dropOutdatedTemporaryMetrics(): Boolean {
         return db.transaction {
-            val queryResult = TemporaryMetricTable.deleteWhere {
+            TemporaryMetricTable.deleteWhere {
                 TemporaryMetricTable.createdAt less DateTimeUtils.getDayStartMs()
             }
-            return@transaction queryResult > 0
+            return@transaction true
+        }
+    }
+
+    override fun dropMetrics(): Boolean {
+        return db.transaction {
+            MetricTable.deleteAll()
+            return@transaction true
         }
     }
 
