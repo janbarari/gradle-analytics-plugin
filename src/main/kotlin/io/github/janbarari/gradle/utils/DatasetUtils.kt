@@ -24,8 +24,6 @@ package io.github.janbarari.gradle.utils
 
 /**
  * A collection of dataset functions.
- *
- * Note: Most of the algorithms have been customized based on the plugin's requirements.
  */
 object DatasetUtils {
 
