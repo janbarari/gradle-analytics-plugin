@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner.configuration
 
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.BuildResult
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle

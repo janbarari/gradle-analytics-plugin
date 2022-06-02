@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.extension
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.invocation.Gradle

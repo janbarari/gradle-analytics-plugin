@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.core
 
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @SuppressWarnings("UnnecessaryAbstractClass")
 @ExcludeJacocoGenerated

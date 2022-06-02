@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.scanner.dependencyresolution
 
 import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.BuildResult
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
