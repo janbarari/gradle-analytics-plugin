@@ -51,9 +51,9 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
-        val configuration = setupPluginConfiguration(project)
-        registerTasks(project, configuration)
-        ScannerUtils.setupScannerServices(project, registry, configuration)
+        val config = setupPluginConfig(project)
+        registerTasks(config)
+        ScannerUtils.setupScannerServices(config, registry)
     }
 
     /**
@@ -71,11 +71,11 @@ class GradleAnalyticsPlugin @Inject constructor(
     }
 
     /**
-     * Setups plugin extension.
+     * Setups plugin config.
      *
      * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupPluginConfiguration(project: Project) : GradleAnalyticsPluginConfig {
+    private fun setupPluginConfig(project: Project) : GradleAnalyticsPluginConfig {
         return project.extensions.create(
             PLUGIN_NAME,
             GradleAnalyticsPluginConfig::class.java,
@@ -86,8 +86,8 @@ class GradleAnalyticsPlugin @Inject constructor(
     /**
      * Registers the plugin custom tasks.
      */
-    private fun registerTasks(project: Project, configuration: GradleAnalyticsPluginConfig) {
-        ReportAnalyticsTask.register(project, configuration)
+    private fun registerTasks(config: GradleAnalyticsPluginConfig) {
+        ReportAnalyticsTask.register(config)
     }
 
 }

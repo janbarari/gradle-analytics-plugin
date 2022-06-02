@@ -47,14 +47,14 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         const val TASK_NAME = "reportAnalytics"
 
         @ExcludeJacocoGenerated
-        fun register(project: Project, configuration: GradleAnalyticsPluginConfig) {
-            project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
+        fun register(config: GradleAnalyticsPluginConfig) {
+            config.project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
                 projectNameProperty.set(project.rootProject.name)
                 envCIProperty.set(project.envCI().isPresent)
-                outputPathProperty.set(configuration.outputPath)
-                trackingTasksProperty.set(configuration.trackingTasks)
-                trackingBranchesProperty.set(configuration.trackingBranches)
-                databaseConfigProperty.set(configuration.getDatabaseConfig())
+                outputPathProperty.set(config.outputPath)
+                trackingTasksProperty.set(config.trackingTasks)
+                trackingBranchesProperty.set(config.trackingBranches)
+                databaseConfigProperty.set(config.getDatabaseConfig())
             }
         }
     }

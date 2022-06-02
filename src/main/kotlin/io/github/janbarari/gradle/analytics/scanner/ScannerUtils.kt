@@ -34,17 +34,20 @@ object ScannerUtils {
 
     @Suppress("UnstableApiUsage")
     fun setupScannerServices(
-        project: Project, registry: BuildEventsListenerRegistry, configuration: GradleAnalyticsPluginConfig
+        config: GradleAnalyticsPluginConfig,
+        registry: BuildEventsListenerRegistry
     ) {
-        setupInitializationService(project)
-        setupDependencyResolutionService(project)
-        setupConfigurationService(project)
-        setupExecutionService(project, registry, configuration)
+        setupInitializationService(config.project)
+        setupDependencyResolutionService(config.project)
+        setupConfigurationService(config.project)
+        setupExecutionService(config.project, registry, config)
     }
 
     @Suppress("UnstableApiUsage")
     private fun setupExecutionService(
-        project: Project, registry: BuildEventsListenerRegistry, configuration: GradleAnalyticsPluginConfig
+        project: Project,
+        registry: BuildEventsListenerRegistry,
+        configuration: GradleAnalyticsPluginConfig
     ) {
         project.gradle.projectsEvaluated {
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(

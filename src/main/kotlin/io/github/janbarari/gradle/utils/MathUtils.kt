@@ -63,4 +63,9 @@ object MathUtils {
         return longMedian(values.toList())
     }
 
+    @Suppress("MagicNumber")
+    fun sumPercentage(value: Long, percentage: Long): Long {
+        return value + ((value * percentage) / 100)
+    }
+
 }
