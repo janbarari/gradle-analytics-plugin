@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.analytics.reporttask.analytics
 
 import io.github.janbarari.gradle.analytics.core.Pipeline
 import io.github.janbarari.gradle.analytics.core.Stage

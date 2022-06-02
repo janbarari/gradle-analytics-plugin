@@ -27,8 +27,11 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.ConfigurationMetricReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricRenderStage
 import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricReportStage
+import io.github.janbarari.gradle.analytics.reporttask.analytics.AnalyticsReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
+import io.github.janbarari.gradle.analytics.reporttask.render.InitialRenderStage
+import io.github.janbarari.gradle.analytics.reporttask.render.ReportRenderPipeline
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
