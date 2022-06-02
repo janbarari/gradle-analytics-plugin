@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner.execution
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
@@ -35,10 +36,10 @@ import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
-import io.github.janbarari.gradle.os.OperatingSystemImp
+import io.github.janbarari.gradle.os.provideHardwareInfo
+import io.github.janbarari.gradle.os.provideOperatingSystem
 import io.github.janbarari.gradle.utils.GitUtils
 
 /**
@@ -57,16 +58,18 @@ class BuildExecutionLogicImp(
 
     @Suppress("ReturnCount")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
-        if (isForbiddenTasksRequested() || !isDatabaseConfigurationValid()) return false
-        if (!isTaskTrackable() || !isBranchTrackable()) return false
+        if (isForbiddenTasksRequested()) return false
+        if (!isDatabaseConfigurationValid()) return false
+        if (!isTaskTrackable()) return false
+        if (!isBranchTrackable()) return false
 
         val info = BuildInfo(
             startedAt = BuildInitializationService.STARTED_AT,
             initializedAt = BuildInitializationService.INITIALIZED_AT,
             configuredAt = BuildConfigurationService.CONFIGURED_AT,
             finishedAt = System.currentTimeMillis(),
-            osInfo = OsInfo(OperatingSystemImp().getName()),
-            hardwareInfo = HardwareInfo(0, 0),
+            osInfo = OsInfo(provideOperatingSystem().getName()),
+            hardwareInfo = HardwareInfo(provideHardwareInfo().availableMemory(), provideHardwareInfo().totalMemory()),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
             executedTasks = executedTasks
         )
@@ -79,9 +82,7 @@ class BuildExecutionLogicImp(
             createdAt = System.currentTimeMillis()
         ).apply {
 
-            initializationMetric = InitializationMetricUseCase().execute(
-                info.getInitializationDuration().toMillis()
-            )
+            initializationMetric = InitializationMetricUseCase().execute(info.getInitializationDuration().toMillis())
 
         }
 
@@ -122,10 +123,6 @@ class BuildExecutionLogicImp(
         return trackingTasks.contains(requestedTasks)
     }
 
-    /**
-     * Checks the current git branch is listed in tracking branches.
-     * @return true/false
-     */
     override fun isBranchTrackable(): Boolean {
         return trackingBranches.contains(GitUtils.currentBranch())
     }
