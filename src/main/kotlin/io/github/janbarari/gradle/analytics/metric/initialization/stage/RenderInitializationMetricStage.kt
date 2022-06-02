@@ -1,13 +1,13 @@
 package io.github.janbarari.gradle.analytics.metric.initialization.stage
 
-import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderInitializationMetricStage(
     private val analyticsReport: AnalyticsReport
-): Stage<String, String> {
+) : Stage<String, String> {
 
     @Suppress("MagicNumber")
     override fun process(input: String): String {
@@ -16,10 +16,6 @@ class RenderInitializationMetricStage(
 
         val values = analyticsReport.initializationReport!!.values
         val labels = analyticsReport.initializationReport!!.labels
-
-        println("InitializationMetricRenderStage chartMaxValue=$chartMaxValue")
-        println("InitializationMetricRenderStage initialization-median-values=$values")
-        println("InitializationMetricRenderStage initialization-median-labels=$labels")
 
         return input.replace("%initialization-max-value%", chartMaxValue.toString())
             .replace("%initialization-median-values%", values.toString())

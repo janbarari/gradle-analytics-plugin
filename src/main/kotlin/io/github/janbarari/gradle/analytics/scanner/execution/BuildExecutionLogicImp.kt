@@ -79,6 +79,7 @@ class BuildExecutionLogicImp(
         resetDependentServices()
 
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
+
         val metric: BuildMetric = BuildMetricPipeline(createInitializationMetricStage)
             .execute(
                 BuildMetric(
