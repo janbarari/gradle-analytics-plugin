@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics
 import io.github.janbarari.gradle.analytics.data.database.connection.DatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import org.gradle.api.Project
 
 /**
@@ -33,6 +34,7 @@ import org.gradle.api.Project
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
+@ExcludeJacocoGenerated
 open class GradleAnalyticsPluginConfig(val project: Project) {
 
     companion object {
@@ -55,6 +57,7 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
 
     fun getDatabaseConfig(): DatabaseConfig = databaseConfig
 
+    @ExcludeJacocoGenerated
     class DatabaseConfig : java.io.Serializable {
 
         /**

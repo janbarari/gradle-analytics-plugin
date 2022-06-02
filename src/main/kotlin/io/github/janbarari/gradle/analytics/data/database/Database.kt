@@ -28,6 +28,7 @@ import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDataba
 import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
+import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
@@ -114,10 +115,7 @@ class Database(
         }
     }
 
-    fun isConnected(): Boolean {
-        return this::_database.isInitialized
-    }
-
+    @ExcludeJacocoGenerated
     fun <T> transaction(statement: Transaction.() -> T): T {
         return transaction(
             _database.transactionManager.defaultIsolationLevel,
