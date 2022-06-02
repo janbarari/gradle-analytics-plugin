@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.IncompatibleVersionException
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -66,7 +67,7 @@ class GradleAnalyticsPlugin @Inject constructor(
     private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
-            throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
+            throw IncompatibleVersionException(PLUGIN_NAME, requiredGradleVersion.versionNumber)
         }
     }
 
