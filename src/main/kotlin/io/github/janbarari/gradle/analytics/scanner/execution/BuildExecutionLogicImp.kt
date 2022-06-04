@@ -66,6 +66,7 @@ class BuildExecutionLogicImp(
         if (!isBranchTrackable()) return false
 
         val info = BuildInfo(
+            createdAt = System.currentTimeMillis(),
             startedAt = BuildInitializationService.STARTED_AT,
             initializedAt = BuildInitializationService.INITIALIZED_AT,
             configuredAt = BuildConfigurationService.CONFIGURED_AT,
@@ -73,21 +74,17 @@ class BuildExecutionLogicImp(
             osInfo = OsInfo(provideOperatingSystem().getName()),
             hardwareInfo = HardwareInfo(provideHardwareInfo().availableMemory(), provideHardwareInfo().totalMemory()),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
-            executedTasks = executedTasks
+            executedTasks = executedTasks,
+            branch = GitUtils.currentBranch(),
+            requestedTasks = requestedTasks
         )
 
         resetDependentServices()
 
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
 
-        val metric: BuildMetric = BuildMetricPipeline(createInitializationMetricStage)
-            .execute(
-                BuildMetric(
-                    GitUtils.currentBranch(),
-                    requestedTasks,
-                    System.currentTimeMillis()
-                )
-            )
+        val metric = CreateMetricPipeline(createInitializationMetricStage)
+            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)
         saveMetricUseCase.execute(metric)

@@ -5,7 +5,7 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
-class InitialRenderStage private constructor(
+class RenderInitialReportStage private constructor(
     private val data: List<BuildMetric>,
     private val projectName: String,
     private val requestedTasks: String,
@@ -47,8 +47,8 @@ class InitialRenderStage private constructor(
             isCI = value
         }
 
-        fun build(): InitialRenderStage {
-            return InitialRenderStage(
+        fun build(): RenderInitialReportStage {
+            return RenderInitialReportStage(
                 data!!,
                 projectName!!,
                 requestedTasks!!,

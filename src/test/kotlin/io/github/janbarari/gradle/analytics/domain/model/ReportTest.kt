@@ -4,11 +4,11 @@ import io.github.janbarari.gradle.extension.isNotNull
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-class AnalyticsReportTest {
+class ReportTest {
 
     @Test
     fun `check getters`() {
-        val report = AnalyticsReport(
+        val report = Report(
             "develop",
             "assembleDebug"
         )
@@ -20,7 +20,7 @@ class AnalyticsReportTest {
 
     @Test
     fun `check setters`() {
-        val report = AnalyticsReport(
+        val report = Report(
             "develop",
             "assembleDebug"
         )
@@ -33,7 +33,7 @@ class AnalyticsReportTest {
 
     @Test
     fun `check toJson() returns json response`() {
-        val report = AnalyticsReport(
+        val report = Report(
             "develop",
             "assembleDebug"
         )

@@ -11,19 +11,22 @@ class SaveMetricUseCase(
     private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase
 ): UseCase<BuildMetric, Long>() {
 
-    override fun execute(new: BuildMetric): Long {
+    override fun execute(input: BuildMetric): Long {
+
         if (repo.isDayMetricExists()) {
+
             val updateInitializationMetricStage = UpdateInitializationMetricStage(updateInitializationMetricUseCase)
 
-            val metric = UpdateMetricPipeline(updateInitializationMetricStage)
-                .execute(BuildMetric(new.branch, new.requestedTasks, new.createdAt))
+            val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
+                .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
-            val dayMetric = repo.getDayMetric()
+            val dayMetricNumber = repo.getDayMetric().second
 
-            repo.updateDayMetric(dayMetric.second, metric)
-            return dayMetric.second
+            repo.updateDayMetric(dayMetricNumber, updatedMetric)
+            return dayMetricNumber
         }
-        return repo.saveNewMetric(new)
+
+        return repo.saveNewMetric(input)
     }
 
 }

@@ -4,4 +4,4 @@ import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.core.Pipeline
 import io.github.janbarari.gradle.core.Stage
 
-class BuildMetricPipeline(firstStage: Stage<BuildMetric, BuildMetric>): Pipeline<BuildMetric, BuildMetric>(firstStage)
+class CreateMetricPipeline(firstStage: Stage<BuildMetric, BuildMetric>): Pipeline<BuildMetric, BuildMetric>(firstStage)

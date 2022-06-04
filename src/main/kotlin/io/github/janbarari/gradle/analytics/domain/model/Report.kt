@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-data class AnalyticsReport(
+data class Report(
     val branch: String,
     val requestedTasks: String
 ) : java.io.Serializable {
@@ -15,7 +15,7 @@ data class AnalyticsReport(
 
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter: JsonAdapter<AnalyticsReport> = moshi.adapter(AnalyticsReport::class.java)
+        val jsonAdapter: JsonAdapter<Report> = moshi.adapter(Report::class.java)
         return jsonAdapter.toJson(this)
     }
 
