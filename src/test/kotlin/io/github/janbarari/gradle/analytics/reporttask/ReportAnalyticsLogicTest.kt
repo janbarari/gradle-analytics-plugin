@@ -3,22 +3,17 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.mockk.every
 import io.mockk.mockk
-import org.apache.tools.ant.taskdefs.Get
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import java.io.File
-import kotlin.math.log
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReportAnalyticsLogicTest {
@@ -164,6 +159,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check saveReport() returns true`() {
+        logic = injector.provideReportAnalyticsLogic()
         val result = logic.generateReport(
             "develop", "assembleDebug", 3
         )

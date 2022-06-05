@@ -22,13 +22,17 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.domain.model.AnalyticsReport
+import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.ConfigurationMetricReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricRenderStage
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
+import io.github.janbarari.gradle.analytics.reporttask.report.CreateReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
+import io.github.janbarari.gradle.analytics.reporttask.render.RenderInitialReportStage
+import io.github.janbarari.gradle.analytics.reporttask.render.RenderReportPipeline
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
@@ -51,24 +55,31 @@ class ReportAnalyticsLogicImp(
     private val projectName: String,
 ) : ReportAnalyticsLogic {
 
+    @kotlin.jvm.Throws(EmptyMetricsException::class)
     override fun generateReport(branch: String, requestedTasks: String, period: Long): String {
-        val rawHTML: String = getTextResourceContent("index-template.html")
         val data = getMetricsUseCase.execute(period)
 
-        val analyticsReport = AnalyticsReportPipeline(InitializationMetricReportStage(data))
-            .addStage(ConfigurationMetricReportStage(data))
-            .execute(AnalyticsReport(branch = branch, requestedTasks = requestedTasks))
+        if (data.isEmpty()) throw EmptyMetricsException()
 
-        return ReportRenderPipeline(
-            InitialRenderStage.Builder()
-                .data(data)
-                .projectName(projectName)
-                .branch(branch)
-                .period(period)
-                .requestedTasks(requestedTasks)
-                .isCI(isCI)
-                .build()
-        ).addStage(InitializationMetricRenderStage(analyticsReport)).execute(rawHTML)
+        val report = CreateReportPipeline(CreateInitializationReportStage(data))
+            .addStage(CreateConfigurationReportStage(data))
+            .execute(Report(branch = branch, requestedTasks = requestedTasks))
+
+        val rawHTML: String = getTextResourceContent("index-template.html")
+
+        val renderInitialReportStage = RenderInitialReportStage.Builder()
+            .data(data)
+            .projectName(projectName)
+            .branch(branch)
+            .period(period)
+            .requestedTasks(requestedTasks)
+            .isCI(isCI)
+            .build()
+        val renderInitializationReportStage = RenderInitializationReportStage(report)
+
+        return RenderReportPipeline(renderInitialReportStage)
+            .addStage(renderInitializationReportStage)
+            .execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)

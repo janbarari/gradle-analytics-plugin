@@ -1,5 +1,6 @@
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

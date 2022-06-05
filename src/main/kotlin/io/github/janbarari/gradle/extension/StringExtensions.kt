@@ -40,3 +40,10 @@ fun String.toRealPath(): String {
 fun List<String>.separateElementsWithSpace(): String {
     return this.joinToString(separator = " ")
 }
+
+fun StringBuilder.removeLastChar() {
+    if (isNotEmpty()) {
+        deleteCharAt(length - 1)
+    }
+}
+

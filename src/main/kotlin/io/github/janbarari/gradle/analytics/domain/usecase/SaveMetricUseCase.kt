@@ -1,31 +1,32 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
-import io.github.janbarari.gradle.analytics.core.UseCase
+import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.initialization.InitializationMetricMedianUseCase
-import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricStage
 
 class SaveMetricUseCase(
     private val repo: DatabaseRepository,
-    private val initializationMetricMedianUseCase: InitializationMetricMedianUseCase
+    private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase
 ): UseCase<BuildMetric, Long>() {
 
-    override fun execute(new: BuildMetric): Long {
+    override fun execute(input: BuildMetric): Long {
+
         if (repo.isDayMetricExists()) {
-            val tempMetric = BuildMetric(new.branch, new.requestedTasks, new.createdAt)
 
-            val dayMetric = repo.getDayMetric()
-            val dayMetricNumber = ensureNotNull(dayMetric).second
+            val updateInitializationMetricStage = UpdateInitializationMetricStage(updateInitializationMetricUseCase)
 
-            tempMetric.initializationMetric = initializationMetricMedianUseCase.execute(
-                Pair(new.branch, new.requestedTasks)
-            )
+            val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
+                .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
-            repo.updateDayMetric(dayMetricNumber, tempMetric)
+            val dayMetricNumber = repo.getDayMetric().second
+
+            repo.updateDayMetric(dayMetricNumber, updatedMetric)
             return dayMetricNumber
         }
-        return repo.saveNewMetric(new)
+
+        return repo.saveNewMetric(input)
     }
 
 }

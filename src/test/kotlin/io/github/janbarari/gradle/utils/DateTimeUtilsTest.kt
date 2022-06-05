@@ -35,12 +35,12 @@ class DateTimeUtilsTest {
 
     @Test
     fun `check msToDateString() returns correct format`() {
-        assertEquals("2022/06/01", DateTimeUtils.msToDateString(1654069596162))
+        assertEquals("2022/06/01", DateTimeUtils.formatToDate(1654069596162))
     }
 
     @Test
     fun `check msToDateTimeString() returns correct format`() {
-        assertEquals("2022/06/01 07:46 AM UTC", DateTimeUtils.msToDateTimeString(1654069596162))
+        assertEquals("2022/06/01 07:46 AM UTC", DateTimeUtils.formatToDateTime(1654069596162))
     }
 
 }

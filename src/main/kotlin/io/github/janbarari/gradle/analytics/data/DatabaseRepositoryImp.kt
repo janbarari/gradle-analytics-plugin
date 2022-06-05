@@ -85,7 +85,7 @@ class DatabaseRepositoryImp(
                 MetricTable.createdAt greaterEq DateTimeUtils.calculateDayInPastMonthsMs(
                     DateTimeUtils.getDayStartMs(), period
                 ) and (MetricTable.branch eq branch) and (MetricTable.requestedTasks eq requestedTasks)
-            }.orderBy(MetricTable.number, SortOrder.DESC).forEach {
+            }.orderBy(MetricTable.number, SortOrder.ASC).forEach {
                 result.add(
                     jsonAdapter.fromJson(it[MetricTable.value])!!
                 )

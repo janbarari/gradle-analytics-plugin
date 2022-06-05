@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 data class ConfigurationReport(

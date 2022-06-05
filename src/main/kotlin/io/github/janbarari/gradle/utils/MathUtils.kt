@@ -24,11 +24,10 @@ package io.github.janbarari.gradle.utils
 
 /**
  * A collection of mathematics functions.
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 object MathUtils {
+
+    private const val HUNDRED_PERCENT = 100L
 
     /**
      * Calculates the mean of a long dataset.
@@ -61,6 +60,20 @@ object MathUtils {
      */
     fun longMedian(vararg values: Long): Long {
         return longMedian(values.toList())
+    }
+
+    /**
+     * Sums the value by a dedicated percentage.
+     */
+    fun sumWithPercentage(value: Long, percentage: Long): Long {
+        return value + ((value * percentage) / HUNDRED_PERCENT)
+    }
+
+    /**
+     * Deducts the value by a dedicated percentage.
+     */
+    fun deductWithPercentage(value: Long, percentage: Long): Long {
+        return value - ((value * percentage) / HUNDRED_PERCENT)
     }
 
 }

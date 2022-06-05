@@ -23,16 +23,16 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.registerTask
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * A Gradle task that generates the report based on `git branch`, `time period` and `task name`.
@@ -41,20 +41,22 @@ import org.gradle.api.tasks.options.Option
  * `./gradlew reportAnalytics --branch="{your-branch}" --task="{your-task}" --period="{a-number-between-1-to-12}"`
  */
 @ExcludeJacocoGenerated
+@DisableCachingByDefault
 abstract class ReportAnalyticsTask : DefaultTask() {
 
     companion object {
         const val TASK_NAME = "reportAnalytics"
 
         @ExcludeJacocoGenerated
-        fun register(project: Project, configuration: GradleAnalyticsPluginConfig) {
-            project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
+        fun register(config: GradleAnalyticsPluginConfig) {
+            config.project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
                 projectNameProperty.set(project.rootProject.name)
                 envCIProperty.set(project.envCI().isPresent)
-                outputPathProperty.set(configuration.outputPath)
-                trackingTasksProperty.set(configuration.trackingTasks)
-                trackingBranchesProperty.set(configuration.trackingBranches)
-                databaseConfigProperty.set(configuration.getDatabaseConfig())
+                outputPathProperty.set(config.outputPath)
+                trackingTasksProperty.set(config.trackingTasks)
+                trackingBranchesProperty.set(config.trackingBranches)
+                databaseConfigProperty.set(config.getDatabaseConfig())
+                outputs.cacheIf { false }
             }
         }
     }

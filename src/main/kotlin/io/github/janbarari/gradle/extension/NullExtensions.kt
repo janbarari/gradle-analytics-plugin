@@ -22,6 +22,8 @@
  */
 package io.github.janbarari.gradle.extension
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+
 /**
  * Returns True, If the object is null.
  */

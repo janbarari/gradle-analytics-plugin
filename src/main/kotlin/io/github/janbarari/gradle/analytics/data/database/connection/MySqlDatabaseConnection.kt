@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.data.database.connection
 
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 /**
  * @author Mehdi-Janbarari

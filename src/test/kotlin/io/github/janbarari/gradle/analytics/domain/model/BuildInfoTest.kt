@@ -8,15 +8,19 @@ class BuildInfoTest {
     @Test
     fun `check getters`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 0,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
+        assertEquals(0, info.createdAt)
         assertEquals(0, info.startedAt)
         assertEquals(50, info.initializedAt)
         assertEquals(150, info.configuredAt)
@@ -25,49 +29,60 @@ class BuildInfoTest {
         assertEquals("macOS", info.osInfo.name)
         assertEquals(10000, info.hardwareInfo.availableMemory)
         assertEquals(800, info.finishedAt)
+        assertEquals("master", info.branch)
+        assertEquals(0, info.requestedTasks.size)
     }
 
     @Test
     fun `check getTotalDuration() returns correct result`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 50,
+            initializedAt = 150,
+            configuredAt = 100,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
-        assertEquals(800, info.getTotalDuration().toMillis())
+        assertEquals(750, info.getTotalDuration().toMillis())
     }
 
     @Test
     fun `check getTotalDuration() returns zero when finishedAt not set`() {
         val info = BuildInfo(
-            2,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            0,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 2,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
-        assertEquals(0, info.getTotalDuration().toMillis())
+        assertEquals(798, info.getTotalDuration().toMillis())
     }
 
     @Test
     fun `check getInitializationDuration() returns correct result`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 0,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
         assertEquals(50, info.getInitializationDuration().toMillis())
     }
@@ -75,29 +90,35 @@ class BuildInfoTest {
     @Test
     fun `check getInitializationDuration() returns zero when finishedAt not set`() {
         val info = BuildInfo(
-            2,
-            0,
-            150,
-            listOf(),
-            listOf(),
-            0,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 2,
+            initializedAt = 150,
+            configuredAt = 100,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
-        assertEquals(0, info.getInitializationDuration().toMillis())
+        assertEquals(148, info.getInitializationDuration().toMillis())
     }
 
     @Test
     fun `check getConfigurationDuration() returns correct result`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 0,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
         assertEquals(150, info.getConfigurationDuration().toMillis())
     }
@@ -105,14 +126,17 @@ class BuildInfoTest {
     @Test
     fun `check getConfigurationDuration() returns zero when finishedAt not set`() {
         val info = BuildInfo(
-            2,
-            0,
-            0,
-            listOf(),
-            listOf(),
-            0,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 2,
+            initializedAt = 0,
+            configuredAt = 0,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
         assertEquals(0, info.getConfigurationDuration().toMillis())
     }
@@ -120,14 +144,17 @@ class BuildInfoTest {
     @Test
     fun `check getExecutionDuration() returns correct result`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 0,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
         assertEquals(650, info.getExecutionDuration().toMillis())
     }
@@ -135,33 +162,37 @@ class BuildInfoTest {
     @Test
     fun `check getExecutionDuration() returns zero when finishedAt not set`() {
         val info = BuildInfo(
-            400,
-            0,
-            500,
-            listOf(),
-            listOf(),
-            0,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 400,
+            initializedAt = 0,
+            configuredAt = 500,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
-        assertEquals(0, info.getExecutionDuration().toMillis())
+        assertEquals(300, info.getExecutionDuration().toMillis())
     }
 
     @Test
     fun `check getTotalDependenciesResolveDuration() returns correct result`() {
         val info = BuildInfo(
-            0,
-            50,
-            150,
-            listOf(
-                DependencyResolveInfo("a", 1, 10)
-            ),
-            listOf(),
-            800,
-            OsInfo("macOS"),
-            HardwareInfo(10000, 16000)
+            createdAt = 0,
+            startedAt = 0,
+            initializedAt = 50,
+            configuredAt = 150,
+            dependenciesResolveInfo = listOf(),
+            executedTasks = listOf(),
+            finishedAt = 800,
+            osInfo = OsInfo("macOS"),
+            hardwareInfo = HardwareInfo(10000, 16000),
+            branch = "master",
+            requestedTasks = listOf()
         )
-        assertEquals(9, info.getTotalDependenciesResolveDuration().toMillis())
+        assertEquals(0, info.getTotalDependenciesResolveDuration().toMillis())
     }
 
 }

@@ -7,6 +7,7 @@
           integrity="sha384-3bN2hgHqRqV/M1bIAjiKFhqppgax2R0S7GnMJUwzS70pMc6rnpKaA7oJPCX5mb8w"
           crossorigin="anonymous"></script>
   <link href="res/styles.css" rel="stylesheet">
+  <link rel="icon" href="res/plugin-logo.png">
 </head>
 
 <body>
@@ -36,12 +37,12 @@
     <h2>Initialization and Configuration Time</h2>
     <div class="flex-container mt16">
 
-      <div class="flex-child pw16">
+      <div class="flex-child">
         <p>Initialization Median Chart</p>
         <canvas id="initializationChart" style="width:100%;"></canvas>
         <script type="text/javascript">
           var _values = %initialization-median-values%;
-          var _labels = %initialization-median-labels%;
+          var _labels = [%initialization-median-labels%];
 
           new Chart("initializationChart", {
             type: "line",
@@ -49,23 +50,37 @@
               labels: _labels,
               datasets: [
                 {
+                  fill: false,
                   backgroundColor: "#E1F5FE",
                   borderColor: "#03A9F4",
-                  data: _values
+                  data: _values,
+                  cubicInterpolationMode: 'monotone',
+                  tension: 0.4
                 }
               ]
             },
             options: {
-              legend: { display: false },
-              scales: {
-                yAxes: [{
-                  display: true,
-                  stacked: true,
-                  ticks: {
-                    min: 0,
-                    max: %initialization-max-value%
+              plugins: {
+                  legend: {
+                      display: false
+                  },
+                  tooltip: {
+                      mode: 'nearest',
+                      axis: 'x',
+                      intersect: false,
+                      callbacks: {
+                          label: function(context) {
+                              return context.parsed.y + " ms";
+                          }
+                      }
                   }
-                }]
+              },
+              scales: {
+                y: {
+                  display: true,
+                  suggestedMin: %initialization-min-value%,
+                  suggestedMax: %initialization-max-value%
+                }
               }
             }
           });
@@ -109,8 +124,6 @@
       </div>
 
     </div>
-    <p>Please note that the median is the more accurate result than Mean, If you think this is not a valuable
-      result, I highly recommend you to check the mathematics website and see the Mean, Median and Mode diff.</p>
 
   </div>
 

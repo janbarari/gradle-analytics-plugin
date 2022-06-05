@@ -29,6 +29,7 @@ import java.time.Duration
  * @since 1.0.0
  */
 data class BuildInfo(
+    val createdAt: Long,
     val startedAt: Long,
     val initializedAt: Long,
     val configuredAt: Long,
@@ -36,7 +37,9 @@ data class BuildInfo(
     val executedTasks: Collection<TaskInfo>,
     val finishedAt: Long,
     val osInfo: OsInfo,
-    val hardwareInfo: HardwareInfo
+    val hardwareInfo: HardwareInfo,
+    val branch: String,
+    val requestedTasks: List<String>
 ) : java.io.Serializable {
 
     /**

@@ -1,6 +1,7 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.domain.model.DependencyResolveInfo
+import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance

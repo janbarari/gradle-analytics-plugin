@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
-import io.github.janbarari.gradle.extension.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
