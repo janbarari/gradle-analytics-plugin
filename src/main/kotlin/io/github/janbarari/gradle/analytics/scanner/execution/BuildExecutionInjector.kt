@@ -30,6 +30,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
@@ -63,13 +65,22 @@ fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideInitializationMetricMedianUseCase(): UpdateInitializationMetricUseCase {
+fun BuildExecutionInjector.provideUpdateInitializationMetricUseCase(): UpdateInitializationMetricUseCase {
     return UpdateInitializationMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateConfigurationMetricUseCase(): UpdateConfigurationMetricUseCase {
+    return UpdateConfigurationMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
-    return SaveMetricUseCase(provideDatabaseRepository(), provideInitializationMetricMedianUseCase())
+    return SaveMetricUseCase(
+        provideDatabaseRepository(),
+        provideUpdateInitializationMetricUseCase(),
+        provideUpdateConfigurationMetricUseCase()
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -83,11 +94,17 @@ fun BuildExecutionInjector.provideInitializationMetricUseCase(): CreateInitializ
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideConfigurationMetricUseCase(): CreateConfigurationMetricUseCase {
+    return CreateConfigurationMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
         provideSaveTemporaryMetricUseCase(),
         provideInitializationMetricUseCase(),
+        provideConfigurationMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

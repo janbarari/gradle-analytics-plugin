@@ -12,5 +12,7 @@ data class BuildMetric(
     @Json(name = "created_at")
     var createdAt: Long,
     @Json(name = "initialization_metric")
-    var initializationMetric: InitializationMetric? = null
+    var initializationMetric: InitializationMetric? = null,
+    @Json(name = "configuration_metric")
+    var configurationMetric: ConfigurationMetric? = null
 ): java.io.Serializable

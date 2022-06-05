@@ -49,8 +49,8 @@ class CreateInitializationReportStage(
                 }
                 ChartPoint(it.value, period)
             },
-            maxValue = initializationMetricsMean.maxOf { it.first },
-            minValue = initializationMetricsMean.minOf { it.first }
+            maxValue = initializationMetricsMean.maxOf { it.value },
+            minValue = initializationMetricsMean.minOf { it.value }
         )
 
         input.initializationReport = initializationReport
