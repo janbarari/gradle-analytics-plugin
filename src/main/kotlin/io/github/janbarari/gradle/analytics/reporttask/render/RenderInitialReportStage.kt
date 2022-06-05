@@ -65,15 +65,15 @@ class RenderInitialReportStage private constructor(
             .replace("%task-path%", requestedTasks)
             .replace("%branch%", branch)
             .replace("%time-period-title%", "$period Months")
-            .replace("%reported-at%", DateTimeUtils.msToDateTimeString(System.currentTimeMillis()))
+            .replace("%reported-at%", DateTimeUtils.formatToDateTime(System.currentTimeMillis()))
             .replace("%is-ci%", if (isCI) "Yes" else "No")
             .replace("%plugin-version%", GradleAnalyticsPlugin.PLUGIN_VERSION)
 
         if (data.isNotEmpty()) {
             val oldest = data.last()
             val newest = data.first()
-            result = result.replace("%time-period-start%", DateTimeUtils.msToDateString(oldest.createdAt))
-                .replace("%time-period-end%", DateTimeUtils.msToDateString(newest.createdAt))
+            result = result.replace("%time-period-start%", DateTimeUtils.formatToDate(oldest.createdAt))
+                .replace("%time-period-end%", DateTimeUtils.formatToDate(newest.createdAt))
         }
 
         return result

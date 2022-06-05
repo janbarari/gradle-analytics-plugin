@@ -65,8 +65,15 @@ object MathUtils {
     /**
      * Sums the value by a dedicated percentage.
      */
-    fun sumPercentage(value: Long, percentage: Long): Long {
+    fun sumWithPercentage(value: Long, percentage: Long): Long {
         return value + ((value * percentage) / HUNDRED_PERCENT)
+    }
+
+    /**
+     * Deducts the value by a dedicated percentage.
+     */
+    fun deductWithPercentage(value: Long, percentage: Long): Long {
+        return value - ((value * percentage) / HUNDRED_PERCENT)
     }
 
 }

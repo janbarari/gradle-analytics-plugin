@@ -31,8 +31,8 @@ import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.stage.CreateInitializationMetricStage
-import io.github.janbarari.gradle.analytics.metric.initialization.usecase.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
+import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService

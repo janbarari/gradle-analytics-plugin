@@ -25,8 +25,9 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.stage.RenderInitializationReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.stage.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.report.CreateReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -54,8 +55,11 @@ class ReportAnalyticsLogicImp(
     private val projectName: String,
 ) : ReportAnalyticsLogic {
 
+    @kotlin.jvm.Throws(EmptyMetricsException::class)
     override fun generateReport(branch: String, requestedTasks: String, period: Long): String {
         val data = getMetricsUseCase.execute(period)
+
+        if (data.isEmpty()) throw EmptyMetricsException()
 
         val report = CreateReportPipeline(CreateInitializationReportStage(data))
             .addStage(CreateConfigurationReportStage(data))

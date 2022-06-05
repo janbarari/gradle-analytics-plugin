@@ -24,7 +24,7 @@ class ReportTest {
             "develop",
             "assembleDebug"
         )
-        report.initializationReport = InitializationReport(listOf(), listOf(), 0)
+        report.initializationReport = InitializationReport(listOf(), 0, 0)
         report.configurationReport = ConfigurationReport(listOf(), 0)
 
         assert(report.initializationReport.isNotNull())

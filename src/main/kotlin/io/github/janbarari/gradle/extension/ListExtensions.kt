@@ -6,3 +6,7 @@ fun <T: Any> List<T>.whenEach(block: T.() -> Unit) {
         block(iterator.next())
     }
 }
+
+fun List<Long>.toIntList(): List<Int> {
+    return this.map { it.toInt() }
+}

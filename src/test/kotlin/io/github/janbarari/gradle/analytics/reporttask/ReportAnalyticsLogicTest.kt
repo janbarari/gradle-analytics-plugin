@@ -159,6 +159,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check saveReport() returns true`() {
+        logic = injector.provideReportAnalyticsLogic()
         val result = logic.generateReport(
             "develop", "assembleDebug", 3
         )

@@ -71,15 +71,20 @@ object DateTimeUtils {
     /**
      * Converts time in milliseconds to a formatted date string.
      */
-    fun msToDateString(timeInMs: Long): String {
+    fun formatToDate(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    }
+
+    fun format(timeInMs: Long, pattern: String): String {
+        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
+            .format(DateTimeFormatter.ofPattern(pattern))
     }
 
     /**
      * Converts time in milliseconds to a formatted date & time string.
      */
-    fun msToDateTimeString(timeInMs: Long): String {
+    fun formatToDateTime(timeInMs: Long): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
             .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm a 'UTC'"))
     }

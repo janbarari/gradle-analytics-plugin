@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.metric.initialization.usecase
+package io.github.janbarari.gradle.analytics.metric.initialization
 
 import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository

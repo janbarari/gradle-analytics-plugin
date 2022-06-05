@@ -32,6 +32,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.work.DisableCachingByDefault
 
 /**
  * A Gradle task that generates the report based on `git branch`, `time period` and `task name`.
@@ -40,6 +41,7 @@ import org.gradle.api.tasks.options.Option
  * `./gradlew reportAnalytics --branch="{your-branch}" --task="{your-task}" --period="{a-number-between-1-to-12}"`
  */
 @ExcludeJacocoGenerated
+@DisableCachingByDefault
 abstract class ReportAnalyticsTask : DefaultTask() {
 
     companion object {
@@ -54,6 +56,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 trackingTasksProperty.set(config.trackingTasks)
                 trackingBranchesProperty.set(config.trackingBranches)
                 databaseConfigProperty.set(config.getDatabaseConfig())
+                outputs.cacheIf { false }
             }
         }
     }

@@ -1,9 +1,7 @@
-package io.github.janbarari.gradle.analytics.metric.initialization.stage
+package io.github.janbarari.gradle.analytics.metric.initialization
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.metric.initialization.usecase.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 
 class UpdateInitializationMetricStage(
     private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase

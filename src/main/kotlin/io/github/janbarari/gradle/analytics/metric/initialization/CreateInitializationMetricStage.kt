@@ -1,8 +1,7 @@
-package io.github.janbarari.gradle.analytics.metric.initialization.stage
+package io.github.janbarari.gradle.analytics.metric.initialization
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.metric.initialization.usecase.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.core.Stage
 
 class CreateInitializationMetricStage(
