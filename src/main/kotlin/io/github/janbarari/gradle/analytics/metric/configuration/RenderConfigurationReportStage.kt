@@ -4,6 +4,7 @@ import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toIntList
@@ -19,7 +20,9 @@ class RenderConfigurationReportStage(
     }
 
     override fun process(input: String): String {
-        if (report.configurationReport.isNull()) return input
+        if (report.configurationReport.isNull())
+            return input.replace("%configuration-metric%",
+            "<p>Configuration Median Chart is not available!</p><div class=\"space\"></div>")
 
         val values = report.configurationReport!!.values.map { it.value }.toIntList()
 
@@ -39,12 +42,15 @@ class RenderConfigurationReportStage(
             CHART_EMPTY_POSITION_RATE
         )
 
-        return input
+        var template = getTextResourceContent("configuration-metric-template.html")
+
+        template = template
             .replace("%configuration-max-value%", chartMaxValue.toString())
             .replace("%configuration-min-value%", chartMinValue.toString())
             .replace("%configuration-median-values%", values.toString())
             .replace("%configuration-median-labels%", labels.toString())
 
+        return input.replace("%configuration-metric%", template)
     }
 
 }
