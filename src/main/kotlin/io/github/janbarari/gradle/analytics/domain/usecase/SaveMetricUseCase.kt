@@ -5,13 +5,16 @@ import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricStage
+import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricStage
 
 class SaveMetricUseCase(
     private val repo: DatabaseRepository,
     private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase,
-    private val updateConfigurationMetricUseCase: UpdateConfigurationMetricUseCase
+    private val updateConfigurationMetricUseCase: UpdateConfigurationMetricUseCase,
+    private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
 ): UseCase<BuildMetric, Long>() {
 
     override fun execute(input: BuildMetric): Long {
@@ -20,9 +23,11 @@ class SaveMetricUseCase(
 
             val updateInitializationMetricStage = UpdateInitializationMetricStage(updateInitializationMetricUseCase)
             val updateConfigurationMetricStage = UpdateConfigurationMetricStage(updateConfigurationMetricUseCase)
+            val updateExecutionMetricStage = UpdateExecutionMetricStage(updateExecutionMetricUseCase)
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
                 .addStage(updateConfigurationMetricStage)
+                .addStage(updateExecutionMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second

@@ -26,6 +26,8 @@ import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.RenderConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.RenderExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -64,6 +66,7 @@ class ReportAnalyticsLogicImp(
 
         val report = CreateReportPipeline(CreateInitializationReportStage(data))
             .addStage(CreateConfigurationReportStage(data))
+            .addStage(CreateExecutionReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -78,10 +81,12 @@ class ReportAnalyticsLogicImp(
             .build()
         val renderInitializationReportStage = RenderInitializationReportStage(report)
         val renderConfigurationReportStage = RenderConfigurationReportStage(report)
+        val renderExecutionReportStage = RenderExecutionReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
             .addStage(renderConfigurationReportStage)
+            .addStage(renderExecutionReportStage)
             .execute(rawHTML)
     }
 

@@ -38,72 +38,7 @@
 
     %configuration-metric%
 
-    <h2>Execution Median Chart</h2>
-    <div class="chart-container" style="margin-right: 20px;">
-        <canvas id="executionChart" style="width:100%; height: 100%;"></canvas>
-        <script type="text/javascript">
-        var _values = [1890, 1500, 1600, 1650, 1850, 2030, 3000, 5000, 9000, 5000, 4000, 4050, 5000];
-        var _labels = ["01/01~02/01", "03/01~04/01", "05/01~06/01", "07/01~08/01", "09/01~10/01", "11/01~12/01", "13/01~14/01", "15/01~16/01", "17/01~18/01", "19/01~20/01", "21/01~22/01", "23/01~24/01", "25/01~26/01"];
-
-        new Chart("executionChart", {
-          type: "line",
-          data: {
-            labels: _labels,
-            datasets: [
-              {
-                normalized: true,
-                fill: false,
-                backgroundColor: "#228B22",
-                borderColor: "#228B22",
-                data: _values,
-                pointRadius: 0,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4
-              }
-            ]
-          },
-          options: {
-            maintainAspectRatio: false,
-            datasets: {
-              line: {
-                pointRadius: 0
-              }
-            },
-            elements: {
-              point: {
-                radius: 0
-              }
-            },
-            animation: {
-              duration: 1000
-            },
-            events: [],
-            plugins: {
-              legend: {
-                display: false
-              },
-              tooltip: {
-                callbacks: {
-                  label: function (context) {
-                    return context.parsed.y + " ms";
-                  }
-                }
-              }
-            },
-            scales: {
-              y: {
-                display: true,
-                suggestedMin: 0,
-                suggestedMax: 10000
-              }
-            }
-          }
-        });
-
-
-        </script>
-    </div>
-    <div class="space"></div>
+    %execution-metric%
 
 </div>
 

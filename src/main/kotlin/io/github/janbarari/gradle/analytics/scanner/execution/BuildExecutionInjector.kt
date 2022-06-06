@@ -32,6 +32,8 @@ import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitiali
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
@@ -75,11 +77,18 @@ fun BuildExecutionInjector.provideUpdateConfigurationMetricUseCase(): UpdateConf
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateExecutionMetricUseCase(): UpdateExecutionMetricUseCase {
+    return UpdateExecutionMetricUseCase(provideDatabaseRepository())
+}
+
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
         provideUpdateInitializationMetricUseCase(),
-        provideUpdateConfigurationMetricUseCase()
+        provideUpdateConfigurationMetricUseCase(),
+        provideUpdateExecutionMetricUseCase()
     )
 }
 
@@ -99,12 +108,18 @@ fun BuildExecutionInjector.provideConfigurationMetricUseCase(): CreateConfigurat
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideExecutionMetricUseCase(): CreateExecutionMetricUseCase {
+    return CreateExecutionMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
         provideSaveTemporaryMetricUseCase(),
         provideInitializationMetricUseCase(),
         provideConfigurationMetricUseCase(),
+        provideExecutionMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

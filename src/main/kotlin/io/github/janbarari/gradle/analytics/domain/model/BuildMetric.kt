@@ -14,5 +14,7 @@ data class BuildMetric(
     @Json(name = "initialization_metric")
     var initializationMetric: InitializationMetric? = null,
     @Json(name = "configuration_metric")
-    var configurationMetric: ConfigurationMetric? = null
+    var configurationMetric: ConfigurationMetric? = null,
+    @Json(name = "execution_metric")
+    var executionMetric: ExecutionMetric? = null
 ): java.io.Serializable

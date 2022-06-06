@@ -11,12 +11,10 @@
             labels: _labels,
             datasets: [
               {
-                normalized: true,
                 fill: false,
                 backgroundColor: "#FCE4EC",
                 borderColor: "#E91E63",
                 data: _values,
-                pointRadius: 0,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
               }
@@ -24,25 +22,14 @@
           },
           options: {
             maintainAspectRatio: false,
-            datasets: {
-              line: {
-                pointRadius: 0
-              }
-            },
-            elements: {
-              point: {
-                radius: 0
-              }
-            },
-            animation: {
-              duration: 1000
-            },
-            events: [],
             plugins: {
               legend: {
                 display: false
               },
               tooltip: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false,
                 callbacks: {
                   label: function (context) {
                     return context.parsed.y + " ms";
