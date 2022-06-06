@@ -5,15 +5,18 @@
 
 body {
     background-color: #f6f5ee;
-    margin: 44px;
+    margin: 40px;
     font-family: "Nunito", Helvetica, Arial, Verdana, Tahoma, sans-serif;
     padding-bottom: 120px;
+}
+
+.space {
+    height: 50px;
 }
 
 .flex-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     width: 100%;
 }
 
@@ -26,6 +29,10 @@ body {
 #container {
     max-width: 1000px;
     margin: auto;
+}
+
+.chart-container {
+    height: 260px;
 }
 
 .border {

@@ -31,6 +31,8 @@ import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricStage
+import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
@@ -51,6 +53,7 @@ class BuildExecutionLogicImp(
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase,
+    private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -82,8 +85,10 @@ class BuildExecutionLogicImp(
         resetDependentServices()
 
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
+        val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
 
         val metric = CreateMetricPipeline(createInitializationMetricStage)
+            .addStage(createConfigurationMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)

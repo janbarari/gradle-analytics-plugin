@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.RenderConfigurationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -76,9 +77,11 @@ class ReportAnalyticsLogicImp(
             .isCI(isCI)
             .build()
         val renderInitializationReportStage = RenderInitializationReportStage(report)
+        val renderConfigurationReportStage = RenderConfigurationReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
+            .addStage(renderConfigurationReportStage)
             .execute(rawHTML)
     }
 

@@ -3,6 +3,7 @@ package io.github.janbarari.gradle.analytics.metric.initialization
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toIntList
@@ -18,7 +19,9 @@ class RenderInitializationReportStage(
     }
 
     override fun process(input: String): String {
-        if (report.initializationReport.isNull()) return input
+        if (report.initializationReport.isNull())
+            return input.replace("%initialization-metric%",
+                "<p>Initialization Median Chart is not available!</p><div class=\"space\"></div>")
 
         val values = report.initializationReport!!.values.map { it.value }.toIntList()
 
@@ -38,11 +41,15 @@ class RenderInitializationReportStage(
             CHART_EMPTY_POSITION_RATE
         )
 
-        return input
+        var template = getTextResourceContent("initialization-metric-template.html")
+
+        template = template
             .replace("%initialization-max-value%", chartMaxValue.toString())
             .replace("%initialization-min-value%", chartMinValue.toString())
             .replace("%initialization-median-values%", values.toString())
             .replace("%initialization-median-labels%", labels.toString())
+
+        return input.replace("%initialization-metric%", template)
     }
 
 }

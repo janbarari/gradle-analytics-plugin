@@ -2,27 +2,27 @@
 <html lang="en">
 
 <head>
-  <title>%root-project-name%-%task-path%-%branch%-%time-period-start%-%time-period-end%</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"
-          integrity="sha384-3bN2hgHqRqV/M1bIAjiKFhqppgax2R0S7GnMJUwzS70pMc6rnpKaA7oJPCX5mb8w"
-          crossorigin="anonymous"></script>
-  <link href="res/styles.css" rel="stylesheet">
-  <link rel="icon" href="res/plugin-logo.png">
+    <title>%root-project-name%-%task-path%-%branch%-%time-period-start%-%time-period-end%</title>
+    <script crossorigin="anonymous"
+            integrity="sha384-3bN2hgHqRqV/M1bIAjiKFhqppgax2R0S7GnMJUwzS70pMc6rnpKaA7oJPCX5mb8w"
+            src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="res/styles.css" rel="stylesheet">
+    <link href="res/plugin-logo.png" rel="icon">
 </head>
 
 <body>
 
-  <div id="container">
+<div id="container">
 
-    <img src="res/plugin-logo.png" class="logo-dimensions" alt="logo" />
+    <img alt="logo" class="logo-dimensions" src="res/plugin-logo.png"/>
     <h1>Gradle Analytics Plugin Report</h1>
     <h3>
-      Analytics
-      <span class="tag-style-1">%task-path%</span>
-      on branch
-      <span class="tag-style-2">%branch%</span>
-      in
-      <span class="tag-style-3">%time-period-title%</span>
+        Analytics
+        <span class="tag-style-1">%task-path%</span>
+        on branch
+        <span class="tag-style-2">%branch%</span>
+        in
+        <span class="tag-style-3">%time-period-title%</span>
     </h3>
 
     <br>
@@ -34,98 +34,78 @@
 
     <br>
 
-    <h2>Initialization and Configuration Time</h2>
-    <div class="flex-container mt16">
+    %initialization-metric%
 
-      <div class="flex-child">
-        <p>Initialization Median Chart</p>
-        <canvas id="initializationChart" style="width:100%;"></canvas>
+    %configuration-metric%
+
+    <h2>Execution Median Chart</h2>
+    <div class="chart-container" style="margin-right: 20px;">
+        <canvas id="executionChart" style="width:100%; height: 100%;"></canvas>
         <script type="text/javascript">
-          var _values = %initialization-median-values%;
-          var _labels = [%initialization-median-labels%];
+        var _values = [1890, 1500, 1600, 1650, 1850, 2030, 3000, 5000, 9000, 5000, 4000, 4050, 5000];
+        var _labels = ["01/01~02/01", "03/01~04/01", "05/01~06/01", "07/01~08/01", "09/01~10/01", "11/01~12/01", "13/01~14/01", "15/01~16/01", "17/01~18/01", "19/01~20/01", "21/01~22/01", "23/01~24/01", "25/01~26/01"];
 
-          new Chart("initializationChart", {
-            type: "line",
-            data: {
-              labels: _labels,
-              datasets: [
-                {
-                  fill: false,
-                  backgroundColor: "#E1F5FE",
-                  borderColor: "#03A9F4",
-                  data: _values,
-                  cubicInterpolationMode: 'monotone',
-                  tension: 0.4
-                }
-              ]
+        new Chart("executionChart", {
+          type: "line",
+          data: {
+            labels: _labels,
+            datasets: [
+              {
+                normalized: true,
+                fill: false,
+                backgroundColor: "#228B22",
+                borderColor: "#228B22",
+                data: _values,
+                pointRadius: 0,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            maintainAspectRatio: false,
+            datasets: {
+              line: {
+                pointRadius: 0
+              }
             },
-            options: {
-              plugins: {
-                  legend: {
-                      display: false
-                  },
-                  tooltip: {
-                      mode: 'nearest',
-                      axis: 'x',
-                      intersect: false,
-                      callbacks: {
-                          label: function(context) {
-                              return context.parsed.y + " ms";
-                          }
-                      }
-                  }
+            elements: {
+              point: {
+                radius: 0
+              }
+            },
+            animation: {
+              duration: 1000
+            },
+            events: [],
+            plugins: {
+              legend: {
+                display: false
               },
-              scales: {
-                y: {
-                  display: true,
-                  suggestedMin: %initialization-min-value%,
-                  suggestedMax: %initialization-max-value%
-                }
-              }
-            }
-          });
-        </script>
-      </div>
-
-      <div class="flex-child pw16">
-        <p>Configuration Median Chart</p>
-        <canvas id="configurationChart" style="width:100%;"></canvas>
-        <script type="text/javascript">
-          var _values = %configuration-median-values%;
-          var _labels = %configuration-median-labels%;
-
-          new Chart("configurationChart", {
-            type: "line",
-            data: {
-              labels: _labels,
-              datasets: [
-                {
-                  backgroundColor: "#FCE4EC",
-                  borderColor: "#E91E63",
-                  data: _values
-                }
-              ]
-            },
-            options: {
-              legend: { display: false },
-              scales: {
-                yAxes: [{
-                  display: true,
-                  stacked: true,
-                  ticks: {
-                    min: 0,
-                    max: %configuration-max-value%
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return context.parsed.y + " ms";
                   }
-                }]
+                }
+              }
+            },
+            scales: {
+              y: {
+                display: true,
+                suggestedMin: 0,
+                suggestedMax: 10000
               }
             }
-          });
+          }
+        });
+
+
         </script>
-      </div>
-
     </div>
+    <div class="space"></div>
 
-  </div>
+</div>
 
 </body>
 
