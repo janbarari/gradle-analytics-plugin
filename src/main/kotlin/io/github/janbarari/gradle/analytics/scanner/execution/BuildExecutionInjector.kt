@@ -35,6 +35,8 @@ import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigura
 import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 
@@ -81,6 +83,10 @@ fun BuildExecutionInjector.provideUpdateExecutionMetricUseCase(): UpdateExecutio
     return UpdateExecutionMetricUseCase(provideDatabaseRepository())
 }
 
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateTotalBuildMetricUseCase {
+    return UpdateTotalBuildMetricUseCase(provideDatabaseRepository())
+}
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
@@ -88,7 +94,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideDatabaseRepository(),
         provideUpdateInitializationMetricUseCase(),
         provideUpdateConfigurationMetricUseCase(),
-        provideUpdateExecutionMetricUseCase()
+        provideUpdateExecutionMetricUseCase(),
+        provideUpdateTotalBuildMetricUseCase()
     )
 }
 
@@ -113,6 +120,11 @@ fun BuildExecutionInjector.provideExecutionMetricUseCase(): CreateExecutionMetri
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideTotalBuildMetricUseCase(): CreateTotalBuildMetricUseCase {
+    return CreateTotalBuildMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -120,6 +132,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideInitializationMetricUseCase(),
         provideConfigurationMetricUseCase(),
         provideExecutionMetricUseCase(),
+        provideTotalBuildMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

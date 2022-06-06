@@ -37,6 +37,8 @@ import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetr
 import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
@@ -57,6 +59,7 @@ class BuildExecutionLogicImp(
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase,
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
     private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
+    private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -90,10 +93,12 @@ class BuildExecutionLogicImp(
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
         val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
+        val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
 
         val metric = CreateMetricPipeline(createInitializationMetricStage)
             .addStage(createConfigurationMetricStage)
             .addStage(createExecutionMetricStage)
+            .addStage(createTotalBuildMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)

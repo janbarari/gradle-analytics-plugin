@@ -30,6 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionRepo
 import io.github.janbarari.gradle.analytics.metric.execution.RenderExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.report.CreateReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
@@ -67,6 +69,7 @@ class ReportAnalyticsLogicImp(
         val report = CreateReportPipeline(CreateInitializationReportStage(data))
             .addStage(CreateConfigurationReportStage(data))
             .addStage(CreateExecutionReportStage(data))
+            .addStage(CreateTotalBuildReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -82,11 +85,13 @@ class ReportAnalyticsLogicImp(
         val renderInitializationReportStage = RenderInitializationReportStage(report)
         val renderConfigurationReportStage = RenderConfigurationReportStage(report)
         val renderExecutionReportStage = RenderExecutionReportStage(report)
+        val renderTotalBuildReportStage = RenderTotalBuildReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
             .addStage(renderConfigurationReportStage)
             .addStage(renderExecutionReportStage)
+            .addStage(renderTotalBuildReportStage)
             .execute(rawHTML)
     }
 
