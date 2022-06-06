@@ -1,0 +1,52 @@
+<h2>Total Build Median Chart</h2>
+<div class="chart-container" style="margin-right: 20px;">
+    <canvas id="totalBuildChart" style="width:100%; height: 100%;"></canvas>
+    <script type="text/javascript">
+        var _values = %totalbuild-median-values%;
+        var _labels = [%totalbuild-median-labels%];
+
+        new Chart("totalBuildChart", {
+          type: "line",
+          data: {
+            labels: _labels,
+            datasets: [
+              {
+                fill: false,
+                backgroundColor: "#3F51B5",
+                borderColor: "#3F51B5",
+                data: _values,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    return context.parsed.y + " s";
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                display: true,
+                suggestedMin: %totalbuild-min-value%,
+                suggestedMax: %totalbuild-max-value%
+              }
+            }
+          }
+        });
+
+        </script>
+</div>
+<div class="space"></div>
