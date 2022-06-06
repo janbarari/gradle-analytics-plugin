@@ -33,6 +33,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricStage
+import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
@@ -54,6 +56,7 @@ class BuildExecutionLogicImp(
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase,
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
+    private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -86,9 +89,11 @@ class BuildExecutionLogicImp(
 
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
         val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
+        val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
 
         val metric = CreateMetricPipeline(createInitializationMetricStage)
             .addStage(createConfigurationMetricStage)
+            .addStage(createExecutionMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)

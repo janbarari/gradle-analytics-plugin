@@ -1,10 +1,10 @@
-package io.github.janbarari.gradle.analytics.metric.configuration
+package io.github.janbarari.gradle.analytics.metric.execution
 
-import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.ConfigurationReport
+import io.github.janbarari.gradle.analytics.domain.model.ExecutionReport
+import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.core.Triple
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -13,7 +13,7 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-class CreateConfigurationReportStage(
+class CreateExecutionReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
@@ -22,25 +22,28 @@ class CreateConfigurationReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
+    @Suppress("MagicNumber")
     override fun process(input: Report): Report {
-
-        val configurationChartPoints = metrics.filter { it.configurationMetric.isNotNull() }
-            .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
-            .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
+        val executionChartPoints = metrics.filter { it.executionMetric.isNotNull() }
+            .filter { ensureNotNull(it.executionMetric).average.isNotNull() }
+            .filter { ensureNotNull(it.executionMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
             .map {
-                ConfigurationChartPoint(
-                    value = ensureNotNull(it.configurationMetric).average,
+                ExecutionChartPoint(
+                    value = (ensureNotNull(it.executionMetric).average / 1000),
                     startedAt = it.createdAt,
                     finishedAt = null
                 )
             }
 
-        val configurationMetricsMean = resizeConfigurationChartPoints(configurationChartPoints, CHART_MAX_COLUMNS)
+        val executionMetricsMean = resizeExecutionChartPoints(
+            executionChartPoints,
+            CHART_MAX_COLUMNS
+        )
 
-        if (configurationMetricsMean.isEmpty()) return input
+        if (executionMetricsMean.isEmpty()) return input
 
-        val configurationReport = ConfigurationReport(
-            values = configurationChartPoints.map {
+        val executionReport = ExecutionReport(
+            values = executionChartPoints.map {
                 val period = if (it.finishedAt.isNull()) {
                     DateTimeUtils.format(it.startedAt, "dd/MM")
                 } else {
@@ -49,28 +52,28 @@ class CreateConfigurationReportStage(
                 }
                 ChartPoint(it.value, period)
             },
-            maxValue = configurationMetricsMean.maxOf { it.value },
-            minValue = configurationMetricsMean.minOf { it.value }
+            maxValue = executionMetricsMean.maxOf { it.value },
+            minValue = executionMetricsMean.minOf { it.value }
         )
 
-        input.configurationReport = configurationReport
+        input.executionReport = executionReport
 
         return input
     }
 
-    fun resizeConfigurationChartPoints(
-        input: List<ConfigurationChartPoint>, targetSize: Int
-    ): List<ConfigurationChartPoint> {
+    fun resizeExecutionChartPoints(
+        input: List<ExecutionChartPoint>, targetSize: Int
+    ): List<ExecutionChartPoint> {
         return if (input.size > targetSize)
-            resizeConfigurationChartPoints(calculatePointsMean(input), targetSize)
+            resizeExecutionChartPoints(calculatePointsMean(input), targetSize)
         else input
     }
 
-    fun calculatePointsMean(values: List<ConfigurationChartPoint>): List<ConfigurationChartPoint> {
+    fun calculatePointsMean(values: List<ExecutionChartPoint>): List<ExecutionChartPoint> {
 
         if (values.isEmpty()) return values
 
-        val mean = arrayListOf<ConfigurationChartPoint>()
+        val mean = arrayListOf<ExecutionChartPoint>()
         val size = values.size
         var nextIndex = 0
 
@@ -85,7 +88,7 @@ class CreateConfigurationReportStage(
                 if (finishedAt.isNull()) finishedAt = values[i + 1].startedAt
 
                 mean.add(
-                    ConfigurationChartPoint(
+                    ExecutionChartPoint(
                         value = MathUtils.longMean(values[i].value, values[i + 1].value),
                         startedAt = values[i].startedAt,
                         finishedAt = finishedAt
@@ -99,7 +102,7 @@ class CreateConfigurationReportStage(
         return mean
     }
 
-    class ConfigurationChartPoint(
+    class ExecutionChartPoint(
         val value: Long,
         val startedAt: Long,
         val finishedAt: Long? = null
