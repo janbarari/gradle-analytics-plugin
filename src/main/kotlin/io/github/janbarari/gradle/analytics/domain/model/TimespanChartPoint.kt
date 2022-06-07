@@ -20,17 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.extension
+package io.github.janbarari.gradle.analytics.domain.model
 
-fun Long.isZero(): Boolean {
-    return this == 0L
+import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.utils.DateTimeUtils
+
+class TimespanChartPoint(
+    val value: Long,
+    val from: Long,
+    val to: Long? = null
+): io.github.janbarari.gradle.core.Triple<Long, Long, Long?>(value, from, to) {
+
+    fun getTimespanString(): String {
+        return if (to.isNull()) {
+            DateTimeUtils.format(from, "dd/MM")
+        } else {
+            DateTimeUtils.format(from, "dd/MM") + "-" + DateTimeUtils.format(ensureNotNull(to), "dd/MM")
+        }
+    }
+
 }
-
-fun Long.isBiggerEquals(value: Long): Boolean {
-    return this >= value
-}
-
-fun Long.isBigger(value: Long): Boolean {
-    return this > value
-}
-

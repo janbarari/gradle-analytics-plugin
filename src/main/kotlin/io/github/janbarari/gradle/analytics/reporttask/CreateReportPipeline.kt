@@ -20,17 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.extension
+package io.github.janbarari.gradle.analytics.reporttask
 
-fun Long.isZero(): Boolean {
-    return this == 0L
-}
+import io.github.janbarari.gradle.core.Pipeline
+import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.analytics.domain.model.Report
 
-fun Long.isBiggerEquals(value: Long): Boolean {
-    return this >= value
-}
-
-fun Long.isBigger(value: Long): Boolean {
-    return this > value
-}
-
+open class CreateReportPipeline(firstStage: Stage<Report, Report>) :
+    Pipeline<Report, Report>(firstStage)

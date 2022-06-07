@@ -33,11 +33,8 @@ import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitiali
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
-import io.github.janbarari.gradle.analytics.reporttask.report.CreateReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import io.github.janbarari.gradle.analytics.reporttask.render.RenderInitialReportStage
-import io.github.janbarari.gradle.analytics.reporttask.render.RenderReportPipeline
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace

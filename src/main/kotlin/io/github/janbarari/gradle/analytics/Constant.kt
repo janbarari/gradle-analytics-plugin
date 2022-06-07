@@ -20,17 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.extension
+package io.github.janbarari.gradle.analytics
 
-fun Long.isZero(): Boolean {
-    return this == 0L
-}
-
-fun Long.isBiggerEquals(value: Long): Boolean {
-    return this >= value
-}
-
-fun Long.isBigger(value: Long): Boolean {
-    return this > value
-}
-
+const val SKIP_METRIC_THRESHOLD = 30L
+const val CHART_MAX_COLUMNS = 12
