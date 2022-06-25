@@ -48,7 +48,8 @@ object DatasetUtils {
                         to = if (values[index + 1].to.isNull()) values[index + 1].from else values[index + 1].to
                     )
                 )
-                nextIndex = index + 2 //because the index & index + 1 mean calculated. iteration should be skipped for next index.
+                //because the index & index + 1 mean calculated. iteration should be skipped for next index.
+                nextIndex = index + 2
             }
         }
 

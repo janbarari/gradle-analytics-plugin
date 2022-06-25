@@ -30,7 +30,9 @@ import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
+import java.nio.file.Files
 import javax.inject.Inject
+import kotlin.io.path.name
 
 /**
  * A free Gradle plugin for analytics of your projects. Provides unique visual and
@@ -55,6 +57,11 @@ class GradleAnalyticsPlugin @Inject constructor(
         val config = setupPluginConfig(project)
         registerTasks(config)
         ScannerUtils.setupScannerServices(config, registry)
+        project.subprojects.forEach {
+            Files.list(it.projectDir.toPath())
+                .filter { it.name == "build.gradle." }
+            println("gap: " + it.projectDir)
+        }
     }
 
     /**

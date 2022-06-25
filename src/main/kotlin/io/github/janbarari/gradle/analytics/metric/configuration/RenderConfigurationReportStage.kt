@@ -81,6 +81,7 @@ class RenderConfigurationReportStage(
             .replace("%configuration-median-labels%", chartPointLabels.toString())
     }
 
+    @Suppress("FunctionOnlyReturningConstant")
     fun getEmptyRender(): String {
         return "<p>Configuration Median Chart is not available!</p><div class=\"space\"></div>"
     }

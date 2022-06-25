@@ -40,7 +40,7 @@ class CreateConfigurationReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "ReturnCount", "FunctionOnlyReturningConstant")
     override fun process(report: Report): Report {
         val chartPoints = metrics.filter { it.configurationMetric.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
