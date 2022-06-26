@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateTotalBuildMetricUseCase: UseCase<Long, TotalBuildMetric>() {
 
-    override fun execute(input: Long): TotalBuildMetric {
+    override suspend fun execute(input: Long): TotalBuildMetric {
         return TotalBuildMetric(input)
     }
 

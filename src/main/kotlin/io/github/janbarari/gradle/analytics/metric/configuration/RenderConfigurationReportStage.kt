@@ -40,7 +40,7 @@ class RenderConfigurationReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
-    override fun process(input: String): String {
+    override suspend fun process(input: String): String {
         if (report.configurationReport.isNull()) {
             return input.replace("%configuration-metric%", getEmptyRender())
         }

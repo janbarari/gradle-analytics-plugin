@@ -20,15 +20,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.configuration
+package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.analytics.domain.model.ConfigurationMetric
-import io.github.janbarari.gradle.core.UseCase
+import java.nio.file.Files
+import kotlin.io.path.Path
+import kotlin.io.path.name
 
-class CreateConfigurationMetricUseCase: UseCase<Long, ConfigurationMetric>() {
+/**
+ * A collection of datetime functions.
+ */
+object FileUtils {
 
-    override suspend fun execute(input: Long): ConfigurationMetric {
-        return ConfigurationMetric(input)
+    fun isModulePath(directory: String): Boolean {
+        val isBuildscriptsExists = Files.list(Path(directory)).anyMatch { path ->
+            path.fileName.name == "build.gradle.kts" || path.fileName.name == "build.gradle"
+        }
+        val isSrcDirExists = Files.list(Path(directory)).anyMatch { path ->
+            path.fileName.name == "src"
+        }
+        return isBuildscriptsExists && isSrcDirExists
     }
 
 }

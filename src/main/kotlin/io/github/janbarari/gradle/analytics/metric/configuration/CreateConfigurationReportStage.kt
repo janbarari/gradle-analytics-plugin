@@ -41,7 +41,7 @@ class CreateConfigurationReportStage(
 ) : Stage<Report, Report> {
 
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "ReturnCount", "FunctionOnlyReturningConstant")
-    override fun process(report: Report): Report {
+    override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { it.configurationMetric.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }

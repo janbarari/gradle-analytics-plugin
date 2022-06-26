@@ -31,7 +31,7 @@ class CreateExecutionMetricStage(
     private val createExecutionMetricUseCase: CreateExecutionMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override fun process(input: BuildMetric): BuildMetric {
+    override suspend fun process(input: BuildMetric): BuildMetric {
         input.executionMetric = createExecutionMetricUseCase.execute(
             info.getExecutionDuration().toMillis()
         )

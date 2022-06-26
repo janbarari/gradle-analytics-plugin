@@ -7,6 +7,7 @@ import io.github.janbarari.gradle.analytics.scanner.execution.provideBuildExecut
 import io.github.janbarari.gradle.utils.GitUtils
 import io.mockk.every
 import io.mockk.mockkObject
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -88,7 +89,7 @@ class BuildExecutionLogicTest {
     }
 
     @Test
-    fun `check onExecutionFinished() returns true`() {
+    fun `check onExecutionFinished() returns true`() = runBlocking {
         mockkObject(GitUtils)
         every { GitUtils.currentBranch() } returns "master"
 
@@ -97,7 +98,7 @@ class BuildExecutionLogicTest {
     }
 
     @Test
-    fun `check onExecutionFinished() returns false when branch is not trackable`() {
+    fun `check onExecutionFinished() returns false when branch is not trackable`() = runBlocking {
         mockkObject(GitUtils)
         every { GitUtils.currentBranch() } returns "feature-1"
 
@@ -106,7 +107,7 @@ class BuildExecutionLogicTest {
     }
 
     @Test
-    fun `check onExecutionFinished() returns false when task is not trackable`() {
+    fun `check onExecutionFinished() returns false when task is not trackable`() = runBlocking {
         mockkObject(GitUtils)
         every { GitUtils.currentBranch() } returns "master"
         injector.requestedTasks = listOf("clean")
@@ -116,7 +117,7 @@ class BuildExecutionLogicTest {
     }
 
     @Test
-    fun `check onExecutionFinished() returns false when database is not set`() {
+    fun `check onExecutionFinished() returns false when database is not set`() = runBlocking {
         injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig()
 
         val executedTasks = listOf<TaskInfo>()
@@ -124,7 +125,7 @@ class BuildExecutionLogicTest {
     }
 
     @Test
-    fun `check onExecutionFinished() returns false when forbidden tasks requested`() {
+    fun `check onExecutionFinished() returns false when forbidden tasks requested`() = runBlocking {
         injector.requestedTasks = listOf("reportAnalytics")
 
         val executedTasks = listOf<TaskInfo>()

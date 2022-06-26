@@ -44,7 +44,7 @@ class CreateInitializationReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    override fun process(input: Report): Report {
+    override suspend fun process(input: Report): Report {
 
         val initializationChartPoints = metrics.filter { it.initializationMetric.isNotNull() }
             .filter { ensureNotNull(it.initializationMetric).average.isNotNull() }

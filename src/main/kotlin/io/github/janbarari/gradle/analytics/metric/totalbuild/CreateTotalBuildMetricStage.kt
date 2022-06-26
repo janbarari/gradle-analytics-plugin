@@ -31,7 +31,7 @@ class CreateTotalBuildMetricStage(
     private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override fun process(input: BuildMetric): BuildMetric {
+    override suspend fun process(input: BuildMetric): BuildMetric {
         input.totalBuildMetric = createTotalBuildMetricUseCase.execute(
             info.getTotalDuration().toMillis()
         )

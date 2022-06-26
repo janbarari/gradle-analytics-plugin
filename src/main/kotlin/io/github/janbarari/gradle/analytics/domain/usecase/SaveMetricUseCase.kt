@@ -31,6 +31,9 @@ import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetr
 import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
 
@@ -39,10 +42,11 @@ class SaveMetricUseCase(
     private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase,
     private val updateConfigurationMetricUseCase: UpdateConfigurationMetricUseCase,
     private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase,
-    private val updateTotalBuildMetricUseCase: UpdateTotalBuildMetricUseCase
+    private val updateTotalBuildMetricUseCase: UpdateTotalBuildMetricUseCase,
+    private val updateModulesSourceCountMetricUseCase: UpdateModulesSourceCountMetricUseCase
 ): UseCase<BuildMetric, Long>() {
 
-    override fun execute(input: BuildMetric): Long {
+    override suspend fun execute(input: BuildMetric): Long {
 
         if (repo.isDayMetricExists()) {
 
@@ -50,11 +54,13 @@ class SaveMetricUseCase(
             val updateConfigurationMetricStage = UpdateConfigurationMetricStage(updateConfigurationMetricUseCase)
             val updateExecutionMetricStage = UpdateExecutionMetricStage(updateExecutionMetricUseCase)
             val updateTotalBuildMetricStage = UpdateTotalBuildMetricStage(updateTotalBuildMetricUseCase)
+            val updateModulesSourceCountMetricStage = UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
                 .addStage(updateConfigurationMetricStage)
                 .addStage(updateExecutionMetricStage)
                 .addStage(updateTotalBuildMetricStage)
+                .addStage(updateModulesSourceCountMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second

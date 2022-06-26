@@ -22,12 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.scanner.execution
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.utils.GitUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -53,6 +57,7 @@ abstract class BuildExecutionService :
         val requestedTasks: ListProperty<String>
         val trackingTasks: ListProperty<String>
         val trackingBranches: ListProperty<String>
+        val modulesInfo: ListProperty<ModuleInfo>
     }
 
     private val _executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
@@ -124,14 +129,17 @@ abstract class BuildExecutionService :
             branch = GitUtils.currentBranch(),
             requestedTasks = parameters.requestedTasks.get(),
             trackingBranches = parameters.trackingBranches.get(),
-            trackingTasks = parameters.trackingTasks.get()
+            trackingTasks = parameters.trackingTasks.get(),
+            modulesInfo = parameters.modulesInfo.get()
         )
 
-        if (injector.provideBuildExecutionLogic().onExecutionFinished(_executedTasks)) {
-            println("New Metric Saved Successfully")
+        CoroutineScope(Dispatchers.IO).launch {
+            if (injector.provideBuildExecutionLogic().onExecutionFinished(_executedTasks)) {
+                println("New Metric Saved Successfully")
+            }
+            _executedTasks.clear()
         }
 
-        _executedTasks.clear()
     }
 
 }

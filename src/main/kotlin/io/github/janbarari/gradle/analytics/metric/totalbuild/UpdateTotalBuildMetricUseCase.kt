@@ -36,7 +36,7 @@ class UpdateTotalBuildMetricUseCase(
 ) : UseCaseNoInput<TotalBuildMetric>() {
 
     @Suppress("MagicNumber")
-    override fun execute(): TotalBuildMetric {
+    override suspend fun execute(): TotalBuildMetric {
         val durations = arrayListOf<Long>()
 
         repo.getTemporaryMetrics().whenEach {

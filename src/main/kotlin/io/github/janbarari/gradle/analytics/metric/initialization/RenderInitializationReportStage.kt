@@ -40,7 +40,7 @@ class RenderInitializationReportStage(
         private const val CHART_EMPTY_POSITION_RATE = 30L
     }
 
-    override fun process(input: String): String {
+    override suspend fun process(input: String): String {
         if (report.initializationReport.isNull())
             return input.replace("%initialization-metric%",
                 "<p>Initialization Median Chart is not available!</p><div class=\"space\"></div>")

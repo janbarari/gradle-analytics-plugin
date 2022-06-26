@@ -82,7 +82,7 @@ class RenderInitialReportStage private constructor(
 
     }
 
-    override fun process(input: String): String {
+    override suspend fun process(input: String): String {
         var result = input.replace("%root-project-name%", projectName)
             .replace("%task-path%", requestedTasks)
             .replace("%branch%", branch)

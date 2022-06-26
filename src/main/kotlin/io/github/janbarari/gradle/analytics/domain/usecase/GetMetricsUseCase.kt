@@ -30,7 +30,7 @@ class GetMetricsUseCase(
     private val repo: DatabaseRepository
 ): UseCase<Long, List<BuildMetric>>() {
 
-    override fun execute(input: Long): List<BuildMetric> {
+    override suspend fun execute(input: Long): List<BuildMetric> {
         return repo.getMetrics(input)
     }
 

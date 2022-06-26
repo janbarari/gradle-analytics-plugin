@@ -29,14 +29,14 @@ open class Pipeline<I, O>(firstStage: Stage<I, O>) {
     fun <K> addStage(newStage: Stage<O, K>): Pipeline<I, K> {
         return Pipeline(
             object : Stage<I, K> {
-                override fun process(input: I): K {
+                override suspend fun process(input: I): K {
                     return newStage.process(currentStage.process(input))
                 }
             }
         )
     }
 
-    fun execute(input: I): O {
+    suspend fun execute(input: I): O {
         return currentStage.process(input)
     }
 

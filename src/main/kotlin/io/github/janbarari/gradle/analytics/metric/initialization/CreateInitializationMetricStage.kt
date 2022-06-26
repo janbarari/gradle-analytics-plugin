@@ -30,7 +30,7 @@ class CreateInitializationMetricStage(
     private val info: BuildInfo,
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
-    override fun process(input: BuildMetric): BuildMetric {
+    override suspend fun process(input: BuildMetric): BuildMetric {
         input.initializationMetric = createInitializationMetricUseCase.execute(
             info.getInitializationDuration().toMillis()
         )

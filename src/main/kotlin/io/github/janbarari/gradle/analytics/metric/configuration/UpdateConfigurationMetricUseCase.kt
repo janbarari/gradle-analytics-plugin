@@ -39,7 +39,7 @@ class UpdateConfigurationMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ConfigurationMetric>() {
 
-    override fun execute(): ConfigurationMetric {
+    override suspend fun execute(): ConfigurationMetric {
         val durations = arrayListOf<Long>()
 
         repo.getTemporaryMetrics().whenEach {

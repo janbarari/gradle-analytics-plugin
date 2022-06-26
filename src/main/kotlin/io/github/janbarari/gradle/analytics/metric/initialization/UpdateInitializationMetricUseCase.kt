@@ -36,7 +36,7 @@ class UpdateInitializationMetricUseCase(
 ) : UseCaseNoInput<InitializationMetric>() {
 
     @Suppress("MagicNumber")
-    override fun execute(): InitializationMetric {
+    override suspend fun execute(): InitializationMetric {
         val durations = arrayListOf<Long>()
 
         repo.getTemporaryMetrics().whenEach {

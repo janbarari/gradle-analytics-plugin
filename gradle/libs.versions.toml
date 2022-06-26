@@ -8,6 +8,7 @@ jetbrains_exposed = "0.38.1"
 moshi = "1.13.0"
 commons-io = "2.11.0"
 mockk = "1.12.4"
+coroutines = "1.6.3"
 
 [libraries]
 oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
@@ -18,6 +19,8 @@ jetbrains_exposed_jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", versio
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

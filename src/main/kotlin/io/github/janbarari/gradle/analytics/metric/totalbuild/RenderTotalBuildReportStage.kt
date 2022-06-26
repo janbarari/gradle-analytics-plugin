@@ -40,7 +40,7 @@ class RenderTotalBuildReportStage(
         private const val CHART_EMPTY_POSITION_RATE = 30L
     }
 
-    override fun process(input: String): String {
+    override suspend fun process(input: String): String {
         if (report.totalBuildReport.isNull())
             return input.replace("%totalbuild-metric%",
                 "<p>Total Build Median Chart is not available!</p><div class=\"space\"></div>")

@@ -29,7 +29,7 @@ class UpdateInitializationMetricStage(
     private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override fun process(input: BuildMetric): BuildMetric {
+    override suspend fun process(input: BuildMetric): BuildMetric {
         input.initializationMetric = updateInitializationMetricUseCase.execute()
         return input
     }

@@ -1,37 +1,543 @@
 package io.github.janbarari.gradle.analytics
 
+import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.util.stream.Collectors
-import kotlin.io.path.extension
-import kotlin.io.path.name
-import kotlin.io.path.pathString
 
 class TemporaryTest {
 
     @Test
-    fun getListOfKotlinFiles() {
+    fun getListOfKotlinFiles() = runBlocking {
+        val useCase = CreateModulesSourceCountMetricUseCase()
+        val input = mutableListOf(
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/domain"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/data"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/list"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/feature/details"
+            ),
+            ModuleInfo(
+                path = ":path",
+                absoluteDir = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker/app"
+            )
+        )
 
-        val rootDirectory = "/Users/workstation/Workstation/Github/janbarari/SatellitesTracker"
-
-        var pathList: List<Path> = arrayListOf()
-        Files.walk(Paths.get(rootDirectory)).use { stream ->
-            pathList = stream.map { obj: Path -> obj.normalize() }
-                .filter(Files::isRegularFile)
-                .collect(Collectors.toList())
-        }
-
-        pathList
-            .filter {
-                (it.pathString.contains("src/main/java") || it.pathString.contains("src/main/kotlin"))
-                        && it.extension == "kt"
-            }
-            .forEach {
-            println(it)
-        }
-
+        println("Pre size = ${input.size}")
+        println("After size = ${useCase.execute(input).modules.size}")
     }
 
 }

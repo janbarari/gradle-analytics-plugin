@@ -29,9 +29,9 @@ import java.io.IOException
 interface ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(IOException::class)
-    fun saveReport(renderedHTML: String): Boolean
+    suspend fun saveReport(renderedHTML: String): Boolean
 
-    fun generateReport(branch: String, requestedTasks: String, period: Long): String
+    suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
 
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     fun ensureBranchArgumentValid(branchArgument: String)

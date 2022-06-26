@@ -29,7 +29,7 @@ class UpdateExecutionMetricStage(
     private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override fun process(input: BuildMetric): BuildMetric {
+    override suspend fun process(input: BuildMetric): BuildMetric {
         input.executionMetric = updateExecutionMetricUseCase.execute()
         return input
     }

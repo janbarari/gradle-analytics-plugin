@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateExecutionMetricUseCase: UseCase<Long, ExecutionMetric>() {
 
-    override fun execute(input: Long): ExecutionMetric {
+    override suspend fun execute(input: Long): ExecutionMetric {
         return ExecutionMetric(input)
     }
 

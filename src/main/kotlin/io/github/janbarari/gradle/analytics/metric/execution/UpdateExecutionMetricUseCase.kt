@@ -36,7 +36,7 @@ class UpdateExecutionMetricUseCase(
 ): UseCaseNoInput<ExecutionMetric>() {
 
     @Suppress("MagicNumber")
-    override fun execute(): ExecutionMetric {
+    override suspend fun execute(): ExecutionMetric {
         val durations = arrayListOf<Long>()
 
         repo.getTemporaryMetrics().whenEach {

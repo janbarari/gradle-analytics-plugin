@@ -30,11 +30,14 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
@@ -51,7 +54,8 @@ data class BuildExecutionInjector(
     var branch: String? = null,
     var requestedTasks: List<String>? = null,
     var trackingBranches: List<String>? = null,
-    var trackingTasks: List<String>? = null
+    var trackingTasks: List<String>? = null,
+    var modulesInfo: List<ModuleInfo>? = null
 )
 
 @ExcludeJacocoGenerated
@@ -89,13 +93,19 @@ fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateTotalBu
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateModulesSourceCountMetricUseCase(): UpdateModulesSourceCountMetricUseCase {
+    return UpdateModulesSourceCountMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
         provideUpdateInitializationMetricUseCase(),
         provideUpdateConfigurationMetricUseCase(),
         provideUpdateExecutionMetricUseCase(),
-        provideUpdateTotalBuildMetricUseCase()
+        provideUpdateTotalBuildMetricUseCase(),
+        provideUpdateModulesSourceCountMetricUseCase()
     )
 }
 
@@ -105,23 +115,28 @@ fun BuildExecutionInjector.provideSaveTemporaryMetricUseCase(): SaveTemporaryMet
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideInitializationMetricUseCase(): CreateInitializationMetricUseCase {
+fun BuildExecutionInjector.provideCreateInitializationMetricUseCase(): CreateInitializationMetricUseCase {
     return CreateInitializationMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideConfigurationMetricUseCase(): CreateConfigurationMetricUseCase {
+fun BuildExecutionInjector.provideCreateConfigurationMetricUseCase(): CreateConfigurationMetricUseCase {
     return CreateConfigurationMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideExecutionMetricUseCase(): CreateExecutionMetricUseCase {
+fun BuildExecutionInjector.provideCreateExecutionMetricUseCase(): CreateExecutionMetricUseCase {
     return CreateExecutionMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideTotalBuildMetricUseCase(): CreateTotalBuildMetricUseCase {
+fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateTotalBuildMetricUseCase {
     return CreateTotalBuildMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateModuleSourceCountMetricUseCase(): CreateModulesSourceCountMetricUseCase {
+    return CreateModulesSourceCountMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
@@ -129,14 +144,16 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
         provideSaveTemporaryMetricUseCase(),
-        provideInitializationMetricUseCase(),
-        provideConfigurationMetricUseCase(),
-        provideExecutionMetricUseCase(),
-        provideTotalBuildMetricUseCase(),
+        provideCreateInitializationMetricUseCase(),
+        provideCreateConfigurationMetricUseCase(),
+        provideCreateExecutionMetricUseCase(),
+        provideCreateTotalBuildMetricUseCase(),
+        provideCreateModuleSourceCountMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),
         ensureNotNull(trackingTasks),
-        ensureNotNull(requestedTasks)
+        ensureNotNull(requestedTasks),
+        ensureNotNull(modulesInfo)
     )
 }

@@ -28,8 +28,10 @@ import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDe
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
+import io.github.janbarari.gradle.utils.FileUtils
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
@@ -53,6 +55,13 @@ object ScannerUtils {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
+        val modulesInfo = mutableListOf<ModuleInfo>()
+        project.subprojects.forEach {
+            if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
+                modulesInfo.add(ModuleInfo(it.path, it.projectDir.absolutePath))
+            }
+        }
+
         project.gradle.projectsEvaluated {
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
                 BuildExecutionService::class.java.simpleName,
@@ -64,6 +73,7 @@ object ScannerUtils {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
+                    this.modulesInfo.set(modulesInfo)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

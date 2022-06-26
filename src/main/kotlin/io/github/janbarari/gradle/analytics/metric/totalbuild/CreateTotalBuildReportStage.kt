@@ -45,7 +45,7 @@ class CreateTotalBuildReportStage(
     }
 
     @Suppress("MagicNumber")
-    override fun process(input: Report): Report {
+    override suspend fun process(input: Report): Report {
         val totalBuildChartPoints = metrics.filter { it.totalBuildMetric.isNotNull() }
             .filter { ensureNotNull(it.totalBuildMetric).average.isNotNull() }
             .filter { ensureNotNull(it.totalBuildMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }

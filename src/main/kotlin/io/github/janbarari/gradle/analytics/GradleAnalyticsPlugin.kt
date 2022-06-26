@@ -22,17 +22,15 @@
  */
 package io.github.janbarari.gradle.analytics
 
-import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
-import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.IncompatibleVersionException
+import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
+import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
-import java.nio.file.Files
 import javax.inject.Inject
-import kotlin.io.path.name
 
 /**
  * A free Gradle plugin for analytics of your projects. Provides unique visual and
@@ -57,11 +55,6 @@ class GradleAnalyticsPlugin @Inject constructor(
         val config = setupPluginConfig(project)
         registerTasks(config)
         ScannerUtils.setupScannerServices(config, registry)
-        project.subprojects.forEach {
-            Files.list(it.projectDir.toPath())
-                .filter { it.name == "build.gradle." }
-            println("gap: " + it.projectDir)
-        }
     }
 
     /**
@@ -83,7 +76,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      *
      * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupPluginConfig(project: Project) : GradleAnalyticsPluginConfig {
+    private fun setupPluginConfig(project: Project): GradleAnalyticsPluginConfig {
         return project.extensions.create(
             PLUGIN_NAME,
             GradleAnalyticsPluginConfig::class.java,

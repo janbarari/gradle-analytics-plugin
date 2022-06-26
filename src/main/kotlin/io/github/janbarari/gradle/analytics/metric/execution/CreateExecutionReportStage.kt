@@ -45,7 +45,7 @@ class CreateExecutionReportStage(
     }
 
     @Suppress("MagicNumber")
-    override fun process(input: Report): Report {
+    override suspend fun process(input: Report): Report {
         val executionChartPoints = metrics.filter { it.executionMetric.isNotNull() }
             .filter { ensureNotNull(it.executionMetric).average.isNotNull() }
             .filter { ensureNotNull(it.executionMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }

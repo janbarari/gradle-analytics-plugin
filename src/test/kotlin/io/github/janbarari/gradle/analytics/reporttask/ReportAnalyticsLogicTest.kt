@@ -7,8 +7,10 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
 import io.github.janbarari.gradle.extension.ensureNotNull
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -102,9 +104,9 @@ class ReportAnalyticsLogicTest {
     }
 
     @Test
-    fun `check generateReport() returns result when ran on Local and metrics are not empty`() {
+    fun `check generateReport() returns result when ran on Local and metrics are not empty`() = runBlocking {
         val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
-        every { mockedGetMetricsUseCase.execute(3) } returns listOf(
+        coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
             BuildMetric(
                 "a",
                 listOf("b"),
@@ -129,11 +131,11 @@ class ReportAnalyticsLogicTest {
     }
 
     @Test
-    fun `check generateReport() returns result when ran on CI and metrics are not empty`() {
+    fun `check generateReport() returns result when ran on CI and metrics are not empty`() = runBlocking {
         injector.isCI = true
 
         val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
-        every { mockedGetMetricsUseCase.execute(3) } returns listOf(
+        coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
             BuildMetric(
                 "a",
                 listOf("b"),
@@ -158,7 +160,7 @@ class ReportAnalyticsLogicTest {
     }
 
     @Test
-    fun `check saveReport() returns true`() {
+    fun `check saveReport() returns true`() = runBlocking {
         logic = injector.provideReportAnalyticsLogic()
         val result = logic.generateReport(
             "develop", "assembleDebug", 3
