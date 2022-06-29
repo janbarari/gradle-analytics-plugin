@@ -30,14 +30,13 @@ import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionRepo
 import io.github.janbarari.gradle.analytics.metric.execution.RenderExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
-import io.github.janbarari.gradle.analytics.reporttask.report.CreateReportPipeline
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import io.github.janbarari.gradle.analytics.reporttask.render.RenderInitialReportStage
-import io.github.janbarari.gradle.analytics.reporttask.render.RenderReportPipeline
 import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
@@ -61,7 +60,7 @@ class ReportAnalyticsLogicImp(
 ) : ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(EmptyMetricsException::class)
-    override fun generateReport(branch: String, requestedTasks: String, period: Long): String {
+    override suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String {
         val data = getMetricsUseCase.execute(period)
 
         if (data.isEmpty()) throw EmptyMetricsException()
@@ -70,6 +69,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateConfigurationReportStage(data))
             .addStage(CreateExecutionReportStage(data))
             .addStage(CreateTotalBuildReportStage(data))
+            .addStage(CreateModulesSourceCountReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -86,17 +86,19 @@ class ReportAnalyticsLogicImp(
         val renderConfigurationReportStage = RenderConfigurationReportStage(report)
         val renderExecutionReportStage = RenderExecutionReportStage(report)
         val renderTotalBuildReportStage = RenderTotalBuildReportStage(report)
+        val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
             .addStage(renderConfigurationReportStage)
             .addStage(renderExecutionReportStage)
             .addStage(renderTotalBuildReportStage)
+            .addStage(renderModulesSourceCountReportStage)
             .execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)
-    override fun saveReport(renderedHTML: String): Boolean {
+    override suspend fun saveReport(renderedHTML: String): Boolean {
         val fontPath = "res/nunito.ttf"
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"

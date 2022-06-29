@@ -27,6 +27,7 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.Database
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
@@ -37,6 +38,8 @@ import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetr
 import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
 import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
@@ -60,15 +63,17 @@ class BuildExecutionLogicImp(
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
     private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
     private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase,
+    private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
     private val trackingTasks: List<String>,
-    private val requestedTasks: List<String>
+    private val requestedTasks: List<String>,
+    private val modulesInfo: List<ModuleInfo>
 ) : BuildExecutionLogic {
 
     @Suppress("ReturnCount")
-    override fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
+    override suspend fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
         if (isForbiddenTasksRequested()) return false
         if (!isDatabaseConfigurationValid()) return false
         if (!isTaskTrackable()) return false
@@ -94,11 +99,16 @@ class BuildExecutionLogicImp(
         val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
         val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
+        val createModulesSourceCountMetricStage = CreateModulesSourceCountMetricStage(
+            modulesInfo,
+            createModulesSourceCountMetricUseCase
+        )
 
         val metric = CreateMetricPipeline(createInitializationMetricStage)
             .addStage(createConfigurationMetricStage)
             .addStage(createExecutionMetricStage)
             .addStage(createTotalBuildMetricStage)
+            .addStage(createModulesSourceCountMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)

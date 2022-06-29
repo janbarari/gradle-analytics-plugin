@@ -23,9 +23,13 @@
 package io.github.janbarari.gradle.core
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 @SuppressWarnings("UnnecessaryAbstractClass")
 @ExcludeJacocoGenerated
-abstract class UseCaseNoInput<OUTPUT> {
-    abstract fun execute(): OUTPUT
+abstract class UseCaseNoInput<OUTPUT>(
+    val dispatcher: CoroutineContext = Dispatchers.IO
+) {
+    abstract suspend fun execute(): OUTPUT
 }

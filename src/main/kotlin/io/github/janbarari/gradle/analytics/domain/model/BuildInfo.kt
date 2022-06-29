@@ -24,10 +24,6 @@ package io.github.janbarari.gradle.analytics.domain.model
 
 import java.time.Duration
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 data class BuildInfo(
     val createdAt: Long,
     val startedAt: Long,

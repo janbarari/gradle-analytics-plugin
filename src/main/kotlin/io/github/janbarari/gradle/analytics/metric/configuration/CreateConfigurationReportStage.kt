@@ -1,108 +1,75 @@
+/**
+ * MIT License
+ * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package io.github.janbarari.gradle.analytics.metric.configuration
 
-import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.CHART_MAX_COLUMNS
+import io.github.janbarari.gradle.analytics.SKIP_METRIC_THRESHOLD
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.ConfigurationReport
-import io.github.janbarari.gradle.core.Triple
+import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.utils.DateTimeUtils
-import io.github.janbarari.gradle.utils.MathUtils
+import io.github.janbarari.gradle.extension.whenEmpty
+import io.github.janbarari.gradle.utils.DatasetUtils
 
 class CreateConfigurationReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    companion object {
-        private const val SKIP_METRIC_THRESHOLD = 50L
-        private const val CHART_MAX_COLUMNS = 12
-    }
-
-    override fun process(input: Report): Report {
-
-        val configurationChartPoints = metrics.filter { it.configurationMetric.isNotNull() }
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE", "ReturnCount", "FunctionOnlyReturningConstant")
+    override suspend fun process(report: Report): Report {
+        val chartPoints = metrics.filter { it.configurationMetric.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
             .map {
-                ConfigurationChartPoint(
+                TimespanChartPoint(
                     value = ensureNotNull(it.configurationMetric).average,
-                    startedAt = it.createdAt,
-                    finishedAt = null
+                    from = it.createdAt,
+                    to = null
                 )
             }
+            .whenEmpty {
+                return report
+            }
 
-        val configurationMetricsMean = resizeConfigurationChartPoints(configurationChartPoints, CHART_MAX_COLUMNS)
-
-        if (configurationMetricsMean.isEmpty()) return input
+        val dataset = DatasetUtils.minimizeTimespanChartPoints(chartPoints, CHART_MAX_COLUMNS)
+        if (dataset.isEmpty()) return report
 
         val configurationReport = ConfigurationReport(
-            values = configurationChartPoints.map {
-                val period = if (it.finishedAt.isNull()) {
-                    DateTimeUtils.format(it.startedAt, "dd/MM")
-                } else {
-                    DateTimeUtils.format(it.startedAt, "dd/MM") + "-" +
-                            DateTimeUtils.format(ensureNotNull(it.finishedAt), "dd/MM")
-                }
-                ChartPoint(it.value, period)
+            values = chartPoints.map {
+                ChartPoint(it.value, it.getTimespanString())
             },
-            maxValue = configurationMetricsMean.maxOf { it.value },
-            minValue = configurationMetricsMean.minOf { it.value }
+            maxValue = dataset.maxOf { it.value },
+            minValue = dataset.minOf { it.value }
         )
 
-        input.configurationReport = configurationReport
-
-        return input
-    }
-
-    fun resizeConfigurationChartPoints(
-        input: List<ConfigurationChartPoint>, targetSize: Int
-    ): List<ConfigurationChartPoint> {
-        return if (input.size > targetSize)
-            resizeConfigurationChartPoints(calculatePointsMean(input), targetSize)
-        else input
-    }
-
-    fun calculatePointsMean(values: List<ConfigurationChartPoint>): List<ConfigurationChartPoint> {
-
-        if (values.isEmpty()) return values
-
-        val mean = arrayListOf<ConfigurationChartPoint>()
-        val size = values.size
-        var nextIndex = 0
-
-        for (i in values.indices) {
-            if (i < nextIndex) continue
-
-            if (i + 1 >= size) {
-                mean.add(values[i])
-            } else {
-
-                var finishedAt = values[i + 1].finishedAt
-                if (finishedAt.isNull()) finishedAt = values[i + 1].startedAt
-
-                mean.add(
-                    ConfigurationChartPoint(
-                        value = MathUtils.longMean(values[i].value, values[i + 1].value),
-                        startedAt = values[i].startedAt,
-                        finishedAt = finishedAt
-                    )
-                )
-
-                nextIndex = i + 2
-            }
+        return report.apply {
+            this.configurationReport = configurationReport
         }
-
-        return mean
     }
-
-    class ConfigurationChartPoint(
-        val value: Long,
-        val startedAt: Long,
-        val finishedAt: Long? = null
-    ) : Triple<Long, Long, Long?>(value, startedAt, finishedAt)
 
 }

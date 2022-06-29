@@ -63,6 +63,6 @@ interface BuildExecutionLogic {
      * invoked by [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService] to start
      * storing the build metrics.
      */
-    fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean
+    suspend fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean
 
 }

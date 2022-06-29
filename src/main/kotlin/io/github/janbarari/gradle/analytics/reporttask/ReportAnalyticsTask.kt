@@ -26,6 +26,9 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.registerTask
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -106,11 +109,13 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             projectName = projectNameProperty.get()
         )
 
-        with(injector.provideReportAnalyticsLogic()) {
-            ensureBranchArgumentValid(branchArgument)
-            ensurePeriodArgumentValid(periodArgument)
-            ensureTaskArgumentValid(requestedTasksArgument)
-            saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+        CoroutineScope(Dispatchers.IO).launch {
+            with(injector.provideReportAnalyticsLogic()) {
+                ensureBranchArgumentValid(branchArgument)
+                ensurePeriodArgumentValid(periodArgument)
+                ensureTaskArgumentValid(requestedTasksArgument)
+                saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+            }
         }
 
     }
