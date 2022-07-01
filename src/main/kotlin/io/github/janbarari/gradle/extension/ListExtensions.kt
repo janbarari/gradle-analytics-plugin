@@ -41,3 +41,6 @@ inline fun <T> List<T>.whenEmpty(block: List<T>.() -> Unit): List<T> {
     if (isEmpty()) block(this)
     return this
 }
+
+val <T> List<T>.firstIndex: Int
+    get() = 0

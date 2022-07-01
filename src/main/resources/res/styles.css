@@ -10,6 +10,30 @@ body {
     padding-bottom: 120px;
 }
 
+table,
+th,
+td {
+    border: 1px solid #5d5d5d;
+    border-collapse: collapse;
+}
+
+tr {
+    text-align: center;
+}
+
+tr:nth-child(odd) {
+    background-color: #f8f8f8;
+}
+
+tr:nth-child(even) {
+    background-color: #e5e5e5;
+}
+
+th,
+td {
+    padding: 4px;
+}
+
 .space {
     height: 50px;
 }
@@ -45,6 +69,14 @@ body {
     padding-right: 8px;
 }
 
+.pr16 {
+    padding-right: 16px;
+}
+
+.pl16 {
+    padding-left: 16px;
+}
+
 h4 {
     margin-top: 8px;
     margin-bottom: 8px;
@@ -70,6 +102,13 @@ h4 {
 
 .tag-style-3 {
     background: #C8E6C9;
+    border-radius: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.tag-style-4 {
+    background: #e6c8c8;
     border-radius: 20px;
     padding-left: 6px;
     padding-right: 6px;

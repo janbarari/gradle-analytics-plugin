@@ -54,7 +54,8 @@ class SaveMetricUseCase(
             val updateConfigurationMetricStage = UpdateConfigurationMetricStage(updateConfigurationMetricUseCase)
             val updateExecutionMetricStage = UpdateExecutionMetricStage(updateExecutionMetricUseCase)
             val updateTotalBuildMetricStage = UpdateTotalBuildMetricStage(updateTotalBuildMetricUseCase)
-            val updateModulesSourceCountMetricStage = UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
+            val updateModulesSourceCountMetricStage =
+                UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
                 .addStage(updateConfigurationMetricStage)

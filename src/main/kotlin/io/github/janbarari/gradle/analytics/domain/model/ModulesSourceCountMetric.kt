@@ -4,11 +4,13 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 data class ModulesSourceCountMetric(
-    val modules: List<ModuleProperties>
+    val modules: List<ModuleSourceCount>
 ): java.io.Serializable
 
 @ExcludeJacocoGenerated
-data class ModuleProperties(
-    val modulePath: String,
-    val totalSourceFiles: Int
+data class ModuleSourceCount(
+    val path: String,
+    val value: Int,
+    val coverage: Float?,
+    val diffRatio: Float?
 ): java.io.Serializable
