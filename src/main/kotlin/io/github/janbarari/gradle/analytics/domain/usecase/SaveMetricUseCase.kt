@@ -70,6 +70,7 @@ class SaveMetricUseCase(
             return dayMetricNumber
         }
 
+        println("GAP new metric saved")
         return repo.saveNewMetric(input)
     }
 

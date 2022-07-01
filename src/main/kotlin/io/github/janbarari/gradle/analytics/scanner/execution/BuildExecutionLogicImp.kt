@@ -72,7 +72,7 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModuleInfo>
 ) : BuildExecutionLogic {
 
-    @Suppress("ReturnCount")
+    @Suppress("ReturnCount", "UnusedPrivateMember")
     override suspend fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
         if (isForbiddenTasksRequested()) return false
         if (!isDatabaseConfigurationValid()) return false
@@ -108,12 +108,10 @@ class BuildExecutionLogicImp(
             .addStage(createConfigurationMetricStage)
             .addStage(createExecutionMetricStage)
             .addStage(createTotalBuildMetricStage)
-            .addStage(createModulesSourceCountMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(metric)
         saveMetricUseCase.execute(metric)
-
         return true
     }
 
