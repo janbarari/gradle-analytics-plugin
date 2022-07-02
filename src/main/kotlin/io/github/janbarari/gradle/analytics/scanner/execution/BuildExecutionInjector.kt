@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
@@ -55,7 +55,7 @@ data class BuildExecutionInjector(
     var requestedTasks: List<String>? = null,
     var trackingBranches: List<String>? = null,
     var trackingTasks: List<String>? = null,
-    var modulesInfo: List<ModuleInfo>? = null
+    var modulesPath: List<ModulePath>? = null
 )
 
 @ExcludeJacocoGenerated
@@ -154,6 +154,6 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         ensureNotNull(trackingBranches),
         ensureNotNull(trackingTasks),
         ensureNotNull(requestedTasks),
-        ensureNotNull(modulesInfo)
+        ensureNotNull(modulesPath)
     )
 }

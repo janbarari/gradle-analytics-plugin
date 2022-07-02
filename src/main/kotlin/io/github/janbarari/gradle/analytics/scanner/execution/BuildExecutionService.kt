@@ -24,14 +24,11 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.utils.GitUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -48,8 +45,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * @since 1.0.0
  */
 @ExcludeJacocoGenerated
-abstract class BuildExecutionService :
-    BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
+abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener,
+    AutoCloseable {
 
     interface Params : BuildServiceParameters {
         val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
@@ -57,10 +54,10 @@ abstract class BuildExecutionService :
         val requestedTasks: ListProperty<String>
         val trackingTasks: ListProperty<String>
         val trackingBranches: ListProperty<String>
-        val modulesInfo: ListProperty<ModuleInfo>
+        val modulesPath: ListProperty<ModulePath>
     }
 
-    private val _executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
+    private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
     init {
         assignStartTimestampIfProcessSkipped()
@@ -105,7 +102,7 @@ abstract class BuildExecutionService :
     @ExcludeJacocoGenerated
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
-            _executedTasks.add(
+            executedTasks.add(
                 TaskInfo(
                     event.result.startTime,
                     event.result.endTime,
@@ -122,24 +119,19 @@ abstract class BuildExecutionService :
      */
     @ExcludeJacocoGenerated
     override fun close() {
-
-        val injector = BuildExecutionInjector(
+        BuildExecutionInjector(
             databaseConfig = parameters.databaseConfig.get(),
             isCI = parameters.envCI.get(),
             branch = GitUtils.currentBranch(),
             requestedTasks = parameters.requestedTasks.get(),
             trackingBranches = parameters.trackingBranches.get(),
             trackingTasks = parameters.trackingTasks.get(),
-            modulesInfo = parameters.modulesInfo.get()
-        )
-
-        CoroutineScope(Dispatchers.IO).launch {
-            if (injector.provideBuildExecutionLogic().onExecutionFinished(_executedTasks)) {
-                println("New Metric Saved Successfully")
-            }
-            _executedTasks.clear()
+            modulesPath = parameters.modulesPath.get()
+        ).apply {
+            provideBuildExecutionLogic().onExecutionFinished(executedTasks)
+        }.also {
+            executedTasks.clear()
         }
-
     }
 
 }

@@ -22,21 +22,24 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
+import io.github.janbarari.gradle.logger.info
 import io.github.janbarari.gradle.utils.FileUtils
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
 @ExcludeJacocoGenerated
 object ScannerUtils {
+
+    const val tag = "ScannerUtils"
 
     @Suppress("UnstableApiUsage")
     fun setupScannerServices(
@@ -55,12 +58,13 @@ object ScannerUtils {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
-        val modulesInfo = mutableListOf<ModuleInfo>()
+        val modulesPath = mutableListOf<ModulePath>()
         project.subprojects.forEach {
             if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
-                modulesInfo.add(ModuleInfo(it.path, it.projectDir.absolutePath))
+                modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
             }
         }
+        info(tag, "Modules Path: $modulesPath")
 
         project.gradle.projectsEvaluated {
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
@@ -73,23 +77,28 @@ object ScannerUtils {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    this.modulesInfo.set(modulesInfo)
+                    this.modulesPath.set(modulesPath)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)
+            info(tag, "Build Execution Service initialized")
         }
+
     }
 
     private fun setupInitializationService(project: Project) {
         project.gradle.addBuildListener(BuildInitializationService(project.gradle))
+        info(tag, "Build Initialization Service initialized")
     }
 
     private fun setupConfigurationService(project: Project) {
         project.gradle.addBuildListener(BuildConfigurationService())
+        info(tag, "Build Configuration Service initialized")
     }
 
     private fun setupDependencyResolutionService(project: Project) {
         project.gradle.addBuildListener(BuildDependencyResolutionService())
+        info(tag, "Build Dependency Resolution Service initialized")
     }
 
 }

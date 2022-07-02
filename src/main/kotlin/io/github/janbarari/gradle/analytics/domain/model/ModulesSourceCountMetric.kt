@@ -11,6 +11,6 @@ data class ModulesSourceCountMetric(
 data class ModuleSourceCount(
     val path: String,
     val value: Int,
-    val coverage: Float?,
-    val diffRatio: Float?
+    val coverage: Float? = null,
+    val diffRatio: Float? = null
 ): java.io.Serializable

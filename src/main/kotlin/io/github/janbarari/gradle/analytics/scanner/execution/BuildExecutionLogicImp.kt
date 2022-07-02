@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.Database
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
@@ -47,7 +47,10 @@ import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigura
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.launchIO
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.logger.alert
+import io.github.janbarari.gradle.logger.info
 import io.github.janbarari.gradle.os.provideHardwareInfo
 import io.github.janbarari.gradle.os.provideOperatingSystem
 import io.github.janbarari.gradle.utils.GitUtils
@@ -69,15 +72,35 @@ class BuildExecutionLogicImp(
     private val trackingBranches: List<String>,
     private val trackingTasks: List<String>,
     private val requestedTasks: List<String>,
-    private val modulesInfo: List<ModuleInfo>
+    private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
-    @Suppress("ReturnCount", "UnusedPrivateMember")
-    override suspend fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
-        if (isForbiddenTasksRequested()) return false
-        if (!isDatabaseConfigurationValid()) return false
-        if (!isTaskTrackable()) return false
-        if (!isBranchTrackable()) return false
+    companion object {
+        const val tag = "BuildExecutionLogicImp"
+    }
+
+    @Suppress("ReturnCount")
+    override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
+
+        if (isForbiddenTasksRequested()) {
+            alert(tag, "${ReportAnalyticsTask.TASK_NAME} task is forbidden to be watched!")
+            return
+        }
+
+        if (!isDatabaseConfigurationValid()) {
+            alert(tag, "Database configuration is not valid!")
+            return
+        }
+
+        if (!isTaskTrackable()) {
+            alert(tag, "Requested task/tasks is not trackable!")
+            return
+        }
+
+        if (!isBranchTrackable()) {
+            alert(tag, "Branch(${GitUtils.currentBranch()}) is not trackable!")
+            return
+        }
 
         val info = BuildInfo(
             createdAt = System.currentTimeMillis(),
@@ -100,19 +123,22 @@ class BuildExecutionLogicImp(
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
         val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
         val createModulesSourceCountMetricStage = CreateModulesSourceCountMetricStage(
-            modulesInfo,
-            createModulesSourceCountMetricUseCase
+            modulesInfo, createModulesSourceCountMetricUseCase
         )
 
-        val metric = CreateMetricPipeline(createInitializationMetricStage)
-            .addStage(createConfigurationMetricStage)
-            .addStage(createExecutionMetricStage)
-            .addStage(createTotalBuildMetricStage)
-            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
+        launchIO {
+            val metric = CreateMetricPipeline(createInitializationMetricStage)
+                .addStage(createConfigurationMetricStage)
+                .addStage(createExecutionMetricStage)
+                .addStage(createTotalBuildMetricStage)
+                .addStage(createModulesSourceCountMetricStage)
+                .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
-        saveTemporaryMetricUseCase.execute(metric)
-        saveMetricUseCase.execute(metric)
-        return true
+            saveTemporaryMetricUseCase.execute(metric)
+            saveMetricUseCase.execute(metric)
+
+            info(tag, "New metric saved in the database.")
+        }
     }
 
     @ExcludeJacocoGenerated

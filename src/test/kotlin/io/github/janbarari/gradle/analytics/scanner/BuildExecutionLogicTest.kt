@@ -24,7 +24,7 @@ class BuildExecutionLogicTest {
         branch = "master",
         requestedTasks = listOf("assembleDebug"),
         trackingTasks = listOf("assembleDebug"),
-        modulesInfo = emptyList()
+        modulesPath = emptyList()
     )
 
     @Test
