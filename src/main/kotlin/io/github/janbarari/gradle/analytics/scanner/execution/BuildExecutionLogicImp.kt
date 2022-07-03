@@ -49,8 +49,6 @@ import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitiali
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.launchIO
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
-import io.github.janbarari.gradle.logger.alert
-import io.github.janbarari.gradle.logger.info
 import io.github.janbarari.gradle.os.provideHardwareInfo
 import io.github.janbarari.gradle.os.provideOperatingSystem
 import io.github.janbarari.gradle.utils.GitUtils
@@ -75,32 +73,16 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
-    companion object {
-        const val tag = "BuildExecutionLogicImp"
-    }
-
     @Suppress("ReturnCount")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
 
-        if (isForbiddenTasksRequested()) {
-            alert(tag, "${ReportAnalyticsTask.TASK_NAME} task is forbidden to be watched!")
-            return
-        }
+        if (isForbiddenTasksRequested()) return
 
-        if (!isDatabaseConfigurationValid()) {
-            alert(tag, "Database configuration is not valid!")
-            return
-        }
+        if (!isDatabaseConfigurationValid()) return
 
-        if (!isTaskTrackable()) {
-            alert(tag, "Requested task/tasks is not trackable!")
-            return
-        }
+        if (!isTaskTrackable()) return
 
-        if (!isBranchTrackable()) {
-            alert(tag, "Branch(${GitUtils.currentBranch()}) is not trackable!")
-            return
-        }
+        if (!isBranchTrackable()) return
 
         val info = BuildInfo(
             createdAt = System.currentTimeMillis(),
@@ -136,8 +118,6 @@ class BuildExecutionLogicImp(
 
             saveTemporaryMetricUseCase.execute(metric)
             saveMetricUseCase.execute(metric)
-
-            info(tag, "New metric saved in the database.")
         }
     }
 
