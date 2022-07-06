@@ -44,3 +44,11 @@ inline fun <T> List<T>.whenEmpty(block: List<T>.() -> Unit): List<T> {
 
 val <T> List<T>.firstIndex: Int
     get() = 0
+
+fun <T> List<T>.hasSingleItem(): Boolean {
+    return this.size == 1
+}
+
+fun <T> List<T>.hasMultipleItems(): Boolean {
+    return this.size > 1
+}

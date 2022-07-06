@@ -6,5 +6,5 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 data class ModulesSourceCountReport(
     val values: List<ModuleSourceCount>,
     val totalSourceCount: Int,
-    val totalDiffRatio: Float
+    val totalDiffRatio: Float? = null
 )
