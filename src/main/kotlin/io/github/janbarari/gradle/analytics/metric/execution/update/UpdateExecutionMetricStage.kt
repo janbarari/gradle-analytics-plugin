@@ -20,35 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.extension
+package io.github.janbarari.gradle.analytics.metric.execution.update
 
-fun <T: Any> List<T>.whenEach(block: T.() -> Unit) {
-    val iterator = this.iterator()
-    while (iterator.hasNext()) {
-        block(iterator.next())
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.core.Stage
+
+class UpdateExecutionMetricStage(
+    private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
+
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        input.executionMetric = updateExecutionMetricUseCase.execute()
+        return input
     }
-}
 
-fun List<Long>.toIntList(): List<Int> {
-    return this.map { it.toInt() }
-}
-
-fun <T> List<T>.isBiggerThan(size: Int): Boolean {
-    return this.size > size
-}
-
-inline fun <T> List<T>.whenEmpty(block: List<T>.() -> Unit): List<T> {
-    if (isEmpty()) block(this)
-    return this
-}
-
-val <T> List<T>.firstIndex: Int
-    get() = 0
-
-fun <T> List<T>.hasSingleItem(): Boolean {
-    return this.size == 1
-}
-
-fun <T> List<T>.hasMultipleItems(): Boolean {
-    return this.size > 1
 }

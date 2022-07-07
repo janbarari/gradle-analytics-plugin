@@ -22,13 +22,13 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.utils.FileUtils
@@ -55,10 +55,10 @@ object ScannerUtils {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
-        val modulesInfo = mutableListOf<ModuleInfo>()
+        val modulesPath = mutableListOf<ModulePath>()
         project.subprojects.forEach {
             if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
-                modulesInfo.add(ModuleInfo(it.path, it.projectDir.absolutePath))
+                modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
             }
         }
 
@@ -73,11 +73,12 @@ object ScannerUtils {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    this.modulesInfo.set(modulesInfo)
+                    this.modulesPath.set(modulesPath)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)
         }
+
     }
 
     private fun setupInitializationService(project: Project) {

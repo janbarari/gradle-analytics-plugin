@@ -27,19 +27,19 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.Database
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModuleInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricStage
-import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricStage
-import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricStage
-import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricStage
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricStage
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricStage
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
@@ -47,6 +47,7 @@ import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigura
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.launchIO
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.os.provideHardwareInfo
 import io.github.janbarari.gradle.os.provideOperatingSystem
@@ -69,15 +70,19 @@ class BuildExecutionLogicImp(
     private val trackingBranches: List<String>,
     private val trackingTasks: List<String>,
     private val requestedTasks: List<String>,
-    private val modulesInfo: List<ModuleInfo>
+    private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
     @Suppress("ReturnCount")
-    override suspend fun onExecutionFinished(executedTasks: Collection<TaskInfo>): Boolean {
-        if (isForbiddenTasksRequested()) return false
-        if (!isDatabaseConfigurationValid()) return false
-        if (!isTaskTrackable()) return false
-        if (!isBranchTrackable()) return false
+    override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
+
+        if (isForbiddenTasksRequested()) return
+
+        if (!isDatabaseConfigurationValid()) return
+
+        if (!isTaskTrackable()) return
+
+        if (!isBranchTrackable()) return
 
         val info = BuildInfo(
             createdAt = System.currentTimeMillis(),
@@ -100,21 +105,20 @@ class BuildExecutionLogicImp(
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
         val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
         val createModulesSourceCountMetricStage = CreateModulesSourceCountMetricStage(
-            modulesInfo,
-            createModulesSourceCountMetricUseCase
+            modulesInfo, createModulesSourceCountMetricUseCase
         )
 
-        val metric = CreateMetricPipeline(createInitializationMetricStage)
-            .addStage(createConfigurationMetricStage)
-            .addStage(createExecutionMetricStage)
-            .addStage(createTotalBuildMetricStage)
-            .addStage(createModulesSourceCountMetricStage)
-            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
+        launchIO {
+            val metric = CreateMetricPipeline(createInitializationMetricStage)
+                .addStage(createConfigurationMetricStage)
+                .addStage(createExecutionMetricStage)
+                .addStage(createTotalBuildMetricStage)
+                .addStage(createModulesSourceCountMetricStage)
+                .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
-        saveTemporaryMetricUseCase.execute(metric)
-        saveMetricUseCase.execute(metric)
-
-        return true
+            saveTemporaryMetricUseCase.execute(metric)
+            saveMetricUseCase.execute(metric)
+        }
     }
 
     @ExcludeJacocoGenerated

@@ -22,20 +22,19 @@
  */
 package io.github.janbarari.gradle.analytics.domain.usecase
 
-import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricStage
-import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricStage
-import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricStage
+import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricStage
+import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricStage
+import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.core.UseCase
 
 class SaveMetricUseCase(
     private val repo: DatabaseRepository,
@@ -44,7 +43,7 @@ class SaveMetricUseCase(
     private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase,
     private val updateTotalBuildMetricUseCase: UpdateTotalBuildMetricUseCase,
     private val updateModulesSourceCountMetricUseCase: UpdateModulesSourceCountMetricUseCase
-): UseCase<BuildMetric, Long>() {
+) : UseCase<BuildMetric, Long>() {
 
     override suspend fun execute(input: BuildMetric): Long {
 
@@ -54,7 +53,8 @@ class SaveMetricUseCase(
             val updateConfigurationMetricStage = UpdateConfigurationMetricStage(updateConfigurationMetricUseCase)
             val updateExecutionMetricStage = UpdateExecutionMetricStage(updateExecutionMetricUseCase)
             val updateTotalBuildMetricStage = UpdateTotalBuildMetricStage(updateTotalBuildMetricUseCase)
-            val updateModulesSourceCountMetricStage = UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
+            val updateModulesSourceCountMetricStage =
+                UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
                 .addStage(updateConfigurationMetricStage)

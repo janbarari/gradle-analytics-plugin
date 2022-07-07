@@ -24,14 +24,14 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationReportStage
-import io.github.janbarari.gradle.analytics.metric.configuration.RenderConfigurationReportStage
-import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionReportStage
-import io.github.janbarari.gradle.analytics.metric.execution.RenderExecutionReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.RenderInitializationReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.report.RenderConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -102,6 +102,7 @@ class ReportAnalyticsLogicImp(
         val fontPath = "res/nunito.ttf"
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"
+        val functionsPath = "res/functions.js"
         val indexPath = "index.html"
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
@@ -113,6 +114,11 @@ class ReportAnalyticsLogicImp(
         FileUtils.copyInputStreamToFile(
             javaClass.getSafeResourceAsStream("/$logoPath"),
             File("$savePath/$logoPath")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$functionsPath"),
+            File("$savePath/$functionsPath")
         )
 
         FileUtils.copyInputStreamToFile(
