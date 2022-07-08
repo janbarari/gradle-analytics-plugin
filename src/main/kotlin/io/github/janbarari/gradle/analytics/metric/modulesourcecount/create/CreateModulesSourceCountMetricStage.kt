@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.metric.modulesourcecount
+package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath

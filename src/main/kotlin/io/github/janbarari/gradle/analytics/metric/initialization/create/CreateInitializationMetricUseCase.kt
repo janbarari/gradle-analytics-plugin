@@ -20,36 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution
+package io.github.janbarari.gradle.analytics.metric.initialization.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ExecutionMetric
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.core.UseCaseNoInput
-import io.github.janbarari.gradle.extension.isBiggerEquals
-import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.extension.whenNotNull
-import io.github.janbarari.gradle.extension.whenTrue
-import io.github.janbarari.gradle.utils.MathUtils
+import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
 
-class UpdateExecutionMetricUseCase(
-    private val repo: DatabaseRepository
-): UseCaseNoInput<ExecutionMetric>() {
-
-    @Suppress("MagicNumber")
-    override suspend fun execute(): ExecutionMetric {
-        val durations = arrayListOf<Long>()
-
-        repo.getTemporaryMetrics().whenEach {
-            executionMetric.whenNotNull {
-                average.isBiggerEquals(50).whenTrue {
-                    durations.add(average)
-                }
-            }
-        }
-
-        return ExecutionMetric(
-            average = MathUtils.longMedian(durations)
-        )
+class CreateInitializationMetricUseCase: UseCase<Long, InitializationMetric>() {
+    override suspend fun execute(input: Long): InitializationMetric {
+        return InitializationMetric(input)
     }
-
 }

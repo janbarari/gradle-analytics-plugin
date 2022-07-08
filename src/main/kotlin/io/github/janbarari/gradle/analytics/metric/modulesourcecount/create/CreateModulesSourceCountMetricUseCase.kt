@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.metric.modulesourcecount
+package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.ModuleSourceCount
@@ -36,18 +36,20 @@ class CreateModulesSourceCountMetricUseCase : UseCase<List<ModulePath>, ModulesS
         return ModulesSourceCountMetric(modules = modulesProperties)
     }
 
-    fun getModuleSources(directory: String): List<Path> {
+    private fun getModuleSources(directory: String): List<Path> {
         var sourcePaths: List<Path>
         Files.walk(Path(directory)).use { stream ->
             sourcePaths = stream.map { obj: Path -> obj.normalize() }
                 .filter(Files::isRegularFile)
-                .filter {
-                    (it.pathString.contains("src/main/java") ||
-                            it.pathString.contains("src/main/kotlin")) &&
-                            (it.extension == "kt" || it.extension == "java")
-                }.collect(Collectors.toList())
+                .filter { isSourcePath(it) }
+                .collect(Collectors.toList())
         }
         return sourcePaths
+    }
+
+    private fun isSourcePath(path: Path): Boolean {
+        return (path.pathString.contains("src/main/java") || path.pathString.contains("src/main/kotlin"))
+                && (path.extension == "kt" || path.extension == "java")
     }
 
 }

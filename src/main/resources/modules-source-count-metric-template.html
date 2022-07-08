@@ -1,28 +1,30 @@
 <h2>Modules Source Count</h2>
 <div class="flex-container">
     <div class="flex-child pr16">
+
         <table>
-            <tr>
+            <tr style="background-color: rgb(180, 180, 180);">
                 <th>#</th>
                 <th>Module</th>
-                <th>File Count</th>
+                <th>Count</th>
                 <th>Coverage</th>
-                <th>Diff Ratio</th>
+                <th>DiffRatio</th>
             </tr>
             %table-data%
             <tr>
                 <td colspan="2">Total</td>
                 <td>%total-source-count%</td>
-                <td colspan="2">Diff Ratio = %total-diff-ratio%</td>
+                <td>Σ</td>
+                %total-diff-ratio%
             </tr>
         </table>
     </div>
     <div class="flex-child" style="padding-left: 12px;">
         <canvas id="modulesSourceCountChart" style="padding: 25px; width: 100%; height: 100%;"></canvas>
         <script type="text/javascript">
-          var _labels = [":app", ":core", ":common", ":feature:list", "arch"]
-          var _data = [103, 14, 133, 33, 44]
-          var _colors = Array.from({length: _data.length}, () => getRandomColor())
+          var _labels = %module-labels%;
+          var _data = %module-values%;
+          var _colors = Array.from({length: _data.length}, () => getRandomColor());
 
           new Chart("modulesSourceCountChart", {
             type: "pie",

@@ -94,8 +94,8 @@ class RenderInitialReportStage private constructor(
         if (data.isNotEmpty()) {
             val oldest = data.last()
             val newest = data.first()
-            result = result.replace("%time-period-start%", DateTimeUtils.formatToDate(oldest.createdAt))
-                .replace("%time-period-end%", DateTimeUtils.formatToDate(newest.createdAt))
+            result = result.replace("%time-period-end%", DateTimeUtils.formatToDate(oldest.createdAt))
+                .replace("%time-period-start%", DateTimeUtils.formatToDate(newest.createdAt))
         }
 
         return result

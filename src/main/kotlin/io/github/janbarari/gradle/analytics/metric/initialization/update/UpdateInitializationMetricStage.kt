@@ -20,17 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution
+package io.github.janbarari.gradle.analytics.metric.initialization.update
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
-class UpdateExecutionMetricStage(
-    private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
+class UpdateInitializationMetricStage(
+    private val updateInitializationMetricUseCase: UpdateInitializationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
-        input.executionMetric = updateExecutionMetricUseCase.execute()
+        input.initializationMetric = updateInitializationMetricUseCase.execute()
         return input
     }
 

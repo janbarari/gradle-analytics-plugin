@@ -20,36 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.initialization
+package io.github.janbarari.gradle.analytics.metric.configuration.create
 
-import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.core.UseCaseNoInput
-import io.github.janbarari.gradle.extension.isBiggerEquals
-import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.extension.whenNotNull
-import io.github.janbarari.gradle.extension.whenTrue
-import io.github.janbarari.gradle.utils.MathUtils
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-class UpdateInitializationMetricUseCase(
-    private val repo: DatabaseRepository
-) : UseCaseNoInput<InitializationMetric>() {
+class CreateConfigurationMetricStage(
+    private val info: BuildInfo,
+    private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    @Suppress("MagicNumber")
-    override suspend fun execute(): InitializationMetric {
-        val durations = arrayListOf<Long>()
-
-        repo.getTemporaryMetrics().whenEach {
-            initializationMetric.whenNotNull {
-                average.isBiggerEquals(50).whenTrue {
-                    durations.add(average)
-                }
-            }
-        }
-
-        return InitializationMetric(
-            average = MathUtils.longMedian(durations)
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        input.configurationMetric = createConfigurationMetricUseCase.execute(
+            info.getConfigurationDuration().toMillis()
         )
+        return input
     }
 
 }

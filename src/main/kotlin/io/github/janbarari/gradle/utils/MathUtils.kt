@@ -22,6 +22,10 @@
  */
 package io.github.janbarari.gradle.utils
 
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.text.DecimalFormat
+
 /**
  * A collection of mathematics functions.
  */

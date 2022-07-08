@@ -28,16 +28,16 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.UpdateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.metric.configuration.CreateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.UpdateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.CreateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.UpdateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.CreateInitializationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.CreateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.UpdateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
@@ -94,7 +94,7 @@ fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateTotalBu
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesSourceCountMetricUseCase(): UpdateModulesSourceCountMetricUseCase {
-    return UpdateModulesSourceCountMetricUseCase()
+    return UpdateModulesSourceCountMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
