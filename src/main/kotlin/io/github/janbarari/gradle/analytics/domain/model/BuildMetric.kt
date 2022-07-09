@@ -50,15 +50,15 @@ data class BuildMetric(
     var totalBuildMetric: TotalBuildMetric? = null,
 
     @Json(name = "modules_source_count_metric")
-    var modulesSourceCountMetric: ModulesSourceCountMetric? = null
+    var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
+
+    @Json(name = "modules_method_count_metric")
+    var modulesMethodCountMetric: ModulesMethodCountMetric? = null
 
 ): java.io.Serializable {
 
     companion object {
-        const val INITIALIZATION_SKIP_THRESHOLD = 50L
         const val CONFIGURATION_SKIP_THRESHOLD = 50L
-        const val EXECUTION_SKIP_THRESHOLD = 50L
-        const val TOTAL_BUILD_SKIP_THRESHOLD = 50L
     }
 
 }

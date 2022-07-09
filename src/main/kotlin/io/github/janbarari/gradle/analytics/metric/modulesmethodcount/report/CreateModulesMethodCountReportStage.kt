@@ -1,32 +1,32 @@
-package io.github.janbarari.gradle.analytics.metric.modulesourcecount.report
+package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModuleSourceCountReport
-import io.github.janbarari.gradle.analytics.domain.model.ModulesSourceCountMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModulesSourceCountReport
+import io.github.janbarari.gradle.analytics.domain.model.ModuleMethodCountReport
+import io.github.janbarari.gradle.analytics.domain.model.ModulesMethodCountMetric
+import io.github.janbarari.gradle.analytics.domain.model.ModulesMethodCountReport
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
 @Suppress("MagicNumber")
-class CreateModulesSourceCountReportStage(
+class CreateModulesMethodCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
-        val metrics: List<ModulesSourceCountMetric> = metrics.filter {
-                it.modulesSourceCountMetric.isNotNull()
-            }.map {
-                ensureNotNull(it.modulesSourceCountMetric)
-            }
+        val metrics: List<ModulesMethodCountMetric> = metrics.filter {
+            it.modulesMethodCountMetric.isNotNull()
+        }.map {
+            ensureNotNull(it.modulesMethodCountMetric)
+        }
 
-        var result: ModulesSourceCountReport? = null
+        var result: ModulesMethodCountReport? = null
 
         if (metrics.isEmpty()) {
             result = null
@@ -41,13 +41,13 @@ class CreateModulesSourceCountReportStage(
         }
 
         return input.apply {
-            modulesSourceCountReport = result
+            modulesMethodCountReport = result
         }
     }
 
-    private fun generateSingleItemReport(metric: ModulesSourceCountMetric): ModulesSourceCountReport {
+    private fun generateSingleItemReport(metric: ModulesMethodCountMetric): ModulesMethodCountReport {
         var totalSourceCount = 0
-        val values = mutableListOf<ModuleSourceCountReport>()
+        val values = mutableListOf<ModuleMethodCountReport>()
 
         metric.modules.whenEach {
             totalSourceCount += value
@@ -55,7 +55,7 @@ class CreateModulesSourceCountReportStage(
 
         metric.modules.whenEach {
             values.add(
-                ModuleSourceCountReport(
+                ModuleMethodCountReport(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(totalSourceCount),
@@ -64,14 +64,14 @@ class CreateModulesSourceCountReportStage(
             )
         }
 
-        return ModulesSourceCountReport(
+        return ModulesMethodCountReport(
             values = values.sortedByDescending { it.value },
-            totalSourceCount = totalSourceCount,
+            totalMethodCount = totalSourceCount,
             totalDiffRatio = null // The ratio does not exist when there is only one item
         )
     }
 
-    private fun generateMultipleItemsReport(metrics: List<ModulesSourceCountMetric>): ModulesSourceCountReport? {
+    private fun generateMultipleItemsReport(metrics: List<ModulesMethodCountMetric>): ModulesMethodCountReport? {
 
         var firstTotalSourceCount = 0
         metrics.first().modules.whenEach {
@@ -85,10 +85,10 @@ class CreateModulesSourceCountReportStage(
 
         val totalDiffRatio = firstTotalSourceCount.diffPercentageOf(lastTotalSourceCount)
 
-        val values = mutableListOf<ModuleSourceCountReport>()
+        val values = mutableListOf<ModuleMethodCountReport>()
         metrics.last().modules.whenEach {
             values.add(
-                ModuleSourceCountReport(
+                ModuleMethodCountReport(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(lastTotalSourceCount),
@@ -97,15 +97,16 @@ class CreateModulesSourceCountReportStage(
             )
         }
 
-        return ModulesSourceCountReport(
+        return ModulesMethodCountReport(
             values = values.sortedByDescending { it.value },
-            totalSourceCount = lastTotalSourceCount,
+            totalMethodCount = lastTotalSourceCount,
             totalDiffRatio = totalDiffRatio
         )
     }
 
-    private fun calculateModuleDiffRatio(metrics: List<ModulesSourceCountMetric>, path: String, value: Int): Float? {
+    private fun calculateModuleDiffRatio(metrics: List<ModulesMethodCountMetric>, path: String, value: Int): Float? {
         return metrics.first().modules.find { it.path == path }?.value?.diffPercentageOf(value)
     }
+
 
 }

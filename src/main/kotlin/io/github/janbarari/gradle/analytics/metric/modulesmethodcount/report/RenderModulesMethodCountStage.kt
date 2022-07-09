@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.metric.modulesourcecount.report
+package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.Report
 import io.github.janbarari.gradle.core.Stage
@@ -6,20 +6,20 @@ import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 
-class RenderModulesSourceCountStage(
+class RenderModulesMethodCountStage(
     private val report: Report
-) : Stage<String, String> {
+): Stage<String, String> {
 
     override suspend fun process(input: String): String {
-        if (report.modulesSourceCountReport.isNull()) return input.replace(
-            "%modules-source-count-metric%",
-            "<p>Modules Source Count Metric is not available!</p><div class=\"space\"></div>"
+        if (report.modulesMethodCountReport.isNull()) return input.replace(
+            "%modules-method-count-metric%",
+            "<p>Modules Method Count Metric is not available</p><div class\"space\"></div>"
         )
 
-        val totalSourceCount = report.modulesSourceCountReport?.totalSourceCount ?: 0
+        val totalMethodCount = report.modulesMethodCountReport?.totalMethodCount ?: 0
 
         var totalDiffRatio = "<td>-</td>"
-        report.modulesSourceCountReport.whenNotNull {
+        report.modulesMethodCountReport.whenNotNull {
             this.totalDiffRatio.whenNotNull {
                 totalDiffRatio = if (this > 0) {
                     "<td>+${this}%</td>"
@@ -32,7 +32,7 @@ class RenderModulesSourceCountStage(
         }
 
         val tableData = buildString {
-            report.modulesSourceCountReport?.values?.forEachIndexed { index, it ->
+            report.modulesMethodCountReport?.values?.forEachIndexed { index, it ->
                 var diffRatio = "<td>-</td>"
                 it.diffRatio.whenNotNull {
                     diffRatio = if (this > 0) {
@@ -57,18 +57,17 @@ class RenderModulesSourceCountStage(
             }
         }
 
-        val moduleLabels = report.modulesSourceCountReport?.values?.map { "\"${it.path}\"" }
-        val moduleValues = report.modulesSourceCountReport?.values?.map { it.value }
+        val moduleLabels = report.modulesMethodCountReport?.values?.map { "\"${it.path}\"" }
+        val moduleValues = report.modulesMethodCountReport?.values?.map { it.value }
 
-        var template = getTextResourceContent("modules-source-count-metric-template.html")
-        template =
-            template.replace("%table-data%", tableData)
-                .replace("%total-source-count%", totalSourceCount.toString())
+        var template = getTextResourceContent("modules-method-count-metric-template.html")
+        template = template.replace("%table-data%", tableData)
+                .replace("%total-method-count%", totalMethodCount.toString())
                 .replace("%total-diff-ratio%", totalDiffRatio)
                 .replace("%module-labels%", moduleLabels.toString())
                 .replace("%module-values%", moduleValues.toString())
 
-        return input.replace("%modules-source-count-metric%", template)
+        return input.replace("%modules-method-count-metric%", template)
     }
 
 }

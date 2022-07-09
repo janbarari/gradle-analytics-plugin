@@ -30,6 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecut
 import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
@@ -70,6 +72,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateExecutionReportStage(data))
             .addStage(CreateTotalBuildReportStage(data))
             .addStage(CreateModulesSourceCountReportStage(data))
+            .addStage(CreateModulesMethodCountReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -87,6 +90,7 @@ class ReportAnalyticsLogicImp(
         val renderExecutionReportStage = RenderExecutionReportStage(report)
         val renderTotalBuildReportStage = RenderTotalBuildReportStage(report)
         val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
+        val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
@@ -94,6 +98,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderExecutionReportStage)
             .addStage(renderTotalBuildReportStage)
             .addStage(renderModulesSourceCountReportStage)
+            .addStage(renderModulesMethodCountReportStage)
             .execute(rawHTML)
     }
 

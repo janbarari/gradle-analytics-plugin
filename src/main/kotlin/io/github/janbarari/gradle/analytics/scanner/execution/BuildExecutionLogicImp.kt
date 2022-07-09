@@ -38,6 +38,8 @@ import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecut
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricStage
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
@@ -65,6 +67,7 @@ class BuildExecutionLogicImp(
     private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
     private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase,
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
+    private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -107,6 +110,9 @@ class BuildExecutionLogicImp(
         val createModulesSourceCountMetricStage = CreateModulesSourceCountMetricStage(
             modulesInfo, createModulesSourceCountMetricUseCase
         )
+        val createModulesMethodCountMetricStage = CreateModulesMethodCountMetricStage(
+            modulesInfo, createModulesMethodCountMetricUseCase
+        )
 
         launchIO {
             val metric = CreateMetricPipeline(createInitializationMetricStage)
@@ -114,6 +120,7 @@ class BuildExecutionLogicImp(
                 .addStage(createExecutionMetricStage)
                 .addStage(createTotalBuildMetricStage)
                 .addStage(createModulesSourceCountMetricStage)
+                .addStage(createModulesMethodCountMetricStage)
                 .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
             saveTemporaryMetricUseCase.execute(metric)
