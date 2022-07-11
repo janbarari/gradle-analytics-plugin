@@ -36,6 +36,8 @@ import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateCo
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
@@ -98,6 +100,11 @@ fun BuildExecutionInjector.provideUpdateModulesSourceCountMetricUseCase(): Updat
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateModulesMethodCountMetricUseCase(): UpdateModulesMethodCountMetricUseCase {
+    return UpdateModulesMethodCountMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -105,7 +112,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateConfigurationMetricUseCase(),
         provideUpdateExecutionMetricUseCase(),
         provideUpdateTotalBuildMetricUseCase(),
-        provideUpdateModulesSourceCountMetricUseCase()
+        provideUpdateModulesSourceCountMetricUseCase(),
+        provideUpdateModulesMethodCountMetricUseCase()
     )
 }
 
@@ -135,8 +143,13 @@ fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateTotalBu
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateModuleSourceCountMetricUseCase(): CreateModulesSourceCountMetricUseCase {
+fun BuildExecutionInjector.provideCreateModulesSourceCountMetricUseCase(): CreateModulesSourceCountMetricUseCase {
     return CreateModulesSourceCountMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateModulesMethodCountMetricUseCase(): CreateModulesMethodCountMetricUseCase {
+    return CreateModulesMethodCountMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
@@ -148,7 +161,8 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateConfigurationMetricUseCase(),
         provideCreateExecutionMetricUseCase(),
         provideCreateTotalBuildMetricUseCase(),
-        provideCreateModuleSourceCountMetricUseCase(),
+        provideCreateModulesSourceCountMetricUseCase(),
+        provideCreateModulesMethodCountMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

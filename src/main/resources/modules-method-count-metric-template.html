@@ -1,4 +1,4 @@
-<h2>Modules Source Count</h2>
+<h2>Modules Method Count</h2>
 <div class="flex-container">
     <div class="flex-child pr16">
 
@@ -13,20 +13,20 @@
             %table-data%
             <tr>
                 <td colspan="2">Total</td>
-                <td>%total-source-count%</td>
+                <td>%total-method-count%</td>
                 <td>Σ</td>
                 %total-diff-ratio%
             </tr>
         </table>
     </div>
     <div class="flex-child" style="padding-left: 12px;">
-        <canvas id="modulesSourceCountChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
+        <canvas id="modulesMethodCountChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
         <script type="text/javascript">
           var _labels = %module-labels%;
           var _data = %module-values%;
           var _colors = Array.from({length: _data.length}, () => getRandomColor());
 
-          new Chart("modulesSourceCountChart", {
+          new Chart("modulesMethodCountChart", {
             type: "pie",
             data: {
               labels: _labels,
@@ -54,6 +54,6 @@
     </div>
 </div>
 <div class="space-small"></div>
-<span class="gray-text">Coverage represents the percentage of the project source filled by the module.</span><br>
+<span class="gray-text">Coverage represents the percentage of the project methods filled by the module.</span><br>
 <span class="gray-text">DiffRatio represents the change percentage of the period.</span>
 <div class="space"></div>

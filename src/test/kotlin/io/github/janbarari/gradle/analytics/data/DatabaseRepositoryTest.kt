@@ -20,7 +20,6 @@ class DatabaseRepositoryTest {
         val databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             local = sqlite {
                 path = "./build"
-                name = "testdb34kk"
             }
         }
         val db = Database(databaseConfig, false)

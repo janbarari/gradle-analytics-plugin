@@ -38,6 +38,10 @@ td {
     height: 50px;
 }
 
+.space-small {
+    height: 20px;
+}
+
 .flex-container {
     display: flex;
     flex-direction: row;
@@ -128,12 +132,4 @@ hr {
 .logo-dimensions {
     width: 120px;
     margin-top: 16px;
-}
-
-.color-orange {
-    color: #cf5c36;
-}
-
-.color-green {
-    color: #189b2c;
 }
