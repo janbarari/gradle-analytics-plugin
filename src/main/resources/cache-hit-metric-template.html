@@ -1,0 +1,134 @@
+<h2>Cache Hit</h2>
+
+<div class="chart-container">
+    <canvas id="cacheHitChart" style="width:100%; height: 200px;"></canvas>
+    <script type="text/javascript">
+        var _values = %overall-values%;
+        var _labels = %overall-labels%;
+        var chart = new Chart("cacheHitChart", {
+          type: "line",
+          data: {
+            labels: _labels,
+            datasets: [
+              {
+                fill: false,
+                borderColor: "#8a2be2",
+                data: _values,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    return context.parsed.y + " ms";
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                display: true,
+                suggestedMin: 0,
+                suggestedMax: 100
+              }
+            }
+          }
+        });
+    </script>
+</div>
+
+<span class="gray-text center-text">
+    Overall Chart<br>
+    <span class="small-text">(Higher is better)</span>
+</span>
+
+<div class="space-small"></div>
+
+<div class="flex-container">
+
+    <div class="flex-child pr16">
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Module</th>
+                    <th>Cache Hit</th>
+                    <th>Diff Ratio</th>
+                </tr>
+                %table-data%
+                <tr>
+                    <td colspan="2">Overall</td>
+                    <td>%overall-cache-hit%</td>
+                    %overall-diff-ratio%
+                </tr>
+            </table>
+        </div>
+        <div class="space-small"></div>
+        <span class="gray-text"><b>Cache Hit</b> is the percentage of using cache by module.</span>
+        <span class="gray-text"><b>Diff Ratio</b> is the cache hit difference in the reports period.</span>
+    </div>
+
+    <div class="flex-child">
+        <canvas id="cacheHitRadarChart" style="width: 75%; margin: 0 auto;"></canvas>
+        <script type="text/javascript">
+          var _bestValues = %best-values%;
+          var _worstValues = %worst-values%;
+          var _labels = %bw-labels%;
+
+          var chart = new Chart("cacheHitRadarChart", {
+            type: "radar",
+            data: {
+              labels: _labels,
+              datasets: [
+                {
+                  label: %worst-module-name%,
+                  fill: false,
+                  borderColor: "#ff4040",
+                  pointRadius: 3,
+                  pointBackgroundColor: "#ff4040",
+                  data: _worstValues
+                },
+                {
+                  label: %best-module-name%,
+                  fill: false,
+                  borderColor: "#2e8b57",
+                  pointRadius: 3,
+                  pointBackgroundColor: "#2e8b57",
+                  data: _bestValues
+                }
+              ]
+            },
+            options: {
+              responsive: false,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: {
+                  display: true
+                },
+                tooltip: {
+                  intersect: false,
+                  callbacks: { }
+                }
+              }
+            }
+          });
+        </script>
+        <span class="gray-text center-text">
+          Best and Worst<br>
+          <span class="small-text">(Green is best)</span>
+        </span>
+    </div>
+
+</div>

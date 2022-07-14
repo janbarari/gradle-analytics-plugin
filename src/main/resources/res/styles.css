@@ -10,6 +10,20 @@ body {
     padding-bottom: 120px;
 }
 
+.table-container {
+    background-color: #585858;
+    display: flex;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 3px 0px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden
+}
+
 table,
 th,
 td {
@@ -34,12 +48,22 @@ td {
     padding: 4px;
 }
 
+.small-text {
+    font-size: 14px;
+}
+
+.center-text {
+    display: table;
+    margin: 16px auto;
+    text-align: center;
+}
+
 .space {
     height: 50px;
 }
 
 .space-small {
-    height: 20px;
+    height: 24px;
 }
 
 .flex-container {
@@ -60,7 +84,8 @@ td {
 }
 
 .chart-container {
-    height: 260px;
+    height: 200px;
+    margin-right: 20px;
 }
 
 .border {
@@ -132,4 +157,12 @@ hr {
 .logo-dimensions {
     width: 120px;
     margin-top: 16px;
+}
+
+.red {
+    color: #ff4040;
+}
+
+.green {
+    color: #2e8b57;
 }
