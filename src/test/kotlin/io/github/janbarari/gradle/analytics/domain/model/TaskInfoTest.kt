@@ -12,7 +12,14 @@ class TaskInfoTest {
             50,
             "assembleDebug",
             "assemble",
-            "assemble"
+            "assemble",
+            true,
+            null,
+            null,
+            true,
+            true,
+            false,
+            null
         )
         assertEquals(49, task.getDuration())
     }
@@ -24,7 +31,14 @@ class TaskInfoTest {
             50,
             "assembleDebug",
             "assemble",
-            "assemble"
+            "assemble",
+            true,
+            null,
+            null,
+            true,
+            true,
+            false,
+            null
         )
         assertEquals(1, task.startedAt)
         assertEquals(50, task.finishedAt)
@@ -40,7 +54,14 @@ class TaskInfoTest {
             50,
             "assembleDebug",
             "assemble",
-            "assemble"
+            "assemble",
+            true,
+            null,
+            null,
+            true,
+            true,
+            false,
+            null
         )
         assertEquals(0, task.getDuration())
     }
@@ -52,7 +73,14 @@ class TaskInfoTest {
             50,
             "assembleDebug",
             "assemble",
-            "assemble"
+            "assemble",
+            true,
+            null,
+            null,
+            true,
+            true,
+            false,
+            null
         )
         assertEquals("no_module", task.getModule())
     }
@@ -64,7 +92,14 @@ class TaskInfoTest {
             50,
             ":feature:app:assembleDebug",
             "assemble",
-            "assemble"
+            "assemble",
+            true,
+            null,
+            null,
+            true,
+            true,
+            false,
+            null
         )
         assertEquals(":feature:app", task.getModule())
     }

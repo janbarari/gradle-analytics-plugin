@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import org.gradle.tooling.Failure
+import org.gradle.tooling.events.OperationDescriptor
+
 /**
  * @author Mehdi-Janbarari
  * @since 1.0.0
@@ -31,7 +34,14 @@ data class TaskInfo(
     val finishedAt: Long,
     val path: String,
     val displayName: String,
-    val name: String
+    val name: String,
+    val isSuccessful: Boolean,
+    val failures: List<Failure>?,
+    val dependencies: List<OperationDescriptor>?,
+    val isIncremental: Boolean,
+    val isFromCache: Boolean,
+    val isUpToDate: Boolean,
+    val executionReasons: List<String>?
 ) : java.io.Serializable {
 
     /**

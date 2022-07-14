@@ -33,9 +33,13 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
+import org.gradle.tooling.Failure
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
+import org.gradle.tooling.events.OperationDescriptor
+import org.gradle.tooling.events.task.TaskFailureResult
 import org.gradle.tooling.events.task.TaskFinishEvent
+import org.gradle.tooling.events.task.TaskSuccessResult
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
@@ -102,13 +106,48 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     @ExcludeJacocoGenerated
     override fun onFinish(event: FinishEvent?) {
         if (event is TaskFinishEvent) {
+            var dependencies: List<OperationDescriptor>? = null
+            var isSuccessful = false
+            var failures: List<Failure>? = null
+            var isIncremental = false
+            var isFromCache = false
+            var isUpToDate = false
+            var executionReasons: List<String>? = null
+
+            runCatching {
+                dependencies = event.descriptor.dependencies.toList()
+            }
+
+            if (event.result is TaskFailureResult) {
+                val result = event.result as TaskFailureResult
+                failures = result.failures
+                isIncremental = result.isIncremental
+                executionReasons = result.executionReasons
+            }
+
+            if (event.result is TaskSuccessResult) {
+                val result = event.result as TaskSuccessResult
+                isSuccessful = true
+                isIncremental = result.isIncremental
+                isFromCache = result.isFromCache
+                isUpToDate = result.isUpToDate
+                executionReasons = result.executionReasons
+            }
+
             executedTasks.add(
                 TaskInfo(
-                    event.result.startTime,
-                    event.result.endTime,
-                    event.descriptor.taskPath,
-                    event.descriptor.displayName,
-                    event.descriptor.name
+                    startedAt = event.result.startTime,
+                    finishedAt = event.result.endTime,
+                    path = event.descriptor.taskPath,
+                    displayName = event.descriptor.displayName,
+                    name = event.descriptor.name,
+                    isSuccessful = isSuccessful,
+                    failures = failures,
+                    dependencies = dependencies,
+                    isIncremental = isIncremental,
+                    isFromCache = isFromCache,
+                    isUpToDate = isUpToDate,
+                    executionReasons = executionReasons
                 )
             )
         }
