@@ -5,6 +5,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 data class ModuleCacheHitReport(
     val path: String,
-    val hitRatio: Float,
-    val diffRatio: Float? = null
+    val hitRatio: Long,
+    val diffRatio: Float? = null,
+    val values: List<ChartPoint>
 ): java.io.Serializable

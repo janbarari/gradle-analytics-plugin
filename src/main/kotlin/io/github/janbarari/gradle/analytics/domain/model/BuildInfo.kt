@@ -30,7 +30,7 @@ data class BuildInfo(
     val initializedAt: Long,
     val configuredAt: Long,
     val dependenciesResolveInfo: Collection<DependencyResolveInfo>,
-    val executedTasks: Collection<TaskInfo>,
+    val executedTasks: List<TaskInfo>,
     val finishedAt: Long,
     val osInfo: OsInfo,
     val hardwareInfo: HardwareInfo,

@@ -31,6 +31,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
@@ -105,6 +107,11 @@ fun BuildExecutionInjector.provideUpdateModulesMethodCountMetricUseCase(): Updat
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateCacheHitMetricUseCase(): UpdateCacheHitMetricUseCase {
+    return UpdateCacheHitMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -113,7 +120,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateExecutionMetricUseCase(),
         provideUpdateTotalBuildMetricUseCase(),
         provideUpdateModulesSourceCountMetricUseCase(),
-        provideUpdateModulesMethodCountMetricUseCase()
+        provideUpdateModulesMethodCountMetricUseCase(),
+        provideUpdateCacheHitMetricUseCase()
     )
 }
 
@@ -153,6 +161,11 @@ fun BuildExecutionInjector.provideCreateModulesMethodCountMetricUseCase(): Creat
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitMetricUseCase {
+    return CreateCacheHitMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -163,6 +176,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateTotalBuildMetricUseCase(),
         provideCreateModulesSourceCountMetricUseCase(),
         provideCreateModulesMethodCountMetricUseCase(),
+        provideCreateCacheHitMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

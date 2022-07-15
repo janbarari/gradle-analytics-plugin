@@ -11,6 +11,7 @@ import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
@@ -33,7 +34,7 @@ class CreateModulesMethodCountReportStage(
         }
 
         if (metrics.hasSingleItem()) {
-            result = generateSingleItemReport(ensureNotNull(metrics.single()))
+            result = generateSingleItemReport(metrics.single())
         }
 
         if (metrics.hasMultipleItems()) {
@@ -107,6 +108,5 @@ class CreateModulesMethodCountReportStage(
     private fun calculateModuleDiffRatio(metrics: List<ModulesMethodCountMetric>, path: String, value: Int): Float? {
         return metrics.first().modules.find { it.path == path }?.value?.diffPercentageOf(value)
     }
-
 
 }

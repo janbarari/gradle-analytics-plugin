@@ -27,8 +27,8 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 data class CacheHitMetric(
-    @Json(name = "value")
-    val value: Float,
+    @Json(name = "hit_ratio")
+    val hitRatio: Long,
     @Json(name = "modules")
     val modules: List<ModuleCacheHit>
 ): java.io.Serializable
