@@ -24,6 +24,8 @@ package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricStage
+import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricStage
@@ -46,7 +48,8 @@ class SaveMetricUseCase(
     private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase,
     private val updateTotalBuildMetricUseCase: UpdateTotalBuildMetricUseCase,
     private val updateModulesSourceCountMetricUseCase: UpdateModulesSourceCountMetricUseCase,
-    private val updateModulesMethodCountMetricUseCase: UpdateModulesMethodCountMetricUseCase
+    private val updateModulesMethodCountMetricUseCase: UpdateModulesMethodCountMetricUseCase,
+    private val updateCacheHitMetricUseCase: UpdateCacheHitMetricUseCase
 ) : UseCase<BuildMetric, Long>() {
 
     override suspend fun execute(input: BuildMetric): Long {
@@ -61,6 +64,7 @@ class SaveMetricUseCase(
                 UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
             val updateModulesMethodCountMetricStage =
                 UpdateModulesMethodCountMetricStage(updateModulesMethodCountMetricUseCase)
+            val updateCacheHitMetricStage = UpdateCacheHitMetricStage(updateCacheHitMetricUseCase)
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
                 .addStage(updateConfigurationMetricStage)
@@ -68,6 +72,7 @@ class SaveMetricUseCase(
                 .addStage(updateTotalBuildMetricStage)
                 .addStage(updateModulesSourceCountMetricStage)
                 .addStage(updateModulesMethodCountMetricStage)
+                .addStage(updateCacheHitMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second
