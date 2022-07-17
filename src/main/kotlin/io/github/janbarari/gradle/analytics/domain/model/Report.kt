@@ -43,6 +43,8 @@ data class Report(
 
     var modulesMethodCountReport: ModulesMethodCountReport? = null
 
+    var cacheHitReport: CacheHitReport? = null
+
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
         val jsonAdapter: JsonAdapter<Report> = moshi.adapter(Report::class.java)
