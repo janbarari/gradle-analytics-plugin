@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.registerTask
 import kotlinx.coroutines.CoroutineScope
@@ -114,10 +115,24 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 ensureBranchArgumentValid(branchArgument)
                 ensurePeriodArgumentValid(periodArgument)
                 ensureTaskArgumentValid(requestedTasksArgument)
-                saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+                try {
+                    saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+                } catch (@Suppress("SwallowedException") e: EmptyMetricsException) {
+                    showEmptyDataMessage()
+                }
             }
         }
 
+    }
+
+    private fun showEmptyDataMessage() {
+        println()
+        println("/////////////////////////////////////////////////////")
+        println("/// Gradle Analytics Plugin:")
+        println("/// There is no data to process. Please check the plugin configuration and wait until" +
+                " the first desired task information is saved.")
+        println("/////////////////////////////////////////////////////")
+        println()
     }
 
 }
