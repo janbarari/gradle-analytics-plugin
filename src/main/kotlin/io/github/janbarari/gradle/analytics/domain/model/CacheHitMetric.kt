@@ -22,34 +22,13 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.moshi.Json
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-data class Report(
-    val branch: String,
-    val requestedTasks: String
-) : java.io.Serializable {
-
-    var initializationReport: InitializationReport? = null
-
-    var configurationReport: ConfigurationReport? = null
-
-    var executionReport: ExecutionReport? = null
-
-    var totalBuildReport: TotalBuildReport? = null
-
-    var modulesSourceCountReport: ModulesSourceCountReport? = null
-
-    var modulesMethodCountReport: ModulesMethodCountReport? = null
-
-    var cacheHitReport: CacheHitReport? = null
-
-    fun toJson(): String {
-        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter: JsonAdapter<Report> = moshi.adapter(Report::class.java)
-        return jsonAdapter.toJson(this)
-    }
-
-}
-
+@ExcludeJacocoGenerated
+data class CacheHitMetric(
+    @Json(name = "hit_ratio")
+    val hitRatio: Long,
+    @Json(name = "modules")
+    val modules: List<ModuleCacheHit>
+): java.io.Serializable

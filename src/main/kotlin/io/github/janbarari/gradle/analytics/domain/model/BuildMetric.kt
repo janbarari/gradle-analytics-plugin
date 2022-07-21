@@ -53,7 +53,10 @@ data class BuildMetric(
     var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
 
     @Json(name = "modules_method_count_metric")
-    var modulesMethodCountMetric: ModulesMethodCountMetric? = null
+    var modulesMethodCountMetric: ModulesMethodCountMetric? = null,
+
+    @Json(name = "cache_hit_metric")
+    var cacheHitMetric: CacheHitMetric? = null
 
 ): java.io.Serializable {
 

@@ -32,6 +32,8 @@ import io.github.janbarari.gradle.analytics.domain.model.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricStage
+import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricStage
@@ -68,6 +70,7 @@ class BuildExecutionLogicImp(
     private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase,
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
+    private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -96,7 +99,7 @@ class BuildExecutionLogicImp(
             osInfo = OsInfo(provideOperatingSystem().getName()),
             hardwareInfo = HardwareInfo(provideHardwareInfo().availableMemory(), provideHardwareInfo().totalMemory()),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
-            executedTasks = executedTasks,
+            executedTasks = executedTasks.toList(),
             branch = GitUtils.currentBranch(),
             requestedTasks = requestedTasks
         )
@@ -113,6 +116,9 @@ class BuildExecutionLogicImp(
         val createModulesMethodCountMetricStage = CreateModulesMethodCountMetricStage(
             modulesInfo, createModulesMethodCountMetricUseCase
         )
+        val createCacheHitMetricStage = CreateCacheHitMetricStage(
+            info, modulesInfo, createCacheHitMetricUseCase
+        )
 
         launchIO {
             val metric = CreateMetricPipeline(createInitializationMetricStage)
@@ -121,6 +127,7 @@ class BuildExecutionLogicImp(
                 .addStage(createTotalBuildMetricStage)
                 .addStage(createModulesSourceCountMetricStage)
                 .addStage(createModulesMethodCountMetricStage)
+                .addStage(createCacheHitMetricStage)
                 .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
             saveTemporaryMetricUseCase.execute(metric)

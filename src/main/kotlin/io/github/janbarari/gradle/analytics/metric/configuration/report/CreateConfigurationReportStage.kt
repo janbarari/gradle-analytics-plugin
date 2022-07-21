@@ -48,8 +48,7 @@ class CreateConfigurationReportStage(
             .map {
                 TimespanChartPoint(
                     value = ensureNotNull(it.configurationMetric).average,
-                    from = it.createdAt,
-                    to = null
+                    from = it.createdAt
                 )
             }
             .whenEmpty {
