@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.os
 
+/**
+ * Provides some information about the Hardware.
+ */
 interface HardwareInfo {
 
     fun availableMemory(): Long

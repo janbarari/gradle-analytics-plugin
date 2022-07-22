@@ -31,6 +31,9 @@ import kotlin.io.path.name
  */
 object FileUtils {
 
+    /**
+     * Checks the given directory is a module directory.
+     */
     fun isModulePath(directory: String): Boolean {
         val isBuildscriptsExists = Files.list(Path(directory)).anyMatch { path ->
             path.fileName.name == "build.gradle.kts" || path.fileName.name == "build.gradle"

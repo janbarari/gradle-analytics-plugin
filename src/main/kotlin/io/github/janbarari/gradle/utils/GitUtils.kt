@@ -30,7 +30,7 @@ object GitUtils {
     /**
      * Returns the git current branch name.
      *
-     * @throws GitException if the command execution failed.
+     * @throws io.github.janbarari.gradle.utils.GitException if the command execution failed.
      */
     @kotlin.jvm.Throws(GitException::class)
     fun currentBranch(): String {

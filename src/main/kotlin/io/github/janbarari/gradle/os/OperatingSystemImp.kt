@@ -27,9 +27,6 @@ import oshi.software.os.OperatingSystem
 
 /**
  * Implementation of [io.github.janbarari.gradle.os.OperatingSystem].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
 
