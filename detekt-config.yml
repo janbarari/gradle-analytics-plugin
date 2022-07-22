@@ -16,6 +16,8 @@ exceptions:
   active: true
   SwallowedException:
     active: false
+  TooGenericExceptionCaught:
+    active: false
 
 style:
   active: true

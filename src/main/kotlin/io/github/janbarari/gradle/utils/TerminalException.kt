@@ -22,30 +22,6 @@
  */
 package io.github.janbarari.gradle.utils
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
-
-/**
- * A collection of terminal functions.
- */
-object TerminalUtils {
-
-    /**
-     * Executes the cmd in terminal.
-     *
-     * @throws io.github.janbarari.gradle.utils.TerminalException if the command execution failed.
-     */
-    @kotlin.jvm.Throws(TerminalException::class)
-    fun execCommand(cmd: String): String {
-        val runtime = Runtime.getRuntime()
-        try {
-            val reader = BufferedReader(
-                InputStreamReader(runtime.exec(cmd).inputStream)
-            )
-            return reader.readLine()
-        } catch (e: Exception) {
-            throw TerminalException(cmd, e)
-        }
-    }
-
+class TerminalException(cmd: String, e: Throwable): java.lang.RuntimeException() {
+    override val message: String = "Error executing $cmd with message $e"
 }
