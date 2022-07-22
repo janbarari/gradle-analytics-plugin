@@ -79,7 +79,6 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
-    @Suppress("ReturnCount")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
 
         if (isForbiddenTasksRequested()) return
@@ -142,7 +141,6 @@ class BuildExecutionLogicImp(
         BuildDependencyResolutionService.reset()
     }
 
-    @Suppress("ReturnCount")
     override fun isDatabaseConfigurationValid(): Boolean {
         //return false if local machine executed and the config is not set.
         if (databaseConfig.local.isNull() && !envCI) {

@@ -23,3 +23,5 @@ style:
     active: false
   MagicNumber:
     active: false
+  ReturnCount:
+    active: false
