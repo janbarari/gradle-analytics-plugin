@@ -25,3 +25,5 @@ style:
     active: false
   ReturnCount:
     active: false
+  FunctionOnlyReturningConstant:
+    active: false
