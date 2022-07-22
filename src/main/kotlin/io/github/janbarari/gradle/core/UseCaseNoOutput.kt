@@ -26,7 +26,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
-@SuppressWarnings("UnnecessaryAbstractClass")
 @ExcludeJacocoGenerated
 abstract class UseCaseNoOutput<INPUT>(
     val dispatcher: CoroutineContext = Dispatchers.IO

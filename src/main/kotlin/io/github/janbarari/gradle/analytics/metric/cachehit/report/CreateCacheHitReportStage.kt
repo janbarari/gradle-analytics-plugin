@@ -16,7 +16,6 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.utils.DatasetUtils
 
-@Suppress("UnusedPrivateMember")
 class CreateCacheHitReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {

@@ -8,10 +8,7 @@ val pluginDeclarationName: String by project
 val pluginGroupPackageName: String by project
 val pluginVersion: String by project
 
-@Suppress(
-    "UnstableApiUsage",
-    "DSL_SCOPE_VIOLATION"
-)
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("jvm") version(libs.versions.kotlin)
     alias(libs.plugins.detekt)

@@ -38,7 +38,7 @@ object GitUtils {
             return TerminalUtils.execCommand("git rev-parse --abbrev-ref HEAD")
         } catch (e: IllegalStateException) {
             throw GitException("Git command execution failed with message of ${e.message}")
-        } catch(@Suppress("TooGenericExceptionCaught") e: RuntimeException) {
+        } catch(e: RuntimeException) {
             throw GitException("Git initialization not found with message of ${e.message}")
         }
     }
