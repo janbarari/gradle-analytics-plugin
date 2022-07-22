@@ -12,6 +12,10 @@ complexity:
     ignorePrivate: false
     ignoreOverridden: false
 
+exceptions:
+  active: true
+  SwallowedException:
+    active: false
 
 style:
   active: true
