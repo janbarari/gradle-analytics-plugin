@@ -44,7 +44,6 @@ class CreateExecutionReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    @Suppress("MagicNumber")
     override suspend fun process(input: Report): Report {
         val executionChartPoints = metrics.filter { it.executionMetric.isNotNull() }
             .filter { ensureNotNull(it.executionMetric).average.isNotNull() }

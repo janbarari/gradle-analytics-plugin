@@ -15,7 +15,6 @@ import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
-@Suppress("MagicNumber")
 class CreateModulesMethodCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {

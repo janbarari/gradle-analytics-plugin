@@ -14,7 +14,6 @@ import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
-@Suppress("MagicNumber")
 class CreateModulesSourceCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {

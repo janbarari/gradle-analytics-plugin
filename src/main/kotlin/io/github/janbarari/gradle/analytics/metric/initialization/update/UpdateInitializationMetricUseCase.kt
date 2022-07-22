@@ -35,7 +35,6 @@ class UpdateInitializationMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<InitializationMetric>() {
 
-    @Suppress("MagicNumber")
     override suspend fun execute(): InitializationMetric {
         val durations = arrayListOf<Long>()
 

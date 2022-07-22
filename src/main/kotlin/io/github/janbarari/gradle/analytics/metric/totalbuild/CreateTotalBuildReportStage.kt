@@ -44,7 +44,6 @@ class CreateTotalBuildReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    @Suppress("MagicNumber")
     override suspend fun process(input: Report): Report {
         val totalBuildChartPoints = metrics.filter { it.totalBuildMetric.isNotNull() }
             .filter { ensureNotNull(it.totalBuildMetric).average.isNotNull() }

@@ -21,3 +21,5 @@ style:
   active: true
   SerialVersionUIDInSerializableClass:
     active: false
+  MagicNumber:
+    active: false
