@@ -117,7 +117,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 ensureTaskArgumentValid(requestedTasksArgument)
                 try {
                     saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
-                } catch (@Suppress("SwallowedException") e: EmptyMetricsException) {
+                } catch (e: EmptyMetricsException) {
                     showEmptyDataMessage()
                 }
             }

@@ -33,7 +33,6 @@ object GitUtils {
      * @throws GitException if the command execution failed.
      */
     @kotlin.jvm.Throws(GitException::class)
-    @Suppress("SwallowedException")
     fun currentBranch(): String {
         try {
             return TerminalUtils.execCommand("git rev-parse --abbrev-ref HEAD")
