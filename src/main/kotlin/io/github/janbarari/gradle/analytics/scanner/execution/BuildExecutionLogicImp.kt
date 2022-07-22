@@ -25,10 +25,10 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.domain.model.OsInfo
+import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
@@ -60,7 +60,6 @@ import io.github.janbarari.gradle.utils.GitUtils
 /**
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
-@Suppress("LongParameterList")
 class BuildExecutionLogicImp(
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,

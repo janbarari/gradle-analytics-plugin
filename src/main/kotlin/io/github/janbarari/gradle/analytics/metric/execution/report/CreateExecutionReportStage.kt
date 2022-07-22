@@ -22,10 +22,10 @@
  */
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.ExecutionReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.core.Triple
 import io.github.janbarari.gradle.extension.ensureNotNull

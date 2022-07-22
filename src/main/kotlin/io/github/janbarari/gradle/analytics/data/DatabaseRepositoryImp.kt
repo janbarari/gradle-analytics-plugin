@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.value
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.utils.DateTimeUtils

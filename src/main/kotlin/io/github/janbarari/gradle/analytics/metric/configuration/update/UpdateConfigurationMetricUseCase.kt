@@ -22,8 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configuration.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ConfigurationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -44,9 +43,9 @@ class UpdateConfigurationMetricUseCase(
 
         repo.getTemporaryMetrics().whenEach {
             configurationMetric.whenNotNull {
-                average.isBiggerEquals(BuildMetric.CONFIGURATION_SKIP_THRESHOLD).whenTrue {
-                        durations.add(average)
-                    }
+                average.isBiggerEquals(50).whenTrue {
+                    durations.add(average)
+                }
             }
         }
 

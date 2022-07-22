@@ -20,12 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.report
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
-data class ExecutionReport(
+data class TotalBuildReport(
     val values: List<ChartPoint>,
     val maxValue: Long,
     val minValue: Long

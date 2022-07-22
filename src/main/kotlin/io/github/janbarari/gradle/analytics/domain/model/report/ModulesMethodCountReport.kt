@@ -20,15 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.report
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 @ExcludeJacocoGenerated
-data class OsInfo(
-    val name: String
-) : java.io.Serializable
+data class ModulesMethodCountReport(
+    val values: List<ModuleMethodCountReport>,
+    val totalMethodCount: Int,
+    val totalDiffRatio: Float? = null
+)

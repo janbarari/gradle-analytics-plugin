@@ -1,11 +1,10 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
-import io.github.janbarari.gradle.analytics.domain.model.CacheHitMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModuleCacheHit
+import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 

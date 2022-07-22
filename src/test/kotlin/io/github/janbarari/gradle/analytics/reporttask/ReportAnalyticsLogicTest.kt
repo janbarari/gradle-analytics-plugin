@@ -1,14 +1,13 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll

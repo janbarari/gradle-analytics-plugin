@@ -1,10 +1,10 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModuleSourceCountReport
-import io.github.janbarari.gradle.analytics.domain.model.ModulesSourceCountMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModulesSourceCountReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleSourceCountReport
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceCountReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems

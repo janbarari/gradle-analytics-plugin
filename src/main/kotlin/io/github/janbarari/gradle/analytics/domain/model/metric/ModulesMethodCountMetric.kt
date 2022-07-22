@@ -20,13 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.metric
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-data class TotalBuildReport(
-    val values: List<ChartPoint>,
-    val maxValue: Long,
-    val minValue: Long
+data class ModulesMethodCountMetric(
+    val modules: List<ModuleMethodCount>
 ): java.io.Serializable
+

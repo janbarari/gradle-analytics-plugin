@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage

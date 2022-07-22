@@ -20,18 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution.update
+package io.github.janbarari.gradle.analytics.domain.model.os
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-class UpdateExecutionMetricStage(
-    private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
-
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.executionMetric = updateExecutionMetricUseCase.execute()
-        return input
-    }
-
-}
+@ExcludeJacocoGenerated
+data class HardwareInfo(
+    val availableMemory: Long,
+    val maximumMemoryCapacity: Long
+) : java.io.Serializable

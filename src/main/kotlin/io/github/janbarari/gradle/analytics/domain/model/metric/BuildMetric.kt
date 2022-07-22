@@ -20,18 +20,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution.update
+package io.github.janbarari.gradle.analytics.domain.model.metric
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import com.squareup.moshi.Json
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-class UpdateExecutionMetricStage(
-    private val updateExecutionMetricUseCase: UpdateExecutionMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+@ExcludeJacocoGenerated
+data class BuildMetric(
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.executionMetric = updateExecutionMetricUseCase.execute()
-        return input
-    }
+    @Json(name = "branch")
+    var branch: String,
 
-}
+    @Json(name = "requestedTasks")
+    var requestedTasks: List<String>,
+
+    @Json(name = "created_at")
+    var createdAt: Long,
+
+    @Json(name = "initialization_metric")
+    var initializationMetric: InitializationMetric? = null,
+
+    @Json(name = "configuration_metric")
+    var configurationMetric: ConfigurationMetric? = null,
+
+    @Json(name = "execution_metric")
+    var executionMetric: ExecutionMetric? = null,
+
+    @Json(name = "total_build_metric")
+    var totalBuildMetric: TotalBuildMetric? = null,
+
+    @Json(name = "modules_source_count_metric")
+    var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
+
+    @Json(name = "modules_method_count_metric")
+    var modulesMethodCountMetric: ModulesMethodCountMetric? = null,
+
+    @Json(name = "cache_hit_metric")
+    var cacheHitMetric: CacheHitMetric? = null
+
+): java.io.Serializable

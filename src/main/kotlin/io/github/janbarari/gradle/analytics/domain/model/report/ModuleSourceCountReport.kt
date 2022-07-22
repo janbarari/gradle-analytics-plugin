@@ -20,36 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-data class Report(
-    val branch: String,
-    val requestedTasks: String
-) : java.io.Serializable {
-
-    var initializationReport: InitializationReport? = null
-
-    var configurationReport: ConfigurationReport? = null
-
-    var executionReport: ExecutionReport? = null
-
-    var totalBuildReport: TotalBuildReport? = null
-
-    var modulesSourceCountReport: ModulesSourceCountReport? = null
-
-    var modulesMethodCountReport: ModulesMethodCountReport? = null
-
-    var cacheHitReport: CacheHitReport? = null
-
-    fun toJson(): String {
-        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter: JsonAdapter<Report> = moshi.adapter(Report::class.java)
-        return jsonAdapter.toJson(this)
-    }
-
-}
-
+@ExcludeJacocoGenerated
+data class ModuleSourceCountReport(
+    val path: String,
+    val value: Int,
+    val coverage: Float,
+    val diffRatio: Float? = null
+): java.io.Serializable

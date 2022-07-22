@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.initialization.create
 
 import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
 
 class CreateInitializationMetricUseCase: UseCase<Long, InitializationMetric>() {
     override suspend fun execute(input: Long): InitializationMetric {

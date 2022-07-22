@@ -1,11 +1,10 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
-import io.github.janbarari.gradle.analytics.domain.model.ModuleCacheHitReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.getTextResourceContent
-import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toIntList

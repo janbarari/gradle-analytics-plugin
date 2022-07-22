@@ -20,13 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.metric
 
+import com.squareup.moshi.Json
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-data class ConfigurationReport(
-    val values: List<ChartPoint>,
-    val maxValue: Long,
-    val minValue: Long
+data class InitializationMetric(
+    @Json(name = "average")
+    var average: Long = 0L
 ): java.io.Serializable

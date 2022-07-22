@@ -1,8 +1,8 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.domain.model.ModuleSourceCount
-import io.github.janbarari.gradle.analytics.domain.model.ModulesSourceCountMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleSourceCount
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.whenEach
 import kotlinx.coroutines.Deferred

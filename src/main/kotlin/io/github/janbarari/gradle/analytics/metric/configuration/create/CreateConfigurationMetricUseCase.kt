@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configuration.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ConfigurationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationMetric
 import io.github.janbarari.gradle.core.UseCase
 
 class CreateConfigurationMetricUseCase: UseCase<Long, ConfigurationMetric>() {

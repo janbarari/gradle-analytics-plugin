@@ -1,17 +1,16 @@
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModuleMethodCountReport
-import io.github.janbarari.gradle.analytics.domain.model.ModulesMethodCountMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModulesMethodCountReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCountReport
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCountReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 

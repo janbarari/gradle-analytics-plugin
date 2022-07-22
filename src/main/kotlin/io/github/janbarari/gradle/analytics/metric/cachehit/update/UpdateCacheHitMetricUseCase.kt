@@ -1,8 +1,8 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.CacheHitMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModuleCacheHit
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.whenEach

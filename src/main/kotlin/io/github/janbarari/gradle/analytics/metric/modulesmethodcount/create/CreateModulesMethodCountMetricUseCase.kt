@@ -1,8 +1,8 @@
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModuleMethodCount
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.domain.model.ModulesMethodCountMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.whenEach
 import kotlinx.coroutines.Deferred

@@ -23,11 +23,18 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 
+/**
+ * Saves day build metrics.
+ * It's temporary and only valid for a day. to measure a valid result from all
+ * build metrics of the day.
+ */
 class SaveTemporaryMetricUseCase(private val repo: DatabaseRepository): UseCase<BuildMetric, Long>() {
+
     override suspend fun execute(input: BuildMetric): Long {
         return repo.saveTemporaryMetric(input)
     }
+
 }

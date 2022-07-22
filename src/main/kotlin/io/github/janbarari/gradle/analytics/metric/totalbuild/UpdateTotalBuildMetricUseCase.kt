@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.totalbuild
 
-import io.github.janbarari.gradle.analytics.domain.model.TotalBuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals

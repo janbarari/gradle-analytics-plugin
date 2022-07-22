@@ -11,6 +11,8 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
+  LongParameterList:
+    active: false
 
 exceptions:
   active: true
@@ -29,3 +31,6 @@ style:
     active: false
   FunctionOnlyReturningConstant:
     active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 128

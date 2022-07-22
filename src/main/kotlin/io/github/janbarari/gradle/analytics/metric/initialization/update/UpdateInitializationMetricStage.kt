@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.initialization.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class UpdateInitializationMetricStage(

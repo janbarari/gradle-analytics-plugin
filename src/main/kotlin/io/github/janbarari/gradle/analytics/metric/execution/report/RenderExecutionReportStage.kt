@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.getTextResourceContent

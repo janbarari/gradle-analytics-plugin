@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.repository
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 
 interface DatabaseRepository {
     fun saveNewMetric(metric: BuildMetric): Long

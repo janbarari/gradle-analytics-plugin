@@ -1,6 +1,6 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class UpdateModulesSourceCountMetricStage(

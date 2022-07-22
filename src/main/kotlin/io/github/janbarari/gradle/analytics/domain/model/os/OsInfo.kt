@@ -20,15 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.os
 
-import com.squareup.moshi.Json
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-data class CacheHitMetric(
-    @Json(name = "hit_ratio")
-    val hitRatio: Long,
-    @Json(name = "modules")
-    val modules: List<ModuleCacheHit>
-): java.io.Serializable
+data class OsInfo(
+    val name: String
+) : java.io.Serializable

@@ -1,10 +1,10 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.CacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.ModuleCacheHitReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
