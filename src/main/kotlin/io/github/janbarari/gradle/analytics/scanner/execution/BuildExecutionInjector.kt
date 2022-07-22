@@ -48,7 +48,7 @@ import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 
 /**
- * Custom dependency injector for [BuildExecutionLogic].
+ * Dependency injector for [BuildExecutionLogic].
  */
 
 @ExcludeJacocoGenerated

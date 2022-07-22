@@ -29,10 +29,8 @@ import org.gradle.api.invocation.Gradle
 import org.gradle.internal.InternalBuildListener
 
 /**
- * Track and holds the build configuration finish timestamp to use by [BuildExecutionService].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Track and holds the build configuration finish timestamp to use by
+ * [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
  */
 class BuildConfigurationService : InternalBuildListener {
 
@@ -66,7 +64,7 @@ class BuildConfigurationService : InternalBuildListener {
     @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
-        // This method is deprecated, Execution process are handled by [BuildExecutionService]
+        // This method is deprecated, Execution process are handled by BuildExecutionService.kt
     }
 
 }
