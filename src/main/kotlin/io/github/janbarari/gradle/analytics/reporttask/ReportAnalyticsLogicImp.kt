@@ -51,10 +51,8 @@ import java.io.File
 import java.io.IOException
 
 /**
- * In order to make the [ReportAnalyticsTask] testable and the logic framework independent.
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * In order to make the [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask]
+ * testable and the logic framework independent.
  */
 class ReportAnalyticsLogicImp(
     private val getMetricsUseCase: GetMetricsUseCase,
