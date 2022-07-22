@@ -1,6 +1,5 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
-import io.github.janbarari.gradle.analytics.CHART_MAX_COLUMNS
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
@@ -102,7 +101,7 @@ class CreateCacheHitReportStage(
             )
         }
         val minimizedOverallValues =
-            DatasetUtils.minimizeTimespanChartPoints(overallValuesTimestampChartPoints, CHART_MAX_COLUMNS)
+            DatasetUtils.minimizeTimespanChartPoints(overallValuesTimestampChartPoints, 12)
         val overallValues = minimizedOverallValues.map {
             ChartPoint(it.value, it.getTimespanString())
         }
@@ -146,7 +145,7 @@ class CreateCacheHitReportStage(
                         )
                     }
             }
-        val minimizedOverallValues = DatasetUtils.minimizeTimespanChartPoints(timestampChartPoints, CHART_MAX_COLUMNS)
+        val minimizedOverallValues = DatasetUtils.minimizeTimespanChartPoints(timestampChartPoints, 12)
         return minimizedOverallValues.map {
             ChartPoint(it.value, it.getTimespanString())
         }

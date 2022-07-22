@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.metric.configuration.report
 
 import io.github.janbarari.gradle.analytics.domain.model.Report
-import io.github.janbarari.gradle.analytics.SKIP_METRIC_THRESHOLD
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.getTextResourceContent
@@ -66,12 +65,12 @@ class RenderConfigurationReportStage(
 
         val suggestedMaxValue = MathUtils.sumWithPercentage(
             ensureNotNull(report.configurationReport).maxValue,
-            SKIP_METRIC_THRESHOLD
+            30
         )
 
         val suggestedMinValue = MathUtils.deductWithPercentage(
             ensureNotNull(report.configurationReport).minValue,
-            SKIP_METRIC_THRESHOLD
+            30
         )
 
         return getTextResourceContent("configuration-metric-template.html")

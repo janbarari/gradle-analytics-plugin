@@ -22,8 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configuration.report
 
-import io.github.janbarari.gradle.analytics.CHART_MAX_COLUMNS
-import io.github.janbarari.gradle.analytics.SKIP_METRIC_THRESHOLD
 import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.ConfigurationReport
@@ -43,7 +41,7 @@ class CreateConfigurationReportStage(
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { it.configurationMetric.isNotNull() }
             .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
-            .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
+            .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(30) }
             .map {
                 TimespanChartPoint(
                     value = ensureNotNull(it.configurationMetric).average,
@@ -54,7 +52,7 @@ class CreateConfigurationReportStage(
                 return report
             }
 
-        val dataset = DatasetUtils.minimizeTimespanChartPoints(chartPoints, CHART_MAX_COLUMNS)
+        val dataset = DatasetUtils.minimizeTimespanChartPoints(chartPoints, 12)
         if (dataset.isEmpty()) return report
 
         val configurationReport = ConfigurationReport(
