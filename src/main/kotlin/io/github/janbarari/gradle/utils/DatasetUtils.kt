@@ -26,8 +26,14 @@ import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.extension.isBiggerThan
 import io.github.janbarari.gradle.extension.isNull
 
+/**
+ * A collection of data processing, math and algorithm functions
+ */
 object DatasetUtils {
 
+    /**
+     * Calculates the given time span chart point dataset mean.
+     */
     fun getTimespanChartPointMean(values: List<TimespanChartPoint>): List<TimespanChartPoint> {
         if (values.isEmpty()) return values
 
@@ -56,6 +62,9 @@ object DatasetUtils {
         return result
     }
 
+    /**
+     * Minimizes the given timespan chart point dataset.
+     */
     fun minimizeTimespanChartPoints(dataset: List<TimespanChartPoint>, maximumSize: Int): List<TimespanChartPoint> {
         return if (dataset.isBiggerThan(maximumSize))
             minimizeTimespanChartPoints(getTimespanChartPointMean(dataset), maximumSize)

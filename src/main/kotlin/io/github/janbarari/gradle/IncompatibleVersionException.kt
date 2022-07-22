@@ -27,6 +27,8 @@ class IncompatibleVersionException(
     private val title: String,
     private val minimumRequiredVersion: String
 ) : Throwable() {
+
     override val message: String
         get() = "$title is compatible with Gradle version $minimumRequiredVersion and above."
+
 }
