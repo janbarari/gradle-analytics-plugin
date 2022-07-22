@@ -22,6 +22,10 @@
  */
 package io.github.janbarari.gradle.extension
 
+/**
+ * Iterates across the list items, but this function allows each iteration to
+ * add and remove items from the list.
+ */
 fun <T: Any> Collection<T>.whenEach(block: T.() -> Unit) {
     val iterator = this.iterator()
     while (iterator.hasNext()) {
@@ -29,26 +33,44 @@ fun <T: Any> Collection<T>.whenEach(block: T.() -> Unit) {
     }
 }
 
+/**
+ * Maps the Long list to Int list.
+ */
 fun List<Long>.toIntList(): List<Int> {
     return this.map { it.toInt() }
 }
 
-fun <T> List<T>.isBiggerThan(size: Int): Boolean {
-    return this.size > size
+/**
+ * Checks is the given list has more items than dedicated count.
+ */
+fun <T> List<T>.isBiggerThan(count: Int): Boolean {
+    return this.size > count
 }
 
+/**
+ * Executes the function body if the given list has no items.
+ */
 inline fun <T> List<T>.whenEmpty(block: List<T>.() -> Unit): List<T> {
     if (isEmpty()) block(this)
     return this
 }
 
+/**
+ * Represents the first index value.
+ */
 val <T> List<T>.firstIndex: Int
     get() = 0
 
+/**
+ * Checks is the given list has only a single item.
+ */
 fun <T> List<T>.hasSingleItem(): Boolean {
     return this.size == 1
 }
 
+/**
+ * Checks is the given list has multiple items.
+ */
 fun <T> List<T>.hasMultipleItems(): Boolean {
     return this.size > 1
 }

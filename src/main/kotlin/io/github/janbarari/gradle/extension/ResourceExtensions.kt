@@ -40,10 +40,9 @@ fun <T> Class<T>.getSafeResourceAsStream(name: String): InputStream? {
     return getResource(name)?.openSafeStream()
 }
 
-fun ClassLoader.getSafeResourceAsStream(name: String): InputStream? {
-    return getResource(name)?.openSafeStream()
-}
-
+/**
+ * Returns the given file content as a String.
+ */
 fun Any.getTextResourceContent(fileName: String): String {
     return javaClass.getResource("/$fileName")!!
         .openSafeStream()

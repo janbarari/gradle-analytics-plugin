@@ -22,14 +22,23 @@
  */
 package io.github.janbarari.gradle.extension
 
+/**
+ * Checks the given string has any space.
+ */
 fun String.hasSpace(): Boolean {
     return this.contains(" ")
 }
 
+/**
+ * Removes the latest character of given string.
+ */
 fun String.removeLast(): String {
     return substring(0, length - 1)
 }
 
+/**
+ * Converts the given path string to real path.
+ */
 fun String.toRealPath(): String {
     if (endsWith("/")) {
         return removeLast().toRealPath()
@@ -37,13 +46,18 @@ fun String.toRealPath(): String {
     return this
 }
 
+/**
+ * Converts the string to list of string separated by space.
+ */
 fun List<String>.separateElementsWithSpace(): String {
     return this.joinToString(separator = " ")
 }
 
+/**
+ * Removes the latest character of given StringBuilder.
+ */
 fun StringBuilder.removeLastChar() {
     if (isNotEmpty()) {
         deleteCharAt(length - 1)
     }
 }
-

@@ -22,10 +22,22 @@
  */
 package io.github.janbarari.gradle.extension
 
+/**
+ * Executes function body when the value is true.
+ *
+ * This function helps to reduce the code complexity and increase the development speed by removing the
+ * boilerplate if condition for booleans.
+ */
 fun Boolean.whenTrue(block: Boolean.() -> Unit) {
-    if (this) block(this)
+    if (this) block(true)
 }
 
+/**
+ * Executes function body when the value is false.
+ *
+ * This function helps to reduce the code complexity and increase the development speed by removing the
+ * boilerplate if condition for booleans.
+ */
 fun Boolean.whenFalse(block: Boolean.() -> Unit) {
-    if (!this) block(this)
+    if (!this) block(false)
 }
