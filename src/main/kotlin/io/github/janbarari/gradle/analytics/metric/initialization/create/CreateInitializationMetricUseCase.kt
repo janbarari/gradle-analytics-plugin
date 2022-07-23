@@ -26,7 +26,9 @@ import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
 
 class CreateInitializationMetricUseCase: UseCase<Long, InitializationMetric>() {
-    override suspend fun execute(input: Long): InitializationMetric {
-        return InitializationMetric(input)
+
+    override suspend fun execute(average: Long): InitializationMetric {
+        return InitializationMetric(average)
     }
+
 }

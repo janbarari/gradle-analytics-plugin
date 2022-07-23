@@ -28,10 +28,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.InitializationRe
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.core.Triple
-import io.github.janbarari.gradle.extension.ensureNotNull
-import io.github.janbarari.gradle.extension.isBiggerEquals
-import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.*
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
@@ -40,52 +37,53 @@ class CreateInitializationReportStage(
 ) : Stage<Report, Report> {
 
     companion object {
-        private const val SKIP_METRIC_THRESHOLD = 50L
+        private const val SKIP_THRESHOLD_IN_MS = 50L
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    override suspend fun process(input: Report): Report {
+    override suspend fun process(report: Report): Report {
 
-        val initializationChartPoints = metrics.filter { it.initializationMetric.isNotNull() }
-            .filter { ensureNotNull(it.initializationMetric).average.isNotNull() }
-            .filter { ensureNotNull(it.initializationMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
-            .map {
-                InitializationChartPoint(
-                    value = ensureNotNull(it.initializationMetric).average,
-                    startedAt = it.createdAt,
-                    finishedAt = null
-                )
-            }
-
-        val initializationMetricsMean = resizeInitializationChartPoints(initializationChartPoints, CHART_MAX_COLUMNS)
-
-        if (initializationMetricsMean.isEmpty()) return input
+        val initializationChartPoints = metrics.filter { metric ->
+            metric.initializationMetric.isNotNull() &&
+                    metric.initializationMetric?.average.isNotNull() &&
+                    metric.initializationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }
+        .mapToInitializationChartPoints()
+        .minimize(CHART_MAX_COLUMNS)
+        .whenEmpty {
+            return report
+        }
+        initializationChartPoints
 
         val initializationReport = InitializationReport(
-            values = initializationMetricsMean.map {
-                val period = if (it.finishedAt.isNull()) {
-                    DateTimeUtils.format(it.startedAt, "dd/MM")
-                } else {
-                    DateTimeUtils.format(it.startedAt, "dd/MM") + "-" +
-                            DateTimeUtils.format(ensureNotNull(it.finishedAt), "dd/MM")
-                }
-                ChartPoint(it.value, period)
-            },
-            maxValue = initializationMetricsMean.maxOf { it.value },
-            minValue = initializationMetricsMean.minOf { it.value }
+            values = initializationChartPoints.mapToCh,
+            maxValue = initializationChartPoints.maxOf { it.value },
+            minValue = initializationChartPoints.minOf { it.value }
         )
 
-        input.initializationReport = initializationReport
-
-        return input
+        return report.apply {
+            this.initializationReport = initializationReport
+        }
     }
 
-    fun resizeInitializationChartPoints(
-        input: List<InitializationChartPoint>, targetSize: Int
+    fun List<InitializationChartPoint>.minimize(
+        targetSize: Int
     ): List<InitializationChartPoint> {
-        return if (input.size > targetSize)
-            resizeInitializationChartPoints(calculatePointsMean(input), targetSize)
-        else input
+        return if (size > targetSize)
+            calculatePointsMean(this).minimize(targetSize)
+        else this
+    }
+
+    fun Collection<InitializationChartPoint>.mapToChartPoints(): Collection<ChartPoint> {
+        return map {
+            val period = if (it.finishedAt.isNull()) {
+                DateTimeUtils.format(it.startedAt, "dd/MM")
+            } else {
+                DateTimeUtils.format(it.startedAt, "dd/MM") + "-" +
+                        DateTimeUtils.format(ensureNotNull(it.finishedAt), "dd/MM")
+            }
+            ChartPoint(it.value, period)
+        }
     }
 
     fun calculatePointsMean(values: List<InitializationChartPoint>): List<InitializationChartPoint> {
@@ -127,4 +125,13 @@ class CreateInitializationReportStage(
         val finishedAt: Long? = null
     ) : Triple<Long, Long, Long?>(value, startedAt, finishedAt)
 
+    fun List<BuildMetric>.mapToInitializationChartPoints(): List<InitializationChartPoint> {
+        return map {
+            InitializationChartPoint(
+                value = ensureNotNull(it.initializationMetric).average,
+                startedAt = it.createdAt,
+                finishedAt = null
+            )
+        }
+    }
 }
