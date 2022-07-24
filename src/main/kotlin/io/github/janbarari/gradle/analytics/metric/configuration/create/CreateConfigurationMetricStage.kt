@@ -31,11 +31,12 @@ class CreateConfigurationMetricStage(
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.configurationMetric = createConfigurationMetricUseCase.execute(
-            info.getConfigurationDuration().toMillis()
-        )
-        return input
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            configurationMetric = createConfigurationMetricUseCase.execute(
+                info.getConfigurationDuration().toMillis()
+            )
+        }
     }
 
 }
