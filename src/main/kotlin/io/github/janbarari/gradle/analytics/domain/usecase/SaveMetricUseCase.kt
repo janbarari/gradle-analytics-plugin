@@ -36,8 +36,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.Upd
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.UpdateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.update.UpdateTotalBuildMetricStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.update.UpdateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.core.UseCase
 
 /**

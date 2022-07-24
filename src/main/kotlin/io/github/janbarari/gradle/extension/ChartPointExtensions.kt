@@ -20,35 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild
+package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.core.UseCaseNoInput
-import io.github.janbarari.gradle.extension.isBiggerEquals
-import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.extension.whenNotNull
-import io.github.janbarari.gradle.extension.whenTrue
-import io.github.janbarari.gradle.utils.MathUtils
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
-class UpdateTotalBuildMetricUseCase(
-    private val repo: DatabaseRepository
-) : UseCaseNoInput<TotalBuildMetric>() {
+fun List<ChartPoint>.maxValue(): Long {
+    return this.maxOf { it.value }
+}
 
-    override suspend fun execute(): TotalBuildMetric {
-        val durations = arrayListOf<Long>()
-
-        repo.getTemporaryMetrics().whenEach {
-            totalBuildMetric.whenNotNull {
-                average.isBiggerEquals(50).whenTrue {
-                    durations.add(average)
-                }
-            }
-        }
-
-        return TotalBuildMetric(
-            average = MathUtils.longMedian(durations)
-        )
-    }
-
+fun List<ChartPoint>.minValue(): Long {
+    return this.minOf { it.value }
 }

@@ -50,7 +50,7 @@ fun <T> List<T>.isBiggerThan(count: Int): Boolean {
 /**
  * Executes the function body if the given list has no items.
  */
-inline fun <T> Collection<T>.whenEmpty(block: Collection<T>.() -> Unit): Collection<T> {
+inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
     if (isEmpty()) block(this)
     return this
 }

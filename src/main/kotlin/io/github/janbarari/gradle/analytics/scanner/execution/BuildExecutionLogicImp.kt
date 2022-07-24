@@ -44,8 +44,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService

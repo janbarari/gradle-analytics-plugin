@@ -36,8 +36,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.report.CreateTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.report.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException

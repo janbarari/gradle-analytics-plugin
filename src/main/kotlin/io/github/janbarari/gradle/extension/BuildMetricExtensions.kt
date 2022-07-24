@@ -20,22 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild
+package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
 
-class CreateTotalBuildMetricStage(
-    private val info: BuildInfo,
-    private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
-
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.totalBuildMetric = createTotalBuildMetricUseCase.execute(
-            info.getTotalDuration().toMillis()
+fun List<BuildMetric>.mapToTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.initializationMetric).average,
+            from = it.createdAt,
+            to = null
         )
-        return input
     }
-
 }

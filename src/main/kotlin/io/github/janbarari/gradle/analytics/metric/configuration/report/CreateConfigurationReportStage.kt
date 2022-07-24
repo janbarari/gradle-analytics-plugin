@@ -27,10 +27,16 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.mapToTimespanChartPoints
+import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.minValue
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 import io.github.janbarari.gradle.utils.DatasetUtils
 
@@ -38,33 +44,29 @@ class CreateConfigurationReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private const val SKIP_THRESHOLD_IN_MS = 50L
+        private const val CHART_MAX_COLUMNS = 12
+    }
+
     override suspend fun process(report: Report): Report {
-        val chartPoints = metrics.filter { it.configurationMetric.isNotNull() }
-            .filter { ensureNotNull(it.configurationMetric).average.isNotNull() }
-            .filter { ensureNotNull(it.configurationMetric).average.isBiggerEquals(30) }
-            .map {
-                TimespanChartPoint(
-                    value = ensureNotNull(it.configurationMetric).average,
-                    from = it.createdAt
-                )
-            }
+        val chartPoints = metrics.filter { metric ->
+            metric.configurationMetric.isNotNull() &&
+                    metric.configurationMetric?.average.isNotNull() &&
+                            metric.configurationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
             .whenEmpty {
                 return report
             }
 
-        val dataset = DatasetUtils.minimizeTimespanChartPoints(chartPoints, 12)
-        if (dataset.isEmpty()) return report
-
-        val configurationReport = ConfigurationReport(
-            values = chartPoints.map {
-                ChartPoint(it.value, it.getTimespanString())
-            },
-            maxValue = dataset.maxOf { it.value },
-            minValue = dataset.minOf { it.value }
-        )
-
         return report.apply {
-            this.configurationReport = configurationReport
+            configurationReport = ConfigurationReport(
+                values = chartPoints,
+                maxValue = chartPoints.maxValue(),
+                minValue = chartPoints.minValue()
+            )
         }
     }
 

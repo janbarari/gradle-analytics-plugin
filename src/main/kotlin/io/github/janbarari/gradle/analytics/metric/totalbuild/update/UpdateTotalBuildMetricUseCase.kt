@@ -20,15 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild
+package io.github.janbarari.gradle.analytics.metric.totalbuild.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.extension.isBiggerEquals
+import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.extension.whenTrue
+import io.github.janbarari.gradle.utils.MathUtils
 
-class CreateTotalBuildMetricUseCase: UseCase<Long, TotalBuildMetric>() {
+class UpdateTotalBuildMetricUseCase(
+    private val repo: DatabaseRepository
+) : UseCaseNoInput<TotalBuildMetric>() {
 
-    override suspend fun execute(input: Long): TotalBuildMetric {
-        return TotalBuildMetric(input)
+    override suspend fun execute(): TotalBuildMetric {
+        val durations = arrayListOf<Long>()
+
+        repo.getTemporaryMetrics().whenEach {
+            totalBuildMetric.whenNotNull {
+                average.isBiggerEquals(50).whenTrue {
+                    durations.add(average)
+                }
+            }
+        }
+
+        return TotalBuildMetric(
+            average = MathUtils.longMedian(durations)
+        )
     }
 
 }
