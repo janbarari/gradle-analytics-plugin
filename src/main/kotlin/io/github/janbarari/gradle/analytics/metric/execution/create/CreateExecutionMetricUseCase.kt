@@ -22,13 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.metric.execution.create
 
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateExecutionMetricUseCase: UseCase<Long, ExecutionMetric>() {
+class CreateExecutionMetricUseCase: UseCase<BuildInfo, ExecutionMetric>() {
 
-    override suspend fun execute(input: Long): ExecutionMetric {
-        return ExecutionMetric(input)
+    override suspend fun execute(buildInfo: BuildInfo): ExecutionMetric {
+        return ExecutionMetric(
+            average = buildInfo.getExecutionDuration().toMillis()
+        )
     }
 
 }
