@@ -37,7 +37,7 @@ class RenderTotalBuildReportStage(
 ): Stage<String, String> {
 
     companion object {
-        private const val CHART_EMPTY_POSITION_RATE = 30L
+        private const val CHART_EMPTY_POSITION_RATE = 30
     }
 
     override suspend fun process(input: String): String {
