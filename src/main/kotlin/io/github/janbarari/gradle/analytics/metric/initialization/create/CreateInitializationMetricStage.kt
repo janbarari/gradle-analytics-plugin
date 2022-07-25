@@ -33,9 +33,7 @@ class CreateInitializationMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            initializationMetric = createInitializationMetricUseCase.execute(
-                average = buildInfo.getInitializationDuration().toMillis()
-            )
+            initializationMetric = createInitializationMetricUseCase.execute(buildInfo)
         }
     }
 
