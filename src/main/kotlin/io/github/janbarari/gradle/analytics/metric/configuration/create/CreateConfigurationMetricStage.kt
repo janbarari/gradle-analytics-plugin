@@ -27,15 +27,13 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class CreateConfigurationMetricStage(
-    private val info: BuildInfo,
+    private val buildInfo: BuildInfo,
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            configurationMetric = createConfigurationMetricUseCase.execute(
-                info.getConfigurationDuration().toMillis()
-            )
+            configurationMetric = createConfigurationMetricUseCase.execute(buildInfo)
         }
     }
 

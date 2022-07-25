@@ -22,13 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configuration.create
 
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateConfigurationMetricUseCase: UseCase<Long, ConfigurationMetric>() {
+class CreateConfigurationMetricUseCase: UseCase<BuildInfo, ConfigurationMetric>() {
 
-    override suspend fun execute(input: Long): ConfigurationMetric {
-        return ConfigurationMetric(input)
+    override suspend fun execute(buildInfo: BuildInfo): ConfigurationMetric {
+        return ConfigurationMetric(
+            average = buildInfo.getConfigurationDuration().toMillis()
+        )
     }
 
 }
