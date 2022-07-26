@@ -22,8 +22,8 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.isJavaFile
@@ -35,13 +35,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.Collections
-import java.util.stream.Collectors
-import kotlin.io.path.Path
-import kotlin.io.path.extension
-import kotlin.io.path.pathString
+import java.util.*
 
 class CreateModulesMethodCountMetricUseCase : UseCase<List<ModulePath>, ModulesMethodCountMetric>() {
 

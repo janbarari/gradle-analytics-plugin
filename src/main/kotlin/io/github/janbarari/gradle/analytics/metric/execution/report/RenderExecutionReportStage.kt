@@ -23,22 +23,17 @@
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
-import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderExecutionReportStage(
     private val report: Report
-): Stage<String, String> {
+) : Stage<String, String> {
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30

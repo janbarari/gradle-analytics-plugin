@@ -24,14 +24,13 @@ package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesMethodCountStage(
     private val report: Report
-): Stage<String, String> {
+) : Stage<String, String> {
 
     companion object {
         private const val MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID = "%modules-method-count-metric%"
@@ -71,7 +70,7 @@ class RenderModulesMethodCountStage(
                 it.diffRatio.whenNotNull {
                     diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
-                    } else if (this < 0){
+                    } else if (this < 0) {
                         "<td>${this}%</td>"
                     } else {
                         "<td>Equals</td>"
