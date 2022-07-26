@@ -42,13 +42,17 @@ class RenderInitializationReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.initializationReport.isNull()) {
-            return input.replace(
-                INITIALIZATION_METRIC_TEMPLATE_ID,
-                HtmlUtils.renderMessage("Initialization chart is not available!")
-            )
-        }
+        if (report.initializationReport.isNull())
+            return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getEmptyRender())
 
+        return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getMetricRender())
+    }
+
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Initialization chart is not available!")
+    }
+
+    fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(INITIALIZATION_METRIC_TEMPLATE_FILE_NAME)
         report.initializationReport.whenNotNull {
             val chartValues = values.map { it.value }
@@ -67,8 +71,7 @@ class RenderInitializationReportStage(
                 .replace("%initialization-median-values%", chartValues)
                 .replace("%initialization-median-labels%", chartLabels)
         }
-
-        return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, renderedTemplate)
+        return renderedTemplate
     }
 
 }
