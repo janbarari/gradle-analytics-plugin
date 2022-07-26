@@ -24,26 +24,37 @@ package io.github.janbarari.gradle.analytics.metric.modulesourcecount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesSourceCountStage(
     private val report: Report
 ) : Stage<String, String> {
 
-    override suspend fun process(input: String): String {
-        if (report.modulesSourceCountReport.isNull()) return input.replace(
-            "%modules-source-count-metric%",
-            "<p>Modules Source Count Metric is not available!</p><div class=\"space\"></div>"
-        )
+    companion object {
+        private const val MODULES_SOURCE_COUNT_METRIC_TEMPLATE_ID = "%modules-source-count-metric%"
+        private const val MODULES_SOURCE_COUNT_METRIC_TEMPLATE_FILE_NAME = "modules-source-count-metric-template"
+    }
 
+    override suspend fun process(input: String): String {
+        if (report.modulesSourceCountReport.isNull())
+            return input.replace(MODULES_SOURCE_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
+
+        return input.replace(MODULES_SOURCE_COUNT_METRIC_TEMPLATE_ID, getMetricRender())
+    }
+
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Modules source count metric is not available!")
+    }
+
+    fun getMetricRender(): String {
         val totalSourceCount = report.modulesSourceCountReport?.totalSourceCount ?: 0
 
-        var totalDiffRatio = "<td>-</td>"
+        var totalDiffRatioRender = "<td>-</td>"
         report.modulesSourceCountReport.whenNotNull {
-            this.totalDiffRatio.whenNotNull {
-                totalDiffRatio = if (this > 0) {
+            totalDiffRatio.whenNotNull {
+                totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
                     "<td>${this}%</td>"
@@ -55,9 +66,9 @@ class RenderModulesSourceCountStage(
 
         val tableData = buildString {
             report.modulesSourceCountReport?.values?.forEachIndexed { index, it ->
-                var diffRatio = "<td>-</td>"
+                var diffRatioRender = "<td>-</td>"
                 it.diffRatio.whenNotNull {
-                    diffRatio = if (this > 0) {
+                    diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0){
                         "<td>${this}%</td>"
@@ -72,7 +83,7 @@ class RenderModulesSourceCountStage(
                         <td>${it.path}</td>
                         <td>${it.value}</td>
                         <td>${it.coverage}%</td>
-                        $diffRatio
+                        $diffRatioRender
                     </tr>
                 """.trimIndent()
                 )
@@ -82,15 +93,15 @@ class RenderModulesSourceCountStage(
         val moduleLabels = report.modulesSourceCountReport?.values?.map { "\"${it.path}\"" }
         val moduleValues = report.modulesSourceCountReport?.values?.map { it.value }
 
-        var template = getTextResourceContent("modules-source-count-metric-template.html")
-        template =
-            template.replace("%table-data%", tableData)
+        var renderedTemplate = HtmlUtils.getTemplate(MODULES_SOURCE_COUNT_METRIC_TEMPLATE_FILE_NAME)
+        renderedTemplate = renderedTemplate
+            .replace("%table-data%", tableData)
                 .replace("%total-source-count%", totalSourceCount.toString())
-                .replace("%total-diff-ratio%", totalDiffRatio)
+                .replace("%total-diff-ratio%", totalDiffRatioRender)
                 .replace("%module-labels%", moduleLabels.toString())
                 .replace("%module-values%", moduleValues.toString())
 
-        return input.replace("%modules-source-count-metric%", template)
+        return renderedTemplate
     }
 
 }

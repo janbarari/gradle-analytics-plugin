@@ -27,23 +27,35 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesMethodCountStage(
     private val report: Report
 ): Stage<String, String> {
 
-    override suspend fun process(input: String): String {
-        if (report.modulesMethodCountReport.isNull()) return input.replace(
-            "%modules-method-count-metric%",
-            "<p>Modules Method Count Metric is not available</p><div class\"space\"></div>"
-        )
+    companion object {
+        private const val MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID = "%modules-method-count-metric%"
+        private const val MODULES_METHOD_COUNT_METRIC_TEMPLATE_FILE_NAME = "modules-method-count-metric-template"
+    }
 
+    override suspend fun process(input: String): String {
+        if (report.modulesMethodCountReport.isNull())
+            return input.replace(MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
+
+        return input.replace(MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID, getMetricRender())
+    }
+
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Modules method count metric is not available!")
+    }
+
+    fun getMetricRender(): String {
         val totalMethodCount = report.modulesMethodCountReport?.totalMethodCount ?: 0
 
-        var totalDiffRatio = "<td>-</td>"
+        var totalDiffRatioRender = "<td>-</td>"
         report.modulesMethodCountReport.whenNotNull {
-            this.totalDiffRatio.whenNotNull {
-                totalDiffRatio = if (this > 0) {
+            totalDiffRatio.whenNotNull {
+                totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
                     "<td>${this}%</td>"
@@ -55,9 +67,9 @@ class RenderModulesMethodCountStage(
 
         val tableData = buildString {
             report.modulesMethodCountReport?.values?.forEachIndexed { index, it ->
-                var diffRatio = "<td>-</td>"
+                var diffRatioRender = "<td>-</td>"
                 it.diffRatio.whenNotNull {
-                    diffRatio = if (this > 0) {
+                    diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0){
                         "<td>${this}%</td>"
@@ -72,7 +84,7 @@ class RenderModulesMethodCountStage(
                         <td>${it.path}</td>
                         <td>${it.value}</td>
                         <td>${it.coverage}%</td>
-                        $diffRatio
+                        $diffRatioRender
                     </tr>
                 """.trimIndent()
                 )
@@ -82,14 +94,15 @@ class RenderModulesMethodCountStage(
         val moduleLabels = report.modulesMethodCountReport?.values?.map { "\"${it.path}\"" }
         val moduleValues = report.modulesMethodCountReport?.values?.map { it.value }
 
-        var template = getTextResourceContent("modules-method-count-metric-template.html")
-        template = template.replace("%table-data%", tableData)
-                .replace("%total-method-count%", totalMethodCount.toString())
-                .replace("%total-diff-ratio%", totalDiffRatio)
-                .replace("%module-labels%", moduleLabels.toString())
-                .replace("%module-values%", moduleValues.toString())
+        var renderedTemplate = HtmlUtils.getTemplate(MODULES_METHOD_COUNT_METRIC_TEMPLATE_FILE_NAME)
+        renderedTemplate = renderedTemplate
+            .replace("%table-data%", tableData)
+            .replace("%total-method-count%", totalMethodCount.toString())
+            .replace("%total-diff-ratio%", totalDiffRatioRender)
+            .replace("%module-labels%", moduleLabels.toString())
+            .replace("%module-values%", moduleValues.toString())
 
-        return input.replace("%modules-method-count-metric%", template)
+        return renderedTemplate
     }
 
 }
