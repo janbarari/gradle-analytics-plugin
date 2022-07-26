@@ -74,3 +74,14 @@ fun <T> List<T>.hasSingleItem(): Boolean {
 fun <T> List<T>.hasMultipleItems(): Boolean {
     return this.size > 1
 }
+
+fun List<String>.toArrayString(): String {
+    val labels = StringBuilder()
+    whenEach {
+        labels.append("\"$this\"")
+            .append(",")
+    }
+    // because the last item should not have ',' separator.
+    labels.removeLastChar()
+    return labels.toString()
+}

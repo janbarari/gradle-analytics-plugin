@@ -25,9 +25,8 @@ package io.github.janbarari.gradle.analytics.metric.initialization.report
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.removeLastChar
+import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
@@ -56,29 +55,17 @@ class RenderInitializationReportStage(
                 .toIntList()
                 .toString()
 
-            val labels = StringBuilder()
-            values.map { it.description }
-                .whenEach {
-                    labels.append("\"$this\"")
-                        .append(",")
-                }
-            // because the last item should not have ',' separator.
-            labels.removeLastChar()
+            val chartLabels = values.map { it.description }
+                .toArrayString()
 
-            val chartMaxValue = MathUtils.sumWithPercentage(
-                maxValue,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-            val chartMinValue = MathUtils.deductWithPercentage(
-                minValue,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
-                .replace("%initialization-max-value%", chartMaxValue.toString())
-                .replace("%initialization-min-value%", chartMinValue.toString())
+                .replace("%initialization-suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%initialization-suggested-min-value%", chartSuggestedMinValue.toString())
                 .replace("%initialization-median-values%", chartValues)
-                .replace("%initialization-median-labels%", labels.toString())
+                .replace("%initialization-median-labels%", chartLabels)
         }
 
         return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, renderedTemplate)
