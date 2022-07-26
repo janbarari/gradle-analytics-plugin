@@ -29,9 +29,10 @@ class UpdateModulesMethodCountMetricStage(
     private val updateModulesMethodCountMetricUseCase: UpdateModulesMethodCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.modulesMethodCountMetric = updateModulesMethodCountMetricUseCase.execute()
-        return input
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            modulesMethodCountMetric = updateModulesMethodCountMetricUseCase.execute()
+        }
     }
 
 }

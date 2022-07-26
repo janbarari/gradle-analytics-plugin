@@ -40,39 +40,31 @@ class CreateModulesSourceCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(input: Report): Report {
-        val metrics: List<ModulesSourceCountMetric> = metrics.filter {
+    override suspend fun process(report: Report): Report {
+        val metrics = metrics.filter {
                 it.modulesSourceCountMetric.isNotNull()
             }.map {
                 ensureNotNull(it.modulesSourceCountMetric)
             }
 
-        var result: ModulesSourceCountReport? = null
-
-        if (metrics.isEmpty()) {
-            result = null
-        }
-
         if (metrics.hasSingleItem()) {
-            result = generateSingleItemReport(ensureNotNull(metrics.single()))
+            return report.apply {
+                modulesSourceCountReport = generateSingleItemReport(ensureNotNull(metrics.single()))
+            }
         }
 
         if (metrics.hasMultipleItems()) {
-            result = generateMultipleItemsReport(metrics)
+            return report.apply {
+                modulesSourceCountReport = generateMultipleItemsReport(metrics)
+            }
         }
 
-        return input.apply {
-            modulesSourceCountReport = result
-        }
+        return report
     }
 
-    private fun generateSingleItemReport(metric: ModulesSourceCountMetric): ModulesSourceCountReport {
-        var totalSourceCount = 0
+    fun generateSingleItemReport(metric: ModulesSourceCountMetric): ModulesSourceCountReport {
         val values = mutableListOf<ModuleSourceCountReport>()
-
-        metric.modules.whenEach {
-            totalSourceCount += value
-        }
+        val totalSourceCount = metric.modules.sumOf { it.value }
 
         metric.modules.whenEach {
             values.add(
@@ -80,7 +72,7 @@ class CreateModulesSourceCountReportStage(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(totalSourceCount),
-                    diffRatio = null
+                    diffRatio = null // The ratio does not exist when there is only one item
                 )
             )
         }
@@ -92,18 +84,9 @@ class CreateModulesSourceCountReportStage(
         )
     }
 
-    private fun generateMultipleItemsReport(metrics: List<ModulesSourceCountMetric>): ModulesSourceCountReport? {
-
-        var firstTotalSourceCount = 0
-        metrics.first().modules.whenEach {
-            firstTotalSourceCount += value
-        }
-
-        var lastTotalSourceCount = 0
-        metrics.last().modules.whenEach {
-            lastTotalSourceCount += value
-        }
-
+    fun generateMultipleItemsReport(metrics: List<ModulesSourceCountMetric>): ModulesSourceCountReport {
+        val firstTotalSourceCount = metrics.first().modules.sumOf { it.value }
+        val lastTotalSourceCount = metrics.last().modules.sumOf { it.value }
         val totalDiffRatio = firstTotalSourceCount.diffPercentageOf(lastTotalSourceCount)
 
         val values = mutableListOf<ModuleSourceCountReport>()
@@ -125,7 +108,7 @@ class CreateModulesSourceCountReportStage(
         )
     }
 
-    private fun calculateModuleDiffRatio(metrics: List<ModulesSourceCountMetric>, path: String, value: Int): Float? {
+    fun calculateModuleDiffRatio(metrics: List<ModulesSourceCountMetric>, path: String, value: Int): Float? {
         return metrics.first().modules.find { it.path == path }?.value?.diffPercentageOf(value)
     }
 
