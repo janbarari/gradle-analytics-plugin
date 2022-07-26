@@ -23,13 +23,17 @@
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.removeLastChar
+import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderExecutionReportStage(
@@ -37,41 +41,42 @@ class RenderExecutionReportStage(
 ): Stage<String, String> {
 
     companion object {
-        private const val CHART_EMPTY_POSITION_RATE = 30
+        private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
+        private const val EXECUTION_METRIC_TEMPLATE_ID = "%execution-metric%"
+        private const val EXECUTION_METRIC_TEMPLATE_FILE_NAME = "execution-metric-template"
     }
 
     override suspend fun process(input: String): String {
         if (report.executionReport.isNull())
-            return input.replace("%execution-metric%",
-                "<p>Execution Median Chart is not available!</p><div class=\"space\"></div>")
+            return input.replace(EXECUTION_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        val values = ensureNotNull(report.executionReport).values.map { it.value }.toIntList()
+        return input.replace(EXECUTION_METRIC_TEMPLATE_ID, getMetricRender())
+    }
 
-        val labels = StringBuilder()
-        ensureNotNull(report.executionReport).values.map { it.description }.whenEach {
-            labels.append("\"$this\"").append(",")
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Execution chart is not available!")
+    }
+
+    fun getMetricRender(): String {
+        var renderedTemplate = HtmlUtils.getTemplate(EXECUTION_METRIC_TEMPLATE_FILE_NAME)
+        report.executionReport.whenNotNull {
+            val chartValues = values.map { it.value }
+                .toIntList()
+                .toString()
+
+            val chartLabels = values.map { it.description }
+                .toArrayString()
+
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+
+            renderedTemplate = renderedTemplate
+                .replace("%execution-suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%execution-suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%execution-median-values%", chartValues)
+                .replace("%execution-median-labels%", chartLabels)
         }
-        // because the last item should not have ',' separator.
-        labels.removeLastChar()
-
-        val chartMaxValue = MathUtils.sumWithPercentage(
-            ensureNotNull(report.executionReport).maxValue,
-            CHART_EMPTY_POSITION_RATE
-        )
-        val chartMinValue = MathUtils.deductWithPercentage(
-            ensureNotNull(report.executionReport).minValue,
-            CHART_EMPTY_POSITION_RATE
-        )
-
-        var template = getTextResourceContent("execution-metric-template.html")
-
-        template = template
-            .replace("%execution-max-value%", chartMaxValue.toString())
-            .replace("%execution-min-value%", chartMinValue.toString())
-            .replace("%execution-median-values%", values.toString())
-            .replace("%execution-median-labels%", labels.toString())
-
-        return input.replace("%execution-metric%", template)
+        return renderedTemplate
     }
 
 }
