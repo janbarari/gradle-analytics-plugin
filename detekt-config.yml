@@ -11,9 +11,26 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
+  LongParameterList:
+    active: false
 
+exceptions:
+  active: true
+  SwallowedException:
+    active: false
+  TooGenericExceptionCaught:
+    active: false
 
 style:
   active: true
   SerialVersionUIDInSerializableClass:
     active: false
+  MagicNumber:
+    active: false
+  ReturnCount:
+    active: false
+  FunctionOnlyReturningConstant:
+    active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 128

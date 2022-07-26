@@ -33,10 +33,8 @@ import org.gradle.internal.InternalBuildListener
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Records the build dependencies resolve information to use by [BuildExecutionService].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Records the build dependencies resolve information to use by
+ * [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
  */
 class BuildDependencyResolutionService : InternalBuildListener, DependencyResolutionListener {
 
@@ -69,23 +67,23 @@ class BuildDependencyResolutionService : InternalBuildListener, DependencyResolu
 
     @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     @ExcludeJacocoGenerated
     override fun projectsEvaluated(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
 }

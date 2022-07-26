@@ -17,6 +17,7 @@ mysql_driver = { module = "mysql:mysql-connector-java", version.ref = "mysql_dri
 jetbrains_exposed_core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "jetbrains_exposed" }
 jetbrains_exposed_jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "jetbrains_exposed" }
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }

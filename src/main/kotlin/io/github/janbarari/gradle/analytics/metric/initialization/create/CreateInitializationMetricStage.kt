@@ -23,17 +23,18 @@
 package io.github.janbarari.gradle.analytics.metric.initialization.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class CreateInitializationMetricStage(
-    private val info: BuildInfo,
+    private val buildInfo: BuildInfo,
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.initializationMetric = createInitializationMetricUseCase.execute(
-            info.getInitializationDuration().toMillis()
-        )
-        return input
+
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            initializationMetric = createInitializationMetricUseCase.execute(buildInfo)
+        }
     }
+
 }

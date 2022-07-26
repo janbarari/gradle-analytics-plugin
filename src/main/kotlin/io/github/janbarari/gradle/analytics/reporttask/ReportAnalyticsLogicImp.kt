@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
@@ -36,8 +36,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.RenderTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.report.CreateTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.report.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -51,10 +51,8 @@ import java.io.File
 import java.io.IOException
 
 /**
- * In order to make the [ReportAnalyticsTask] testable and the logic framework independent.
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * In order to make the [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask]
+ * testable and the logic framework independent.
  */
 class ReportAnalyticsLogicImp(
     private val getMetricsUseCase: GetMetricsUseCase,
@@ -113,6 +111,7 @@ class ReportAnalyticsLogicImp(
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"
         val functionsPath = "res/functions.js"
+        val chartPath = "res/chart.js"
         val indexPath = "index.html"
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
@@ -129,6 +128,11 @@ class ReportAnalyticsLogicImp(
         FileUtils.copyInputStreamToFile(
             javaClass.getSafeResourceAsStream("/$functionsPath"),
             File("$savePath/$functionsPath")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$chartPath"),
+            File("$savePath/$chartPath")
         )
 
         FileUtils.copyInputStreamToFile(

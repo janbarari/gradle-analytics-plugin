@@ -32,8 +32,6 @@ package io.github.janbarari.gradle
  * 1- The name of the annotation should include 'Generated' keyword.
  * 2- The retention policy of annotation should be runtime or class.
  *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)

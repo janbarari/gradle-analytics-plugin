@@ -25,10 +25,6 @@ package io.github.janbarari.gradle.analytics.domain.model
 import org.gradle.tooling.Failure
 import org.gradle.tooling.events.OperationDescriptor
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 data class TaskInfo(
     val startedAt: Long,
     val finishedAt: Long,

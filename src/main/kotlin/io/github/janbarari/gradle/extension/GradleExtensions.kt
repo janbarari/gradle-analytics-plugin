@@ -37,11 +37,17 @@ fun Gradle.getRequestedTasks(): List<String> {
     return startParameter.taskNames
 }
 
+/**
+ * Returns the 'CI' value provider from the system environments.
+ */
 @ExcludeJacocoGenerated
 fun Project.envCI(): Provider<String> {
-    return providers.environmentVariable("CI")
+    return providers.environmentVariable("CI").forUseAtConfigurationTime()
 }
 
+/**
+ * Registers the given task.
+ */
 @ExcludeJacocoGenerated
 inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
     project.tasks.register(name, T::class.java) {

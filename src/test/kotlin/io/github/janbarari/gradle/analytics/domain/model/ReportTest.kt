@@ -1,5 +1,8 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
+import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.extension.isNotNull
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

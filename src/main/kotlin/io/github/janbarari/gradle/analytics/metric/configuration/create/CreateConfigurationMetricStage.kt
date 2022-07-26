@@ -23,19 +23,18 @@
 package io.github.janbarari.gradle.analytics.metric.configuration.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class CreateConfigurationMetricStage(
-    private val info: BuildInfo,
+    private val buildInfo: BuildInfo,
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.configurationMetric = createConfigurationMetricUseCase.execute(
-            info.getConfigurationDuration().toMillis()
-        )
-        return input
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            configurationMetric = createConfigurationMetricUseCase.execute(buildInfo)
+        }
     }
 
 }

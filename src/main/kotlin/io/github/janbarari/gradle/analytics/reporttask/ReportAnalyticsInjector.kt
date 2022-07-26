@@ -31,12 +31,8 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
- * Custom dependency injection for [ReportAnalyticsTask].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Dependency injection for [ReportAnalyticsTask].
  */
-
 @ExcludeJacocoGenerated
 class ReportAnalyticsInjector(
     var branch: String? = null,

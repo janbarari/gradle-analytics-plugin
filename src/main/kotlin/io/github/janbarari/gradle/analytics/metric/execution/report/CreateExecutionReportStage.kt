@@ -22,18 +22,18 @@
  */
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.ExecutionReport
-import io.github.janbarari.gradle.analytics.domain.model.Report
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.core.Triple
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.utils.DateTimeUtils
-import io.github.janbarari.gradle.utils.MathUtils
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.mapToExecutionTimespanChartPoints
+import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.minValue
+import io.github.janbarari.gradle.extension.minimize
+import io.github.janbarari.gradle.extension.whenEmpty
 
 class CreateExecutionReportStage(
     private val metrics: List<BuildMetric>
@@ -44,90 +44,24 @@ class CreateExecutionReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    @Suppress("MagicNumber")
-    override suspend fun process(input: Report): Report {
-        val executionChartPoints = metrics.filter { it.executionMetric.isNotNull() }
-            .filter { ensureNotNull(it.executionMetric).average.isNotNull() }
-            .filter { ensureNotNull(it.executionMetric).average.isBiggerEquals(SKIP_METRIC_THRESHOLD) }
-            .map {
-                ExecutionChartPoint(
-                    value = (ensureNotNull(it.executionMetric).average / 1000),
-                    startedAt = it.createdAt,
-                    finishedAt = null
-                )
+    override suspend fun process(report: Report): Report {
+        val chartPoints = metrics.filter { metric ->
+            metric.executionMetric.isNotNull() &&
+                    metric.executionMetric?.average.isNotNull() &&
+                    metric.executionMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
+        }.mapToExecutionTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
+            .whenEmpty {
+                return report
             }
 
-        val executionMetricsMean = resizeExecutionChartPoints(
-            executionChartPoints,
-            CHART_MAX_COLUMNS
-        )
-
-        if (executionMetricsMean.isEmpty()) return input
-
-        val executionReport = ExecutionReport(
-            values = executionChartPoints.map {
-                val period = if (it.finishedAt.isNull()) {
-                    DateTimeUtils.format(it.startedAt, "dd/MM")
-                } else {
-                    DateTimeUtils.format(it.startedAt, "dd/MM") + "-" +
-                            DateTimeUtils.format(ensureNotNull(it.finishedAt), "dd/MM")
-                }
-                ChartPoint(it.value, period)
-            },
-            maxValue = executionMetricsMean.maxOf { it.value },
-            minValue = executionMetricsMean.minOf { it.value }
-        )
-
-        input.executionReport = executionReport
-
-        return input
-    }
-
-    fun resizeExecutionChartPoints(
-        input: List<ExecutionChartPoint>, targetSize: Int
-    ): List<ExecutionChartPoint> {
-        return if (input.size > targetSize)
-            resizeExecutionChartPoints(calculatePointsMean(input), targetSize)
-        else input
-    }
-
-    fun calculatePointsMean(values: List<ExecutionChartPoint>): List<ExecutionChartPoint> {
-
-        if (values.isEmpty()) return values
-
-        val mean = arrayListOf<ExecutionChartPoint>()
-        val size = values.size
-        var nextIndex = 0
-
-        for (i in values.indices) {
-            if (i < nextIndex) continue
-
-            if (i + 1 >= size) {
-                mean.add(values[i])
-            } else {
-
-                var finishedAt = values[i + 1].finishedAt
-                if (finishedAt.isNull()) finishedAt = values[i + 1].startedAt
-
-                mean.add(
-                    ExecutionChartPoint(
-                        value = MathUtils.longMean(values[i].value, values[i + 1].value),
-                        startedAt = values[i].startedAt,
-                        finishedAt = finishedAt
-                    )
-                )
-
-                nextIndex = i + 2
-            }
+        return report.apply {
+            executionReport = ExecutionReport(
+                values = chartPoints,
+                maxValue = chartPoints.maxValue(),
+                minValue = chartPoints.minValue()
+            )
         }
-
-        return mean
     }
-
-    class ExecutionChartPoint(
-        val value: Long,
-        val startedAt: Long,
-        val finishedAt: Long? = null
-    ) : Triple<Long, Long, Long?>(value, startedAt, finishedAt)
-
 }

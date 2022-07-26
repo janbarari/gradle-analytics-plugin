@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.initialization.update
 
-import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -35,13 +35,16 @@ class UpdateInitializationMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<InitializationMetric>() {
 
-    @Suppress("MagicNumber")
+    companion object {
+        private const val SKIP_THRESHOLD_IN_MS = 50L
+    }
+
     override suspend fun execute(): InitializationMetric {
         val durations = arrayListOf<Long>()
-
         repo.getTemporaryMetrics().whenEach {
             initializationMetric.whenNotNull {
-                average.isBiggerEquals(50).whenTrue {
+                // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
+                average.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
                     durations.add(average)
                 }
             }

@@ -22,8 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configuration.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ConfigurationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -39,20 +38,25 @@ class UpdateConfigurationMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ConfigurationMetric>() {
 
+    companion object {
+        private const val SKIP_THRESHOLD_IN_MS = 50L
+    }
+
     override suspend fun execute(): ConfigurationMetric {
         val durations = arrayListOf<Long>()
-
         repo.getTemporaryMetrics().whenEach {
             configurationMetric.whenNotNull {
-                average.isBiggerEquals(BuildMetric.CONFIGURATION_SKIP_THRESHOLD).whenTrue {
+                // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
+                average.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
+                    .whenTrue {
                         durations.add(average)
                     }
             }
         }
 
-        val medianDuration = MathUtils.longMedian(durations)
-
-        return ConfigurationMetric(average = medianDuration)
+        return ConfigurationMetric(
+            average = MathUtils.longMedian(durations)
+        )
     }
 
 }

@@ -34,10 +34,8 @@ import org.gradle.internal.InternalBuildListener
 import org.gradle.internal.scan.time.BuildScanBuildStartedTime
 
 /**
- * Track and holds the build start and initialization finish timestamp to use by [BuildExecutionService].
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
+ * Track and holds the build start and initialization finish timestamp to use by
+ * [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
  */
 class BuildInitializationService(
     private val gradle: Gradle
@@ -73,12 +71,12 @@ class BuildInitializationService(
 
     @ExcludeJacocoGenerated
     override fun settingsEvaluated(settings: Settings) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     @ExcludeJacocoGenerated
     override fun projectsLoaded(gradle: Gradle) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     @ExcludeJacocoGenerated
@@ -89,11 +87,11 @@ class BuildInitializationService(
     @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
-        // Added because gradle allows when [InternalBuildListener] is implemented in the service class.
+        // Added because gradle allows when InternalBuildListener.kt is implemented in the service class.
     }
 
     /**
-     * Returns the build start timestamp from [BuildScanBuildStartedTime].
+     * Returns the build start timestamp from [org.gradle.internal.scan.time.BuildScanBuildStartedTime].
      */
     @ExcludeJacocoGenerated
     private fun getStartTimestamp(): Long {

@@ -22,6 +22,8 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import java.time.Duration
 
 data class BuildInfo(

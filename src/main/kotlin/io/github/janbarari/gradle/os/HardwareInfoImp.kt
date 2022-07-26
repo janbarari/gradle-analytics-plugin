@@ -24,6 +24,9 @@ package io.github.janbarari.gradle.os
 
 import oshi.SystemInfo
 
+/**
+ * Implementation of [io.github.janbarari.gradle.os.HardwareInfo].
+ */
 class HardwareInfoImp: HardwareInfo {
 
     private val systemInfo = SystemInfo()

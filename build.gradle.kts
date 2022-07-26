@@ -8,16 +8,14 @@ val pluginDeclarationName: String by project
 val pluginGroupPackageName: String by project
 val pluginVersion: String by project
 
-@Suppress(
-    "UnstableApiUsage",
-    "DSL_SCOPE_VIOLATION"
-)
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("jvm") version(libs.versions.kotlin)
     alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
+    kotlin("kapt") version(libs.versions.kotlin)
 }
 
 group = pluginGroupPackageName
@@ -40,6 +38,7 @@ dependencies {
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
+    kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)

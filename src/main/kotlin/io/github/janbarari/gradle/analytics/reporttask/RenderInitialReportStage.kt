@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
 class RenderInitialReportStage private constructor(

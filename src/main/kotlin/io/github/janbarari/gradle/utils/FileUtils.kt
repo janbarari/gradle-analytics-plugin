@@ -22,7 +22,10 @@
  */
 package io.github.janbarari.gradle.utils
 
+import io.github.janbarari.gradle.extension.isSourcePath
 import java.nio.file.Files
+import java.nio.file.Path
+import java.util.stream.Collectors
 import kotlin.io.path.Path
 import kotlin.io.path.name
 
@@ -31,6 +34,9 @@ import kotlin.io.path.name
  */
 object FileUtils {
 
+    /**
+     * Checks the given directory is a module directory.
+     */
     fun isModulePath(directory: String): Boolean {
         val isBuildscriptsExists = Files.list(Path(directory)).anyMatch { path ->
             path.fileName.name == "build.gradle.kts" || path.fileName.name == "build.gradle"
@@ -39,6 +45,16 @@ object FileUtils {
             path.fileName.name == "src"
         }
         return isBuildscriptsExists && isSrcDirExists
+    }
+
+    fun getModuleSources(directory: String): List<Path> {
+        var sourcePaths: List<Path>
+        Files.walk(Path(directory)).use { stream ->
+            sourcePaths = stream.map { obj: Path -> obj.normalize() }
+                .filter { it.isSourcePath() }
+                .collect(Collectors.toList())
+        }
+        return sourcePaths
     }
 
 }

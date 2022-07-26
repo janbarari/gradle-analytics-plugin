@@ -22,11 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.metric.initialization.create
 
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.analytics.domain.model.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
 
-class CreateInitializationMetricUseCase: UseCase<Long, InitializationMetric>() {
-    override suspend fun execute(input: Long): InitializationMetric {
-        return InitializationMetric(input)
+class CreateInitializationMetricUseCase: UseCase<BuildInfo, InitializationMetric>() {
+
+    override suspend fun execute(buildInfo: BuildInfo): InitializationMetric {
+        return InitializationMetric(
+            average = buildInfo.getInitializationDuration().toMillis()
+        )
     }
+
 }

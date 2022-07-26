@@ -22,16 +22,10 @@
  */
 package io.github.janbarari.gradle.utils
 
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.text.DecimalFormat
-
 /**
  * A collection of mathematics functions.
  */
 object MathUtils {
-
-    private const val HUNDRED_PERCENT = 100L
 
     /**
      * Calculates the mean of a long dataset.
@@ -69,15 +63,15 @@ object MathUtils {
     /**
      * Sums the value by a dedicated percentage.
      */
-    fun sumWithPercentage(value: Long, percentage: Long): Long {
-        return value + ((value * percentage) / HUNDRED_PERCENT)
+    fun sumWithPercentage(value: Long, percentage: Int): Long {
+        return value + ((value * percentage) / 100)
     }
 
     /**
      * Deducts the value by a dedicated percentage.
      */
-    fun deductWithPercentage(value: Long, percentage: Long): Long {
-        return value - ((value * percentage) / HUNDRED_PERCENT)
+    fun deductWithPercentage(value: Long, percentage: Int): Long {
+        return value - ((value * percentage) / 100)
     }
 
 }

@@ -22,10 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 data class DependencyResolveInfo(
     val path: String,
     val startedAt: Long,

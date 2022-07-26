@@ -3,7 +3,7 @@
     <canvas id="initializationChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
         var _values = %initialization-median-values%;
-        var _labels = [%initialization-median-labels%];
+        var _labels = %initialization-median-labels%;
 
         var chart = new Chart("initializationChart", {
           type: "line",
@@ -40,12 +40,15 @@
             scales: {
               y: {
                 display: true,
-                suggestedMin: %initialization-min-value%,
-                suggestedMax: %initialization-max-value%
+                suggestedMin: %initialization-suggested-min-value%,
+                suggestedMax: %initialization-suggested-max-value%
               }
             }
           }
         });
         </script>
 </div>
+<span class="gray-text center-text">
+    <span>Lower is better</span>
+</span>
 <div class="space"></div>

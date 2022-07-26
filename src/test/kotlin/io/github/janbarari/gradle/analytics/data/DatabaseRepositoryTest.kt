@@ -2,7 +2,7 @@ package io.github.janbarari.gradle.analytics.data
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

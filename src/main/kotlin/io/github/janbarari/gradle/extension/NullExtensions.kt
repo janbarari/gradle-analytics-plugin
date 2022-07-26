@@ -52,6 +52,11 @@ fun <T: Any> T?.whenNull(block: () -> Unit) {
     if(this == null) block()
 }
 
+/**
+ * Converts nullable object to non-null object.
+ *
+ * @throws java.lang.NullPointerException if the given value is null.
+ */
 @ExcludeJacocoGenerated
 inline fun <reified T: Any> ensureNotNull(value: T?): T {
     if (value.isNull()) throw java.lang.NullPointerException("${T::class} can not be null")

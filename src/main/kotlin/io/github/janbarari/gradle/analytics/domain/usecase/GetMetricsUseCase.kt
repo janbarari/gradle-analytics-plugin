@@ -23,13 +23,20 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 
+/**
+ * Gets the saved metrics from the database.
+ */
 class GetMetricsUseCase(
     private val repo: DatabaseRepository
 ): UseCase<Long, List<BuildMetric>>() {
 
+    /**
+     * Returns a list of metrics from database by giving the end timestamp,
+     * It uses the end timestamp to calculate the metric dataset period.
+     */
     override suspend fun execute(input: Long): List<BuildMetric> {
         return repo.getMetrics(input)
     }

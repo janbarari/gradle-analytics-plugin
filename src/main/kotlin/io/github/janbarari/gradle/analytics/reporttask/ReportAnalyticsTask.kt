@@ -39,7 +39,7 @@ import org.gradle.api.tasks.options.Option
 import org.gradle.work.DisableCachingByDefault
 
 /**
- * A Gradle task that generates the report based on `git branch`, `time period` and `task name`.
+ * A Gradle task that generates the report based on `git branch`, `time period` and `task`.
  *
  * A quick instruction about how to invoke the task:
  * `./gradlew reportAnalytics --branch="{your-branch}" --task="{your-task}" --period="{a-number-between-1-to-12}"`
@@ -117,7 +117,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 ensureTaskArgumentValid(requestedTasksArgument)
                 try {
                     saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
-                } catch (@Suppress("SwallowedException") e: EmptyMetricsException) {
+                } catch (e: EmptyMetricsException) {
                     showEmptyDataMessage()
                 }
             }

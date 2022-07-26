@@ -25,10 +25,10 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.domain.model.OsInfo
+import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
@@ -44,8 +44,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.CreateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricStage
+import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
@@ -60,7 +60,6 @@ import io.github.janbarari.gradle.utils.GitUtils
 /**
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
-@Suppress("LongParameterList")
 class BuildExecutionLogicImp(
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
@@ -79,7 +78,6 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
-    @Suppress("ReturnCount")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
 
         if (isForbiddenTasksRequested()) return
@@ -142,7 +140,6 @@ class BuildExecutionLogicImp(
         BuildDependencyResolutionService.reset()
     }
 
-    @Suppress("ReturnCount")
     override fun isDatabaseConfigurationValid(): Boolean {
         //return false if local machine executed and the config is not set.
         if (databaseConfig.local.isNull() && !envCI) {

@@ -24,10 +24,6 @@ package io.github.janbarari.gradle.analytics.reporttask.exception
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 @ExcludeJacocoGenerated
 class InvalidPropertyException(msg: String): Throwable() {
     override val message: String = msg

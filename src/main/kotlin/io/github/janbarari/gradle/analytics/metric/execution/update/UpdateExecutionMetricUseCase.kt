@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.execution.update
 
-import io.github.janbarari.gradle.analytics.domain.model.ExecutionMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -35,15 +35,19 @@ class UpdateExecutionMetricUseCase(
     private val repo: DatabaseRepository
 ): UseCaseNoInput<ExecutionMetric>() {
 
-    @Suppress("MagicNumber")
+    companion object {
+        private const val SKIP_THRESHOLD_IN_MS = 50L
+    }
+
     override suspend fun execute(): ExecutionMetric {
         val durations = arrayListOf<Long>()
-
         repo.getTemporaryMetrics().whenEach {
             executionMetric.whenNotNull {
-                average.isBiggerEquals(50).whenTrue {
-                    durations.add(average)
-                }
+                // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
+                average.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
+                    .whenTrue {
+                        durations.add(average)
+                    }
             }
         }
 

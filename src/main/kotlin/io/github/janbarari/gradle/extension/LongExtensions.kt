@@ -22,15 +22,23 @@
  */
 package io.github.janbarari.gradle.extension
 
+/**
+ * Checks is the given Long value is zero.
+ */
 fun Long.isZero(): Boolean {
     return this == 0L
 }
 
-fun Long.isBiggerEquals(value: Long): Boolean {
-    return this >= value
+/**
+ * Checks is the given long value is >= dedicated target value.
+ */
+fun Long.isBiggerEquals(target: Long): Boolean {
+    return this >= target
 }
 
-fun Long.isBigger(value: Long): Boolean {
-    return this > value
+/**
+ * Checks is the given long value is > dedicated target value.
+ */
+fun Long.isBigger(target: Long): Boolean {
+    return this > target
 }
-

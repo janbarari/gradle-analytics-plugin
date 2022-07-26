@@ -3,7 +3,7 @@
     <canvas id="totalBuildChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
         var _values = %totalbuild-median-values%;
-        var _labels = [%totalbuild-median-labels%];
+        var _labels = %totalbuild-median-labels%;
 
         new Chart("totalBuildChart", {
           type: "line",
@@ -12,7 +12,7 @@
             datasets: [
               {
                 fill: false,
-                backgroundColor: "#3F51B5",
+                backgroundColor: "#F5FFF5",
                 borderColor: "#3F51B5",
                 data: _values,
                 cubicInterpolationMode: 'monotone',
@@ -40,8 +40,8 @@
             scales: {
               y: {
                 display: true,
-                suggestedMin: %totalbuild-min-value%,
-                suggestedMax: %totalbuild-max-value%
+                suggestedMin: %totalbuild-suggested-min-value%,
+                suggestedMax: %totalbuild-suggested-max-value%
               }
             }
           }
@@ -49,4 +49,7 @@
 
         </script>
 </div>
+<span class="gray-text center-text">
+    <span>Lower is better</span>
+</span>
 <div class="space"></div>

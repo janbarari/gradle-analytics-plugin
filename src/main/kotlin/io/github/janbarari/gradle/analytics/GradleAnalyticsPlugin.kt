@@ -36,7 +36,6 @@ import javax.inject.Inject
  * A free Gradle plugin for analytics of your projects. Provides unique visual and
  * text metrics in HTML format.
  */
-@Suppress("UnstableApiUsage")
 @ExcludeJacocoGenerated
 class GradleAnalyticsPlugin @Inject constructor(
     private val registry: BuildEventsListenerRegistry
@@ -44,7 +43,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.0"
+        const val PLUGIN_VERSION = "1.0.0-beta"
     }
 
     /**

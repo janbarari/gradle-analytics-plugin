@@ -3,7 +3,7 @@
     <canvas id="executionChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
         var _values = %execution-median-values%;
-        var _labels = [%execution-median-labels%];
+        var _labels = %execution-median-labels%;
 
         new Chart("executionChart", {
           type: "line",
@@ -12,7 +12,7 @@
             datasets: [
               {
                 fill: false,
-                backgroundColor: "#228B22",
+                backgroundColor: "#F5FFF5",
                 borderColor: "#228B22",
                 data: _values,
                 cubicInterpolationMode: 'monotone',
@@ -40,8 +40,8 @@
             scales: {
               y: {
                 display: true,
-                suggestedMin: %execution-min-value%,
-                suggestedMax: %execution-max-value%
+                suggestedMin: %execution-suggested-min-value%,
+                suggestedMax: %execution-suggested-max-value%
               }
             }
           }
@@ -49,4 +49,7 @@
 
         </script>
 </div>
+<span class="gray-text center-text">
+    <span>Lower is better</span>
+</span>
 <div class="space"></div>

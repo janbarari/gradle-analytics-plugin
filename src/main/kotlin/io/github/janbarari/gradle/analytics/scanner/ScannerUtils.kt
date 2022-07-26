@@ -38,7 +38,6 @@ import org.gradle.build.event.BuildEventsListenerRegistry
 @ExcludeJacocoGenerated
 object ScannerUtils {
 
-    @Suppress("UnstableApiUsage")
     fun setupScannerServices(
         config: GradleAnalyticsPluginConfig,
         registry: BuildEventsListenerRegistry
@@ -49,7 +48,6 @@ object ScannerUtils {
         setupExecutionService(config.project, registry, config)
     }
 
-    @Suppress("UnstableApiUsage")
     private fun setupExecutionService(
         project: Project,
         registry: BuildEventsListenerRegistry,

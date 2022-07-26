@@ -44,9 +44,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * Tracks the task's execution information.
- *
- * @author Mehdi-Janbarari
- * @since 1.0.0
  */
 @ExcludeJacocoGenerated
 abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener,
@@ -71,7 +68,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     /**
      * If the build initialization is reused by configuration-cache, then the
-     * [BuildInitializationService] won't  register to the project and the start time won't assign.
+     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
+     * register to the project and the start time won't assign.
      */
     private fun assignStartTimestampIfProcessSkipped() {
         if (BuildInitializationService.STARTED_AT == 0L) {
@@ -81,7 +79,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     /**
      * If the build initialization is reused by configuration-cache, then the
-     * [BuildInitializationService] won't  register to the project and the initialization time won't assign.
+     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
+     * register to the project and the initialization time won't assign.
      */
     private fun assignInitializationTimestampIfProcessSkipped() {
         if (BuildInitializationService.INITIALIZED_AT == 0L) {
@@ -91,7 +90,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     /**
      * If the build configuration is reused by configuration-cache, then the
-     * [BuildConfigurationService] won't  register to the project and the configuration time won't assign.
+     * [io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService] won't
+     * register to the project and the configuration time won't assign.
      */
     private fun assignConfigurationTimestampIfProcessSkipped() {
         if (BuildConfigurationService.CONFIGURED_AT == 0L) {

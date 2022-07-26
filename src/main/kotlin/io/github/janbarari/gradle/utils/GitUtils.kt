@@ -30,16 +30,15 @@ object GitUtils {
     /**
      * Returns the git current branch name.
      *
-     * @throws GitException if the command execution failed.
+     * @throws io.github.janbarari.gradle.utils.GitException if the command execution failed.
      */
     @kotlin.jvm.Throws(GitException::class)
-    @Suppress("SwallowedException")
     fun currentBranch(): String {
         try {
             return TerminalUtils.execCommand("git rev-parse --abbrev-ref HEAD")
         } catch (e: IllegalStateException) {
             throw GitException("Git command execution failed with message of ${e.message}")
-        } catch(@Suppress("TooGenericExceptionCaught") e: RuntimeException) {
+        } catch(e: RuntimeException) {
             throw GitException("Git initialization not found with message of ${e.message}")
         }
     }

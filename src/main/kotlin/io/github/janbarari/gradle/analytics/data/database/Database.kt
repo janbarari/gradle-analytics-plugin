@@ -45,7 +45,6 @@ import org.jetbrains.exposed.sql.transactions.transactionManager
  * @author Mehdi-Janbarari
  * @since 1.0.0
  */
-@SuppressWarnings("WildcardImport")
 class Database(
     config: GradleAnalyticsPluginConfig.DatabaseConfig,
     private var isCI: Boolean

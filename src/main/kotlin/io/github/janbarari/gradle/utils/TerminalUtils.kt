@@ -33,10 +33,9 @@ object TerminalUtils {
     /**
      * Executes the cmd in terminal.
      *
-     * @throws IllegalStateException if the command execution failed.
+     * @throws io.github.janbarari.gradle.utils.TerminalException if the command execution failed.
      */
-    @kotlin.jvm.Throws(Exception::class)
-    @Suppress("TooGenericExceptionCaught")
+    @kotlin.jvm.Throws(TerminalException::class)
     fun execCommand(cmd: String): String {
         val runtime = Runtime.getRuntime()
         try {
@@ -45,7 +44,7 @@ object TerminalUtils {
             )
             return reader.readLine()
         } catch (e: Exception) {
-            throw java.lang.RuntimeException("Error executing $cmd.", e)
+            throw TerminalException(cmd, e)
         }
     }
 
