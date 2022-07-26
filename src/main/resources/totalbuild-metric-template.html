@@ -3,7 +3,7 @@
     <canvas id="totalBuildChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
         var _values = %totalbuild-median-values%;
-        var _labels = [%totalbuild-median-labels%];
+        var _labels = %totalbuild-median-labels%;
 
         new Chart("totalBuildChart", {
           type: "line",
@@ -40,8 +40,8 @@
             scales: {
               y: {
                 display: true,
-                suggestedMin: %totalbuild-min-value%,
-                suggestedMax: %totalbuild-max-value%
+                suggestedMin: %totalbuild-suggested-min-value%,
+                suggestedMax: %totalbuild-suggested-max-value%
               }
             }
           }
