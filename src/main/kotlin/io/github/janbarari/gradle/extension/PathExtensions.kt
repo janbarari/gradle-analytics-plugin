@@ -14,47 +14,24 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.extension.isSourcePath
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 import kotlin.io.path.Path
-import kotlin.io.path.name
+import kotlin.io.path.extension
+import kotlin.io.path.pathString
 
-/**
- * A collection of datetime functions.
- */
-object FileUtils {
-
-    /**
-     * Checks the given directory is a module directory.
-     */
-    fun isModulePath(directory: String): Boolean {
-        val isBuildscriptsExists = Files.list(Path(directory)).anyMatch { path ->
-            path.fileName.name == "build.gradle.kts" || path.fileName.name == "build.gradle"
-        }
-        val isSrcDirExists = Files.list(Path(directory)).anyMatch { path ->
-            path.fileName.name == "src"
-        }
-        return isBuildscriptsExists && isSrcDirExists
-    }
-
-    fun getModuleSources(directory: String): List<Path> {
-        var sourcePaths: List<Path>
-        Files.walk(Path(directory)).use { stream ->
-            sourcePaths = stream.map { obj: Path -> obj.normalize() }
-                .filter { it.isSourcePath() }
-                .collect(Collectors.toList())
-        }
-        return sourcePaths
-    }
-
+fun Path.isSourcePath(): Boolean {
+    return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
+            && (extension == "kt" || extension == "java")
+            && Files.isRegularFile(this)
 }
+

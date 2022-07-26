@@ -27,18 +27,12 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleSourceCoun
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
-import java.nio.file.Files
-import java.nio.file.Path
-import java.util.*
-import java.util.stream.Collectors
-import kotlin.io.path.Path
-import kotlin.io.path.extension
-import kotlin.io.path.pathString
+import java.util.Collections
 
 class CreateModulesSourceCountMetricUseCase : UseCase<List<ModulePath>, ModulesSourceCountMetric>() {
 
@@ -51,7 +45,7 @@ class CreateModulesSourceCountMetricUseCase : UseCase<List<ModulePath>, ModulesS
                     result.add(
                         ModuleSourceCount(
                             path = path,
-                            value = getModuleSources(absoluteDir).size
+                            value = FileUtils.getModuleSources(absoluteDir).size
                         )
                     )
                 })
@@ -59,22 +53,6 @@ class CreateModulesSourceCountMetricUseCase : UseCase<List<ModulePath>, ModulesS
             defers.awaitAll()
         }
         return ModulesSourceCountMetric(modules = result)
-    }
-
-    fun getModuleSources(directory: String): List<Path> {
-        var sourcePaths: List<Path>
-        Files.walk(Path(directory)).use { stream ->
-            sourcePaths = stream.map { obj: Path -> obj.normalize() }
-                .filter(this::isSourcePath)
-                .collect(Collectors.toList())
-        }
-        return sourcePaths
-    }
-
-    fun isSourcePath(path: Path): Boolean {
-        return (path.pathString.contains("src/main/java") || path.pathString.contains("src/main/kotlin"))
-                && (path.extension == "kt" || path.extension == "java")
-                && Files.isRegularFile(path)
     }
 
 }
