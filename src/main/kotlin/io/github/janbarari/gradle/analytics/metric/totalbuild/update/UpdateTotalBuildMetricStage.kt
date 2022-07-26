@@ -29,8 +29,8 @@ class UpdateTotalBuildMetricStage(
     private val updateTotalBuildMetricUseCase: UpdateTotalBuildMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        return input.apply {
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
             totalBuildMetric = updateTotalBuildMetricUseCase.execute()
         }
     }

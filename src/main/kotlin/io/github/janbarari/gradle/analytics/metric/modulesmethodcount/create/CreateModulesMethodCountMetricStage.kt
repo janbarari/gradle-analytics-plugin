@@ -31,11 +31,10 @@ class CreateModulesMethodCountMetricStage(
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.modulesMethodCountMetric = createModulesMethodCountMetricUseCase.execute(
-            modulesInfo
-        )
-        return input
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            modulesMethodCountMetric = createModulesMethodCountMetricUseCase.execute(modulesInfo)
+        }
     }
 
 }
