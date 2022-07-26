@@ -30,8 +30,9 @@ class UpdateExecutionMetricStage(
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
-        input.executionMetric = updateExecutionMetricUseCase.execute()
-        return input
+        return input.apply {
+            executionMetric = updateExecutionMetricUseCase.execute()
+        }
     }
 
 }

@@ -30,8 +30,9 @@ class UpdateTotalBuildMetricStage(
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
-        input.totalBuildMetric = updateTotalBuildMetricUseCase.execute()
-        return input
+        return input.apply {
+            totalBuildMetric = updateTotalBuildMetricUseCase.execute()
+        }
     }
 
 }

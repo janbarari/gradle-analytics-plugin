@@ -41,7 +41,6 @@ class UpdateInitializationMetricUseCase(
 
     override suspend fun execute(): InitializationMetric {
         val durations = arrayListOf<Long>()
-
         repo.getTemporaryMetrics().whenEach {
             initializationMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
