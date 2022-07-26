@@ -35,3 +35,13 @@ fun Path.isSourcePath(): Boolean {
             && Files.isRegularFile(this)
 }
 
+fun Path.isKotlinFile(): Boolean = extension == "kt"
+
+fun Path.isJavaFile(): Boolean = extension == "java"
+
+fun Path.readText(): String {
+    return toFile()
+        .inputStream()
+        .bufferedReader()
+        .use { it.readText() }
+}

@@ -26,12 +26,18 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCoun
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.extension.isJavaFile
+import io.github.janbarari.gradle.extension.isKotlinFile
+import io.github.janbarari.gradle.extension.readText
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.Collections
 import java.util.stream.Collectors
 import kotlin.io.path.Path
 import kotlin.io.path.extension
@@ -50,11 +56,11 @@ class CreateModulesMethodCountMetricUseCase : UseCase<List<ModulePath>, ModulesM
         """(.*class[\\${'$'}\w\<\>\w\s\[\]]*\s+\w.*\([^\)]*\)|.*constructor.*\([^\)]*\))|((\sinit) *(\{|\=))"""
             .toRegex()
 
-    override suspend fun execute(input: List<ModulePath>): ModulesMethodCountMetric {
+    override suspend fun execute(modulesPath: List<ModulePath>): ModulesMethodCountMetric {
         val modulesProperties = mutableListOf<ModuleMethodCount>()
         withContext(dispatcher) {
-            val defers = mutableListOf<Deferred<Boolean>>()
-            input.whenEach {
+            val defers = Collections.synchronizedList(mutableListOf<Deferred<Boolean>>())
+            modulesPath.whenEach {
                 defers.add(async {
                     modulesProperties.add(
                         ModuleMethodCount(
@@ -64,38 +70,30 @@ class CreateModulesMethodCountMetricUseCase : UseCase<List<ModulePath>, ModulesM
                     )
                 })
             }
-            defers.forEach { it.await() }
+            defers.awaitAll()
         }
         return ModulesMethodCountMetric(modules = modulesProperties)
     }
 
     private fun getModuleMethodCount(directory: String): Int {
-        var sourcePaths: List<Path>
-        Files.walk(Path(directory)).use { stream ->
-            sourcePaths =
-                stream.map { obj: Path -> obj.normalize() }.filter(Files::isRegularFile).filter { isSourcePath(it) }
-                    .collect(Collectors.toList())
-        }
-
+        val sourcePaths = FileUtils.getModuleSources(directory)
         var result = 0
+
         sourcePaths.whenEach {
-            val content = toFile().inputStream().bufferedReader().use { it.readText() }
-            val removedComments = content.replace(commentRegex, "")
-            if (extension == "kt") {
+            if (isKotlinFile()) {
+                val content = readText()
+                val removedComments = content.replace(commentRegex, "")
                 result += kotlinMethodRegex.findAll(removedComments).count()
                 result += kotlinConstructorRegex.findAll(removedComments).count()
             }
-            if (extension == "java") {
+            if (isJavaFile()) {
+                val content = readText()
+                val removedComments = content.replace(commentRegex, "")
                 result += javaMethodRegex.findAll(removedComments).count()
             }
         }
 
         return result
-    }
-
-    private fun isSourcePath(path: Path): Boolean {
-        return (path.pathString.contains("src/main/java") || path.pathString.contains("src/main/kotlin")) &&
-                (path.extension == "kt" || path.extension == "java")
     }
 
 }
