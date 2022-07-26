@@ -23,9 +23,11 @@
 package io.github.janbarari.gradle.analytics.domain.model.report
 
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
+@JsonClass(generateAdapter = true)
 data class Report(
     val branch: String,
     val requestedTasks: String
@@ -46,8 +48,8 @@ data class Report(
     var cacheHitReport: CacheHitReport? = null
 
     fun toJson(): String {
-        val moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-        val jsonAdapter: JsonAdapter<Report> = moshi.adapter(Report::class.java)
+        val moshi: Moshi = Moshi.Builder().build()
+        val jsonAdapter: JsonAdapter<Report> = ReportJsonAdapter(moshi)
         return jsonAdapter.toJson(this)
     }
 

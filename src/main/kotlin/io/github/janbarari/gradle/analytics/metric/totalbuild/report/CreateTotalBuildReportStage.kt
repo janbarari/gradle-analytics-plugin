@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToTotalBuildTimespanChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
@@ -37,7 +37,7 @@ import io.github.janbarari.gradle.extension.whenEmpty
 
 class CreateTotalBuildReportStage(
     private val metrics: List<BuildMetric>
-): Stage<Report, Report> {
+) : Stage<Report, Report> {
 
     companion object {
         private const val SKIP_METRIC_THRESHOLD = 50L
@@ -48,8 +48,8 @@ class CreateTotalBuildReportStage(
         val chartPoints = metrics.filter { metric ->
             metric.totalBuildMetric.isNotNull() &&
                     metric.totalBuildMetric?.average.isNotNull() &&
-                            metric.totalBuildMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
-        }.mapToTimespanChartPoints()
+                    metric.totalBuildMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
+        }.mapToTotalBuildTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
@@ -59,7 +59,7 @@ class CreateTotalBuildReportStage(
         return report.apply {
             totalBuildReport = TotalBuildReport(
                 values = chartPoints,
-                maxValue= chartPoints.maxValue(),
+                maxValue = chartPoints.maxValue(),
                 minValue = chartPoints.minValue()
             )
         }

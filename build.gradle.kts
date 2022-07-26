@@ -15,6 +15,7 @@ plugins {
     `java-gradle-plugin`
     `maven-publish`
     jacoco
+    kotlin("kapt") version(libs.versions.kotlin)
 }
 
 group = pluginGroupPackageName
@@ -37,6 +38,7 @@ dependencies {
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
+    kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)

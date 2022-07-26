@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToInitializationTimespanChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
@@ -48,8 +48,8 @@ class CreateInitializationReportStage(
         val chartPoints = metrics.filter { metric ->
             metric.initializationMetric.isNotNull() &&
                     metric.initializationMetric?.average.isNotNull() &&
-                            metric.initializationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
-        }.mapToTimespanChartPoints()
+                    metric.initializationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToInitializationTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {

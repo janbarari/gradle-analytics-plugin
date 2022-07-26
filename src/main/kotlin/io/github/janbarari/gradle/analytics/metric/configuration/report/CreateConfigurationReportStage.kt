@@ -23,22 +23,17 @@
 package io.github.janbarari.gradle.analytics.metric.configuration.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
-import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationReportStage
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToConfigurationTimespanChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
-import io.github.janbarari.gradle.utils.DatasetUtils
 
 class CreateConfigurationReportStage(
     private val metrics: List<BuildMetric>
@@ -53,8 +48,8 @@ class CreateConfigurationReportStage(
         val chartPoints = metrics.filter { metric ->
             metric.configurationMetric.isNotNull() &&
                     metric.configurationMetric?.average.isNotNull() &&
-                            metric.configurationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
-        }.mapToTimespanChartPoints()
+                    metric.configurationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToConfigurationTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {

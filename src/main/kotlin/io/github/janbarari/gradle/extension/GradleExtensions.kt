@@ -42,7 +42,7 @@ fun Gradle.getRequestedTasks(): List<String> {
  */
 @ExcludeJacocoGenerated
 fun Project.envCI(): Provider<String> {
-    return providers.environmentVariable("CI")
+    return providers.environmentVariable("CI").forUseAtConfigurationTime()
 }
 
 /**

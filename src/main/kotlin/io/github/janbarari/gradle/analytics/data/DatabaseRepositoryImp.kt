@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.data
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.value
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.utils.DateTimeUtils
@@ -47,8 +47,8 @@ class DatabaseRepositoryImp(
     private val requestedTasks: String
 ) : DatabaseRepository {
 
-    private var moshi: Moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
-    private var jsonAdapter: JsonAdapter<BuildMetric> = moshi.adapter(BuildMetric::class.java)
+    private var moshi: Moshi = Moshi.Builder().build()
+    private var jsonAdapter: JsonAdapter<BuildMetric> = BuildMetricJsonAdapter(moshi)
 
     override fun saveNewMetric(metric: BuildMetric): Long {
         return db.transaction {

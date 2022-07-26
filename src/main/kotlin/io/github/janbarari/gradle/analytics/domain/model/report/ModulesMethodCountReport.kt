@@ -22,9 +22,11 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
+@JsonClass(generateAdapter = true)
 data class ModulesMethodCountReport(
     val values: List<ModuleMethodCountReport>,
     val totalMethodCount: Int,

@@ -23,9 +23,11 @@
 package io.github.janbarari.gradle.analytics.domain.model.metric
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
+@JsonClass(generateAdapter = true)
 data class CacheHitMetric(
     @Json(name = "hit_ratio")
     val hitRatio: Long,

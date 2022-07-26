@@ -111,6 +111,7 @@ class ReportAnalyticsLogicImp(
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"
         val functionsPath = "res/functions.js"
+        val chartPath = "res/chart.js"
         val indexPath = "index.html"
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
@@ -127,6 +128,11 @@ class ReportAnalyticsLogicImp(
         FileUtils.copyInputStreamToFile(
             javaClass.getSafeResourceAsStream("/$functionsPath"),
             File("$savePath/$functionsPath")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$chartPath"),
+            File("$savePath/$chartPath")
         )
 
         FileUtils.copyInputStreamToFile(

@@ -25,10 +25,40 @@ package io.github.janbarari.gradle.extension
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 
-fun List<BuildMetric>.mapToTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToInitializationTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
             value = ensureNotNull(it.initializationMetric).average,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.configurationMetric).average,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToExecutionTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.executionMetric).average / 1000L,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToTotalBuildTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.totalBuildMetric).average / 1000L,
             from = it.createdAt,
             to = null
         )
