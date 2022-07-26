@@ -77,11 +77,13 @@ fun <T> List<T>.hasMultipleItems(): Boolean {
 
 fun List<String>.toArrayString(): String {
     val labels = StringBuilder()
+    labels.append("[")
     whenEach {
         labels.append("\"$this\"")
             .append(",")
     }
     // because the last item should not have ',' separator.
     labels.removeLastChar()
+    labels.append("]")
     return labels.toString()
 }
