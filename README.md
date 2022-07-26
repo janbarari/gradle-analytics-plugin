@@ -20,6 +20,8 @@ Hey 👋, Mark this repo in your browser, see you soon ;D
 
 Hit the ⭐ button if you like to support this repository.
 
+🕝 First version release deadline is 21th Oct 2022.
+
 License
 ---
 Copyright © 2022 [Janbarari](https://github.com/janbarari)  
