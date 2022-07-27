@@ -4,7 +4,7 @@
     <canvas id="cacheHitChart" style="width:100%; height: 200px;"></canvas>
     <script type="text/javascript">
         var _values = %overall-values%;
-        var _labels = [%overall-labels%];
+        var _labels = %overall-labels%;
         var chart = new Chart("cacheHitChart", {
           type: "line",
           data: {
@@ -86,7 +86,7 @@
         <script type="text/javascript">
           var bestValues = %best-values%;
           var worstValues = %worst-values%;
-          var labels = [%bw-labels%];
+          var labels = %bw-labels%;
 
           var chart = new Chart("cacheHitRadarChart", {
             type: "radar",

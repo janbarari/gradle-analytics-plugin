@@ -41,28 +41,24 @@ class CreateCacheHitReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(input: Report): Report {
+    override suspend fun process(report: Report): Report {
         val metrics = metrics.filter {
             it.cacheHitMetric.isNotNull()
         }
 
-        var result: CacheHitReport? = null
-
-        if (metrics.isEmpty()) {
-            result = null
-        }
-
         if (metrics.hasSingleItem()) {
-            result = generateSingleItemReport(metrics.single())
+            return report.apply {
+                cacheHitReport = generateSingleItemReport(metrics.single())
+            }
         }
 
         if (metrics.hasMultipleItems()) {
-            result = generateMultipleItemsReport(metrics)
+            return report.apply {
+                cacheHitReport = generateMultipleItemsReport(metrics)
+            }
         }
 
-        return input.apply {
-            cacheHitReport = result
-        }
+        return report
     }
 
     private fun generateSingleItemReport(metric: BuildMetric): CacheHitReport {
@@ -70,7 +66,8 @@ class CreateCacheHitReportStage(
         val overallHit = ensureNotNull(metric.cacheHitMetric).hitRatio
 
         val overallHitTimespanChartPoint = TimespanChartPoint(
-            value = overallHit, from = metric.createdAt
+            value = overallHit,
+            from = metric.createdAt
         )
 
         val overallValues = listOf(
@@ -93,7 +90,10 @@ class CreateCacheHitReportStage(
             }
             modules.add(
                 ModuleCacheHitReport(
-                    path = path, hitRatio = hitRatio, diffRatio = null, values = values
+                    path = path,
+                    hitRatio = hitRatio,
+                    diffRatio = null,
+                    values = values
                 )
             )
         }
@@ -159,10 +159,11 @@ class CreateCacheHitReportStage(
             .filter {
                 it.cacheHitMetric.isNotNull()
             }.whenEach {
-                ensureNotNull(cacheHitMetric).modules.filter { it.path == path }.forEach {
+                ensureNotNull(cacheHitMetric).modules.filter { it.path == path }.whenEach {
                         timestampChartPoints.add(
                             TimespanChartPoint(
-                                value = it.hitRatio, from = createdAt
+                                value = hitRatio,
+                                from = createdAt
                             )
                         )
                     }

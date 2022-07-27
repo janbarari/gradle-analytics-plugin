@@ -26,46 +26,52 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitRe
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
-import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.removeLastChar
+import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderCacheHitReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
-    @Suppress("LongMethod")
-    override suspend fun process(input: String): String {
-        if (report.cacheHitReport.isNull()) return input.replace(
-            "%cache-hit-metric%",
-            "<p>Cache Hit Metric is not available</p><div class\"space\"></div>"
-        )
+    companion object {
+        private const val CACHE_HIT_METRIC_TEMPLATE_ID = "%cache-hit-metric%"
+        private const val CACHE_HIT_METRIC_TEMPLATE_FILE_NAME = "cache-hit-metric-template"
+    }
 
-        val overallValues = ensureNotNull(report.cacheHitReport)
+    override suspend fun process(input: String): String {
+        if (report.cacheHitReport.isNull())
+            return input.replace(CACHE_HIT_METRIC_TEMPLATE_ID, getEmptyRender())
+
+        return input.replace(CACHE_HIT_METRIC_TEMPLATE_ID, getMetricRender())
+    }
+
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Cache hit metric is not available!")
+    }
+
+    @Suppress("LongMethod")
+    fun getMetricRender(): String {
+        val overallChartValues = ensureNotNull(report.cacheHitReport)
             .overallValues
             .map { it.value }
             .toIntList()
             .toString()
 
-        val overallLabels = StringBuilder()
-        ensureNotNull(report.cacheHitReport)
+        val overallChartLabels = ensureNotNull(report.cacheHitReport)
             .overallValues
             .map { it.description }
-            .whenEach {
-                overallLabels.append("\"$this\"").append(",")
-            }.also {
-                //because the last item should not have ',' separator.
-                overallLabels.removeLastChar()
-            }
+            .toArrayString()
 
         val tableData = buildString {
             report.cacheHitReport?.modules?.forEachIndexed { index, it ->
-                var diffRatio = "<td>-</td>"
+                var diffRatioRender = "<td>-</td>"
                 it.diffRatio.whenNotNull {
-                    diffRatio = if (this > 0) {
+                    diffRatioRender = if (this > 0) {
                         "<td class=\"green\">+${this}%</td>"
                     } else if (this < 0) {
                         "<td class=\"red\">${this}%</td>"
@@ -79,7 +85,7 @@ class RenderCacheHitReportStage(
                         <td>${index + 1}</td>
                         <td>${it.path}</td>
                         <td>${it.hitRatio}%</td>
-                        $diffRatio
+                        $diffRatioRender
                     </tr>
                 """.trimIndent()
                 )
@@ -88,9 +94,9 @@ class RenderCacheHitReportStage(
 
         val overallCacheHit = ensureNotNull(report.cacheHitReport).overallHit.toString() + "%"
 
-        var overallDiffRatio = "<td>-</td>"
+        var overallDiffRatioRender = "<td>-</td>"
         ensureNotNull(report.cacheHitReport).overallDiffRatio.whenNotNull {
-            overallDiffRatio = if (this > 0) {
+            overallDiffRatioRender = if (this > 0) {
                 "<td class=\"green\">+${this}%</td>"
             } else if (this < 0) {
                 "<td class=\"red\">${this}%</td>"
@@ -102,7 +108,7 @@ class RenderCacheHitReportStage(
         val bestModulePath = getBestModulePath(ensureNotNull(report.cacheHitReport).modules)
         val worstModulePath = getWorstModulePath(ensureNotNull(report.cacheHitReport).modules)
 
-        val bestValues = ensureNotNull(report.cacheHitReport).modules
+        val bestChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == bestModulePath }
             .values
             .map {
@@ -111,7 +117,7 @@ class RenderCacheHitReportStage(
             .toIntList()
             .toString()
 
-        val worstValues = ensureNotNull(report.cacheHitReport).modules
+        val worstChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
             .values
             .map {
@@ -120,41 +126,36 @@ class RenderCacheHitReportStage(
             .toIntList()
             .toString()
 
-        val bwLabels = StringBuilder()
-        ensureNotNull(report.cacheHitReport).modules
+        val bwLabels = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
             .values
             .map { it.description }
-            .whenEach {
-                bwLabels.append("\"$this\"").append(",")
-            }.also {
-                //because the last item should not have ',' separator.
-                bwLabels.removeLastChar()
-            }
+            .toArrayString()
 
-        var template = getTextResourceContent("cache-hit-metric-template.html")
-        template = template.replace("%overall-values%", overallValues)
-            .replace("%overall-labels%", overallLabels.toString())
+        var template = HtmlUtils.getTemplate(CACHE_HIT_METRIC_TEMPLATE_FILE_NAME)
+        template = template
+            .replace("%overall-values%", overallChartValues)
+            .replace("%overall-labels%", overallChartLabels)
             .replace("%table-data%", tableData)
             .replace("%overall-cache-hit%", overallCacheHit)
-            .replace("%overall-diff-ratio%", overallDiffRatio)
-            .replace("%best-values%", bestValues)
-            .replace("%worst-values%", worstValues)
+            .replace("%overall-diff-ratio%", overallDiffRatioRender)
+            .replace("%best-values%", bestChartValues)
+            .replace("%worst-values%", worstChartValues)
             .replace("%bw-labels%", bwLabels.toString())
             .replace("%worst-module-name%", "\"$worstModulePath\"")
             .replace("%best-module-name%", "\"$bestModulePath\"")
 
-        return input.replace("%cache-hit-metric%", template)
+        return template
     }
 
-    private fun getBestModulePath(modules: List<ModuleCacheHitReport>): String? {
+    fun getBestModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
             module.values.sumOf { it.value }
         }.first().path
     }
 
-    private fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
+    fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isNull()) return null
         return modules.sortedByDescending { module ->
             module.values.sumOf { it.value }
