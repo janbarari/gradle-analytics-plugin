@@ -29,9 +29,10 @@ class UpdateCacheHitMetricStage(
     private val updateCacheHitMetricUseCase: UpdateCacheHitMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        input.cacheHitMetric = updateCacheHitMetricUseCase.execute()
-        return input
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            cacheHitMetric = updateCacheHitMetricUseCase.execute()
+        }
     }
 
 }

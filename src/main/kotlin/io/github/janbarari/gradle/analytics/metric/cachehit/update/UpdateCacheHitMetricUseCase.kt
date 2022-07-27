@@ -58,10 +58,8 @@ class UpdateCacheHitMetricUseCase(
             }
         }
 
-        println(modules)
-
         return CacheHitMetric(
-            hitRatio = MathUtils.longMedian(hitRatios),
+            hitRatio = MathUtils.longMean(hitRatios),
             modules = modules
         )
     }
@@ -76,7 +74,7 @@ class UpdateCacheHitMetricUseCase(
                     }
             }
         }
-        return MathUtils.longMedian(hits)
+        return MathUtils.longMean(hits)
     }
 
 }
