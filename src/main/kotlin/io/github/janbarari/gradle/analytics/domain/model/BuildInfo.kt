@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.domain.model
 
 import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
+import org.gradle.tooling.Failure
 import java.time.Duration
 
 data class BuildInfo(
@@ -37,7 +38,9 @@ data class BuildInfo(
     val osInfo: OsInfo,
     val hardwareInfo: HardwareInfo,
     val branch: String,
-    val requestedTasks: List<String>
+    val requestedTasks: List<String>,
+    val isSuccessful: Boolean,
+    val failure: List<Failure>? = null
 ) : java.io.Serializable {
 
     /**

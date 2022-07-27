@@ -50,6 +50,7 @@ import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
+import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.launchIO
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
@@ -88,6 +89,9 @@ class BuildExecutionLogicImp(
 
         if (!isBranchTrackable()) return
 
+        val isSuccessful = !executedTasks.any { !it.isSuccessful }
+        val failure = executedTasks.find { !it.isSuccessful && it.failures.isNotNull() }?.failures
+
         val info = BuildInfo(
             createdAt = System.currentTimeMillis(),
             startedAt = BuildInitializationService.STARTED_AT,
@@ -99,7 +103,9 @@ class BuildExecutionLogicImp(
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
             executedTasks = executedTasks.toList(),
             branch = GitUtils.currentBranch(),
-            requestedTasks = requestedTasks
+            requestedTasks = requestedTasks,
+            isSuccessful = isSuccessful,
+            failure = failure
         )
 
         resetDependentServices()
