@@ -17,6 +17,14 @@ body {
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 3px 0px;
 }
 
+p {
+    margin: 8px;
+}
+
+h2 {
+    margin: 8px;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -104,6 +112,10 @@ td {
 
 .pl16 {
     padding-left: 16px;
+}
+
+.pb16 {
+    padding-bottom: 16px;
 }
 
 h4 {
