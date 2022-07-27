@@ -32,5 +32,5 @@ data class ModuleCacheHit(
     @Json(name = "path")
     val path: String,
     @Json(name = "hit_ratio")
-    val hitRatio: Long
+    var hitRatio: Long
 ): java.io.Serializable

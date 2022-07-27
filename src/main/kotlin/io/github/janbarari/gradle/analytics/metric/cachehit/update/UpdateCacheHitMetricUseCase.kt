@@ -27,6 +27,9 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.modify
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
@@ -38,25 +41,12 @@ class UpdateCacheHitMetricUseCase(
     override suspend fun execute(): CacheHitMetric {
         val temporaryMetrics = repo.getTemporaryMetrics()
 
-        val hitRatios = mutableListOf<Long>()
-        temporaryMetrics.whenEach {
-            cacheHitMetric.whenNotNull {
-                hitRatios.add(hitRatio)
-            }
-        }
+        val hitRatios = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
+            .map { ensureNotNull(it.cacheHitMetric).hitRatio }
 
-        val modules = mutableListOf<ModuleCacheHit>()
-
-        temporaryMetrics.last().cacheHitMetric.whenNotNull {
-            this.modules.whenEach {
-                modules.add(
-                    ModuleCacheHit(
-                        path = path,
-                        hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
-                    )
-                )
-            }
-        }
+        val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
+            hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
+        } ?: emptyList()
 
         return CacheHitMetric(
             hitRatio = MathUtils.longMean(hitRatios),
@@ -65,16 +55,16 @@ class UpdateCacheHitMetricUseCase(
     }
 
     private fun getModuleMedianCacheHit(path: String, metrics: List<BuildMetric>): Long {
-        val hits = mutableListOf<Long>()
-        metrics.whenEach {
-            cacheHitMetric.whenNotNull {
-                modules.find { it.path == path }
-                    .whenNotNull {
-                        hits.add(hitRatio)
-                    }
+        val hitRatios = metrics
+            .filter {
+                it.cacheHitMetric.isNotNull()
+                        && it.cacheHitMetric!!.modules.find { module -> module.path == path }.isNotNull()
             }
-        }
-        return MathUtils.longMean(hits)
+            .map {
+                it.cacheHitMetric!!.modules.find { module -> module.path == path }!!.hitRatio
+            }
+
+        return MathUtils.longMean(hitRatios)
     }
 
 }

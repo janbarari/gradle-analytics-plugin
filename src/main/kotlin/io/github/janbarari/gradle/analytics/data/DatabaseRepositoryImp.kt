@@ -146,17 +146,21 @@ class DatabaseRepositoryImp(
 
     override fun getTemporaryMetrics(): List<BuildMetric> {
         return db.transaction {
-            val metrics = arrayListOf<BuildMetric>()
-            val queryResult = TemporaryMetricTable.select {
-                (TemporaryMetricTable.branch eq branch) and
-                        (TemporaryMetricTable.requestedTasks eq requestedTasks)
-            }
-            queryResult.toList().forEach {
-                jsonAdapter.fromJson(it[value])?.let { metric ->
-                    metrics.add(metric)
+            if (dropOutdatedTemporaryMetrics()) {
+                val metrics = arrayListOf<BuildMetric>()
+                val queryResult = TemporaryMetricTable.select {
+                    (TemporaryMetricTable.branch eq branch) and
+                            (TemporaryMetricTable.requestedTasks eq requestedTasks)
                 }
+                queryResult.toList().forEach {
+                    jsonAdapter.fromJson(it[value])?.let { metric ->
+                        metrics.add(metric)
+                    }
+                }
+                return@transaction metrics
+            } else {
+                return@transaction emptyList()
             }
-            return@transaction metrics
         }
     }
 

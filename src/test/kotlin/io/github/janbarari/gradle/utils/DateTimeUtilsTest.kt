@@ -17,6 +17,7 @@ class DateTimeUtilsTest {
     @Test
     fun `check getDayStartMs() returns day starting time`() {
         val todayStartMs = DateTimeUtils.getDayStartMs()
+        println(todayStartMs)
         val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(todayStartMs), DateTimeUtils.DEFAULT_ZONE)
         val hour = date.hour
         val min = date.minute

@@ -87,3 +87,21 @@ fun List<String>.toArrayString(): String {
     labels.append("]")
     return labels.toString()
 }
+
+public inline fun <T> Iterable<T>.modify(modification: T.() -> Unit): Iterable<T> {
+    for (item in this)
+        item.apply(modification)
+    return this
+}
+
+public inline fun <T> Collection<T>.modify(modification: T.() -> Unit): Collection<T> {
+    for (item in this)
+        item.apply(modification)
+    return this
+}
+
+public inline fun <T> List<T>.modify(modification: T.() -> Unit): List<T> {
+    for (item in this)
+        item.apply(modification)
+    return this
+}
