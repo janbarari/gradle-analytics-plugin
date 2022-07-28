@@ -58,6 +58,9 @@ data class BuildMetric(
     var modulesMethodCountMetric: ModulesMethodCountMetric? = null,
 
     @Json(name = "cache_hit_metric")
-    var cacheHitMetric: CacheHitMetric? = null
+    var cacheHitMetric: CacheHitMetric? = null,
+
+    @Json(name = "build_success_ratio_metric")
+    var buildSuccessRatioMetric: BuildSuccessRatioMetric? = null
 
 ): java.io.Serializable

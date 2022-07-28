@@ -32,6 +32,8 @@ import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricStage
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricStage
@@ -71,6 +73,7 @@ class BuildExecutionLogicImp(
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
+    private val createBuildSuccessRatioMetricUseCase: CreateBuildSuccessRatioMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -89,7 +92,8 @@ class BuildExecutionLogicImp(
 
         if (!isBranchTrackable()) return
 
-        val isSuccessful = !executedTasks.any { !it.isSuccessful }
+        val isSuccessful = executedTasks.all { it.isSuccessful }
+
         val failure = executedTasks.find { !it.isSuccessful && it.failures.isNotNull() }?.failures
 
         val info = BuildInfo(
@@ -123,6 +127,10 @@ class BuildExecutionLogicImp(
         val createCacheHitMetricStage = CreateCacheHitMetricStage(
             info, modulesInfo, createCacheHitMetricUseCase
         )
+        val createBuildSuccessRatioMetricStage = CreateBuildSuccessRatioMetricStage(
+            info,
+            createBuildSuccessRatioMetricUseCase
+        )
 
         launchIO {
             val metric = CreateMetricPipeline(createInitializationMetricStage)
@@ -132,6 +140,7 @@ class BuildExecutionLogicImp(
                 .addStage(createModulesSourceCountMetricStage)
                 .addStage(createModulesMethodCountMetricStage)
                 .addStage(createCacheHitMetricStage)
+                .addStage(createBuildSuccessRatioMetricStage)
                 .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
             saveTemporaryMetricUseCase.execute(metric)

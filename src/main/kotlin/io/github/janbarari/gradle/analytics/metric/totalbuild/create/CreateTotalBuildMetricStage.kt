@@ -33,7 +33,9 @@ class CreateTotalBuildMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            totalBuildMetric = createTotalBuildMetricUseCase.execute(buildInfo)
+            if (buildInfo.isSuccessful) {
+                totalBuildMetric = createTotalBuildMetricUseCase.execute(buildInfo)
+            }
         }
     }
 

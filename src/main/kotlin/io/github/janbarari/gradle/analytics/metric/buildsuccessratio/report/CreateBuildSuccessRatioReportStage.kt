@@ -20,22 +20,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.configuration.create
+package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.BuildSuccessRatioReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.mapToBuildSuccessRatioTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.minimize
+import io.github.janbarari.gradle.extension.whenEmpty
 
-class CreateConfigurationMetricStage(
-    private val buildInfo: BuildInfo,
-    private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+class CreateBuildSuccessRatioReportStage(
+    private val metrics: List<BuildMetric>
+): Stage<Report, Report> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            if (buildInfo.isSuccessful) {
-                configurationMetric = createConfigurationMetricUseCase.execute(buildInfo)
+    companion object {
+        private const val CHART_MAX_COLUMNS = 12
+    }
+
+    override suspend fun process(report: Report): Report {
+        val chartPoints = metrics.filter { metric ->
+            metric.buildSuccessRatioMetric.isNotNull()
+        }.mapToBuildSuccessRatioTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
+            .whenEmpty {
+                return report
             }
+
+        return report.apply {
+            buildSuccessRatioReport = BuildSuccessRatioReport(
+                chartPoints
+            )
         }
     }
 

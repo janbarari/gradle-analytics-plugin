@@ -20,7 +20,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(0, info.createdAt)
         assertEquals(0, info.startedAt)
@@ -48,7 +49,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(750, info.getTotalDuration().toMillis())
     }
@@ -66,7 +68,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(798, info.getTotalDuration().toMillis())
     }
@@ -84,7 +87,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(50, info.getInitializationDuration().toMillis())
     }
@@ -102,7 +106,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(148, info.getInitializationDuration().toMillis())
     }
@@ -120,7 +125,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(150, info.getConfigurationDuration().toMillis())
     }
@@ -138,7 +144,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(0, info.getConfigurationDuration().toMillis())
     }
@@ -156,7 +163,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(650, info.getExecutionDuration().toMillis())
     }
@@ -174,7 +182,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(300, info.getExecutionDuration().toMillis())
     }
@@ -192,7 +201,8 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
-            requestedTasks = listOf()
+            requestedTasks = listOf(),
+            isSuccessful = true
         )
         assertEquals(0, info.getTotalDependenciesResolveDuration().toMillis())
     }

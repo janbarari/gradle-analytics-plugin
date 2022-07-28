@@ -47,6 +47,9 @@ object FileUtils {
         return isBuildscriptsExists && isSrcDirExists
     }
 
+    /**
+     * Returns list of source files in the module path.
+     */
     fun getModuleSources(directory: String): List<Path> {
         var sourcePaths: List<Path>
         Files.walk(Path(directory)).use { stream ->

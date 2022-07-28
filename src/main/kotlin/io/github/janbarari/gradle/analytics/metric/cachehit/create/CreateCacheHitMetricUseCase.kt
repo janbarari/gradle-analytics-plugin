@@ -38,11 +38,11 @@ class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<Tas
 
         var cachedTasksCount = 0
         executedTasks.whenEach {
-            if (isUpToDate || isFromCache) {
+            if (!isSkipped && (isUpToDate || isFromCache)) {
                 cachedTasksCount++
             }
         }
-        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(executedTasks.size)
+        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(executedTasks.filter { it.isSkipped.not() }.size)
 
         val modulesCacheHit = mutableListOf<ModuleCacheHit>()
         modulesPath.whenEach {
@@ -51,7 +51,7 @@ class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<Tas
             executedTasks.filter { it.path.startsWith(path) }
                 .whenEach {
                     moduleTasksCount++
-                    if (isUpToDate || isFromCache) {
+                    if (!isSkipped && (isUpToDate || isFromCache)) {
                         moduleCachedTasksCount++
                     }
                 }

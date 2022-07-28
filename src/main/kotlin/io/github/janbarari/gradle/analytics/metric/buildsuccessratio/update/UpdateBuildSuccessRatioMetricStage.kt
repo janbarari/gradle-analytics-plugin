@@ -20,44 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update
 
-import org.gradle.tooling.Failure
-import org.gradle.tooling.events.OperationDescriptor
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-data class TaskInfo(
-    val startedAt: Long,
-    val finishedAt: Long,
-    val path: String,
-    val displayName: String,
-    val name: String,
-    val isSuccessful: Boolean,
-    val failures: List<Failure>?,
-    val dependencies: List<OperationDescriptor>?,
-    val isIncremental: Boolean,
-    val isFromCache: Boolean,
-    val isUpToDate: Boolean,
-    val isSkipped: Boolean,
-    val executionReasons: List<String>?
-) : java.io.Serializable {
+class UpdateBuildSuccessRatioMetricStage(
+    private val updateBuildSuccessRatioMetricUseCase: UpdateBuildSuccessRatioMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    /**
-     * Returns the task execution duration in milliseconds.
-     */
-    fun getDuration(): Long {
-        if (finishedAt < startedAt) return 0L
-        return finishedAt - startedAt
-    }
-
-    /**
-     * Returns the task module name.
-     */
-    fun getModule(): String {
-        val module = path.split(":")
-        return if (module.size > 2) module.toList()
-            .dropLast(1)
-            .joinToString(separator = ":")
-        else "no_module"
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            buildSuccessRatioMetric = updateBuildSuccessRatioMetricUseCase.execute()
+        }
     }
 
 }

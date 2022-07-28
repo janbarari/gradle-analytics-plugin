@@ -64,3 +64,13 @@ fun List<BuildMetric>.mapToTotalBuildTimespanChartPoints(): List<TimespanChartPo
         )
     }
 }
+
+fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.buildSuccessRatioMetric).ratio.toLong(),
+            from = it.createdAt,
+            to = null
+        )
+    }
+}

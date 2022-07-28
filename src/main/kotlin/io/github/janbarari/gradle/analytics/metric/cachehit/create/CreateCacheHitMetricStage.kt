@@ -33,11 +33,13 @@ class CreateCacheHitMetricStage(
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        return input.apply {
-            cacheHitMetric = createCacheHitMetricUseCase.execute(
-                Pair(modulesPath, buildInfo.executedTasks)
-            )
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            if (buildInfo.isSuccessful) {
+                cacheHitMetric = createCacheHitMetricUseCase.execute(
+                    Pair(modulesPath, buildInfo.executedTasks)
+                )
+            }
         }
     }
 

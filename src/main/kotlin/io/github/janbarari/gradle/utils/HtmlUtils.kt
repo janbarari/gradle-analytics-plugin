@@ -24,13 +24,22 @@ package io.github.janbarari.gradle.utils
 
 import io.github.janbarari.gradle.extension.getTextResourceContent
 
+/**
+ * A collection of HTML functions.
+ */
 object HtmlUtils {
 
+    /**
+     * Returns the empty message HTML tag.
+     */
     fun renderMessage(message: String): String {
         return "<p>$message</p>" +
                 "<div class=\"space\"></div>"
     }
 
+    /**
+     * Returns the text resource content as String.
+     */
     fun getTemplate(fileName: String): String {
         return getTextResourceContent("$fileName.html")
     }

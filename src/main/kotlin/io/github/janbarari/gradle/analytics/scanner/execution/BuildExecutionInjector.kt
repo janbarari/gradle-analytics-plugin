@@ -31,6 +31,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update.UpdateBuildSuccessRatioMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
@@ -112,6 +114,11 @@ fun BuildExecutionInjector.provideUpdateCacheHitMetricUseCase(): UpdateCacheHitM
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): UpdateBuildSuccessRatioMetricUseCase {
+    return UpdateBuildSuccessRatioMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -121,7 +128,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateTotalBuildMetricUseCase(),
         provideUpdateModulesSourceCountMetricUseCase(),
         provideUpdateModulesMethodCountMetricUseCase(),
-        provideUpdateCacheHitMetricUseCase()
+        provideUpdateCacheHitMetricUseCase(),
+        provideUpdateBuildSuccessRatioMetricUseCase()
     )
 }
 
@@ -166,6 +174,11 @@ fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitM
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): CreateBuildSuccessRatioMetricUseCase {
+    return CreateBuildSuccessRatioMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -177,6 +190,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateModulesSourceCountMetricUseCase(),
         provideCreateModulesMethodCountMetricUseCase(),
         provideCreateCacheHitMetricUseCase(),
+        provideCreateBuildSuccessRatioMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

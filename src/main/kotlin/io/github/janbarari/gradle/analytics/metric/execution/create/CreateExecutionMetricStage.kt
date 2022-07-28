@@ -33,7 +33,9 @@ class CreateExecutionMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            executionMetric = createExecutionMetricUseCase.execute(buildInfo)
+            if (buildInfo.isSuccessful) {
+                executionMetric = createExecutionMetricUseCase.execute(buildInfo)
+            }
         }
     }
 

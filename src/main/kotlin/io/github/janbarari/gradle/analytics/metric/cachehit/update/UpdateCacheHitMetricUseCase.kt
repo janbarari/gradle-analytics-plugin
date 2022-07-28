@@ -36,9 +36,9 @@ import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateCacheHitMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<CacheHitMetric>() {
+) : UseCaseNoInput<CacheHitMetric?>() {
 
-    override suspend fun execute(): CacheHitMetric {
+    override suspend fun execute(): CacheHitMetric? {
         val temporaryMetrics = repo.getTemporaryMetrics()
 
         val hitRatios = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
@@ -46,7 +46,7 @@ class UpdateCacheHitMetricUseCase(
 
         val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
             hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
-        } ?: emptyList()
+        } ?: return null
 
         return CacheHitMetric(
             hitRatio = MathUtils.longMean(hitRatios),
