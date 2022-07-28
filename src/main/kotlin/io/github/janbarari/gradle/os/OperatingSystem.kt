@@ -35,5 +35,4 @@ interface OperatingSystem {
      * Returns device operating system manufacturer.
      */
     fun getManufacturer(): String
-
 }

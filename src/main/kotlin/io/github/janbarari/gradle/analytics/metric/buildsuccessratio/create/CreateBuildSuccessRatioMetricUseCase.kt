@@ -20,25 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.cachehit.create
+package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildSuccessRatioMetric
+import io.github.janbarari.gradle.core.UseCase
 
-class CreateCacheHitMetricStage(
-    private val buildInfo: BuildInfo,
-    private val modulesPath: List<ModulePath>,
-    private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+class CreateBuildSuccessRatioMetricUseCase: UseCase<BuildInfo, BuildSuccessRatioMetric>() {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            cacheHitMetric = createCacheHitMetricUseCase.execute(
-                Pair(modulesPath, buildInfo.executedTasks)
-            )
-        }
+    override suspend fun execute(buildInfo: BuildInfo): BuildSuccessRatioMetric {
+        return BuildSuccessRatioMetric(
+            ratio = 100f
+        )
     }
 
 }
