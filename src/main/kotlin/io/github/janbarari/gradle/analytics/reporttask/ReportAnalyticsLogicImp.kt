@@ -24,6 +24,8 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.CreateBuildSuccessRatioReportStage
+import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.RenderBuildSuccessRatioReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationReportStage
@@ -74,6 +76,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data))
+            .addStage(CreateBuildSuccessRatioReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -93,6 +96,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
         val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
+        val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
@@ -102,6 +106,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesSourceCountReportStage)
             .addStage(renderModulesMethodCountReportStage)
             .addStage(renderCacheHitReportStage)
+            .addStage(renderBuildSuccessRatioReportStage)
             .execute(rawHTML)
     }
 

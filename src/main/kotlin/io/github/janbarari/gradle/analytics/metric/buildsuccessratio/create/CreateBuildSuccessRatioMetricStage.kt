@@ -24,16 +24,18 @@ package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildSuccessRatioMetric
 import io.github.janbarari.gradle.core.Stage
+import java.lang.RuntimeException
 
 class CreateBuildSuccessRatioMetricStage(
     private val buildInfo: BuildInfo,
-
+    private val createBuildSuccessRatioMetricUseCase: CreateBuildSuccessRatioMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            buildSuccessRatioMetric =
+            buildSuccessRatioMetric = createBuildSuccessRatioMetricUseCase.execute(buildInfo)
         }
     }
 

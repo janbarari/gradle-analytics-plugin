@@ -34,9 +34,12 @@ import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.tooling.Failure
+import org.gradle.tooling.events.FailureResult
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
 import org.gradle.tooling.events.OperationDescriptor
+import org.gradle.tooling.events.SkippedResult
+import org.gradle.tooling.events.SuccessResult
 import org.gradle.tooling.events.task.TaskFailureResult
 import org.gradle.tooling.events.task.TaskFinishEvent
 import org.gradle.tooling.events.task.TaskSuccessResult
@@ -46,8 +49,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * Tracks the task's execution information.
  */
 @ExcludeJacocoGenerated
-abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener,
-    AutoCloseable {
+abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
     interface Params : BuildServiceParameters {
         val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
@@ -108,6 +110,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         if (event is TaskFinishEvent) {
             var dependencies: List<OperationDescriptor>? = null
             var isSuccessful = false
+            var isSkipped = false
             var failures: List<Failure>? = null
             var isIncremental = false
             var isFromCache = false
@@ -118,20 +121,27 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
                 dependencies = event.descriptor.dependencies.toList()
             }
 
-            if (event.result is TaskFailureResult) {
-                val result = event.result as TaskFailureResult
-                failures = result.failures
-                isIncremental = result.isIncremental
-                executionReasons = result.executionReasons
-            }
+            when (event.result) {
+                is FailureResult -> {
+                    val result = event.result as TaskFailureResult
+                    failures = result.failures
+                    isIncremental = result.isIncremental
+                    executionReasons = result.executionReasons
+                }
 
-            if (event.result is TaskSuccessResult) {
-                val result = event.result as TaskSuccessResult
-                isSuccessful = true
-                isIncremental = result.isIncremental
-                isFromCache = result.isFromCache
-                isUpToDate = result.isUpToDate
-                executionReasons = result.executionReasons
+                is SuccessResult -> {
+                    isSuccessful = true
+                    val result = event.result as TaskSuccessResult
+                    isIncremental = result.isIncremental
+                    isFromCache = result.isFromCache
+                    isUpToDate = result.isUpToDate
+                    executionReasons = result.executionReasons
+                }
+
+                is SkippedResult -> {
+                    isSuccessful = true
+                    isSkipped = true
+                }
             }
 
             executedTasks.add(
@@ -147,6 +157,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
                     isIncremental = isIncremental,
                     isFromCache = isFromCache,
                     isUpToDate = isUpToDate,
+                    isSkipped = isSkipped,
                     executionReasons = executionReasons
                 )
             )

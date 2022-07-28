@@ -19,6 +19,7 @@ class TaskInfoTest {
             true,
             true,
             false,
+            false,
             null
         )
         assertEquals(49, task.getDuration())
@@ -37,6 +38,7 @@ class TaskInfoTest {
             null,
             true,
             true,
+            false,
             false,
             null
         )
@@ -61,6 +63,7 @@ class TaskInfoTest {
             true,
             true,
             false,
+            false,
             null
         )
         assertEquals(0, task.getDuration())
@@ -80,6 +83,7 @@ class TaskInfoTest {
             true,
             true,
             false,
+            false,
             null
         )
         assertEquals("no_module", task.getModule())
@@ -98,6 +102,7 @@ class TaskInfoTest {
             null,
             true,
             true,
+            false,
             false,
             null
         )

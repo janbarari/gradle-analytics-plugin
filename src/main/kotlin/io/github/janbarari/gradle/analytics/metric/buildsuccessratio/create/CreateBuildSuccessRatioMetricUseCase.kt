@@ -30,7 +30,7 @@ class CreateBuildSuccessRatioMetricUseCase: UseCase<BuildInfo, BuildSuccessRatio
 
     override suspend fun execute(buildInfo: BuildInfo): BuildSuccessRatioMetric {
         return BuildSuccessRatioMetric(
-            ratio = 100f
+            ratio = if (buildInfo.isSuccessful) 100F else 0F
         )
     }
 

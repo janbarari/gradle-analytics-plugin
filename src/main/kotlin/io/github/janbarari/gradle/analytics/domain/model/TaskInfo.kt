@@ -37,6 +37,7 @@ data class TaskInfo(
     val isIncremental: Boolean,
     val isFromCache: Boolean,
     val isUpToDate: Boolean,
+    val isSkipped: Boolean,
     val executionReasons: List<String>?
 ) : java.io.Serializable {
 

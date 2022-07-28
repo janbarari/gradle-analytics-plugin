@@ -35,9 +35,11 @@ class CreateCacheHitMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            cacheHitMetric = createCacheHitMetricUseCase.execute(
-                Pair(modulesPath, buildInfo.executedTasks)
-            )
+            if (buildInfo.isSuccessful) {
+                cacheHitMetric = createCacheHitMetricUseCase.execute(
+                    Pair(modulesPath, buildInfo.executedTasks)
+                )
+            }
         }
     }
 

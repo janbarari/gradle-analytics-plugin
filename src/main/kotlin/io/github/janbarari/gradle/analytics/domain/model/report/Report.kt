@@ -47,6 +47,8 @@ data class Report(
 
     var cacheHitReport: CacheHitReport? = null
 
+    var buildSuccessRatioReport: BuildSuccessRatioReport? = null
+
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().build()
         val jsonAdapter: JsonAdapter<Report> = ReportJsonAdapter(moshi)
