@@ -38,6 +38,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricStage
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricStage
@@ -74,6 +76,7 @@ class BuildExecutionLogicImp(
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
     private val createBuildSuccessRatioMetricUseCase: CreateBuildSuccessRatioMetricUseCase,
+    private val createDependencyResolveMetricUseCase: CreateDependencyResolveMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -82,6 +85,7 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
+    @Suppress("LongMethod")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
 
         if (isForbiddenTasksRequested()) return
@@ -131,6 +135,10 @@ class BuildExecutionLogicImp(
             info,
             createBuildSuccessRatioMetricUseCase
         )
+        val createDependencyResolveMetricStage = CreateDependencyResolveMetricStage(
+            info,
+            createDependencyResolveMetricUseCase
+        )
 
         launchIO {
             val metric = CreateMetricPipeline(createInitializationMetricStage)
@@ -141,6 +149,7 @@ class BuildExecutionLogicImp(
                 .addStage(createModulesMethodCountMetricStage)
                 .addStage(createCacheHitMetricStage)
                 .addStage(createBuildSuccessRatioMetricStage)
+                .addStage(createDependencyResolveMetricStage)
                 .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
             saveTemporaryMetricUseCase.execute(metric)

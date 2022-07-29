@@ -74,3 +74,13 @@ fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<Timespan
         )
     }
 }
+
+fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.dependencyResolveMetric).average,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}

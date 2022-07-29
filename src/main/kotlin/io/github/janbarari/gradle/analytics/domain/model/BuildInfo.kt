@@ -32,7 +32,7 @@ data class BuildInfo(
     val startedAt: Long,
     val initializedAt: Long,
     val configuredAt: Long,
-    val dependenciesResolveInfo: Collection<DependencyResolveInfo>,
+    var dependenciesResolveInfo: Collection<DependencyResolveInfo>,
     val executedTasks: List<TaskInfo>,
     val finishedAt: Long,
     val osInfo: OsInfo,
@@ -42,6 +42,11 @@ data class BuildInfo(
     val isSuccessful: Boolean,
     val failure: List<Failure>? = null
 ) : java.io.Serializable {
+
+    init {
+        // Replace pass-by-reference to pass-by-value, cause the collection will be reset after creation of BuildInfo.
+        dependenciesResolveInfo = dependenciesResolveInfo.toList()
+    }
 
     /**
      * Returns the total build duration.

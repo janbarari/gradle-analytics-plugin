@@ -37,6 +37,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update.UpdateDependencyResolveMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
@@ -119,6 +121,11 @@ fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): Update
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateDependencyResolveMetricUseCase(): UpdateDependencyResolveMetricUseCase {
+    return UpdateDependencyResolveMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -129,7 +136,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateModulesSourceCountMetricUseCase(),
         provideUpdateModulesMethodCountMetricUseCase(),
         provideUpdateCacheHitMetricUseCase(),
-        provideUpdateBuildSuccessRatioMetricUseCase()
+        provideUpdateBuildSuccessRatioMetricUseCase(),
+        provideUpdateDependencyResolveMetricUseCase()
     )
 }
 
@@ -179,6 +187,11 @@ fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): Create
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateDependencyResolveMetricUseCase(): CreateDependencyResolveMetricUseCase {
+    return CreateDependencyResolveMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -191,6 +204,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateModulesMethodCountMetricUseCase(),
         provideCreateCacheHitMetricUseCase(),
         provideCreateBuildSuccessRatioMetricUseCase(),
+        provideCreateDependencyResolveMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

@@ -30,6 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.RenderConfigurationReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.CreateDependencyResolveReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.RenderDependencyResolveReportStage
 import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
@@ -77,6 +79,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data))
             .addStage(CreateBuildSuccessRatioReportStage(data))
+            .addStage(CreateDependencyResolveReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -97,6 +100,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
         val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
+        val renderDependencyResolveReportStage = RenderDependencyResolveReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
@@ -107,6 +111,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesMethodCountReportStage)
             .addStage(renderCacheHitReportStage)
             .addStage(renderBuildSuccessRatioReportStage)
+            .addStage(renderDependencyResolveReportStage)
             .execute(rawHTML)
     }
 
