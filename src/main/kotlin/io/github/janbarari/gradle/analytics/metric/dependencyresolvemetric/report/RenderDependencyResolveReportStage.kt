@@ -41,7 +41,7 @@ class RenderDependencyResolveReportStage(
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID = "%dependency-resolve-metric%"
-        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependencyresolve-metric-template"
+        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependency-resolve-metric-template"
     }
 
     override suspend fun process(input: String): String {

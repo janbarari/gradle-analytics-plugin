@@ -36,7 +36,7 @@ class RenderBuildSuccessRatioReportStage(
 
     companion object {
         private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID = "%build-success-ratio-metric%"
-        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME = "buildsuccessratio-metric-template"
+        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME = "build-success-ratio-metric-template"
     }
 
     override suspend fun process(input: String): String {
