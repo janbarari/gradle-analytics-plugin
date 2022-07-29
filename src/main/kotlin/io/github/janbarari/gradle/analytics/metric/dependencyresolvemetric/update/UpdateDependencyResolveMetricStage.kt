@@ -20,42 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.report
+package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-@JsonClass(generateAdapter = true)
-data class Report(
-    val branch: String,
-    val requestedTasks: String
-) : java.io.Serializable {
+class UpdateDependencyResolveMetricStage(
+    private val updateDependencyResolveMetricUseCase: UpdateDependencyResolveMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    var initializationReport: InitializationReport? = null
-
-    var configurationReport: ConfigurationReport? = null
-
-    var executionReport: ExecutionReport? = null
-
-    var totalBuildReport: TotalBuildReport? = null
-
-    var modulesSourceCountReport: ModulesSourceCountReport? = null
-
-    var modulesMethodCountReport: ModulesMethodCountReport? = null
-
-    var cacheHitReport: CacheHitReport? = null
-
-    var buildSuccessRatioReport: BuildSuccessRatioReport? = null
-
-    var dependencyResolveReport: DependencyResolveReport? = null
-
-    fun toJson(): String {
-        val moshi: Moshi = Moshi.Builder().build()
-        val jsonAdapter: JsonAdapter<Report> = ReportJsonAdapter(moshi)
-        return jsonAdapter.toJson(this)
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            dependencyResolveMetric = updateDependencyResolveMetricUseCase.execute()
+        }
     }
 
 }
-

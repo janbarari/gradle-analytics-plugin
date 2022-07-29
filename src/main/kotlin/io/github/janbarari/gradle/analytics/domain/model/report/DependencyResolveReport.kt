@@ -20,50 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class BuildMetric(
-
-    @Json(name = "branch")
-    var branch: String,
-
-    @Json(name = "requestedTasks")
-    var requestedTasks: List<String>,
-
-    @Json(name = "created_at")
-    var createdAt: Long,
-
-    @Json(name = "initialization_metric")
-    var initializationMetric: InitializationMetric? = null,
-
-    @Json(name = "configuration_metric")
-    var configurationMetric: ConfigurationMetric? = null,
-
-    @Json(name = "execution_metric")
-    var executionMetric: ExecutionMetric? = null,
-
-    @Json(name = "total_build_metric")
-    var totalBuildMetric: TotalBuildMetric? = null,
-
-    @Json(name = "modules_source_count_metric")
-    var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
-
-    @Json(name = "modules_method_count_metric")
-    var modulesMethodCountMetric: ModulesMethodCountMetric? = null,
-
-    @Json(name = "cache_hit_metric")
-    var cacheHitMetric: CacheHitMetric? = null,
-
-    @Json(name = "build_success_ratio_metric")
-    var buildSuccessRatioMetric: BuildSuccessRatioMetric? = null,
-
-    @Json(name = "dependency_resolve_metric")
-    var dependencyResolveMetric: DependencyResolveMetric? = null
-
+data class DependencyResolveReport(
+    val values: List<ChartPoint>,
+    val maxValue: Long,
+    val minValue: Long
 ): java.io.Serializable
