@@ -18,11 +18,23 @@
 <br />
 A free Gradle plugin for analytics of your projects. Provides unique visual and text metrics in HTML format.
 
-Mark this repo in your browser, see you soon ;D
+Did you want to see some unique information about your builds in place?
 
-Hit the ⭐ button if you like to support this repository.
+Here is how this plugin gives you this information.
 
-In development...
+<img src="console-screenshot.png" width=67% />
+
+Setup
+---
+Dependency details will be added after publishing the first beta version
+
+How to use
+---
+Usage instructions will be added after publishing the first beta version
+
+Release
+---
+Beta version will be published soon ;D
 
 License
 ---
