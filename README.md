@@ -45,6 +45,7 @@ Features
 - Legacy Resource Count [In Development...]
 - Resource Total Size [In Development...]
 - System Resource Usage Rate [In Development...]
+- etc.
 
 Setup
 ---
