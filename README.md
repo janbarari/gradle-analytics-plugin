@@ -16,6 +16,7 @@
 
 <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=RF:">Request Feature</a> or <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/new?title=RB:">Report Bug</a>
 <br />
+
 A free Gradle plugin for analytics of your projects. Provides unique visual and text metrics in HTML format.
 
 Did you want to see some unique information about your builds in place?
