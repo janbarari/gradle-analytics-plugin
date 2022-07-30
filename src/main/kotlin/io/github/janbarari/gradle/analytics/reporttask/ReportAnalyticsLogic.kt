@@ -29,7 +29,7 @@ import java.io.IOException
 interface ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(IOException::class)
-    suspend fun saveReport(renderedHTML: String): Boolean
+    suspend fun saveReport(renderedHTML: String): String
 
     suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
 

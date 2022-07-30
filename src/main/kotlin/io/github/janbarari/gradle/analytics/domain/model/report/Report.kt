@@ -51,6 +51,8 @@ data class Report(
 
     var dependencyResolveReport: DependencyResolveReport? = null
 
+    var parallelRatioReport: ParallelRatioReport? = null
+
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().build()
         val jsonAdapter: JsonAdapter<Report> = ReportJsonAdapter(moshi)

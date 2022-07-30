@@ -64,6 +64,9 @@ data class BuildMetric(
     var buildSuccessRatioMetric: BuildSuccessRatioMetric? = null,
 
     @Json(name = "dependency_resolve_metric")
-    var dependencyResolveMetric: DependencyResolveMetric? = null
+    var dependencyResolveMetric: DependencyResolveMetric? = null,
+
+    @Json(name = "parallel_ratio_metric")
+    var parallelRatioMetric: ParallelRatioMetric? = null
 
 ): java.io.Serializable

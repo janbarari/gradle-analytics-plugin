@@ -7,6 +7,9 @@ val pluginImplementationClass: String by project
 val pluginDeclarationName: String by project
 val pluginGroupPackageName: String by project
 val pluginVersion: String by project
+val pluginWebsite: String by project
+val pluginVcsUrl: String by project
+val pluginTags: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
@@ -16,6 +19,7 @@ plugins {
     `maven-publish`
     jacoco
     kotlin("kapt") version(libs.versions.kotlin)
+    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
 }
 
 group = pluginGroupPackageName
@@ -76,6 +80,12 @@ publishing {
             mavenLocal()
         }
     }
+}
+
+pluginBundle {
+    website = pluginWebsite
+    vcsUrl = pluginVcsUrl
+    tags = "pluginTags".split(",")
 }
 
 gradlePlugin {

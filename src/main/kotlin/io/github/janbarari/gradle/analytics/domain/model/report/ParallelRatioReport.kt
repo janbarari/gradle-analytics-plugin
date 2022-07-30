@@ -20,19 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.update
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import com.squareup.moshi.JsonClass
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
-class UpdateParallelRatioMetricStage(
-    private val updateParallelRatioMetricUseCase: UpdateParallelRatioMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
-
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            parallelRatioMetric = updateParallelRatioMetricUseCase.execute()
-        }
-    }
-
-}
+@ExcludeJacocoGenerated
+@JsonClass(generateAdapter = true)
+data class ParallelRatioReport(
+    val values: List<ChartPoint>,
+    val maxValue: Long,
+    val minValue: Long
+): java.io.Serializable

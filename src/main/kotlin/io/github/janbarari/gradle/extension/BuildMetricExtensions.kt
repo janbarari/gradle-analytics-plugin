@@ -84,3 +84,13 @@ fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<Timespan
         )
     }
 }
+
+fun List<BuildMetric>.mapToParallelRatioTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.parallelRatioMetric).ratio,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}

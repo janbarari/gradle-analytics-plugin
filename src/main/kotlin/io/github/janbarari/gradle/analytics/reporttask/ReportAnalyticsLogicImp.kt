@@ -40,6 +40,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.parallelratio.report.CreateParallelRatioReportStage
+import io.github.janbarari.gradle.analytics.metric.parallelratio.report.RenderParallelRatioReportStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.report.CreateTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.report.RenderTotalBuildReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -80,6 +82,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateCacheHitReportStage(data))
             .addStage(CreateBuildSuccessRatioReportStage(data))
             .addStage(CreateDependencyResolveReportStage(data))
+            .addStage(CreateParallelRatioReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -101,6 +104,7 @@ class ReportAnalyticsLogicImp(
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
         val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
         val renderDependencyResolveReportStage = RenderDependencyResolveReportStage(report)
+        val renderParallelRatioReportStage = RenderParallelRatioReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
@@ -112,11 +116,12 @@ class ReportAnalyticsLogicImp(
             .addStage(renderCacheHitReportStage)
             .addStage(renderBuildSuccessRatioReportStage)
             .addStage(renderDependencyResolveReportStage)
+            .addStage(renderParallelRatioReportStage)
             .execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)
-    override suspend fun saveReport(renderedHTML: String): Boolean {
+    override suspend fun saveReport(renderedHTML: String): String {
         val fontPath = "res/nunito.ttf"
         val logoPath = "res/plugin-logo.png"
         val stylesPath = "res/styles.css"
@@ -153,7 +158,7 @@ class ReportAnalyticsLogicImp(
         File("$savePath/$indexPath")
             .writeText(renderedHTML)
 
-        return true
+        return "$savePath/$indexPath"
     }
 
     /**

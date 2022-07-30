@@ -22,14 +22,13 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.registerTask
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import io.github.janbarari.gradle.utils.ConsolePrinter
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -99,7 +98,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
      * Invokes when the task execution process started.
      */
     @TaskAction
-    fun execute() {
+    fun execute() = runBlocking {
 
         val injector = ReportAnalyticsInjector(
             requestedTasks = requestedTasksArgument,
@@ -110,29 +109,43 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             projectName = projectNameProperty.get()
         )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            with(injector.provideReportAnalyticsLogic()) {
-                ensureBranchArgumentValid(branchArgument)
-                ensurePeriodArgumentValid(periodArgument)
-                ensureTaskArgumentValid(requestedTasksArgument)
-                try {
-                    saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
-                } catch (e: EmptyMetricsException) {
-                    showEmptyDataMessage()
-                }
+        with(injector.provideReportAnalyticsLogic()) {
+            ensureBranchArgumentValid(branchArgument)
+            ensurePeriodArgumentValid(periodArgument)
+            ensureTaskArgumentValid(requestedTasksArgument)
+            try {
+                val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+                printSuccessfulResult(reportPath)
+            } catch (e: EmptyMetricsException) {
+                printEmptyResult()
             }
         }
 
     }
 
-    private fun showEmptyDataMessage() {
-        println()
-        println("/////////////////////////////////////////////////////")
-        println("/// Gradle Analytics Plugin:")
-        println("/// There is no data to process. Please check the plugin configuration and wait until" +
-                " the first desired task information is saved.")
-        println("/////////////////////////////////////////////////////")
-        println()
+    private fun printSuccessfulResult(reportPath: String) {
+        ConsolePrinter(reportPath.length).run {
+            printFirstLine()
+            printLine("Gradle Analytics Plugin", "")
+            printBreakLine('-')
+            printLine("Report generated successfully", "")
+            printLine(reportPath, "")
+            printBreakLine('-')
+            printLine("Made with ❤ for developers", "https://github.com/janbarari/gradle-analytics-plugin")
+            printLastLine()
+        }
+    }
+
+    private fun printEmptyResult() {
+        val message = "There is no data to process. Please check the plugin configuration and wait until the first desired " +
+                "task information is saved"
+        ConsolePrinter(message.length).run {
+            printFirstLine()
+            printLine("Gradle Analytics Plugin", "")
+            printBreakLine('-')
+            printLine(message, "")
+            printLastLine()
+        }
     }
 
 }
