@@ -57,7 +57,7 @@ Usage instructions will be added after publishing the first beta version
 
 Release
 ---
-Beta version will be published soon ;D
+Beta version will be published soon ;D (Waiting for Plugin Portal to review the beta version)
 
 License
 ---
