@@ -20,26 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
-import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import java.io.IOException
+import com.squareup.moshi.JsonClass
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
-interface ReportAnalyticsLogic {
-
-    @kotlin.jvm.Throws(IOException::class)
-    suspend fun saveReport(renderedHTML: String): String
-
-    suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureBranchArgumentValid(branchArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensurePeriodArgumentValid(periodArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureTaskArgumentValid(requestedTasksArgument: String)
-
-}
+@ExcludeJacocoGenerated
+@JsonClass(generateAdapter = true)
+data class ParallelRatioReport(
+    val values: List<ChartPoint>,
+    val maxValue: Long,
+    val minValue: Long
+): java.io.Serializable

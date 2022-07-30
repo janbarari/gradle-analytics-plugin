@@ -128,7 +128,7 @@ class BuildInfoTest {
             requestedTasks = listOf(),
             isSuccessful = true
         )
-        assertEquals(150, info.getConfigurationDuration().toMillis())
+        assertEquals(100, info.getConfigurationDuration().toMillis())
     }
 
     @Test

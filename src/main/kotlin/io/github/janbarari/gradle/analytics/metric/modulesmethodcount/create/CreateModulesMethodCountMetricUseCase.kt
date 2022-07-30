@@ -51,9 +51,9 @@ class CreateModulesMethodCountMetricUseCase : UseCase<List<ModulePath>, ModulesM
             .toRegex()
 
     override suspend fun execute(modulesPath: List<ModulePath>): ModulesMethodCountMetric {
-        val modulesProperties = mutableListOf<ModuleMethodCount>()
+        val modulesProperties = Collections.synchronizedList(mutableListOf<ModuleMethodCount>())
         withContext(dispatcher) {
-            val defers = Collections.synchronizedList(mutableListOf<Deferred<Boolean>>())
+            val defers = mutableListOf<Deferred<Boolean>>()
             modulesPath.whenEach {
                 defers.add(async {
                     modulesProperties.add(

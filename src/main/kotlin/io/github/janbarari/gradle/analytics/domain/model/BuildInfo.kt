@@ -68,8 +68,8 @@ data class BuildInfo(
      * Returns the build configuration process duration.
      */
     fun getConfigurationDuration(): Duration {
-        if (configuredAt < startedAt) return Duration.ofMillis(0)
-        return Duration.ofMillis(configuredAt - startedAt)
+        if (configuredAt < initializedAt) return Duration.ofMillis(0)
+        return Duration.ofMillis(configuredAt - initializedAt)
     }
 
     /**

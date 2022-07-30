@@ -20,26 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.analytics.metric.parallelratio.create
 
-import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
-import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import java.io.IOException
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-interface ReportAnalyticsLogic {
+class CreateParallelRatioMetricStage(
+    private val buildInfo: BuildInfo,
+    private val createParallelRatioMetricUseCase: CreateParallelRatioMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    @kotlin.jvm.Throws(IOException::class)
-    suspend fun saveReport(renderedHTML: String): String
-
-    suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureBranchArgumentValid(branchArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensurePeriodArgumentValid(periodArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureTaskArgumentValid(requestedTasksArgument: String)
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            if (buildInfo.isSuccessful) {
+                parallelRatioMetric = createParallelRatioMetricUseCase.execute(buildInfo)
+            }
+        }
+    }
 
 }

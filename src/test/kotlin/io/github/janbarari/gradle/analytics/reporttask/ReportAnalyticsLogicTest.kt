@@ -164,7 +164,7 @@ class ReportAnalyticsLogicTest {
         val result = logic.generateReport(
             "develop", "assembleDebug", 3
         )
-        assert(logic.saveReport(result))
+        assert(logic.saveReport(result).isNotBlank())
     }
 
 }

@@ -35,5 +35,20 @@ fun Long.diffPercentageOf(target: Long): Float {
  *  a.toPercentageOf(b) equals 10% (a is 10% of b).
  */
 fun Int.toPercentageOf(target: Int): Float {
+    if (target == 0) return 0f
     return ((this.toFloat() * 100F) / target).round()
 }
+
+/**
+ * Returns the current value coverage from the target value.
+ *
+ * Example:
+ *  val a = 10
+ *  val b = 100
+ *  a.toPercentageOf(b) equals 10% (a is 10% of b).
+ */
+fun Long.toPercentageOf(target: Long): Float {
+    if (target == 0L) return 0F
+    return ((this.toFloat() * 100F) / target).round()
+}
+

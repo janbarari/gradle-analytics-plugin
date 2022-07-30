@@ -25,11 +25,11 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
-import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricStage
@@ -48,6 +48,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricStage
+import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricStage
 import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
@@ -56,11 +58,14 @@ import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDe
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.launchIO
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.os.provideHardwareInfo
 import io.github.janbarari.gradle.os.provideOperatingSystem
+import io.github.janbarari.gradle.utils.ConsolePrinter
+import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.GitUtils
+import kotlinx.coroutines.runBlocking
+import java.util.Collections
 
 /**
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
@@ -77,6 +82,7 @@ class BuildExecutionLogicImp(
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
     private val createBuildSuccessRatioMetricUseCase: CreateBuildSuccessRatioMetricUseCase,
     private val createDependencyResolveMetricUseCase: CreateDependencyResolveMetricUseCase,
+    private val createParallelRatioMetricUseCase: CreateParallelRatioMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -85,19 +91,17 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
-    @Suppress("LongMethod")
-    override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) {
+    override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) = runBlocking {
 
-        if (isForbiddenTasksRequested()) return
+        if (isForbiddenTasksRequested()) return@runBlocking
 
-        if (!isDatabaseConfigurationValid()) return
+        if (!isDatabaseConfigurationValid()) return@runBlocking
 
-        if (!isTaskTrackable()) return
+        if (!isTaskTrackable()) return@runBlocking
 
-        if (!isBranchTrackable()) return
+        if (!isBranchTrackable()) return@runBlocking
 
         val isSuccessful = executedTasks.all { it.isSuccessful }
-
         val failure = executedTasks.find { !it.isSuccessful && it.failures.isNotNull() }?.failures
 
         val info = BuildInfo(
@@ -122,39 +126,64 @@ class BuildExecutionLogicImp(
         val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
         val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
-        val createModulesSourceCountMetricStage = CreateModulesSourceCountMetricStage(
-            modulesInfo, createModulesSourceCountMetricUseCase
-        )
-        val createModulesMethodCountMetricStage = CreateModulesMethodCountMetricStage(
-            modulesInfo, createModulesMethodCountMetricUseCase
-        )
-        val createCacheHitMetricStage = CreateCacheHitMetricStage(
-            info, modulesInfo, createCacheHitMetricUseCase
-        )
-        val createBuildSuccessRatioMetricStage = CreateBuildSuccessRatioMetricStage(
-            info,
-            createBuildSuccessRatioMetricUseCase
-        )
-        val createDependencyResolveMetricStage = CreateDependencyResolveMetricStage(
-            info,
-            createDependencyResolveMetricUseCase
-        )
+        val createModulesSourceCountMetricStage =
+            CreateModulesSourceCountMetricStage(modulesInfo, createModulesSourceCountMetricUseCase)
+        val createModulesMethodCountMetricStage =
+            CreateModulesMethodCountMetricStage(modulesInfo, createModulesMethodCountMetricUseCase)
+        val createCacheHitMetricStage = CreateCacheHitMetricStage(info, modulesInfo, createCacheHitMetricUseCase)
+        val createBuildSuccessRatioMetricStage = CreateBuildSuccessRatioMetricStage(info, createBuildSuccessRatioMetricUseCase)
+        val createDependencyResolveMetricStage = CreateDependencyResolveMetricStage(info, createDependencyResolveMetricUseCase)
+        val createParallelRatioMetricStage = CreateParallelRatioMetricStage(info, createParallelRatioMetricUseCase)
 
-        launchIO {
-            val metric = CreateMetricPipeline(createInitializationMetricStage)
-                .addStage(createConfigurationMetricStage)
-                .addStage(createExecutionMetricStage)
-                .addStage(createTotalBuildMetricStage)
-                .addStage(createModulesSourceCountMetricStage)
-                .addStage(createModulesMethodCountMetricStage)
-                .addStage(createCacheHitMetricStage)
-                .addStage(createBuildSuccessRatioMetricStage)
-                .addStage(createDependencyResolveMetricStage)
-                .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
+        val buildMetric = CreateMetricPipeline(createInitializationMetricStage)
+            .addStage(createConfigurationMetricStage)
+            .addStage(createExecutionMetricStage)
+            .addStage(createTotalBuildMetricStage)
+            .addStage(createModulesSourceCountMetricStage)
+            .addStage(createModulesMethodCountMetricStage)
+            .addStage(createCacheHitMetricStage)
+            .addStage(createBuildSuccessRatioMetricStage)
+            .addStage(createDependencyResolveMetricStage)
+            .addStage(createParallelRatioMetricStage)
+            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
-            saveTemporaryMetricUseCase.execute(metric)
-            saveMetricUseCase.execute(metric)
+        saveTemporaryMetricUseCase.execute(buildMetric)
+        saveMetricUseCase.execute(buildMetric)
+
+        printBuildInfo(buildMetric)
+    }
+
+    private fun printBuildInfo(buildMetric: BuildMetric) {
+        val requestedTasks = buildMetric.requestedTasks.separateElementsWithSpace()
+        val repoLink = "https://github.com/janbarari/gradle-analytics-plugin"
+
+        var width = requestedTasks.length + 25
+        if (width < repoLink.length) width = repoLink.length
+
+        ConsolePrinter(width).run {
+            printFirstLine()
+            printLine("Gradle Analytics Plugin", "")
+            printBreakLine('-')
+            printLine("Requested Tasks:", requestedTasks)
+            printLine("Branch:", buildMetric.branch)
+            printBreakLine('-')
+            printLine("Build Info", "")
+            printLine("Initialization Process:", "${buildMetric.initializationMetric?.average} ms")
+            printLine("Configuration Process:", "${buildMetric.configurationMetric?.average} ms")
+            printLine("Dependency Resolve Process:", "${buildMetric.dependencyResolveMetric?.average} ms")
+            printLine("Execution Process:", "${buildMetric.executionMetric?.average} ms")
+            printLine("Overall Build Process:", "${buildMetric.totalBuildMetric?.average} ms")
+            printLine("Cache Hit:", "${buildMetric.cacheHitMetric?.hitRatio}%")
+            printLine("Parallel Ratio:", "${buildMetric.parallelRatioMetric?.ratio}%")
+            printBreakLine('-')
+            printLine("Datetime:", DateTimeUtils.formatToDateTime(buildMetric.createdAt))
+            printBreakLine('-')
+            printLine("Made with ❤ for developers", "")
+            printLine(repoLink, "")
+            printLine("","↖ Tap the ☆ button to support this plugin")
+            printLastLine()
         }
+
     }
 
     @ExcludeJacocoGenerated

@@ -20,26 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.reporttask
+package io.github.janbarari.gradle.analytics.metric.parallelratio.update
 
-import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
-import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import java.io.IOException
+import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelRatioMetric
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.MathUtils
 
-interface ReportAnalyticsLogic {
+class UpdateParallelRatioMetricUseCase(
+    private val repo: DatabaseRepository
+): UseCaseNoInput<ParallelRatioMetric>() {
 
-    @kotlin.jvm.Throws(IOException::class)
-    suspend fun saveReport(renderedHTML: String): String
+    override suspend fun execute(): ParallelRatioMetric {
+        val ratios = arrayListOf<Long>()
+        repo.getTemporaryMetrics().whenEach {
+            parallelRatioMetric.whenNotNull {
+                ratios.add(ratio)
+            }
+        }
 
-    suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureBranchArgumentValid(branchArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensurePeriodArgumentValid(periodArgument: String)
-
-    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
-    fun ensureTaskArgumentValid(requestedTasksArgument: String)
+        return ParallelRatioMetric(
+            ratio = MathUtils.longMedian(ratios)
+        )
+    }
 
 }
