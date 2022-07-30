@@ -24,6 +24,28 @@ Here is how this plugin gives you this information.
 
 <img src="console-screenshot.png" width=67% />
 
+Features
+---
+- Initialization Process duration [Console, HTML]
+- Configuration Process duration [Console, HTML]
+- Dependency Resolve duration [Console, HTML]
+- Execution Process duration [Console, HTML]
+- Overall Build Process duration [Console, HTML]
+- Cache Hit [Console, HTML]
+- Success Build Rate [HTML]
+- Parallel Rate (Tasks are executed in parallel) [Console, HTML]
+- Modules source count [HTML]
+- Modules source method count [HTML]
+- Modules Parallel Rate [In Development...]
+- Modules Execution Process [In Development...] 
+- Modules Dependency Graph [In Development...]
+- Modules Build Size [In Development...]
+- Overall Build Weekly/Monthly Velocity Rate [In Development...]
+- Execution Process Weekly/Monthly Velocity Rate [In Development...]
+- Legacy Resource Count [In Development...]
+- Resource Total Size [In Development...]
+- System Resource Usage Rate [In Development...]
+
 Setup
 ---
 Dependency details will be added after publishing the first beta version
