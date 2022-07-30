@@ -59,6 +59,10 @@ Release
 ---
 Beta version will be published soon ;D (Waiting for Plugin Portal to review the beta version)
 
+Support
+---
+Tap on the ⭐ button if you like to support this plugin 🙂.
+
 License
 ---
 Copyright © 2022 [Janbarari](https://github.com/janbarari)  
