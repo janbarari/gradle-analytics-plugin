@@ -32,7 +32,7 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 /**
- * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ParallelRatioReport]
+ * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ParallelExecutionRateReport]
  */
 class RenderParallelExecutionRateReportStage(
     private val report: Report
@@ -40,20 +40,20 @@ class RenderParallelExecutionRateReportStage(
 
     companion object {
         private const val CHART_SUGGESTED_MAX_PERCENTAGE = 30
-        private const val PARALLEL_RATIO_METRIC_TEMPLATE_ID = "%parallel-ratio-metric%"
-        private const val PARALLEL_RATIO_METRIC_TEMPLATE_FILE_NAME = "parallel-ratio-metric-template"
+        private const val PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_ID = "%parallel-execution-rate-metric%"
+        private const val PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_FILE_NAME = "parallel-execution-rate-metric-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.parallelRatioReport.isNull())
-            return input.replace(PARALLEL_RATIO_METRIC_TEMPLATE_ID, getEmptyRender())
+        if (report.parallelExecutionRateReport.isNull())
+            return input.replace(PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(PARALLEL_RATIO_METRIC_TEMPLATE_ID, getMetricRender())
+        return input.replace(PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(PARALLEL_RATIO_METRIC_TEMPLATE_FILE_NAME)
-        report.parallelRatioReport.whenNotNull {
+        var renderedTemplate = HtmlUtils.getTemplate(PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_FILE_NAME)
+        report.parallelExecutionRateReport.whenNotNull {
             val chartValues = values.map { it.value }
                 .toIntList()
                 .toString()
@@ -74,7 +74,7 @@ class RenderParallelExecutionRateReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Parallel ratio is not available!")
+        return HtmlUtils.renderMessage("Parallel Execution Rate is not available!")
     }
 
 }

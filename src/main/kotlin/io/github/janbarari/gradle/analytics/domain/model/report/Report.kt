@@ -25,7 +25,6 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 @JsonClass(generateAdapter = true)
 data class Report(
@@ -51,7 +50,7 @@ data class Report(
 
     var dependencyResolveReport: DependencyResolveReport? = null
 
-    var parallelRatioReport: ParallelRatioReport? = null
+    var parallelExecutionRateReport: ParallelExecutionRateReport? = null
 
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().build()

@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ParallelRatioReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ParallelExecutionRateReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
@@ -53,7 +53,7 @@ class CreateParallelExecutionRateReportStage(
             }
 
         return report.apply {
-            parallelRatioReport = ParallelRatioReport(
+            parallelExecutionRateReport = ParallelExecutionRateReport(
                 values = chartPoints,
                 maxValue = chartPoints.maxValue(),
                 minValue = chartPoints.minValue()

@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ParallelRatioReport(
+data class ParallelExecutionRateReport(
     val values: List<ChartPoint>,
     val maxValue: Long,
     val minValue: Long
