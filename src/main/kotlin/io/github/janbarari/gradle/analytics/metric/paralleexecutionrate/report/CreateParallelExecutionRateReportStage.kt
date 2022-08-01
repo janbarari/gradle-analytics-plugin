@@ -44,7 +44,7 @@ class CreateParallelExecutionRateReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.parallelRatioMetric.isNotNull()
+            metric.parallelExecutionRateMetric.isNotNull()
         }.mapToParallelRatioTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()

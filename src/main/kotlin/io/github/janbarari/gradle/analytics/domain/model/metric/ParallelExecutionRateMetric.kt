@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class TotalBuildMetric(
-    @Json(name = "average")
-    var average: Long = 0L
+data class ParallelExecutionRateMetric(
+    @Json(name = "ratio")
+    var ratio: Long = 0L
 ): java.io.Serializable

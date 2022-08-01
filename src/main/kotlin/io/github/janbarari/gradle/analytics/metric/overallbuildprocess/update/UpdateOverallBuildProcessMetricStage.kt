@@ -31,7 +31,7 @@ class UpdateOverallBuildProcessMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            totalBuildMetric = updateOverallBuildProcessMetricUseCase.execute()
+            overallBuildProcessMetric = updateOverallBuildProcessMetricUseCase.execute()
         }
     }
 

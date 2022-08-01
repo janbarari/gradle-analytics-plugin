@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelRatioMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutionRateMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.whenEach
@@ -31,17 +31,17 @@ import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateParallelExecutionRateMetricUseCase(
     private val repo: DatabaseRepository
-): UseCaseNoInput<ParallelRatioMetric>() {
+): UseCaseNoInput<ParallelExecutionRateMetric>() {
 
-    override suspend fun execute(): ParallelRatioMetric {
+    override suspend fun execute(): ParallelExecutionRateMetric {
         val ratios = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            parallelRatioMetric.whenNotNull {
+            parallelExecutionRateMetric.whenNotNull {
                 ratios.add(ratio)
             }
         }
 
-        return ParallelRatioMetric(
+        return ParallelExecutionRateMetric(
             ratio = MathUtils.longMedian(ratios)
         )
     }

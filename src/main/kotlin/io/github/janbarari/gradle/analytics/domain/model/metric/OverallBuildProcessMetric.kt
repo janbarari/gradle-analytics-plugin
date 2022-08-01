@@ -20,16 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.report
+package io.github.janbarari.gradle.analytics.domain.model.metric
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class TotalBuildReport(
-    val values: List<ChartPoint>,
-    val maxValue: Long,
-    val minValue: Long
+data class OverallBuildProcessMetric(
+    @Json(name = "average")
+    var average: Long = 0L
 ): java.io.Serializable

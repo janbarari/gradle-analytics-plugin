@@ -49,7 +49,7 @@ data class BuildMetric(
     var executionMetric: ExecutionMetric? = null,
 
     @Json(name = "total_build_metric")
-    var totalBuildMetric: TotalBuildMetric? = null,
+    var overallBuildProcessMetric: OverallBuildProcessMetric? = null,
 
     @Json(name = "modules_source_count_metric")
     var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
@@ -67,6 +67,6 @@ data class BuildMetric(
     var dependencyResolveMetric: DependencyResolveMetric? = null,
 
     @Json(name = "parallel_ratio_metric")
-    var parallelRatioMetric: ParallelRatioMetric? = null
+    var parallelExecutionRateMetric: ParallelExecutionRateMetric? = null
 
 ): java.io.Serializable

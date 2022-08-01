@@ -42,7 +42,7 @@ class RenderOverallBuildProcessReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.totalBuildReport.isNull())
+        if (report.overallBuildProcessReport.isNull())
             return input.replace(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID, getEmptyRender())
 
         return input.replace(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID, getMetricRender())
@@ -54,7 +54,7 @@ class RenderOverallBuildProcessReportStage(
 
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME)
-        report.totalBuildReport.whenNotNull {
+        report.overallBuildProcessReport.whenNotNull {
             val chartValues = values.map { it.value }
                 .toIntList()
                 .toString()

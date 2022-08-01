@@ -23,13 +23,13 @@
 package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.OverallBuildProcessMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateOverallBuildProcessMetricUseCase: UseCase<BuildInfo, TotalBuildMetric>() {
+class CreateOverallBuildProcessMetricUseCase: UseCase<BuildInfo, OverallBuildProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): TotalBuildMetric {
-        return TotalBuildMetric(
+    override suspend fun execute(buildInfo: BuildInfo): OverallBuildProcessMetric {
+        return OverallBuildProcessMetric(
             average = buildInfo.getTotalDuration().toMillis()
         )
     }

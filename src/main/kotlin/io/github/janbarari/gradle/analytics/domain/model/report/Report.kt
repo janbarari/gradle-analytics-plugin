@@ -38,7 +38,7 @@ data class Report(
 
     var executionReport: ExecutionReport? = null
 
-    var totalBuildReport: TotalBuildReport? = null
+    var overallBuildProcessReport: OverallBuildProcessReport? = null
 
     var modulesSourceCountReport: ModulesSourceCountReport? = null
 

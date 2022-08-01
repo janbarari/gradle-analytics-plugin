@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.domain.model.report.TotalBuildReport
+import io.github.janbarari.gradle.analytics.domain.model.report.OverallBuildProcessReport
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
@@ -46,9 +46,9 @@ class CreateOverallBuildProcessReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.totalBuildMetric.isNotNull() &&
-                    metric.totalBuildMetric?.average.isNotNull() &&
-                    metric.totalBuildMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
+            metric.overallBuildProcessMetric.isNotNull() &&
+                    metric.overallBuildProcessMetric?.average.isNotNull() &&
+                    metric.overallBuildProcessMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
         }.mapToTotalBuildTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
@@ -57,7 +57,7 @@ class CreateOverallBuildProcessReportStage(
             }
 
         return report.apply {
-            totalBuildReport = TotalBuildReport(
+            overallBuildProcessReport = OverallBuildProcessReport(
                 values = chartPoints,
                 maxValue = chartPoints.maxValue(),
                 minValue = chartPoints.minValue()

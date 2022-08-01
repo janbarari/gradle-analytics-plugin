@@ -24,17 +24,17 @@ package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelRatioMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutionRateMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 
-class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelRatioMetric>() {
+class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelExecutionRateMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ParallelRatioMetric {
+    override suspend fun execute(buildInfo: BuildInfo): ParallelExecutionRateMetric {
         val nonParallelExecutionDuration = getNonParallelExecutionDuration(buildInfo.executedTasks)
         val parallelExecutionDuration = getParallelExecutionDuration(buildInfo.executedTasks)
         val ratio = (parallelExecutionDuration - nonParallelExecutionDuration).toPercentageOf(nonParallelExecutionDuration)
-        return ParallelRatioMetric(
+        return ParallelExecutionRateMetric(
             ratio = ratio.toLong()
         )
     }
