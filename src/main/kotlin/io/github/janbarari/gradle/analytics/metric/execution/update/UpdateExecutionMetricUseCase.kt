@@ -44,15 +44,15 @@ class UpdateExecutionMetricUseCase(
         repo.getTemporaryMetrics().whenEach {
             executionProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
-                average.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
+                median.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
                     .whenTrue {
-                        durations.add(average)
+                        durations.add(median)
                     }
             }
         }
 
         return ExecutionProcessMetric(
-            average = MathUtils.longMedian(durations)
+            median = MathUtils.longMedian(durations)
         )
     }
 

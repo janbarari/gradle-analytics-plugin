@@ -47,8 +47,8 @@ class CreateOverallBuildProcessReportStage(
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
             metric.overallBuildProcessMetric.isNotNull() &&
-                    metric.overallBuildProcessMetric?.average.isNotNull() &&
-                    metric.overallBuildProcessMetric?.average?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
+                    metric.overallBuildProcessMetric?.median.isNotNull() &&
+                    metric.overallBuildProcessMetric?.median?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
         }.mapToTotalBuildTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()

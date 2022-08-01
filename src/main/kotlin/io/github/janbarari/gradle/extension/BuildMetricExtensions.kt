@@ -38,7 +38,7 @@ fun List<BuildMetric>.mapToInitializationTimespanChartPoints(): List<TimespanCha
 fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.configurationProcessMetric).average,
+            value = ensureNotNull(it.configurationProcessMetric).median,
             from = it.createdAt,
             to = null
         )
@@ -48,7 +48,7 @@ fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChar
 fun List<BuildMetric>.mapToExecutionTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.executionProcessMetric).average / 1000L,
+            value = ensureNotNull(it.executionProcessMetric).median / 1000L,
             from = it.createdAt,
             to = null
         )
@@ -58,7 +58,7 @@ fun List<BuildMetric>.mapToExecutionTimespanChartPoints(): List<TimespanChartPoi
 fun List<BuildMetric>.mapToTotalBuildTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.overallBuildProcessMetric).average / 1000L,
+            value = ensureNotNull(it.overallBuildProcessMetric).median / 1000L,
             from = it.createdAt,
             to = null
         )
@@ -68,7 +68,7 @@ fun List<BuildMetric>.mapToTotalBuildTimespanChartPoints(): List<TimespanChartPo
 fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.successBuildRateMetric).ratio.toLong(),
+            value = ensureNotNull(it.successBuildRateMetric).rate.toLong(),
             from = it.createdAt,
             to = null
         )
@@ -78,7 +78,7 @@ fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<Timespan
 fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.dependencyResolveProcessMetric).average,
+            value = ensureNotNull(it.dependencyResolveProcessMetric).median,
             from = it.createdAt,
             to = null
         )
@@ -88,7 +88,7 @@ fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<Timespan
 fun List<BuildMetric>.mapToParallelRatioTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.parallelExecutionRateMetric).ratio,
+            value = ensureNotNull(it.parallelExecutionRateMetric).rate,
             from = it.createdAt,
             to = null
         )

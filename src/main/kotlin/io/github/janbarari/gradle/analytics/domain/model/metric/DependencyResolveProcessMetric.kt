@@ -29,6 +29,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class DependencyResolveProcessMetric(
-    @Json(name = "average")
-    var average: Long = 0L
+    @Json(name = "median")
+    var median: Long = 0L
 ): java.io.Serializable

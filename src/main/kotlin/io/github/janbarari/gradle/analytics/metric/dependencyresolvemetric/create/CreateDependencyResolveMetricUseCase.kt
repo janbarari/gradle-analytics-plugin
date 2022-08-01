@@ -30,7 +30,7 @@ class CreateDependencyResolveMetricUseCase: UseCase<BuildInfo, DependencyResolve
 
     override suspend fun execute(buildInfo: BuildInfo): DependencyResolveProcessMetric {
         return DependencyResolveProcessMetric(
-            average = buildInfo.getTotalDependenciesResolveDuration().toMillis()
+            median = buildInfo.getTotalDependenciesResolveDuration().toMillis()
         )
     }
 

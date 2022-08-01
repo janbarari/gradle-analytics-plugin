@@ -30,7 +30,7 @@ class CreateConfigurationMetricUseCase: UseCase<BuildInfo, ConfigurationProcessM
 
     override suspend fun execute(buildInfo: BuildInfo): ConfigurationProcessMetric {
         return ConfigurationProcessMetric(
-            average = buildInfo.getConfigurationDuration().toMillis()
+            median = buildInfo.getConfigurationDuration().toMillis()
         )
     }
 

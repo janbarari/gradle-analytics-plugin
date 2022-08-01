@@ -39,14 +39,14 @@ class UpdateCacheHitMetricUseCase(
         val temporaryMetrics = repo.getTemporaryMetrics()
 
         val hitRatios = temporaryMetrics.filter { it.cacheHitRateMetric.isNotNull() }
-            .map { ensureNotNull(it.cacheHitRateMetric).hitRatio }
+            .map { ensureNotNull(it.cacheHitRateMetric).rate }
 
         val modules = temporaryMetrics.last().cacheHitRateMetric?.modules?.modify {
-            hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
+            rate = getModuleMedianCacheHit(path, temporaryMetrics)
         } ?: return null
 
         return CacheHitRateMetric(
-            hitRatio = MathUtils.longMean(hitRatios),
+            rate = MathUtils.longMean(hitRatios),
             modules = modules
         )
     }
@@ -58,7 +58,7 @@ class UpdateCacheHitMetricUseCase(
                         && it.cacheHitRateMetric!!.modules.find { module -> module.path == path }.isNotNull()
             }
             .map {
-                it.cacheHitRateMetric!!.modules.find { module -> module.path == path }!!.hitRatio
+                it.cacheHitRateMetric!!.modules.find { module -> module.path == path }!!.rate
             }
 
         return MathUtils.longMean(hitRatios)

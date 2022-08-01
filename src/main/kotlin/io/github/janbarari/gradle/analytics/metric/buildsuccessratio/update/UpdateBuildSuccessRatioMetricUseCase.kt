@@ -39,7 +39,7 @@ class UpdateBuildSuccessRatioMetricUseCase(
 
         repo.getTemporaryMetrics().whenEach {
             successBuildRateMetric.whenNotNull {
-                when (ratio) {
+                when (rate) {
                     0F -> {
                         failures++
                     }
@@ -54,7 +54,7 @@ class UpdateBuildSuccessRatioMetricUseCase(
         val totalBuildCount = failures + successes
 
         return SuccessBuildRateMetric(
-            ratio = successes.toPercentageOf(totalBuildCount)
+            rate = successes.toPercentageOf(totalBuildCount)
         )
     }
 

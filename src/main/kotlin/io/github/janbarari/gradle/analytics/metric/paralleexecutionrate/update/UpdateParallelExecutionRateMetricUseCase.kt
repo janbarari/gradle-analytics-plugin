@@ -37,12 +37,12 @@ class UpdateParallelExecutionRateMetricUseCase(
         val ratios = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
             parallelExecutionRateMetric.whenNotNull {
-                ratios.add(ratio)
+                ratios.add(rate)
             }
         }
 
         return ParallelExecutionRateMetric(
-            ratio = MathUtils.longMedian(ratios)
+            rate = MathUtils.longMedian(ratios)
         )
     }
 

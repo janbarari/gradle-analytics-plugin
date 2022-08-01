@@ -35,7 +35,7 @@ class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelExec
         val parallelExecutionDuration = getParallelExecutionDuration(buildInfo.executedTasks)
         val ratio = (parallelExecutionDuration - nonParallelExecutionDuration).toPercentageOf(nonParallelExecutionDuration)
         return ParallelExecutionRateMetric(
-            ratio = ratio.toLong()
+            rate = ratio.toLong()
         )
     }
 
