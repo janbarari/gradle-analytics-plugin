@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class OverallBuildProcessReport(
-    val values: List<ChartPoint>,
-    val maxValue: Long,
-    val minValue: Long
+    val medianValues: List<ChartPoint>,
+    val suggestedMaxValue: Long,
+    val suggestedMinValue: Long
 ): java.io.Serializable

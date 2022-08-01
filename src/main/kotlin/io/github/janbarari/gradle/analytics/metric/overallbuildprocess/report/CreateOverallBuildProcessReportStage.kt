@@ -58,9 +58,9 @@ class CreateOverallBuildProcessReportStage(
 
         return report.apply {
             overallBuildProcessReport = OverallBuildProcessReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

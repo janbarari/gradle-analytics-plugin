@@ -58,7 +58,7 @@ data class BuildMetric(
     var modulesMethodCountMetric: ModulesMethodCountMetric? = null,
 
     @Json(name = "cache_hit_rate_metric")
-    var cacheHitRateMetric: CacheHitRateMetric? = null,
+    var cacheHitMetric: CacheHitMetric? = null,
 
     @Json(name = "success_build_rate_metric")
     var successBuildRateMetric: SuccessBuildRateMetric? = null,

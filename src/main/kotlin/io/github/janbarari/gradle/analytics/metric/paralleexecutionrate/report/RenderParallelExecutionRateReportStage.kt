@@ -54,14 +54,14 @@ class RenderParallelExecutionRateReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_FILE_NAME)
         report.parallelExecutionRateReport.whenNotNull {
-            val chartValues = values.map { it.value }
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MAX_PERCENTAGE)
             val chartSuggestedMinValue = 0
 
             renderedTemplate = renderedTemplate

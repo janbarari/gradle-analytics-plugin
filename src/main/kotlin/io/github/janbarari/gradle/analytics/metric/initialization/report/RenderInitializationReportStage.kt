@@ -42,7 +42,7 @@ class RenderInitializationReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.initializationReport.isNull())
+        if (report.initializationProcessReport.isNull())
             return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getEmptyRender())
 
         return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getMetricRender())
@@ -54,16 +54,16 @@ class RenderInitializationReportStage(
 
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(INITIALIZATION_METRIC_TEMPLATE_FILE_NAME)
-        report.initializationReport.whenNotNull {
-            val chartValues = values.map { it.value }
+        report.initializationProcessReport.whenNotNull {
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
                 .replace("%initialization-suggested-max-value%", chartSuggestedMaxValue.toString())

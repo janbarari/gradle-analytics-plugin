@@ -53,7 +53,7 @@ class RenderModulesSourceCountStage(
 
         var totalDiffRatioRender = "<td>-</td>"
         report.modulesSourceCountReport.whenNotNull {
-            totalDiffRatio.whenNotNull {
+            totalDiffRate.whenNotNull {
                 totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
@@ -67,7 +67,7 @@ class RenderModulesSourceCountStage(
         val tableData = buildString {
             report.modulesSourceCountReport?.values?.forEachIndexed { index, it ->
                 var diffRatioRender = "<td>-</td>"
-                it.diffRatio.whenNotNull {
+                it.diffRate.whenNotNull {
                     diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0){

@@ -27,10 +27,8 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 
@@ -57,20 +55,20 @@ class RenderCacheHitReportStage(
     @Suppress("LongMethod")
     fun getMetricRender(): String {
         val overallChartValues = ensureNotNull(report.cacheHitReport)
-            .overallValues
+            .overallMedianValues
             .map { it.value }
             .toIntList()
             .toString()
 
         val overallChartLabels = ensureNotNull(report.cacheHitReport)
-            .overallValues
+            .overallMedianValues
             .map { it.description }
             .toArrayString()
 
         val tableData = buildString {
             report.cacheHitReport?.modules?.forEachIndexed { index, it ->
                 var diffRatioRender = "<td>-</td>"
-                it.diffRatio.whenNotNull {
+                it.diffRate.whenNotNull {
                     diffRatioRender = if (this > 0) {
                         "<td class=\"green\">+${this}%</td>"
                     } else if (this < 0) {
@@ -84,7 +82,7 @@ class RenderCacheHitReportStage(
                     <tr>
                         <td>${index + 1}</td>
                         <td>${it.path}</td>
-                        <td>${it.hitRatio}%</td>
+                        <td>${it.rate}%</td>
                         $diffRatioRender
                     </tr>
                 """.trimIndent()
@@ -92,10 +90,10 @@ class RenderCacheHitReportStage(
             }
         }
 
-        val overallCacheHit = ensureNotNull(report.cacheHitReport).overallHit.toString() + "%"
+        val overallCacheHit = ensureNotNull(report.cacheHitReport).overallRate.toString() + "%"
 
         var overallDiffRatioRender = "<td>-</td>"
-        ensureNotNull(report.cacheHitReport).overallDiffRatio.whenNotNull {
+        ensureNotNull(report.cacheHitReport).overallDiffRate.whenNotNull {
             overallDiffRatioRender = if (this > 0) {
                 "<td class=\"green\">+${this}%</td>"
             } else if (this < 0) {
@@ -110,7 +108,7 @@ class RenderCacheHitReportStage(
 
         val bestChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == bestModulePath }
-            .values
+            .medianValues
             .map {
                 it.value
             }
@@ -119,7 +117,7 @@ class RenderCacheHitReportStage(
 
         val worstChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
-            .values
+            .medianValues
             .map {
                 it.value
             }
@@ -128,7 +126,7 @@ class RenderCacheHitReportStage(
 
         val bwLabels = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
-            .values
+            .medianValues
             .map { it.description }
             .toArrayString()
 
@@ -151,14 +149,14 @@ class RenderCacheHitReportStage(
     fun getBestModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
-            module.values.sumOf { it.value }
+            module.medianValues.sumOf { it.value }
         }.first().path
     }
 
     fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isNull()) return null
         return modules.sortedByDescending { module ->
-            module.values.sumOf { it.value }
+            module.medianValues.sumOf { it.value }
         }.last().path
     }
 

@@ -40,7 +40,7 @@ class RenderBuildSuccessRatioReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.buildSuccessRatioReport.isNull())
+        if (report.successBuildRateReport.isNull())
             return input.replace(BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID, getEmptyRender())
 
         return input.replace(BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID, getMetricRender())
@@ -52,12 +52,12 @@ class RenderBuildSuccessRatioReportStage(
 
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME)
-        report.buildSuccessRatioReport.whenNotNull {
-            val chartValues = values.map { it.value }
+        report.successBuildRateReport.whenNotNull {
+            val chartValues = median.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = median.map { it.description }
                 .toArrayString()
 
             renderedTemplate = renderedTemplate

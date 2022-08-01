@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.initialization.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.InitializationReport
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -57,10 +57,10 @@ class CreateInitializationReportStage(
             }
 
         return report.apply {
-            initializationReport = InitializationReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+            initializationProcessReport = InitializationProcessReport(
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

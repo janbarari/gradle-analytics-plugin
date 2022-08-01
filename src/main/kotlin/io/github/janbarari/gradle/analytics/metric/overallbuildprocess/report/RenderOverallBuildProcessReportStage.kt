@@ -55,15 +55,15 @@ class RenderOverallBuildProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME)
         report.overallBuildProcessReport.whenNotNull {
-            val chartValues = values.map { it.value }
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())

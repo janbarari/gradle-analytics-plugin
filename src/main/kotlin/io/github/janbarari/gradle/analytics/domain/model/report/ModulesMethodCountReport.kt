@@ -30,5 +30,5 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 data class ModulesMethodCountReport(
     val values: List<ModuleMethodCountReport>,
     val totalMethodCount: Int,
-    val totalDiffRatio: Float? = null
+    val totalDiffRate: Float? = null
 )

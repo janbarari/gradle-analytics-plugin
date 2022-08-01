@@ -72,7 +72,7 @@ class CreateModulesSourceCountReportStage(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(totalSourceCount),
-                    diffRatio = null // The ratio does not exist when there is only one item
+                    diffRate = null // The ratio does not exist when there is only one item
                 )
             )
         }
@@ -80,7 +80,7 @@ class CreateModulesSourceCountReportStage(
         return ModulesSourceCountReport(
             values = values.sortedByDescending { it.value },
             totalSourceCount = totalSourceCount,
-            totalDiffRatio = null // The ratio does not exist when there is only one item
+            totalDiffRate = null // The ratio does not exist when there is only one item
         )
     }
 
@@ -96,7 +96,7 @@ class CreateModulesSourceCountReportStage(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(lastTotalSourceCount),
-                    diffRatio = calculateModuleDiffRatio(metrics, path, value)
+                    diffRate = calculateModuleDiffRatio(metrics, path, value)
                 )
             )
         }
@@ -104,7 +104,7 @@ class CreateModulesSourceCountReportStage(
         return ModulesSourceCountReport(
             values = values.sortedByDescending { it.value },
             totalSourceCount = lastTotalSourceCount,
-            totalDiffRatio = totalDiffRatio
+            totalDiffRate = totalDiffRatio
         )
     }
 

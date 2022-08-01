@@ -32,7 +32,7 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 /**
- * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveReport].
+ * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport].
  */
 class RenderDependencyResolveReportStage(
     private val report: Report
@@ -45,7 +45,7 @@ class RenderDependencyResolveReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.dependencyResolveReport.isNull()) {
+        if (report.dependencyResolveProcessReport.isNull()) {
             return input.replace(DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID, getEmptyRender())
         }
 
@@ -54,18 +54,18 @@ class RenderDependencyResolveReportStage(
 
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME)
-        report.dependencyResolveReport.whenNotNull {
-            val chartValues = values.map { it.value }
+        report.dependencyResolveProcessReport.whenNotNull {
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue,
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue,
                 CHART_SUGGESTED_MIN_MAX_PERCENTAGE
             )
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue,
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue,
                 CHART_SUGGESTED_MIN_MAX_PERCENTAGE
             )
 

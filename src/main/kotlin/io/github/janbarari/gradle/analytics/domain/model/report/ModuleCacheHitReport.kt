@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @JsonClass(generateAdapter = true)
 data class ModuleCacheHitReport(
     val path: String,
-    val hitRatio: Long,
-    val diffRatio: Float? = null,
-    val values: List<ChartPoint>
+    val rate: Long,
+    val diffRate: Float? = null,
+    val medianValues: List<ChartPoint>
 ): java.io.Serializable

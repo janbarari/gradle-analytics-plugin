@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.configuration.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -57,10 +57,10 @@ class CreateConfigurationReportStage(
             }
 
         return report.apply {
-            configurationReport = ConfigurationReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+            configurationProcessReport = ConfigurationProcessReport(
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

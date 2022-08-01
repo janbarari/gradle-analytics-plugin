@@ -24,19 +24,15 @@ package io.github.janbarari.gradle.analytics.metric.configuration.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
-import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.removeLastChar
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 /**
- * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport].
+ * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport].
  */
 class RenderConfigurationReportStage(
     private val report: Report
@@ -49,7 +45,7 @@ class RenderConfigurationReportStage(
     }
 
     override suspend fun process(input: String): String {
-        if (report.configurationReport.isNull()) {
+        if (report.configurationProcessReport.isNull()) {
             return input.replace(CONFIGURATION_METRIC_TEMPLATE_ID, getEmptyRender())
         }
 
@@ -58,16 +54,16 @@ class RenderConfigurationReportStage(
 
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(CONFIGURATION_METRIC_TEMPLATE_FILE_NAME)
-        report.configurationReport.whenNotNull {
-            val chartValues = values.map { it.value }
+        report.configurationProcessReport.whenNotNull {
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = values.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
                 .replace("%configuration-max-value%", chartSuggestedMaxValue.toString())

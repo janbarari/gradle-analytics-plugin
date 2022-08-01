@@ -54,9 +54,9 @@ class CreateParallelExecutionRateReportStage(
 
         return report.apply {
             parallelExecutionRateReport = ParallelExecutionRateReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

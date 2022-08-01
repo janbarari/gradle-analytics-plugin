@@ -174,7 +174,7 @@ class BuildExecutionLogicImp(
             printLine("Dependency Resolve Process:", "${buildMetric.dependencyResolveProcessMetric?.median} ms")
             printLine("Execution Process:", "${buildMetric.executionProcessMetric?.median} ms")
             printLine("Overall Build Process:", "${buildMetric.overallBuildProcessMetric?.median} ms")
-            printLine("Cache Hit:", "${buildMetric.cacheHitRateMetric?.rate}%")
+            printLine("Cache Hit:", "${buildMetric.cacheHitMetric?.rate}%")
             printLine("Parallel Ratio:", "${buildMetric.parallelExecutionRateMetric?.rate}%")
             printBreakLine('-')
             printLine("Datetime:", DateTimeUtils.formatToDateTime(buildMetric.createdAt))

@@ -20,17 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class CacheHitRateMetric(
-    @Json(name = "rate")
-    val rate: Long,
-    @Json(name = "modules")
-    val modules: List<ModuleCacheHit>
+data class ConfigurationProcessReport(
+    val medianValues: List<ChartPoint>,
+    val suggestedMaxValue: Long,
+    val suggestedMinValue: Long
 ): java.io.Serializable

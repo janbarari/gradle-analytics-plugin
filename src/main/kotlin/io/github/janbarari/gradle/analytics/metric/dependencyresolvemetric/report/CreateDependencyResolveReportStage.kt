@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveReport
+import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -56,10 +56,10 @@ class CreateDependencyResolveReportStage(
             }
 
         return report.apply {
-            dependencyResolveReport = DependencyResolveReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+            dependencyResolveProcessReport = DependencyResolveProcessReport(
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

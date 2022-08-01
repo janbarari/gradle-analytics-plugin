@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.execution.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -57,10 +57,10 @@ class CreateExecutionReportStage(
             }
 
         return report.apply {
-            executionReport = ExecutionReport(
-                values = chartPoints,
-                maxValue = chartPoints.maxValue(),
-                minValue = chartPoints.minValue()
+            executionProcessReport = ExecutionProcessReport(
+                medianValues = chartPoints,
+                suggestedMaxValue = chartPoints.maxValue(),
+                suggestedMinValue = chartPoints.minValue()
             )
         }
     }

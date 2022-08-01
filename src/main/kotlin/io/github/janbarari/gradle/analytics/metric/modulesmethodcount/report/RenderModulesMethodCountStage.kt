@@ -53,7 +53,7 @@ class RenderModulesMethodCountStage(
 
         var totalDiffRatioRender = "<td>-</td>"
         report.modulesMethodCountReport.whenNotNull {
-            totalDiffRatio.whenNotNull {
+            totalDiffRate.whenNotNull {
                 totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
@@ -67,7 +67,7 @@ class RenderModulesMethodCountStage(
         val tableData = buildString {
             report.modulesMethodCountReport?.values?.forEachIndexed { index, it ->
                 var diffRatioRender = "<td>-</td>"
-                it.diffRatio.whenNotNull {
+                it.diffRate.whenNotNull {
                     diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0) {

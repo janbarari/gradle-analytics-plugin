@@ -32,11 +32,11 @@ data class Report(
     val requestedTasks: String
 ) : java.io.Serializable {
 
-    var initializationReport: InitializationReport? = null
+    var initializationProcessReport: InitializationProcessReport? = null
 
-    var configurationReport: ConfigurationReport? = null
+    var configurationProcessReport: ConfigurationProcessReport? = null
 
-    var executionReport: ExecutionReport? = null
+    var executionProcessReport: ExecutionProcessReport? = null
 
     var overallBuildProcessReport: OverallBuildProcessReport? = null
 
@@ -46,9 +46,9 @@ data class Report(
 
     var cacheHitReport: CacheHitReport? = null
 
-    var buildSuccessRatioReport: BuildSuccessRatioReport? = null
+    var successBuildRateReport: SuccessBuildRateReport? = null
 
-    var dependencyResolveReport: DependencyResolveReport? = null
+    var dependencyResolveProcessReport: DependencyResolveProcessReport? = null
 
     var parallelExecutionRateReport: ParallelExecutionRateReport? = null
 

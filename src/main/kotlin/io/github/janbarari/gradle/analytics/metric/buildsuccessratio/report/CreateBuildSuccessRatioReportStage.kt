@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.BuildSuccessRatioReport
+import io.github.janbarari.gradle.analytics.domain.model.report.SuccessBuildRateReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
@@ -51,7 +51,7 @@ class CreateBuildSuccessRatioReportStage(
             }
 
         return report.apply {
-            buildSuccessRatioReport = BuildSuccessRatioReport(
+            successBuildRateReport = SuccessBuildRateReport(
                 chartPoints
             )
         }
