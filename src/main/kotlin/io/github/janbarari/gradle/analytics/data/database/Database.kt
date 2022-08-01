@@ -76,10 +76,12 @@ class Database(
             is MySqlDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
                 connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
+                ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
             }
             is SqliteDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
                 connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
+                ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
             }
         }
 

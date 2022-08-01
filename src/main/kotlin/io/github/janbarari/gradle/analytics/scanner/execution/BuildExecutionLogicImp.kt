@@ -133,7 +133,8 @@ class BuildExecutionLogicImp(
         val createCacheHitMetricStage = CreateCacheHitMetricStage(info, modulesInfo, createCacheHitMetricUseCase)
         val createBuildSuccessRatioMetricStage = CreateBuildSuccessRatioMetricStage(info, createBuildSuccessRatioMetricUseCase)
         val createDependencyResolveMetricStage = CreateDependencyResolveMetricStage(info, createDependencyResolveMetricUseCase)
-        val createParallelExecutionRateMetricStage = CreateParallelExecutionRateMetricStage(info, createParallelExecutionRateMetricUseCase)
+        val createParallelExecutionRateMetricStage =
+            CreateParallelExecutionRateMetricStage(info, createParallelExecutionRateMetricUseCase)
 
         val buildMetric = CreateMetricPipeline(createInitializationMetricStage)
             .addStage(createConfigurationMetricStage)

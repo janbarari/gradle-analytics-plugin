@@ -80,7 +80,8 @@ class SaveMetricUseCase(
             val updateCacheHitMetricStage = UpdateCacheHitMetricStage(updateCacheHitMetricUseCase)
             val updateBuildSuccessRatioMetricStage = UpdateBuildSuccessRatioMetricStage(updateBuildSuccessRatioMetricUseCase)
             val updateDependencyResolveMetricStage = UpdateDependencyResolveMetricStage(updateDependencyResolveMetricUseCase)
-            val updateParallelExecutionRateMetricStage = UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase)
+            val updateParallelExecutionRateMetricStage =
+                UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase)
 
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationMetricStage)
