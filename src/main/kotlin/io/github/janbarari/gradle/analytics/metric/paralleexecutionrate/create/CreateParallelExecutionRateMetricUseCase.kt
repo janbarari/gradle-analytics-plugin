@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.create
+package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelRatioMet
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 
-class CreateParallelRatioMetricUseCase : UseCase<BuildInfo, ParallelRatioMetric>() {
+class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelRatioMetric>() {
 
     override suspend fun execute(buildInfo: BuildInfo): ParallelRatioMetric {
         val nonParallelExecutionDuration = getNonParallelExecutionDuration(buildInfo.executedTasks)

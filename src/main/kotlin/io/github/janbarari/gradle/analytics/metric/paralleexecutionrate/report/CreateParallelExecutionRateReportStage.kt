@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.report
+package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ParallelRatioReport
@@ -34,7 +34,7 @@ import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 
-class CreateParallelRatioReportStage(
+class CreateParallelExecutionRateReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 

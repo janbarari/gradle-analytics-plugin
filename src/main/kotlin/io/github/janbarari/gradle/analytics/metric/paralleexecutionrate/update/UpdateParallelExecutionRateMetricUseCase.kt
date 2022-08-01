@@ -20,23 +20,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.create
+package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelRatioMetric
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.MathUtils
 
-class CreateParallelRatioMetricStage(
-    private val buildInfo: BuildInfo,
-    private val createParallelRatioMetricUseCase: CreateParallelRatioMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+class UpdateParallelExecutionRateMetricUseCase(
+    private val repo: DatabaseRepository
+): UseCaseNoInput<ParallelRatioMetric>() {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            if (buildInfo.isSuccessful) {
-                parallelRatioMetric = createParallelRatioMetricUseCase.execute(buildInfo)
+    override suspend fun execute(): ParallelRatioMetric {
+        val ratios = arrayListOf<Long>()
+        repo.getTemporaryMetrics().whenEach {
+            parallelRatioMetric.whenNotNull {
+                ratios.add(ratio)
             }
         }
+
+        return ParallelRatioMetric(
+            ratio = MathUtils.longMedian(ratios)
+        )
     }
 
 }

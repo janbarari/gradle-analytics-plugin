@@ -40,8 +40,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
-import io.github.janbarari.gradle.analytics.metric.parallelratio.report.CreateParallelRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.parallelratio.report.RenderParallelRatioReportStage
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -82,7 +82,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateCacheHitReportStage(data))
             .addStage(CreateBuildSuccessRatioReportStage(data))
             .addStage(CreateDependencyResolveReportStage(data))
-            .addStage(CreateParallelRatioReportStage(data))
+            .addStage(CreateParallelExecutionRateReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -104,7 +104,7 @@ class ReportAnalyticsLogicImp(
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
         val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
         val renderDependencyResolveReportStage = RenderDependencyResolveReportStage(report)
-        val renderParallelRatioReportStage = RenderParallelRatioReportStage(report)
+        val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationReportStage)
@@ -116,7 +116,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderCacheHitReportStage)
             .addStage(renderBuildSuccessRatioReportStage)
             .addStage(renderDependencyResolveReportStage)
-            .addStage(renderParallelRatioReportStage)
+            .addStage(renderParallelExecutionRateReportStage)
             .execute(rawHTML)
     }
 

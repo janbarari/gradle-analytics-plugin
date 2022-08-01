@@ -46,8 +46,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.parallelratio.update.UpdateParallelRatioMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
@@ -128,8 +128,8 @@ fun BuildExecutionInjector.provideUpdateDependencyResolveMetricUseCase(): Update
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdateParallelRatioMetricUseCase {
-    return UpdateParallelRatioMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdateParallelExecutionRateMetricUseCase {
+    return UpdateParallelExecutionRateMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
@@ -200,8 +200,8 @@ fun BuildExecutionInjector.provideCreateDependencyResolveMetricUseCase(): Create
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreateParallelRatioMetricUseCase {
-    return CreateParallelRatioMetricUseCase()
+fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreateParallelExecutionRateMetricUseCase {
+    return CreateParallelExecutionRateMetricUseCase()
 }
 
 @ExcludeJacocoGenerated

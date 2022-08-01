@@ -20,18 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.update
+package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
-class UpdateParallelRatioMetricStage(
-    private val updateParallelRatioMetricUseCase: UpdateParallelRatioMetricUseCase
+class UpdateParallelExecutionRateMetricStage(
+    private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            parallelRatioMetric = updateParallelRatioMetricUseCase.execute()
+            parallelRatioMetric = updateParallelExecutionRateMetricUseCase.execute()
         }
     }
 

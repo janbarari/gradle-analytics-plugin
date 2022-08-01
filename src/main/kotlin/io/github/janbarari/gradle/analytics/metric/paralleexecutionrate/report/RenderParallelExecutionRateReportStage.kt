@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.parallelratio.report
+package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -34,7 +34,7 @@ import io.github.janbarari.gradle.utils.MathUtils
 /**
  * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ParallelRatioReport]
  */
-class RenderParallelRatioReportStage(
+class RenderParallelExecutionRateReportStage(
     private val report: Report
 ): Stage<String, String> {
 
