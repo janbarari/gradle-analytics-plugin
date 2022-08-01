@@ -42,8 +42,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.Crea
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.parallelratio.report.CreateParallelRatioReportStage
 import io.github.janbarari.gradle.analytics.metric.parallelratio.report.RenderParallelRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.report.CreateTotalBuildReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.report.RenderTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -76,7 +76,7 @@ class ReportAnalyticsLogicImp(
         val report = CreateReportPipeline(CreateInitializationReportStage(data))
             .addStage(CreateConfigurationReportStage(data))
             .addStage(CreateExecutionReportStage(data))
-            .addStage(CreateTotalBuildReportStage(data))
+            .addStage(CreateOverallBuildProcessReportStage(data))
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data))
@@ -98,7 +98,7 @@ class ReportAnalyticsLogicImp(
         val renderInitializationReportStage = RenderInitializationReportStage(report)
         val renderConfigurationReportStage = RenderConfigurationReportStage(report)
         val renderExecutionReportStage = RenderExecutionReportStage(report)
-        val renderTotalBuildReportStage = RenderTotalBuildReportStage(report)
+        val renderOverallBuildProcessReportStage = RenderOverallBuildProcessReportStage(report)
         val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
         val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
@@ -110,7 +110,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderInitializationReportStage)
             .addStage(renderConfigurationReportStage)
             .addStage(renderExecutionReportStage)
-            .addStage(renderTotalBuildReportStage)
+            .addStage(renderOverallBuildProcessReportStage)
             .addStage(renderModulesSourceCountReportStage)
             .addStage(renderModulesMethodCountReportStage)
             .addStage(renderCacheHitReportStage)

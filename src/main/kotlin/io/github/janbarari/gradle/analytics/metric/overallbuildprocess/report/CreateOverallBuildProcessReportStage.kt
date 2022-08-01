@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild.report
+package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -35,7 +35,7 @@ import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 
-class CreateTotalBuildReportStage(
+class CreateOverallBuildProcessReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 

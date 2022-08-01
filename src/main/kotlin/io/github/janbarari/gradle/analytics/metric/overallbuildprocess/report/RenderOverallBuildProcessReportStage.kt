@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild.report
+package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -31,29 +31,29 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-class RenderTotalBuildReportStage(
+class RenderOverallBuildProcessReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val TOTALBUILD_METRIC_TEMPLATE_ID = "%totalbuild-metric%"
-        private const val TOTALBUILD_METRIC_TEMPLATE_FILE_NAME = "totalbuild-metric-template"
+        private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID = "%overall-build-process-metric%"
+        private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME = "overall-build-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
         if (report.totalBuildReport.isNull())
-            return input.replace(TOTALBUILD_METRIC_TEMPLATE_ID, getEmptyRender())
+            return input.replace(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(TOTALBUILD_METRIC_TEMPLATE_ID, getMetricRender())
+        return input.replace(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Total build chart is not available!")
+        return HtmlUtils.renderMessage("Overall Build Process is not available!")
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(TOTALBUILD_METRIC_TEMPLATE_FILE_NAME)
+        var renderedTemplate = HtmlUtils.getTemplate(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME)
         report.totalBuildReport.whenNotNull {
             val chartValues = values.map { it.value }
                 .toIntList()
@@ -66,10 +66,10 @@ class RenderTotalBuildReportStage(
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(minValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
-                .replace("%totalbuild-suggested-max-value%", chartSuggestedMaxValue.toString())
-                .replace("%totalbuild-suggested-min-value%", chartSuggestedMinValue.toString())
-                .replace("%totalbuild-median-values%", chartValues)
-                .replace("%totalbuild-median-labels%", chartLabels)
+                .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%chart-values%", chartValues)
+                .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
     }

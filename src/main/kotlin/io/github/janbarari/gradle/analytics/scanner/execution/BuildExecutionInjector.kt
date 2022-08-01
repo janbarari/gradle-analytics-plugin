@@ -48,8 +48,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.Crea
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.parallelratio.update.UpdateParallelRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.update.UpdateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 
@@ -98,8 +98,8 @@ fun BuildExecutionInjector.provideUpdateExecutionMetricUseCase(): UpdateExecutio
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateTotalBuildMetricUseCase {
-    return UpdateTotalBuildMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateOverallBuildProcessMetricUseCase {
+    return UpdateOverallBuildProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
@@ -170,8 +170,8 @@ fun BuildExecutionInjector.provideCreateExecutionMetricUseCase(): CreateExecutio
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateTotalBuildMetricUseCase {
-    return CreateTotalBuildMetricUseCase()
+fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateOverallBuildProcessMetricUseCase {
+    return CreateOverallBuildProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated

@@ -50,8 +50,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.Crea
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricStage
 import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
@@ -65,7 +65,6 @@ import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.GitUtils
 import kotlinx.coroutines.runBlocking
-import java.util.Collections
 
 /**
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
@@ -76,7 +75,7 @@ class BuildExecutionLogicImp(
     private val createInitializationMetricUseCase: CreateInitializationMetricUseCase,
     private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
     private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
-    private val createTotalBuildMetricUseCase: CreateTotalBuildMetricUseCase,
+    private val createOverallBuildProcessMetricUseCase: CreateOverallBuildProcessMetricUseCase,
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
@@ -125,7 +124,8 @@ class BuildExecutionLogicImp(
         val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
         val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
         val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
-        val createTotalBuildMetricStage = CreateTotalBuildMetricStage(info, createTotalBuildMetricUseCase)
+        val createOverallBuildProcessMetricStage =
+            CreateOverallBuildProcessMetricStage(info, createOverallBuildProcessMetricUseCase)
         val createModulesSourceCountMetricStage =
             CreateModulesSourceCountMetricStage(modulesInfo, createModulesSourceCountMetricUseCase)
         val createModulesMethodCountMetricStage =
@@ -138,7 +138,7 @@ class BuildExecutionLogicImp(
         val buildMetric = CreateMetricPipeline(createInitializationMetricStage)
             .addStage(createConfigurationMetricStage)
             .addStage(createExecutionMetricStage)
-            .addStage(createTotalBuildMetricStage)
+            .addStage(createOverallBuildProcessMetricStage)
             .addStage(createModulesSourceCountMetricStage)
             .addStage(createModulesMethodCountMetricStage)
             .addStage(createCacheHitMetricStage)

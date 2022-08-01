@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild.update
+package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-class UpdateTotalBuildMetricUseCase(
+class UpdateOverallBuildProcessMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<TotalBuildMetric>() {
 

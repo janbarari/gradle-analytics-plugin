@@ -20,18 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.totalbuild.create
+package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.TotalBuildMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-class CreateTotalBuildMetricUseCase: UseCase<BuildInfo, TotalBuildMetric>() {
+class UpdateOverallBuildProcessMetricStage(
+    private val updateOverallBuildProcessMetricUseCase: UpdateOverallBuildProcessMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun execute(buildInfo: BuildInfo): TotalBuildMetric {
-        return TotalBuildMetric(
-            average = buildInfo.getTotalDuration().toMillis()
-        )
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            totalBuildMetric = updateOverallBuildProcessMetricUseCase.execute()
+        }
     }
 
 }
