@@ -46,9 +46,9 @@ class CreateConfigurationReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.configurationMetric.isNotNull() &&
-                    metric.configurationMetric?.average.isNotNull() &&
-                    metric.configurationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+            metric.configurationProcessMetric.isNotNull() &&
+                    metric.configurationProcessMetric?.average.isNotNull() &&
+                    metric.configurationProcessMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
         }.mapToConfigurationTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()

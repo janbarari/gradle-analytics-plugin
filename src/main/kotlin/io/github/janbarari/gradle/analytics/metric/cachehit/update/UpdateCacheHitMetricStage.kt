@@ -31,7 +31,7 @@ class UpdateCacheHitMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            cacheHitMetric = updateCacheHitMetricUseCase.execute()
+            cacheHitRateMetric = updateCacheHitMetricUseCase.execute()
         }
     }
 

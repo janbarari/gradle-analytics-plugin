@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 fun List<BuildMetric>.mapToInitializationTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.initializationMetric).average,
+            value = ensureNotNull(it.initializationProcessMetric).median,
             from = it.createdAt,
             to = null
         )
@@ -38,7 +38,7 @@ fun List<BuildMetric>.mapToInitializationTimespanChartPoints(): List<TimespanCha
 fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.configurationMetric).average,
+            value = ensureNotNull(it.configurationProcessMetric).average,
             from = it.createdAt,
             to = null
         )
@@ -48,7 +48,7 @@ fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChar
 fun List<BuildMetric>.mapToExecutionTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.executionMetric).average / 1000L,
+            value = ensureNotNull(it.executionProcessMetric).average / 1000L,
             from = it.createdAt,
             to = null
         )
@@ -68,7 +68,7 @@ fun List<BuildMetric>.mapToTotalBuildTimespanChartPoints(): List<TimespanChartPo
 fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.buildSuccessRatioMetric).ratio.toLong(),
+            value = ensureNotNull(it.successBuildRateMetric).ratio.toLong(),
             from = it.createdAt,
             to = null
         )
@@ -78,7 +78,7 @@ fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<Timespan
 fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.dependencyResolveMetric).average,
+            value = ensureNotNull(it.dependencyResolveProcessMetric).average,
             from = it.createdAt,
             to = null
         )

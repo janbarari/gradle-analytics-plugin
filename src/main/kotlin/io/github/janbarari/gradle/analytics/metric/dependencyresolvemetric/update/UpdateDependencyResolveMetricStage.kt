@@ -31,7 +31,7 @@ class UpdateDependencyResolveMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            dependencyResolveMetric = updateDependencyResolveMetricUseCase.execute()
+            dependencyResolveProcessMetric = updateDependencyResolveMetricUseCase.execute()
         }
     }
 

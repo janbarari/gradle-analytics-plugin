@@ -31,7 +31,7 @@ class UpdateConfigurationMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            configurationMetric = updateConfigurationMetricUseCase.execute()
+            configurationProcessMetric = updateConfigurationMetricUseCase.execute()
         }
     }
 

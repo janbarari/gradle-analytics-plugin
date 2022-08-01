@@ -34,7 +34,7 @@ class CreateInitializationMetricStage(
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
             if (buildInfo.isSuccessful) {
-                initializationMetric = createInitializationMetricUseCase.execute(buildInfo)
+                initializationProcessMetric = createInitializationMetricUseCase.execute(buildInfo)
             }
         }
     }

@@ -46,8 +46,8 @@ class CreateDependencyResolveReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.dependencyResolveMetric.isNotNull() &&
-                    metric.dependencyResolveMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+            metric.dependencyResolveProcessMetric.isNotNull() &&
+                    metric.dependencyResolveProcessMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
         }.mapToDependencyResolveTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()

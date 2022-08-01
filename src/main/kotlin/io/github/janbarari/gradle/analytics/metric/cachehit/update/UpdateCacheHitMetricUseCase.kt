@@ -23,32 +23,29 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
+import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitRateMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.modify
-import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateCacheHitMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<CacheHitMetric?>() {
+) : UseCaseNoInput<CacheHitRateMetric?>() {
 
-    override suspend fun execute(): CacheHitMetric? {
+    override suspend fun execute(): CacheHitRateMetric? {
         val temporaryMetrics = repo.getTemporaryMetrics()
 
-        val hitRatios = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
-            .map { ensureNotNull(it.cacheHitMetric).hitRatio }
+        val hitRatios = temporaryMetrics.filter { it.cacheHitRateMetric.isNotNull() }
+            .map { ensureNotNull(it.cacheHitRateMetric).hitRatio }
 
-        val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
+        val modules = temporaryMetrics.last().cacheHitRateMetric?.modules?.modify {
             hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
         } ?: return null
 
-        return CacheHitMetric(
+        return CacheHitRateMetric(
             hitRatio = MathUtils.longMean(hitRatios),
             modules = modules
         )
@@ -57,11 +54,11 @@ class UpdateCacheHitMetricUseCase(
     private fun getModuleMedianCacheHit(path: String, metrics: List<BuildMetric>): Long {
         val hitRatios = metrics
             .filter {
-                it.cacheHitMetric.isNotNull()
-                        && it.cacheHitMetric!!.modules.find { module -> module.path == path }.isNotNull()
+                it.cacheHitRateMetric.isNotNull()
+                        && it.cacheHitRateMetric!!.modules.find { module -> module.path == path }.isNotNull()
             }
             .map {
-                it.cacheHitMetric!!.modules.find { module -> module.path == path }!!.hitRatio
+                it.cacheHitRateMetric!!.modules.find { module -> module.path == path }!!.hitRatio
             }
 
         return MathUtils.longMean(hitRatios)

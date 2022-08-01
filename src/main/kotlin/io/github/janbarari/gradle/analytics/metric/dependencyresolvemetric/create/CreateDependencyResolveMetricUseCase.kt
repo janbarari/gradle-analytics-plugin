@@ -23,13 +23,13 @@
 package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveProcessMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateDependencyResolveMetricUseCase: UseCase<BuildInfo, DependencyResolveMetric>() {
+class CreateDependencyResolveMetricUseCase: UseCase<BuildInfo, DependencyResolveProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): DependencyResolveMetric {
-        return DependencyResolveMetric(
+    override suspend fun execute(buildInfo: BuildInfo): DependencyResolveProcessMetric {
+        return DependencyResolveProcessMetric(
             average = buildInfo.getTotalDependenciesResolveDuration().toMillis()
         )
     }

@@ -46,9 +46,9 @@ class CreateInitializationReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.initializationMetric.isNotNull() &&
-                    metric.initializationMetric?.average.isNotNull() &&
-                    metric.initializationMetric?.average?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+            metric.initializationProcessMetric.isNotNull() &&
+                    metric.initializationProcessMetric?.median.isNotNull() &&
+                    metric.initializationProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
         }.mapToInitializationTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()

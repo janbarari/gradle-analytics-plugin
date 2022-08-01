@@ -28,7 +28,9 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class DependencyResolveMetric(
-    @Json(name = "average")
-    var average: Long = 0L
+data class CacheHitRateMetric(
+    @Json(name = "hit_ratio")
+    val hitRatio: Long,
+    @Json(name = "modules")
+    val modules: List<ModuleCacheHit>
 ): java.io.Serializable

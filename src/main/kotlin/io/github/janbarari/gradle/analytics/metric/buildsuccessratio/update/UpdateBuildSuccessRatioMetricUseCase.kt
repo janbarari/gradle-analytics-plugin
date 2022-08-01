@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildSuccessRatioMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.SuccessBuildRateMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.toPercentageOf
@@ -31,14 +31,14 @@ import io.github.janbarari.gradle.extension.whenNotNull
 
 class UpdateBuildSuccessRatioMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<BuildSuccessRatioMetric>() {
+) : UseCaseNoInput<SuccessBuildRateMetric>() {
 
-    override suspend fun execute(): BuildSuccessRatioMetric {
+    override suspend fun execute(): SuccessBuildRateMetric {
         var successes = 0
         var failures = 0
 
         repo.getTemporaryMetrics().whenEach {
-            buildSuccessRatioMetric.whenNotNull {
+            successBuildRateMetric.whenNotNull {
                 when (ratio) {
                     0F -> {
                         failures++
@@ -53,7 +53,7 @@ class UpdateBuildSuccessRatioMetricUseCase(
 
         val totalBuildCount = failures + successes
 
-        return BuildSuccessRatioMetric(
+        return SuccessBuildRateMetric(
             ratio = successes.toPercentageOf(totalBuildCount)
         )
     }

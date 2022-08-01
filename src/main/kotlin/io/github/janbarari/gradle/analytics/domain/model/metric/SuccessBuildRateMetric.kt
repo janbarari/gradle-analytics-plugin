@@ -6,7 +6,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class BuildSuccessRatioMetric(
+data class SuccessBuildRateMetric(
     @Json(name = "ratio")
     var ratio: Float = 0f
 ) : java.io.Serializable

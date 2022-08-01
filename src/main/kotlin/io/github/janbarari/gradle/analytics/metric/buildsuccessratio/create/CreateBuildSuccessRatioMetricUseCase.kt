@@ -23,13 +23,13 @@
 package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildSuccessRatioMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.SuccessBuildRateMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateBuildSuccessRatioMetricUseCase: UseCase<BuildInfo, BuildSuccessRatioMetric>() {
+class CreateBuildSuccessRatioMetricUseCase: UseCase<BuildInfo, SuccessBuildRateMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): BuildSuccessRatioMetric {
-        return BuildSuccessRatioMetric(
+    override suspend fun execute(buildInfo: BuildInfo): SuccessBuildRateMetric {
+        return SuccessBuildRateMetric(
             ratio = if (buildInfo.isSuccessful) 100F else 0F
         )
     }

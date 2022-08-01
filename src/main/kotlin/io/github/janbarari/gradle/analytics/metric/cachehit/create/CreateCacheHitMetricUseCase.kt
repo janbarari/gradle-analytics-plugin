@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitRateMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -30,9 +30,9 @@ import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
-class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<TaskInfo>>, CacheHitMetric>() {
+class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<TaskInfo>>, CacheHitRateMetric>() {
 
-    override suspend fun execute(input: Pair<List<ModulePath>, Collection<TaskInfo>>): CacheHitMetric {
+    override suspend fun execute(input: Pair<List<ModulePath>, Collection<TaskInfo>>): CacheHitRateMetric {
         val modulesPath = input.first
         val executedTasks = input.second
 
@@ -63,7 +63,7 @@ class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<Tas
                 )
             )
         }
-        return CacheHitMetric(overallCacheHitRatio.toLong(), modulesCacheHit)
+        return CacheHitRateMetric(overallCacheHitRatio.toLong(), modulesCacheHit)
     }
 
 }

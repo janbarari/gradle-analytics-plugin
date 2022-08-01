@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.initialization.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -33,25 +33,25 @@ import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateInitializationMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<InitializationMetric>() {
+) : UseCaseNoInput<InitializationProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
     }
 
-    override suspend fun execute(): InitializationMetric {
+    override suspend fun execute(): InitializationProcessMetric {
         val durations = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            initializationMetric.whenNotNull {
+            initializationProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
-                average.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
-                    durations.add(average)
+                median.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
+                    durations.add(median)
                 }
             }
         }
 
-        return InitializationMetric(
-            average = MathUtils.longMedian(durations)
+        return InitializationProcessMetric(
+            median = MathUtils.longMedian(durations)
         )
     }
 

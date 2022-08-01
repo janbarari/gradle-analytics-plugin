@@ -31,7 +31,7 @@ class UpdateBuildSuccessRatioMetricStage(
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            buildSuccessRatioMetric = updateBuildSuccessRatioMetricUseCase.execute()
+            successBuildRateMetric = updateBuildSuccessRatioMetricUseCase.execute()
         }
     }
 

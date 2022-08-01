@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ExecutionMetric(
+data class ExecutionProcessMetric(
     @Json(name = "average")
     var average: Long = 0L
 ): java.io.Serializable

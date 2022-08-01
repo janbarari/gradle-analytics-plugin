@@ -42,7 +42,7 @@ class CreateBuildSuccessRatioReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.buildSuccessRatioMetric.isNotNull()
+            metric.successBuildRateMetric.isNotNull()
         }.mapToBuildSuccessRatioTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
