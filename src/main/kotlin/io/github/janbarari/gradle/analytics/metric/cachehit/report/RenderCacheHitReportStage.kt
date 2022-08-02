@@ -49,7 +49,7 @@ class RenderCacheHitReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Cache hit metric is not available!")
+        return HtmlUtils.renderMessage("Cache Hit is not available!")
     }
 
     @Suppress("LongMethod")
@@ -132,8 +132,8 @@ class RenderCacheHitReportStage(
 
         var template = HtmlUtils.getTemplate(CACHE_HIT_METRIC_TEMPLATE_FILE_NAME)
         template = template
-            .replace("%overall-values%", overallChartValues)
-            .replace("%overall-labels%", overallChartLabels)
+            .replace("%chart-values%", overallChartValues)
+            .replace("%chart-labels%", overallChartLabels)
             .replace("%table-data%", tableData)
             .replace("%overall-cache-hit%", overallCacheHit)
             .replace("%overall-diff-rate%", overallDiffRatioRender)

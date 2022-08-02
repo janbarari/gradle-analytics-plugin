@@ -38,7 +38,7 @@ class UpdateCacheHitMetricUseCase(
     override suspend fun execute(): CacheHitMetric? {
         val temporaryMetrics = repo.getTemporaryMetrics()
 
-        val hitRatios = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
+        val hitRates = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
             .map { ensureNotNull(it.cacheHitMetric).rate }
 
         val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
@@ -46,13 +46,13 @@ class UpdateCacheHitMetricUseCase(
         } ?: return null
 
         return CacheHitMetric(
-            rate = MathUtils.longMean(hitRatios),
+            rate = MathUtils.longMean(hitRates),
             modules = modules
         )
     }
 
     private fun getModuleMedianCacheHit(path: String, metrics: List<BuildMetric>): Long {
-        val hitRatios = metrics
+        val hitRates = metrics
             .filter {
                 it.cacheHitMetric.isNotNull()
                         && it.cacheHitMetric!!.modules.find { module -> module.path == path }.isNotNull()
@@ -61,7 +61,7 @@ class UpdateCacheHitMetricUseCase(
                 it.cacheHitMetric!!.modules.find { module -> module.path == path }!!.rate
             }
 
-        return MathUtils.longMean(hitRatios)
+        return MathUtils.longMean(hitRates)
     }
 
 }

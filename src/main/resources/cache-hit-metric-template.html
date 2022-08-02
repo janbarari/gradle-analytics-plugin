@@ -1,16 +1,17 @@
 <h2>Cache Hit</h2>
-<p class="gray-text pb16">Represents the project and modules tasks hit rate, Tasks that run with FROM_CACHE, UP_TO_DATE.</p>
+<p class="gray-text pb16">Represents the project and modules tasks cache average hit rate(Tasks run with FROM_CACHE or UP_TO_DATE).</p>
 <div class="chart-container">
     <canvas id="cacheHitChart" style="width:100%; height: 200px;"></canvas>
     <script type="text/javascript">
-        var _values = %overall-values%;
-        var _labels = %overall-labels%;
+        var _values = %chart-values%;
+        var _labels = %chart-labels%;
         var chart = new Chart("cacheHitChart", {
           type: "line",
           data: {
             labels: _labels,
             datasets: [
               {
+                label: "Median",
                 fill: false,
                 backgroundColor: "#F5FFF5",
                 borderColor: "#8a2be2",
@@ -25,7 +26,7 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: false
+                display: true
               },
               tooltip: {
                 mode: 'nearest',
