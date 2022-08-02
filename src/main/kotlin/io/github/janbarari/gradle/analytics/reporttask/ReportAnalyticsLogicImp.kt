@@ -24,26 +24,26 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.CreateBuildSuccessRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.RenderBuildSuccessRatioReportStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
-import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationReportStage
-import io.github.janbarari.gradle.analytics.metric.configuration.report.RenderConfigurationReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.CreateDependencyResolveReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.RenderDependencyResolveReportStage
-import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionReportStage
-import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationReportStage
-import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.configuration.report.RenderConfigurationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.CreateDependencyResolveProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.RenderDependencyResolveProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
-import io.github.janbarari.gradle.analytics.metric.parallelratio.report.CreateParallelRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.parallelratio.report.RenderParallelRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.report.CreateTotalBuildReportStage
-import io.github.janbarari.gradle.analytics.metric.totalbuild.report.RenderTotalBuildReportStage
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -73,16 +73,16 @@ class ReportAnalyticsLogicImp(
 
         if (data.isEmpty()) throw EmptyMetricsException()
 
-        val report = CreateReportPipeline(CreateInitializationReportStage(data))
-            .addStage(CreateConfigurationReportStage(data))
-            .addStage(CreateExecutionReportStage(data))
-            .addStage(CreateTotalBuildReportStage(data))
+        val report = CreateReportPipeline(CreateInitializationProcessReportStage(data))
+            .addStage(CreateConfigurationProcessReportStage(data))
+            .addStage(CreateExecutionProcessReportStage(data))
+            .addStage(CreateOverallBuildProcessReportStage(data))
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data))
-            .addStage(CreateBuildSuccessRatioReportStage(data))
-            .addStage(CreateDependencyResolveReportStage(data))
-            .addStage(CreateParallelRatioReportStage(data))
+            .addStage(CreateSuccessBuildRateReportStage(data))
+            .addStage(CreateDependencyResolveProcessReportStage(data))
+            .addStage(CreateParallelExecutionRateReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -95,28 +95,28 @@ class ReportAnalyticsLogicImp(
             .requestedTasks(requestedTasks)
             .isCI(isCI)
             .build()
-        val renderInitializationReportStage = RenderInitializationReportStage(report)
-        val renderConfigurationReportStage = RenderConfigurationReportStage(report)
-        val renderExecutionReportStage = RenderExecutionReportStage(report)
-        val renderTotalBuildReportStage = RenderTotalBuildReportStage(report)
+        val renderInitializationProcessReportStage = RenderInitializationProcessReportStage(report)
+        val renderConfigurationProcessReportStage = RenderConfigurationProcessReportStage(report)
+        val renderExecutionProcessReportStage = RenderExecutionProcessReportStage(report)
+        val renderOverallBuildProcessReportStage = RenderOverallBuildProcessReportStage(report)
         val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
         val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
-        val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
-        val renderDependencyResolveReportStage = RenderDependencyResolveReportStage(report)
-        val renderParallelRatioReportStage = RenderParallelRatioReportStage(report)
+        val renderSuccessBuildRateReportStage = RenderSuccessBuildRateReportStage(report)
+        val renderDependencyResolveProcessReportStage = RenderDependencyResolveProcessReportStage(report)
+        val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
-            .addStage(renderInitializationReportStage)
-            .addStage(renderConfigurationReportStage)
-            .addStage(renderExecutionReportStage)
-            .addStage(renderTotalBuildReportStage)
+            .addStage(renderInitializationProcessReportStage)
+            .addStage(renderConfigurationProcessReportStage)
+            .addStage(renderExecutionProcessReportStage)
+            .addStage(renderOverallBuildProcessReportStage)
             .addStage(renderModulesSourceCountReportStage)
             .addStage(renderModulesMethodCountReportStage)
             .addStage(renderCacheHitReportStage)
-            .addStage(renderBuildSuccessRatioReportStage)
-            .addStage(renderDependencyResolveReportStage)
-            .addStage(renderParallelRatioReportStage)
+            .addStage(renderSuccessBuildRateReportStage)
+            .addStage(renderDependencyResolveProcessReportStage)
+            .addStage(renderParallelExecutionRateReportStage)
             .execute(rawHTML)
     }
 

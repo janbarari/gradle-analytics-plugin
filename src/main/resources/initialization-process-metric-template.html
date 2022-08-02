@@ -1,0 +1,66 @@
+<h2>Initialization Process</h2>
+<p class="gray-text pb16">Shows the average duration of initialization process.</p>
+<div class="chart-container" style="margin-right: 20px;">
+    <canvas id="initializationChart" style="width:100%; height: 100%;"></canvas>
+    <script type="text/javascript">
+        var _meanValues = %chart-mean-values%;
+        var _medianValues = %chart-median-values%;
+        var _labels = %chart-labels%;
+
+        var chart = new Chart("initializationChart", {
+          type: "line",
+          data: {
+            labels: _labels,
+            datasets: [
+              {
+                label: "Median",
+                fill: false,
+                backgroundColor: "#B3E5FC",
+                borderColor: "#03A9F4",
+                data: _medianValues,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              },
+              {
+                label: "Mean",
+                fill: false,
+                backgroundColor: "#C5CAE9",
+                borderColor: "#3F51B5",
+                data: _meanValues,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              }
+            ]
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true
+              },
+              tooltip: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    return context.parsed.y + " ms";
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                display: true,
+                suggestedMin: %suggested-min-value%,
+                suggestedMax: %suggested-max-value%
+              }
+            }
+          }
+        });
+        </script>
+</div>
+<span class="gray-text center-text">
+    <span>Lower is better</span>
+</span>
+<div class="space"></div>

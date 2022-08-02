@@ -131,7 +131,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             printLine("Report generated successfully", "")
             printLine(reportPath, "")
             printBreakLine('-')
-            printLine("Made with ❤ for developers", "https://github.com/janbarari/gradle-analytics-plugin")
+            printLine("Made with ❤ for developers", "")
+            printLine( "https://github.com/janbarari/gradle-analytics-plugin", "")
+            printLine("", " ↖ Tap the ☆ button to support this plugin")
             printLastLine()
         }
     }

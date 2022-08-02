@@ -59,7 +59,7 @@ class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<Tas
             modulesCacheHit.add(
                 ModuleCacheHit(
                     path = path,
-                    hitRatio = moduleCacheHitRatio.toLong()
+                    rate = moduleCacheHitRatio.toLong()
                 )
             )
         }

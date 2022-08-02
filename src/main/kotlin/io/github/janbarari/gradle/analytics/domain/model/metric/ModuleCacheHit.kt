@@ -31,6 +31,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 data class ModuleCacheHit(
     @Json(name = "path")
     val path: String,
-    @Json(name = "hit_ratio")
-    var hitRatio: Long
+    @Json(name = "rate")
+    var rate: Long
 ): java.io.Serializable

@@ -41,10 +41,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 class Database(
     config: GradleAnalyticsPluginConfig.DatabaseConfig,
     private var isCI: Boolean
@@ -76,10 +72,12 @@ class Database(
             is MySqlDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
                 connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
+                ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
             }
             is SqliteDatabaseConnection -> {
                 LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
                 connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
+                ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
             }
         }
 

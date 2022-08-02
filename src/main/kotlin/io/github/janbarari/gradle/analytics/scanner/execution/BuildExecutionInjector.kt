@@ -28,28 +28,28 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update.UpdateBuildSuccessRatioMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update.UpdateDependencyResolveMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.parallelratio.create.CreateParallelRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.parallelratio.update.UpdateParallelRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.create.CreateTotalBuildMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.totalbuild.update.UpdateTotalBuildMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 
@@ -83,23 +83,23 @@ fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateInitializationMetricUseCase(): UpdateInitializationMetricUseCase {
-    return UpdateInitializationMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateInitializationMetricUseCase(): UpdateInitializationProcessMetricUseCase {
+    return UpdateInitializationProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateConfigurationMetricUseCase(): UpdateConfigurationMetricUseCase {
-    return UpdateConfigurationMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateConfigurationMetricUseCase(): UpdateConfigurationProcessMetricUseCase {
+    return UpdateConfigurationProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateExecutionMetricUseCase(): UpdateExecutionMetricUseCase {
-    return UpdateExecutionMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateExecutionMetricUseCase(): UpdateExecutionProcessMetricUseCase {
+    return UpdateExecutionProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateTotalBuildMetricUseCase {
-    return UpdateTotalBuildMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateTotalBuildMetricUseCase(): UpdateOverallBuildProcessMetricUseCase {
+    return UpdateOverallBuildProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
@@ -118,18 +118,18 @@ fun BuildExecutionInjector.provideUpdateCacheHitMetricUseCase(): UpdateCacheHitM
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): UpdateBuildSuccessRatioMetricUseCase {
-    return UpdateBuildSuccessRatioMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): UpdateSuccessBuildRateMetricUseCase {
+    return UpdateSuccessBuildRateMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateDependencyResolveMetricUseCase(): UpdateDependencyResolveMetricUseCase {
-    return UpdateDependencyResolveMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateDependencyResolveMetricUseCase(): UpdateDependencyResolveProcessMetricUseCase {
+    return UpdateDependencyResolveProcessMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdateParallelRatioMetricUseCase {
-    return UpdateParallelRatioMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdateParallelExecutionRateMetricUseCase {
+    return UpdateParallelExecutionRateMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
@@ -155,23 +155,23 @@ fun BuildExecutionInjector.provideSaveTemporaryMetricUseCase(): SaveTemporaryMet
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateInitializationMetricUseCase(): CreateInitializationMetricUseCase {
-    return CreateInitializationMetricUseCase()
+fun BuildExecutionInjector.provideCreateInitializationMetricUseCase(): CreateInitializationProcessMetricUseCase {
+    return CreateInitializationProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateConfigurationMetricUseCase(): CreateConfigurationMetricUseCase {
-    return CreateConfigurationMetricUseCase()
+fun BuildExecutionInjector.provideCreateConfigurationMetricUseCase(): CreateConfigurationProcessMetricUseCase {
+    return CreateConfigurationProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateExecutionMetricUseCase(): CreateExecutionMetricUseCase {
-    return CreateExecutionMetricUseCase()
+fun BuildExecutionInjector.provideCreateExecutionMetricUseCase(): CreateExecutionProcessMetricUseCase {
+    return CreateExecutionProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateTotalBuildMetricUseCase {
-    return CreateTotalBuildMetricUseCase()
+fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateOverallBuildProcessMetricUseCase {
+    return CreateOverallBuildProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
@@ -190,18 +190,18 @@ fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitM
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): CreateBuildSuccessRatioMetricUseCase {
-    return CreateBuildSuccessRatioMetricUseCase()
+fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): CreateSuccessBuildRateMetricUseCase {
+    return CreateSuccessBuildRateMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateDependencyResolveMetricUseCase(): CreateDependencyResolveMetricUseCase {
-    return CreateDependencyResolveMetricUseCase()
+fun BuildExecutionInjector.provideCreateDependencyResolveMetricUseCase(): CreateDependencyResolveProcessMetricUseCase {
+    return CreateDependencyResolveProcessMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreateParallelRatioMetricUseCase {
-    return CreateParallelRatioMetricUseCase()
+fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreateParallelExecutionRateMetricUseCase {
+    return CreateParallelExecutionRateMetricUseCase()
 }
 
 @ExcludeJacocoGenerated

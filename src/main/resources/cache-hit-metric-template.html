@@ -1,19 +1,20 @@
 <h2>Cache Hit</h2>
-<p class="gray-text pb16">Represents the project and modules tasks hit ratio, Tasks that run with FROM_CACHE, UP_TO_DATE.</p>
+<p class="gray-text pb16">Represents the project and modules tasks cache average hit rate(Tasks run with FROM_CACHE or UP_TO_DATE).</p>
 <div class="chart-container">
     <canvas id="cacheHitChart" style="width:100%; height: 200px;"></canvas>
     <script type="text/javascript">
-        var _values = %overall-values%;
-        var _labels = %overall-labels%;
+        var _values = %chart-values%;
+        var _labels = %chart-labels%;
         var chart = new Chart("cacheHitChart", {
           type: "line",
           data: {
             labels: _labels,
             datasets: [
               {
+                label: "Mean",
                 fill: false,
-                backgroundColor: "#F5FFF5",
-                borderColor: "#8a2be2",
+                backgroundColor: "#E0E7FF",
+                borderColor: "#4F46E5",
                 data: _values,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -25,7 +26,7 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: false
+                display: true
               },
               tooltip: {
                 mode: 'nearest',
@@ -65,24 +66,24 @@
                 <tr style="background-color: #B4B4B4;">
                     <th>#</th>
                     <th>Module</th>
-                    <th>Cache Hit</th>
-                    <th>Diff Ratio</th>
+                    <th>Hit</th>
+                    <th>Diff Rate</th>
                 </tr>
                 %table-data%
                 <tr>
                     <td colspan="2">Overall</td>
                     <td>%overall-cache-hit%</td>
-                    %overall-diff-ratio%
+                    %overall-diff-rate%
                 </tr>
             </table>
         </div>
         <div class="space-small"></div>
-        <span class="gray-text"><strong>Cache Hit</strong> is the percentage of using cache by module.</span>
-        <span class="gray-text"><strong>Diff Ratio</strong> is the cache hit difference in the reports period.</span>
+        <span class="gray-text"><strong>Hit</strong> is the percentage of using cache by module.</span>
+        <span class="gray-text"><strong>Diff Rate</strong> is the cache hit difference in the reports period.</span>
     </div>
 
     <div class="flex-child">
-        <canvas id="cacheHitRadarChart" style="width: 75%; margin: 0 auto;"></canvas>
+        <canvas id="cacheHitRadarChart" style="width: 70%; margin: 0 auto;"></canvas>
         <script type="text/javascript">
           var bestValues = %best-values%;
           var worstValues = %worst-values%;
@@ -133,3 +134,4 @@
     </div>
 
 </div>
+<div class="space"></div>

@@ -29,8 +29,8 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class CacheHitMetric(
-    @Json(name = "hit_ratio")
-    val hitRatio: Long,
+    @Json(name = "rate")
+    val rate: Long,
     @Json(name = "modules")
     val modules: List<ModuleCacheHit>
 ): java.io.Serializable

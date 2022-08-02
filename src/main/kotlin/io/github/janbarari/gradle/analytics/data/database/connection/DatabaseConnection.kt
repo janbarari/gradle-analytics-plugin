@@ -24,10 +24,6 @@ package io.github.janbarari.gradle.analytics.data.database.connection
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 @ExcludeJacocoGenerated
 open class DatabaseConnection : java.io.Serializable {
 

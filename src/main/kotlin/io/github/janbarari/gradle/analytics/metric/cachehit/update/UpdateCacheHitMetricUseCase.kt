@@ -24,14 +24,11 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.modify
-import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateCacheHitMetricUseCase(
@@ -41,30 +38,30 @@ class UpdateCacheHitMetricUseCase(
     override suspend fun execute(): CacheHitMetric? {
         val temporaryMetrics = repo.getTemporaryMetrics()
 
-        val hitRatios = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
-            .map { ensureNotNull(it.cacheHitMetric).hitRatio }
+        val hitRates = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
+            .map { ensureNotNull(it.cacheHitMetric).rate }
 
         val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
-            hitRatio = getModuleMedianCacheHit(path, temporaryMetrics)
+            rate = getModuleMedianCacheHit(path, temporaryMetrics)
         } ?: return null
 
         return CacheHitMetric(
-            hitRatio = MathUtils.longMean(hitRatios),
+            rate = MathUtils.longMean(hitRates),
             modules = modules
         )
     }
 
     private fun getModuleMedianCacheHit(path: String, metrics: List<BuildMetric>): Long {
-        val hitRatios = metrics
+        val hitRates = metrics
             .filter {
                 it.cacheHitMetric.isNotNull()
                         && it.cacheHitMetric!!.modules.find { module -> module.path == path }.isNotNull()
             }
             .map {
-                it.cacheHitMetric!!.modules.find { module -> module.path == path }!!.hitRatio
+                it.cacheHitMetric!!.modules.find { module -> module.path == path }!!.rate
             }
 
-        return MathUtils.longMean(hitRatios)
+        return MathUtils.longMean(hitRates)
     }
 
 }

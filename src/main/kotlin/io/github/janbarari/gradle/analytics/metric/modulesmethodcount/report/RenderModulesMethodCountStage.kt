@@ -45,7 +45,7 @@ class RenderModulesMethodCountStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Modules method count metric is not available!")
+        return HtmlUtils.renderMessage("Modules Method Count is not available!")
     }
 
     fun getMetricRender(): String {
@@ -53,7 +53,7 @@ class RenderModulesMethodCountStage(
 
         var totalDiffRatioRender = "<td>-</td>"
         report.modulesMethodCountReport.whenNotNull {
-            totalDiffRatio.whenNotNull {
+            totalDiffRate.whenNotNull {
                 totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
@@ -67,7 +67,7 @@ class RenderModulesMethodCountStage(
         val tableData = buildString {
             report.modulesMethodCountReport?.values?.forEachIndexed { index, it ->
                 var diffRatioRender = "<td>-</td>"
-                it.diffRatio.whenNotNull {
+                it.diffRate.whenNotNull {
                     diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0) {
@@ -97,7 +97,7 @@ class RenderModulesMethodCountStage(
         renderedTemplate = renderedTemplate
             .replace("%table-data%", tableData)
             .replace("%total-method-count%", totalMethodCount.toString())
-            .replace("%total-diff-ratio%", totalDiffRatioRender)
+            .replace("%total-diff-rate%", totalDiffRatioRender)
             .replace("%module-labels%", moduleLabels.toString())
             .replace("%module-values%", moduleValues.toString())
 

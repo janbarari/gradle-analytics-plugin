@@ -2,7 +2,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
@@ -110,7 +110,7 @@ class ReportAnalyticsLogicTest {
                 "a",
                 listOf("b"),
                 100L,
-                InitializationMetric(1000L)
+                InitializationProcessMetric(1000L)
             )
         )
 
@@ -139,7 +139,7 @@ class ReportAnalyticsLogicTest {
                 "a",
                 listOf("b"),
                 100L,
-                InitializationMetric(1000L)
+                InitializationProcessMetric(1000L)
             )
         )
 

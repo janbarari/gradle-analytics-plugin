@@ -25,10 +25,6 @@ package io.github.janbarari.gradle.analytics.data.database.connection
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 @ExcludeJacocoGenerated
 class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): DatabaseConnection() {
 

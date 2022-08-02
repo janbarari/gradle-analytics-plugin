@@ -1,7 +1,7 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationReport
-import io.github.janbarari.gradle.analytics.domain.model.report.InitializationReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.extension.isNotNull
 import org.junit.jupiter.api.Test
@@ -17,8 +17,8 @@ class ReportTest {
         )
         assertEquals("develop", report.branch)
         assertEquals("assembleDebug", report.requestedTasks)
-        assertEquals(null, report.initializationReport)
-        assertEquals(null, report.configurationReport)
+        assertEquals(null, report.initializationProcessReport)
+        assertEquals(null, report.configurationProcessReport)
     }
 
     @Test
@@ -27,11 +27,11 @@ class ReportTest {
             "develop",
             "assembleDebug"
         )
-        report.initializationReport = InitializationReport(listOf(), 0, 0)
-        report.configurationReport = ConfigurationReport(listOf(), 0, 0)
+        report.initializationProcessReport = InitializationProcessReport(listOf(), listOf(),0, 0)
+        report.configurationProcessReport = ConfigurationProcessReport(listOf(), listOf(), 0, 0)
 
-        assert(report.initializationReport.isNotNull())
-        assert(report.configurationReport.isNotNull())
+        assert(report.initializationProcessReport.isNotNull())
+        assert(report.configurationProcessReport.isNotNull())
     }
 
     @Test

@@ -25,7 +25,6 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 @JsonClass(generateAdapter = true)
 data class Report(
@@ -33,13 +32,13 @@ data class Report(
     val requestedTasks: String
 ) : java.io.Serializable {
 
-    var initializationReport: InitializationReport? = null
+    var initializationProcessReport: InitializationProcessReport? = null
 
-    var configurationReport: ConfigurationReport? = null
+    var configurationProcessReport: ConfigurationProcessReport? = null
 
-    var executionReport: ExecutionReport? = null
+    var executionProcessReport: ExecutionProcessReport? = null
 
-    var totalBuildReport: TotalBuildReport? = null
+    var overallBuildProcessReport: OverallBuildProcessReport? = null
 
     var modulesSourceCountReport: ModulesSourceCountReport? = null
 
@@ -47,11 +46,11 @@ data class Report(
 
     var cacheHitReport: CacheHitReport? = null
 
-    var buildSuccessRatioReport: BuildSuccessRatioReport? = null
+    var successBuildRateReport: SuccessBuildRateReport? = null
 
-    var dependencyResolveReport: DependencyResolveReport? = null
+    var dependencyResolveProcessReport: DependencyResolveProcessReport? = null
 
-    var parallelRatioReport: ParallelRatioReport? = null
+    var parallelExecutionRateReport: ParallelExecutionRateReport? = null
 
     fun toJson(): String {
         val moshi: Moshi = Moshi.Builder().build()

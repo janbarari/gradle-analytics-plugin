@@ -31,5 +31,5 @@ data class ModuleMethodCountReport(
     val path: String,
     val value: Int,
     val coverage: Float,
-    val diffRatio: Float? = null
+    val diffRate: Float? = null
 ): java.io.Serializable

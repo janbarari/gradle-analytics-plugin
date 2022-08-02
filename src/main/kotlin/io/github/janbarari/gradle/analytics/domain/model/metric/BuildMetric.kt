@@ -33,23 +33,23 @@ data class BuildMetric(
     @Json(name = "branch")
     var branch: String,
 
-    @Json(name = "requestedTasks")
+    @Json(name = "requested_tasks")
     var requestedTasks: List<String>,
 
     @Json(name = "created_at")
     var createdAt: Long,
 
-    @Json(name = "initialization_metric")
-    var initializationMetric: InitializationMetric? = null,
+    @Json(name = "initialization_process_metric")
+    var initializationProcessMetric: InitializationProcessMetric? = null,
 
-    @Json(name = "configuration_metric")
-    var configurationMetric: ConfigurationMetric? = null,
+    @Json(name = "configuration_process_metric")
+    var configurationProcessMetric: ConfigurationProcessMetric? = null,
 
-    @Json(name = "execution_metric")
-    var executionMetric: ExecutionMetric? = null,
+    @Json(name = "execution_process_metric")
+    var executionProcessMetric: ExecutionProcessMetric? = null,
 
-    @Json(name = "total_build_metric")
-    var totalBuildMetric: TotalBuildMetric? = null,
+    @Json(name = "overall_build_process_metric")
+    var overallBuildProcessMetric: OverallBuildProcessMetric? = null,
 
     @Json(name = "modules_source_count_metric")
     var modulesSourceCountMetric: ModulesSourceCountMetric? = null,
@@ -60,13 +60,13 @@ data class BuildMetric(
     @Json(name = "cache_hit_metric")
     var cacheHitMetric: CacheHitMetric? = null,
 
-    @Json(name = "build_success_ratio_metric")
-    var buildSuccessRatioMetric: BuildSuccessRatioMetric? = null,
+    @Json(name = "success_build_rate_metric")
+    var successBuildRateMetric: SuccessBuildRateMetric? = null,
 
-    @Json(name = "dependency_resolve_metric")
-    var dependencyResolveMetric: DependencyResolveMetric? = null,
+    @Json(name = "dependency_resolve_process_metric")
+    var dependencyResolveProcessMetric: DependencyResolveProcessMetric? = null,
 
-    @Json(name = "parallel_ratio_metric")
-    var parallelRatioMetric: ParallelRatioMetric? = null
+    @Json(name = "parallel_execution_rate_metric")
+    var parallelExecutionRateMetric: ParallelExecutionRateMetric? = null
 
 ): java.io.Serializable

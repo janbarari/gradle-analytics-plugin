@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics.data
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.data.database.ResetAutoIncremental
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.value
@@ -33,6 +34,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonA
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.utils.DateTimeUtils
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -130,8 +132,25 @@ class DatabaseRepositoryImp(
 
     override fun dropOutdatedTemporaryMetrics(): Boolean {
         return db.transaction {
-            TemporaryMetricTable.deleteWhere {
-                TemporaryMetricTable.createdAt less DateTimeUtils.getDayStartMs()
+            val dayMetrics = mutableListOf<ResultRow>()
+            TemporaryMetricTable.select {
+                TemporaryMetricTable.createdAt greaterEq DateTimeUtils.getDayStartMs()
+            }.forEach {
+                dayMetrics.add(it)
+            }
+            TemporaryMetricTable.deleteAll()
+            ResetAutoIncremental.getQuery("temporary_metric")?.let {
+                exec(it)
+            }
+            if (dayMetrics.isNotEmpty()) {
+                dayMetrics.forEach { dayMetric ->
+                    TemporaryMetricTable.insert {
+                        it[createdAt] = dayMetric[createdAt]
+                        it[value] = dayMetric[value]
+                        it[branch] = dayMetric[branch]
+                        it[requestedTasks] = dayMetric[requestedTasks]
+                    }
+                }
             }
             return@transaction true
         }
@@ -140,6 +159,9 @@ class DatabaseRepositoryImp(
     override fun dropMetrics(): Boolean {
         return db.transaction {
             MetricTable.deleteAll()
+            ResetAutoIncremental.getQuery("metric")?.let {
+                exec(it)
+            }
             return@transaction true
         }
     }
