@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create
+package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveProcessMetric
@@ -30,7 +30,8 @@ class CreateDependencyResolveProcessMetricUseCase: UseCase<BuildInfo, Dependency
 
     override suspend fun execute(buildInfo: BuildInfo): DependencyResolveProcessMetric {
         return DependencyResolveProcessMetric(
-            median = buildInfo.getTotalDependenciesResolveDuration().toMillis()
+            median = buildInfo.getTotalDependenciesResolveDuration().toMillis(),
+            mean = buildInfo.getTotalDependenciesResolveDuration().toMillis()
         )
     }
 

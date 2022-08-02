@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report
+package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -55,7 +55,11 @@ class RenderDependencyResolveProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME)
         report.dependencyResolveProcessReport.whenNotNull {
-            val chartValues = medianValues.map { it.value }
+            val medianChartValues = medianValues.map { it.value }
+                .toIntList()
+                .toString()
+
+            val meanChartValues = meanValues.map { it.value }
                 .toIntList()
                 .toString()
 
@@ -70,10 +74,11 @@ class RenderDependencyResolveProcessReportStage(
             )
 
             renderedTemplate = renderedTemplate
-                .replace("%chart-median-values%", chartValues)
-                .replace("%chart-labels%", chartLabels)
-                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%chart-median-values%", medianChartValues)
+                .replace("%chart-mean-values%", meanChartValues)
+                .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
     }

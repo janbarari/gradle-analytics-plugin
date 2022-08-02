@@ -105,10 +105,20 @@ fun List<BuildMetric>.mapToBuildSuccessRatioTimespanChartPoints(): List<Timespan
     }
 }
 
-fun List<BuildMetric>.mapToDependencyResolveTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToDependencyResolveMedianTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
             value = ensureNotNull(it.dependencyResolveProcessMetric).median,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToDependencyResolveMeanTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.dependencyResolveProcessMetric).mean,
             from = it.createdAt,
             to = null
         )

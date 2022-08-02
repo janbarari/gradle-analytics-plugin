@@ -30,8 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update.UpdateDependencyResolveProcessMetricStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update.UpdateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationProcessMetricStage

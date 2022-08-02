@@ -30,8 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.RenderConfigurationProcessReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.CreateDependencyResolveProcessReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report.RenderDependencyResolveProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.CreateDependencyResolveProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.RenderDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.execution.report.RenderExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initialization.report.RenderInitializationProcessReportStage

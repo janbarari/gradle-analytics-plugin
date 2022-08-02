@@ -37,8 +37,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update.UpdateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationProcessMetricUseCase

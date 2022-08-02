@@ -20,17 +20,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report
+package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionProcessReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToDependencyResolveTimespanChartPoints
-import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.mapToDependencyResolveMeanTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToDependencyResolveMedianTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToExecutionMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
@@ -45,21 +48,35 @@ class CreateDependencyResolveProcessReportStage(
     }
 
     override suspend fun process(report: Report): Report {
-        val chartPoints = metrics.filter { metric ->
+        val medianChartPoints = metrics.filter { metric ->
             metric.dependencyResolveProcessMetric.isNotNull() &&
                     metric.dependencyResolveProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
-        }.mapToDependencyResolveTimespanChartPoints()
+        }.mapToDependencyResolveMedianTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
                 return report
             }
 
+        val meanChartPoints = metrics.filter { metric ->
+            metric.dependencyResolveProcessMetric.isNotNull() &&
+                    metric.dependencyResolveProcessMetric?.mean?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToDependencyResolveMeanTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
+            .whenEmpty {
+                return report
+            }
+
+        val minimumValue = Math.min(medianChartPoints.minValue(), meanChartPoints.minValue())
+        val maximumValue = Math.max(medianChartPoints.minValue(), meanChartPoints.minValue())
+
         return report.apply {
             dependencyResolveProcessReport = DependencyResolveProcessReport(
-                medianValues = chartPoints,
-                suggestedMaxValue = chartPoints.maxValue(),
-                suggestedMinValue = chartPoints.minValue()
+                medianValues = medianChartPoints,
+                meanValues = meanChartPoints,
+                suggestedMaxValue = maximumValue,
+                suggestedMinValue = minimumValue
             )
         }
     }

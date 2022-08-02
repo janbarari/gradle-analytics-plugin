@@ -20,19 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update
+package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create
 
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
-class UpdateDependencyResolveProcessMetricStage(
-    private val updateDependencyResolveProcessMetricUseCase: UpdateDependencyResolveProcessMetricUseCase
+class CreateDependencyResolveProcessMetricStage(
+    private val buildInfo: BuildInfo,
+    private val createDependencyResolveProcessMetricUseCase: CreateDependencyResolveProcessMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            dependencyResolveProcessMetric = updateDependencyResolveProcessMetricUseCase.execute()
+            if (buildInfo.isSuccessful) {
+                dependencyResolveProcessMetric = createDependencyResolveProcessMetricUseCase.execute(buildInfo)
+            }
         }
     }
 
 }
+
