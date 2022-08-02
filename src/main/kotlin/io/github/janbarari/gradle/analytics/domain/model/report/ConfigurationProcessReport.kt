@@ -30,6 +30,7 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @JsonClass(generateAdapter = true)
 data class ConfigurationProcessReport(
     val medianValues: List<ChartPoint>,
+    val meanValues: List<ChartPoint>,
     val suggestedMaxValue: Long,
     val suggestedMinValue: Long
 ): java.io.Serializable

@@ -55,7 +55,11 @@ class RenderConfigurationProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(CONFIGURATION_METRIC_TEMPLATE_FILE_NAME)
         report.configurationProcessReport.whenNotNull {
-            val chartValues = medianValues.map { it.value }
+            val medianChartValues = medianValues.map { it.value }
+                .toIntList()
+                .toString()
+
+            val meanChartValues = meanValues.map { it.value }
                 .toIntList()
                 .toString()
 
@@ -68,7 +72,8 @@ class RenderConfigurationProcessReportStage(
             renderedTemplate = renderedTemplate
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
                 .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
-                .replace("%chart-median-values%", chartValues)
+                .replace("%chart-median-values%", medianChartValues)
+                .replace("%chart-mean-values%", meanChartValues)
                 .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate

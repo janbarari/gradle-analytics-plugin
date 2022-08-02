@@ -45,10 +45,20 @@ fun List<BuildMetric>.mapToInitializationMeanTimespanChartPoints(): List<Timespa
     }
 }
 
-fun List<BuildMetric>.mapToConfigurationTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToConfigurationMedianTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
             value = ensureNotNull(it.configurationProcessMetric).median,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToConfigurationMeanTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.configurationProcessMetric).mean,
             from = it.createdAt,
             to = null
         )

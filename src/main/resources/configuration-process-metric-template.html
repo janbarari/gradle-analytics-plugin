@@ -1,9 +1,10 @@
 <h2>Configuration Process</h2>
-<p class="gray-text pb16">Shows the project configuration process duration. Uses the median formula to measure the accurate result.</p>
+<p class="gray-text pb16">Shows the average duration of configuration process.</p>
 <div class="chart-container" style="margin-right: 20px;">
     <canvas id="configurationChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
-        var _values = %chart-median-values%;
+        var _meanValues = %chart-mean-values%;
+        var _medianValues = %chart-median-values%;
         var _labels = %chart-labels%;
 
         new Chart("configurationChart", {
@@ -12,10 +13,20 @@
             labels: _labels,
             datasets: [
               {
+                label: "Median",
                 fill: false,
-                backgroundColor: "#FCE4EC",
+                backgroundColor: "#F8BBD0",
                 borderColor: "#E91E63",
-                data: _values,
+                data: _medianValues,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              },
+              {
+                label: "Mean",
+                fill: false,
+                backgroundColor: "#D1C4E9",
+                borderColor: "#673AB7",
+                data: _meanValues,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
               }
@@ -25,7 +36,7 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: false
+                display: true
               },
               tooltip: {
                 mode: 'nearest',

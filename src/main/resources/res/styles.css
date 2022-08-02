@@ -4,7 +4,6 @@
 }
 
 body {
-    background-color: #f6f5ee;
     margin: 40px;
     font-family: "Nunito", Helvetica, Arial, Verdana, Tahoma, sans-serif;
     padding-bottom: 120px;
@@ -18,11 +17,11 @@ body {
 }
 
 p {
-    margin: 8px;
+    margin-top: 6px;
 }
 
 h2 {
-    margin: 8px;
+    margin: 0px;
 }
 
 table {
@@ -67,7 +66,7 @@ td {
 }
 
 .space {
-    height: 50px;
+    height: 80px;
 }
 
 .space-small {
@@ -92,7 +91,7 @@ td {
 }
 
 .chart-container {
-    height: 200px;
+    height: 190px;
     margin-right: 20px;
 }
 
@@ -167,8 +166,7 @@ hr {
 }
 
 .logo-dimensions {
-    width: 120px;
-    margin-top: 48px;
+    width: 128px;
 }
 
 .red {
