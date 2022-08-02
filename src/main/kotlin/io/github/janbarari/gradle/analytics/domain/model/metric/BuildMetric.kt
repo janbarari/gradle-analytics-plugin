@@ -33,7 +33,7 @@ data class BuildMetric(
     @Json(name = "branch")
     var branch: String,
 
-    @Json(name = "requestedTasks")
+    @Json(name = "requested_tasks")
     var requestedTasks: List<String>,
 
     @Json(name = "created_at")
