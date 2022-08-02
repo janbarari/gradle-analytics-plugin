@@ -53,11 +53,11 @@ class RenderSuccessBuildRateReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME)
         report.successBuildRateReport.whenNotNull {
-            val chartValues = median.map { it.value }
+            val chartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = median.map { it.description }
+            val chartLabels = medianValues.map { it.description }
                 .toArrayString()
 
             renderedTemplate = renderedTemplate

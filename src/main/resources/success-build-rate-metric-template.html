@@ -12,9 +12,10 @@
             labels: _labels,
             datasets: [
               {
+                label: "Median",
                 fill: false,
-                backgroundColor: "#F5FFF5",
-                borderColor: "#4b0082",
+                backgroundColor: "#DBEAFE",
+                borderColor: "#3B82F6",
                 data: _values,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -25,7 +26,7 @@
             maintainAspectRatio: false,
             plugins: {
               legend: {
-                display: false
+                display: true
               },
               tooltip: {
                 mode: 'nearest',

@@ -7,5 +7,5 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class SuccessBuildRateReport(
-    val median: List<ChartPoint>
+    val medianValues: List<ChartPoint>
 ): java.io.Serializable
