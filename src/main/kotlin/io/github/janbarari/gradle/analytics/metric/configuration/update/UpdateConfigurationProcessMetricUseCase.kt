@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution.update
+package io.github.janbarari.gradle.analytics.metric.configuration.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionProcessMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -31,18 +31,21 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-class UpdateExecutionMetricUseCase(
+/**
+ * Generates a new metric with Median mathematics based on temporary metrics.
+ */
+class UpdateConfigurationProcessMetricUseCase(
     private val repo: DatabaseRepository
-): UseCaseNoInput<ExecutionProcessMetric>() {
+) : UseCaseNoInput<ConfigurationProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
     }
 
-    override suspend fun execute(): ExecutionProcessMetric {
+    override suspend fun execute(): ConfigurationProcessMetric {
         val durations = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            executionProcessMetric.whenNotNull {
+            configurationProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
                 median.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
                     .whenTrue {
@@ -51,7 +54,7 @@ class UpdateExecutionMetricUseCase(
             }
         }
 
-        return ExecutionProcessMetric(
+        return ConfigurationProcessMetric(
             median = MathUtils.longMedian(durations)
         )
     }

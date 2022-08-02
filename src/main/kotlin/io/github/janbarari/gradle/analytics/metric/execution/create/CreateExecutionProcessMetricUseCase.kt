@@ -26,7 +26,7 @@ import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionProcessMetric
 import io.github.janbarari.gradle.core.UseCase
 
-class CreateExecutionMetricUseCase: UseCase<BuildInfo, ExecutionProcessMetric>() {
+class CreateExecutionProcessMetricUseCase: UseCase<BuildInfo, ExecutionProcessMetric>() {
 
     override suspend fun execute(buildInfo: BuildInfo): ExecutionProcessMetric {
         return ExecutionProcessMetric(

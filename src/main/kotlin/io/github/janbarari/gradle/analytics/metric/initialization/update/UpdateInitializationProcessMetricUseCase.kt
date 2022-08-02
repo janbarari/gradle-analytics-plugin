@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-class UpdateInitializationMetricUseCase(
+class UpdateInitializationProcessMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<InitializationProcessMetric>() {
 

@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.update
+package io.github.janbarari.gradle.analytics.metric.execution.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveProcessMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -31,21 +31,18 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-/**
- * Generates a new metric with Median mathematics based on temporary metrics.
- */
-class UpdateDependencyResolveMetricUseCase(
+class UpdateExecutionProcessMetricUseCase(
     private val repo: DatabaseRepository
-): UseCaseNoInput<DependencyResolveProcessMetric>() {
+): UseCaseNoInput<ExecutionProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
     }
 
-    override suspend fun execute(): DependencyResolveProcessMetric {
+    override suspend fun execute(): ExecutionProcessMetric {
         val durations = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            dependencyResolveProcessMetric.whenNotNull {
+            executionProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
                 median.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
                     .whenTrue {
@@ -54,7 +51,7 @@ class UpdateDependencyResolveMetricUseCase(
             }
         }
 
-        return DependencyResolveProcessMetric(
+        return ExecutionProcessMetric(
             median = MathUtils.longMedian(durations)
         )
     }

@@ -20,22 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.report
+package io.github.janbarari.gradle.analytics.metric.initialization.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToDependencyResolveTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToInitializationTimespanChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 
-class CreateDependencyResolveReportStage(
+class CreateInitializationProcessReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
@@ -46,9 +46,10 @@ class CreateDependencyResolveReportStage(
 
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
-            metric.dependencyResolveProcessMetric.isNotNull() &&
-                    metric.dependencyResolveProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
-        }.mapToDependencyResolveTimespanChartPoints()
+            metric.initializationProcessMetric.isNotNull() &&
+                    metric.initializationProcessMetric?.median.isNotNull() &&
+                    metric.initializationProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToInitializationTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
@@ -56,7 +57,7 @@ class CreateDependencyResolveReportStage(
             }
 
         return report.apply {
-            dependencyResolveProcessReport = DependencyResolveProcessReport(
+            initializationProcessReport = InitializationProcessReport(
                 medianValues = chartPoints,
                 suggestedMaxValue = chartPoints.maxValue(),
                 suggestedMinValue = chartPoints.minValue()

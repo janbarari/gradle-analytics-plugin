@@ -36,14 +36,14 @@ import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.Creat
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricStage
-import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricStage
-import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricStage
-import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricStage
-import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.dependencyresolvemetric.create.CreateDependencyResolveProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.execution.create.CreateExecutionProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.initialization.create.CreateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
@@ -72,15 +72,15 @@ import kotlinx.coroutines.runBlocking
 class BuildExecutionLogicImp(
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
-    private val createInitializationMetricUseCase: CreateInitializationMetricUseCase,
-    private val createConfigurationMetricUseCase: CreateConfigurationMetricUseCase,
-    private val createExecutionMetricUseCase: CreateExecutionMetricUseCase,
+    private val createInitializationProcessMetricUseCase: CreateInitializationProcessMetricUseCase,
+    private val createConfigurationProcessMetricUseCase: CreateConfigurationProcessMetricUseCase,
+    private val createExecutionProcessMetricUseCase: CreateExecutionProcessMetricUseCase,
     private val createOverallBuildProcessMetricUseCase: CreateOverallBuildProcessMetricUseCase,
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase,
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase,
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase,
     private val createSuccessBuildRateMetricUseCase: CreateSuccessBuildRateMetricUseCase,
-    private val createDependencyResolveMetricUseCase: CreateDependencyResolveMetricUseCase,
+    private val createDependencyResolveProcessMetricUseCase: CreateDependencyResolveProcessMetricUseCase,
     private val createParallelExecutionRateMetricUseCase: CreateParallelExecutionRateMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
@@ -90,6 +90,7 @@ class BuildExecutionLogicImp(
     private val modulesInfo: List<ModulePath>
 ) : BuildExecutionLogic {
 
+    @Suppress("LongMethod")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) = runBlocking {
 
         if (isForbiddenTasksRequested()) return@runBlocking
@@ -121,9 +122,11 @@ class BuildExecutionLogicImp(
 
         resetDependentServices()
 
-        val createInitializationMetricStage = CreateInitializationMetricStage(info, createInitializationMetricUseCase)
-        val createConfigurationMetricStage = CreateConfigurationMetricStage(info, createConfigurationMetricUseCase)
-        val createExecutionMetricStage = CreateExecutionMetricStage(info, createExecutionMetricUseCase)
+        val createInitializationProcessMetricStage =
+            CreateInitializationProcessMetricStage(info, createInitializationProcessMetricUseCase)
+        val createConfigurationProcessMetricStage =
+            CreateConfigurationProcessMetricStage(info, createConfigurationProcessMetricUseCase)
+        val createExecutionProcessMetricStage = CreateExecutionProcessMetricStage(info, createExecutionProcessMetricUseCase)
         val createOverallBuildProcessMetricStage =
             CreateOverallBuildProcessMetricStage(info, createOverallBuildProcessMetricUseCase)
         val createModulesSourceCountMetricStage =
@@ -132,19 +135,20 @@ class BuildExecutionLogicImp(
             CreateModulesMethodCountMetricStage(modulesInfo, createModulesMethodCountMetricUseCase)
         val createCacheHitMetricStage = CreateCacheHitMetricStage(info, modulesInfo, createCacheHitMetricUseCase)
         val createSuccessBuildRateMetricStage = CreateSuccessBuildRateMetricStage(info, createSuccessBuildRateMetricUseCase)
-        val createDependencyResolveMetricStage = CreateDependencyResolveMetricStage(info, createDependencyResolveMetricUseCase)
+        val createDependencyResolveProcessMetricStage =
+            CreateDependencyResolveProcessMetricStage(info, createDependencyResolveProcessMetricUseCase)
         val createParallelExecutionRateMetricStage =
             CreateParallelExecutionRateMetricStage(info, createParallelExecutionRateMetricUseCase)
 
-        val buildMetric = CreateMetricPipeline(createInitializationMetricStage)
-            .addStage(createConfigurationMetricStage)
-            .addStage(createExecutionMetricStage)
+        val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
+            .addStage(createConfigurationProcessMetricStage)
+            .addStage(createExecutionProcessMetricStage)
             .addStage(createOverallBuildProcessMetricStage)
             .addStage(createModulesSourceCountMetricStage)
             .addStage(createModulesMethodCountMetricStage)
             .addStage(createCacheHitMetricStage)
             .addStage(createSuccessBuildRateMetricStage)
-            .addStage(createDependencyResolveMetricStage)
+            .addStage(createDependencyResolveProcessMetricStage)
             .addStage(createParallelExecutionRateMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 

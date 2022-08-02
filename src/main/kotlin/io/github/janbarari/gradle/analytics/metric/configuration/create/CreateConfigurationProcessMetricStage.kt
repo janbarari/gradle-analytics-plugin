@@ -23,15 +23,20 @@
 package io.github.janbarari.gradle.analytics.metric.configuration.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-class CreateConfigurationMetricUseCase: UseCase<BuildInfo, ConfigurationProcessMetric>() {
+class CreateConfigurationProcessMetricStage(
+    private val buildInfo: BuildInfo,
+    private val createConfigurationProcessMetricUseCase: CreateConfigurationProcessMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun execute(buildInfo: BuildInfo): ConfigurationProcessMetric {
-        return ConfigurationProcessMetric(
-            median = buildInfo.getConfigurationDuration().toMillis()
-        )
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            if (buildInfo.isSuccessful) {
+                configurationProcessMetric = createConfigurationProcessMetricUseCase.execute(buildInfo)
+            }
+        }
     }
 
 }

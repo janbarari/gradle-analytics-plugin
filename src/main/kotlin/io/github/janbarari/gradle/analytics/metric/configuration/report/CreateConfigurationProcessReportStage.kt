@@ -35,7 +35,7 @@ import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 
-class CreateConfigurationReportStage(
+class CreateConfigurationProcessReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 

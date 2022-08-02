@@ -20,19 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.configuration.update
+package io.github.janbarari.gradle.analytics.metric.configuration.create
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
+import io.github.janbarari.gradle.core.UseCase
 
-class UpdateConfigurationMetricStage(
-    private val updateConfigurationMetricUseCase: UpdateConfigurationMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+class CreateConfigurationProcessMetricUseCase: UseCase<BuildInfo, ConfigurationProcessMetric>() {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            configurationProcessMetric = updateConfigurationMetricUseCase.execute()
-        }
+    override suspend fun execute(buildInfo: BuildInfo): ConfigurationProcessMetric {
+        return ConfigurationProcessMetric(
+            median = buildInfo.getConfigurationDuration().toMillis()
+        )
     }
 
 }
