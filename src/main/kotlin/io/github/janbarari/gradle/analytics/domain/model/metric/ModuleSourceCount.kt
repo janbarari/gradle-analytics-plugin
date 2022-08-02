@@ -22,12 +22,15 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.metric
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModuleSourceCount(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "value")
     val value: Int
 ): java.io.Serializable
