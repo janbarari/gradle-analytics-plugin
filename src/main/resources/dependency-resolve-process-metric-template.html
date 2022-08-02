@@ -1,20 +1,20 @@
-<h2>Configuration Process</h2>
-<p class="gray-text pb16">Shows the project configuration process duration. Uses the median formula to measure the accurate result.</p>
+<h2>Dependency Resolve Process</h2>
+<p class="gray-text pb16">Represents the average time spent for downloading the dependencies in each build.</p>
 <div class="chart-container" style="margin-right: 20px;">
-    <canvas id="configurationChart" style="width:100%; height: 100%;"></canvas>
+    <canvas id="dependencyResolveChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
-        var _values = %configuration-median-values%;
-        var _labels = %configuration-median-labels%;
+        var _values = %chart-median-values%;
+        var _labels = %chart-labels%;
 
-        new Chart("configurationChart", {
+        var chart = new Chart("dependencyResolveChart", {
           type: "line",
           data: {
             labels: _labels,
             datasets: [
               {
                 fill: false,
-                backgroundColor: "#FCE4EC",
-                borderColor: "#E91E63",
+                backgroundColor: "#F5FFF5",
+                borderColor: "#d2b48c",
                 data: _values,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -41,16 +41,15 @@
             scales: {
               y: {
                 display: true,
-                suggestedMin: %configuration-min-value%,
-                suggestedMax: %configuration-max-value%
+                suggestedMin: %suggested-min-value%,
+                suggestedMax: %suggested-max-value%
               }
             }
           }
         });
-
-        </script>
+      </script>
 </div>
 <span class="gray-text center-text">
-    <span>Lower is better</span>
-</span>
+      <span>Lower is better</span>
+    </span>
 <div class="space"></div>

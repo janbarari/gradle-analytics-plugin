@@ -68,7 +68,7 @@ class RenderOverallBuildProcessReportStage(
             renderedTemplate = renderedTemplate
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
                 .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
-                .replace("%chart-values%", chartValues)
+                .replace("%chart-median-values%", chartValues)
                 .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate

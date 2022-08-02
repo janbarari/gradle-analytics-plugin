@@ -45,7 +45,7 @@ class RenderModulesMethodCountStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Modules method count metric is not available!")
+        return HtmlUtils.renderMessage("Modules Method Count is not available!")
     }
 
     fun getMetricRender(): String {
@@ -97,7 +97,7 @@ class RenderModulesMethodCountStage(
         renderedTemplate = renderedTemplate
             .replace("%table-data%", tableData)
             .replace("%total-method-count%", totalMethodCount.toString())
-            .replace("%total-diff-ratio%", totalDiffRatioRender)
+            .replace("%total-diff-rate%", totalDiffRatioRender)
             .replace("%module-labels%", moduleLabels.toString())
             .replace("%module-values%", moduleValues.toString())
 

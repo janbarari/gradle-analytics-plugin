@@ -37,8 +37,8 @@ class RenderInitializationReportStage(
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val INITIALIZATION_METRIC_TEMPLATE_ID = "%initialization-metric%"
-        private const val INITIALIZATION_METRIC_TEMPLATE_FILE_NAME = "initialization-metric-template"
+        private const val INITIALIZATION_METRIC_TEMPLATE_ID = "%initialization-process-metric%"
+        private const val INITIALIZATION_METRIC_TEMPLATE_FILE_NAME = "initialization-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
@@ -49,7 +49,7 @@ class RenderInitializationReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Initialization chart is not available!")
+        return HtmlUtils.renderMessage("Initialization Process is not available!")
     }
 
     fun getMetricRender(): String {
@@ -66,10 +66,10 @@ class RenderInitializationReportStage(
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
-                .replace("%initialization-suggested-max-value%", chartSuggestedMaxValue.toString())
-                .replace("%initialization-suggested-min-value%", chartSuggestedMinValue.toString())
-                .replace("%initialization-median-values%", chartValues)
-                .replace("%initialization-median-labels%", chartLabels)
+                .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%chart-median-values%", chartValues)
+                .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
     }

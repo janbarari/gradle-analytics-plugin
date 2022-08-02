@@ -65,7 +65,7 @@ class RenderParallelExecutionRateReportStage(
             val chartSuggestedMinValue = 0
 
             renderedTemplate = renderedTemplate
-                .replace("%chart-values%", chartValues)
+                .replace("%chart-median-values%", chartValues)
                 .replace("%chart-labels%", chartLabels)
                 .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())

@@ -35,8 +35,8 @@ class RenderSuccessBuildRateReportStage(
 ): Stage<String, String> {
 
     companion object {
-        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID = "%build-success-ratio-metric%"
-        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME = "build-success-ratio-metric-template"
+        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID = "%success-build-rate-metric%"
+        private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME = "success-build-rate-metric-template"
     }
 
     override suspend fun process(input: String): String {
@@ -47,7 +47,7 @@ class RenderSuccessBuildRateReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Build success ratio metric is not available!")
+        return HtmlUtils.renderMessage("Success Build Rate is not available!")
     }
 
     fun getMetricRender(): String {
@@ -61,7 +61,7 @@ class RenderSuccessBuildRateReportStage(
                 .toArrayString()
 
             renderedTemplate = renderedTemplate
-                .replace("%chart-values%", chartValues)
+                .replace("%chart-median-values%", chartValues)
                 .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate

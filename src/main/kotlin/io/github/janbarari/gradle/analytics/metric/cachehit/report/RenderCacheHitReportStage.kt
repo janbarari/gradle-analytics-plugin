@@ -136,7 +136,7 @@ class RenderCacheHitReportStage(
             .replace("%overall-labels%", overallChartLabels)
             .replace("%table-data%", tableData)
             .replace("%overall-cache-hit%", overallCacheHit)
-            .replace("%overall-diff-ratio%", overallDiffRatioRender)
+            .replace("%overall-diff-rate%", overallDiffRatioRender)
             .replace("%best-values%", bestChartValues)
             .replace("%worst-values%", worstChartValues)
             .replace("%bw-labels%", bwLabels.toString())

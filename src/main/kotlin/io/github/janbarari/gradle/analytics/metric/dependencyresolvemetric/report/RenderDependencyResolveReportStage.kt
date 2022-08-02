@@ -40,8 +40,8 @@ class RenderDependencyResolveReportStage(
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID = "%dependency-resolve-metric%"
-        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependency-resolve-metric-template"
+        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID = "%dependency-resolve-process-metric%"
+        private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependency-resolve-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
@@ -70,7 +70,7 @@ class RenderDependencyResolveReportStage(
             )
 
             renderedTemplate = renderedTemplate
-                .replace("%chart-values%", chartValues)
+                .replace("%chart-median-values%", chartValues)
                 .replace("%chart-labels%", chartLabels)
                 .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
@@ -79,7 +79,7 @@ class RenderDependencyResolveReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Dependency resolve process is not available!")
+        return HtmlUtils.renderMessage("Dependency Resolve Process is not available!")
     }
 
 }

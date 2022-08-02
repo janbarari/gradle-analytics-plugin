@@ -37,8 +37,8 @@ class RenderExecutionReportStage(
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val EXECUTION_METRIC_TEMPLATE_ID = "%execution-metric%"
-        private const val EXECUTION_METRIC_TEMPLATE_FILE_NAME = "execution-metric-template"
+        private const val EXECUTION_METRIC_TEMPLATE_ID = "%execution-process-metric%"
+        private const val EXECUTION_METRIC_TEMPLATE_FILE_NAME = "execution-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
@@ -49,7 +49,7 @@ class RenderExecutionReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Execution chart is not available!")
+        return HtmlUtils.renderMessage("Execution Process is not available!")
     }
 
     fun getMetricRender(): String {
@@ -66,10 +66,10 @@ class RenderExecutionReportStage(
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
-                .replace("%execution-suggested-max-value%", chartSuggestedMaxValue.toString())
-                .replace("%execution-suggested-min-value%", chartSuggestedMinValue.toString())
-                .replace("%execution-median-values%", chartValues)
-                .replace("%execution-median-labels%", chartLabels)
+                .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%chart-median-values%", chartValues)
+                .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
     }

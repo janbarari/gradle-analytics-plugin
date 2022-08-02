@@ -40,8 +40,8 @@ class RenderConfigurationReportStage(
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val CONFIGURATION_METRIC_TEMPLATE_ID = "%configuration-metric%"
-        private const val CONFIGURATION_METRIC_TEMPLATE_FILE_NAME = "configuration-metric-template"
+        private const val CONFIGURATION_METRIC_TEMPLATE_ID = "%configuration-process-metric%"
+        private const val CONFIGURATION_METRIC_TEMPLATE_FILE_NAME = "configuration-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
@@ -66,16 +66,16 @@ class RenderConfigurationReportStage(
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
-                .replace("%configuration-max-value%", chartSuggestedMaxValue.toString())
-                .replace("%configuration-min-value%", chartSuggestedMinValue.toString())
-                .replace("%configuration-median-values%", chartValues)
-                .replace("%configuration-median-labels%", chartLabels)
+                .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
+                .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
+                .replace("%chart-median-values%", chartValues)
+                .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Configuration chart is not available!")
+        return HtmlUtils.renderMessage("Configuration Process is not available!")
     }
 
 }
