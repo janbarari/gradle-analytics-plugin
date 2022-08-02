@@ -30,7 +30,8 @@ class CreateInitializationProcessMetricUseCase: UseCase<BuildInfo, Initializatio
 
     override suspend fun execute(buildInfo: BuildInfo): InitializationProcessMetric {
         return InitializationProcessMetric(
-            median = buildInfo.getInitializationDuration().toMillis()
+            median = buildInfo.getInitializationDuration().toMillis(),
+            mean = buildInfo.getInitializationDuration().toMillis()
         )
     }
 

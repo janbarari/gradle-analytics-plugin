@@ -25,10 +25,20 @@ package io.github.janbarari.gradle.extension
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 
-fun List<BuildMetric>.mapToInitializationTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToInitializationMedianTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
             value = ensureNotNull(it.initializationProcessMetric).median,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToInitializationMeanTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.initializationProcessMetric).mean,
             from = it.createdAt,
             to = null
         )

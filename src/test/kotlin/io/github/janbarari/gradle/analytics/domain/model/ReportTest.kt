@@ -27,7 +27,7 @@ class ReportTest {
             "develop",
             "assembleDebug"
         )
-        report.initializationProcessReport = InitializationProcessReport(listOf(), 0, 0)
+        report.initializationProcessReport = InitializationProcessReport(listOf(), listOf(),0, 0)
         report.configurationProcessReport = ConfigurationProcessReport(listOf(), 0, 0)
 
         assert(report.initializationProcessReport.isNotNull())
