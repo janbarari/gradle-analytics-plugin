@@ -41,10 +41,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
 
-/**
- * @author Mehdi-Janbarari
- * @since 1.0.0
- */
 class Database(
     config: GradleAnalyticsPluginConfig.DatabaseConfig,
     private var isCI: Boolean

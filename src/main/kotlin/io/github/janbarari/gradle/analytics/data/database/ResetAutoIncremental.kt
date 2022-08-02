@@ -26,6 +26,11 @@ import io.github.janbarari.gradle.analytics.data.database.connection.DatabaseCon
 import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
 
+/**
+ * Since tables uses auto incremental number to generate unique id, the auto-incremental
+ * won't reset after table cleared, This class helps to reset auto-incremental numbers
+ * of a table. also it will do it for both MySql and Sqlite database.
+ */
 object ResetAutoIncremental {
     lateinit var dbType: Class<out DatabaseConnection>
 
