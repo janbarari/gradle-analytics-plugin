@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.metric.execution.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach
@@ -40,19 +41,23 @@ class UpdateExecutionProcessMetricUseCase(
     }
 
     override suspend fun execute(): ExecutionProcessMetric {
-        val durations = arrayListOf<Long>()
+        val medianValues = arrayListOf<Long>()
+        val meanValues = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
             executionProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
-                median.isBiggerEquals(SKIP_THRESHOLD_IN_MS)
-                    .whenTrue {
-                        durations.add(median)
-                    }
+                median.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
+                    medianValues.add(median)
+                }
+                mean.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
+                    meanValues.add(mean)
+                }
             }
         }
 
         return ExecutionProcessMetric(
-            median = MathUtils.longMedian(durations)
+            median = MathUtils.longMedian(medianValues),
+            mean = MathUtils.longMean(meanValues)
         )
     }
 

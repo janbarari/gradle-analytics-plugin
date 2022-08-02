@@ -30,7 +30,8 @@ class CreateExecutionProcessMetricUseCase: UseCase<BuildInfo, ExecutionProcessMe
 
     override suspend fun execute(buildInfo: BuildInfo): ExecutionProcessMetric {
         return ExecutionProcessMetric(
-            median = buildInfo.getExecutionDuration().toMillis()
+            median = buildInfo.getExecutionDuration().toMillis(),
+            mean = buildInfo.getExecutionDuration().toMillis()
         )
     }
 

@@ -65,10 +65,20 @@ fun List<BuildMetric>.mapToConfigurationMeanTimespanChartPoints(): List<Timespan
     }
 }
 
-fun List<BuildMetric>.mapToExecutionTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToExecutionMedianTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
             value = ensureNotNull(it.executionProcessMetric).median / 1000L,
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToExecutionMeanTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.executionProcessMetric).mean / 1000L,
             from = it.createdAt,
             to = null
         )

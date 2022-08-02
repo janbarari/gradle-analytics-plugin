@@ -24,13 +24,15 @@ package io.github.janbarari.gradle.analytics.metric.execution.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionProcessReport
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToExecutionTimespanChartPoints
-import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.mapToExecutionMeanTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToExecutionMedianTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToInitializationMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
@@ -40,27 +42,40 @@ class CreateExecutionProcessReportStage(
 ) : Stage<Report, Report> {
 
     companion object {
-        private const val SKIP_METRIC_THRESHOLD = 50L
+        private const val SKIP_THRESHOLD_IN_MS = 50L
         private const val CHART_MAX_COLUMNS = 12
     }
 
     override suspend fun process(report: Report): Report {
-        val chartPoints = metrics.filter { metric ->
+        val medianChartPoints = metrics.filter { metric ->
             metric.executionProcessMetric.isNotNull() &&
-                    metric.executionProcessMetric?.median.isNotNull() &&
-                    metric.executionProcessMetric?.median?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
-        }.mapToExecutionTimespanChartPoints()
+                    metric.executionProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToExecutionMedianTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
                 return report
             }
 
+        val meanChartPoints = metrics.filter { metric ->
+            metric.executionProcessMetric.isNotNull() &&
+                    metric.executionProcessMetric?.mean?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToExecutionMeanTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
+            .whenEmpty {
+                return report
+            }
+
+        val minimumValue = Math.min(medianChartPoints.minValue(), meanChartPoints.minValue())
+        val maximumValue = Math.max(medianChartPoints.minValue(), meanChartPoints.minValue())
+
         return report.apply {
             executionProcessReport = ExecutionProcessReport(
-                medianValues = chartPoints,
-                suggestedMaxValue = chartPoints.maxValue(),
-                suggestedMinValue = chartPoints.minValue()
+                medianValues = medianChartPoints,
+                meanValues = meanChartPoints,
+                suggestedMaxValue = maximumValue,
+                suggestedMinValue = minimumValue
             )
         }
     }
