@@ -14,23 +14,46 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create
+package io.github.janbarari.gradle.analytics.metric.successbuildrate.update
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.SuccessBuildRateMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.extension.toPercentageOf
+import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
 
-class CreateBuildSuccessRatioMetricUseCase: UseCase<BuildInfo, SuccessBuildRateMetric>() {
+class UpdateSuccessBuildRateMetricUseCase(
+    private val repo: DatabaseRepository
+) : UseCaseNoInput<SuccessBuildRateMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): SuccessBuildRateMetric {
+    override suspend fun execute(): SuccessBuildRateMetric {
+        var successes = 0
+        var failures = 0
+
+        repo.getTemporaryMetrics().whenEach {
+            successBuildRateMetric.whenNotNull {
+                when (rate) {
+                    0F -> {
+                        failures++
+                    }
+                    100F -> {
+                        successes++
+                    }
+                }
+            }
+        }
+
+        val totalBuildCount = failures + successes
+
         return SuccessBuildRateMetric(
-            rate = if (buildInfo.isSuccessful) 100F else 0F
+            rate = successes.toPercentageOf(totalBuildCount)
         )
     }
 

@@ -24,8 +24,8 @@ package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update.UpdateBuildSuccessRatioMetricStage
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update.UpdateBuildSuccessRatioMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.update.UpdateConfigurationMetricStage
@@ -58,7 +58,7 @@ class SaveMetricUseCase(
     private val updateModulesSourceCountMetricUseCase: UpdateModulesSourceCountMetricUseCase,
     private val updateModulesMethodCountMetricUseCase: UpdateModulesMethodCountMetricUseCase,
     private val updateCacheHitMetricUseCase: UpdateCacheHitMetricUseCase,
-    private val updateBuildSuccessRatioMetricUseCase: UpdateBuildSuccessRatioMetricUseCase,
+    private val updateSuccessBuildRateMetricUseCase: UpdateSuccessBuildRateMetricUseCase,
     private val updateDependencyResolveMetricUseCase: UpdateDependencyResolveMetricUseCase,
     private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase
 ) : UseCase<BuildMetric, Long>() {
@@ -78,7 +78,7 @@ class SaveMetricUseCase(
             val updateModulesSourceCountMetricStage = UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
             val updateModulesMethodCountMetricStage = UpdateModulesMethodCountMetricStage(updateModulesMethodCountMetricUseCase)
             val updateCacheHitMetricStage = UpdateCacheHitMetricStage(updateCacheHitMetricUseCase)
-            val updateBuildSuccessRatioMetricStage = UpdateBuildSuccessRatioMetricStage(updateBuildSuccessRatioMetricUseCase)
+            val updateSuccessBuildRateMetricStage = UpdateSuccessBuildRateMetricStage(updateSuccessBuildRateMetricUseCase)
             val updateDependencyResolveMetricStage = UpdateDependencyResolveMetricStage(updateDependencyResolveMetricUseCase)
             val updateParallelExecutionRateMetricStage =
                 UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase)
@@ -91,7 +91,7 @@ class SaveMetricUseCase(
                 .addStage(updateModulesSourceCountMetricStage)
                 .addStage(updateModulesMethodCountMetricStage)
                 .addStage(updateCacheHitMetricStage)
-                .addStage(updateBuildSuccessRatioMetricStage)
+                .addStage(updateSuccessBuildRateMetricStage)
                 .addStage(updateDependencyResolveMetricStage)
                 .addStage(updateParallelExecutionRateMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))

@@ -24,8 +24,8 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.CreateBuildSuccessRatioReportStage
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report.RenderBuildSuccessRatioReportStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configuration.report.CreateConfigurationReportStage
@@ -80,7 +80,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data))
-            .addStage(CreateBuildSuccessRatioReportStage(data))
+            .addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
@@ -102,7 +102,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
         val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
         val renderCacheHitReportStage = RenderCacheHitReportStage(report)
-        val renderBuildSuccessRatioReportStage = RenderBuildSuccessRatioReportStage(report)
+        val renderSuccessBuildRateReportStage = RenderSuccessBuildRateReportStage(report)
         val renderDependencyResolveReportStage = RenderDependencyResolveReportStage(report)
         val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
 
@@ -114,7 +114,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesSourceCountReportStage)
             .addStage(renderModulesMethodCountReportStage)
             .addStage(renderCacheHitReportStage)
-            .addStage(renderBuildSuccessRatioReportStage)
+            .addStage(renderSuccessBuildRateReportStage)
             .addStage(renderDependencyResolveReportStage)
             .addStage(renderParallelExecutionRateReportStage)
             .execute(rawHTML)

@@ -20,18 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update
+package io.github.janbarari.gradle.analytics.metric.successbuildrate.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
-class UpdateBuildSuccessRatioMetricStage(
-    private val updateBuildSuccessRatioMetricUseCase: UpdateBuildSuccessRatioMetricUseCase
+class UpdateSuccessBuildRateMetricStage(
+    private val updateSuccessBuildRateMetricUseCase: UpdateSuccessBuildRateMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            successBuildRateMetric = updateBuildSuccessRatioMetricUseCase.execute()
+            successBuildRateMetric = updateSuccessBuildRateMetricUseCase.execute()
         }
     }
 

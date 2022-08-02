@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.buildsuccessratio.report
+package io.github.janbarari.gradle.analytics.metric.successbuildrate.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 
-class RenderBuildSuccessRatioReportStage(
+class RenderSuccessBuildRateReportStage(
     private val report: Report
 ): Stage<String, String> {
 

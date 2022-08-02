@@ -31,8 +31,8 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.create.CreateBuildSuccessRatioMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.buildsuccessratio.update.UpdateBuildSuccessRatioMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configuration.create.CreateConfigurationMetricUseCase
@@ -118,8 +118,8 @@ fun BuildExecutionInjector.provideUpdateCacheHitMetricUseCase(): UpdateCacheHitM
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): UpdateBuildSuccessRatioMetricUseCase {
-    return UpdateBuildSuccessRatioMetricUseCase(provideDatabaseRepository())
+fun BuildExecutionInjector.provideUpdateBuildSuccessRatioMetricUseCase(): UpdateSuccessBuildRateMetricUseCase {
+    return UpdateSuccessBuildRateMetricUseCase(provideDatabaseRepository())
 }
 
 @ExcludeJacocoGenerated
@@ -190,8 +190,8 @@ fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitM
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): CreateBuildSuccessRatioMetricUseCase {
-    return CreateBuildSuccessRatioMetricUseCase()
+fun BuildExecutionInjector.provideCreateBuildSuccessRatioMetricUseCase(): CreateSuccessBuildRateMetricUseCase {
+    return CreateSuccessBuildRateMetricUseCase()
 }
 
 @ExcludeJacocoGenerated
