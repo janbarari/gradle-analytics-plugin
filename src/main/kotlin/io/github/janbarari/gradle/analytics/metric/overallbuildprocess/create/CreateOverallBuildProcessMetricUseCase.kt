@@ -30,7 +30,8 @@ class CreateOverallBuildProcessMetricUseCase: UseCase<BuildInfo, OverallBuildPro
 
     override suspend fun execute(buildInfo: BuildInfo): OverallBuildProcessMetric {
         return OverallBuildProcessMetric(
-            median = buildInfo.getTotalDuration().toMillis()
+            median = buildInfo.getTotalDuration().toMillis(),
+            mean = buildInfo.getTotalDuration().toMillis()
         )
     }
 

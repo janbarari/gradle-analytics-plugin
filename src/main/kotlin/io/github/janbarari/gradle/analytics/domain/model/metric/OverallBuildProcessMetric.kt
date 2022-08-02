@@ -30,5 +30,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class OverallBuildProcessMetric(
     @Json(name = "median")
-    var median: Long = 0L
+    var median: Long = 0L,
+    @Json(name = "mean")
+    var mean: Long = 0L
 ): java.io.Serializable

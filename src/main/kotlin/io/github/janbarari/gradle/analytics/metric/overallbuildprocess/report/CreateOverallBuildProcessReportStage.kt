@@ -23,14 +23,17 @@
 package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.OverallBuildProcessReport
+import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationProcessReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToTotalBuildTimespanChartPoints
-import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.mapToInitializationMeanTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToOverallBuildProcessMeanTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToOverallBuildProcessMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
@@ -40,27 +43,40 @@ class CreateOverallBuildProcessReportStage(
 ) : Stage<Report, Report> {
 
     companion object {
-        private const val SKIP_METRIC_THRESHOLD = 50L
+        private const val SKIP_THRESHOLD_IN_MS = 50L
         private const val CHART_MAX_COLUMNS = 12
     }
 
     override suspend fun process(report: Report): Report {
-        val chartPoints = metrics.filter { metric ->
+        val medianChartPoints = metrics.filter { metric ->
             metric.overallBuildProcessMetric.isNotNull() &&
-                    metric.overallBuildProcessMetric?.median.isNotNull() &&
-                    metric.overallBuildProcessMetric?.median?.isBiggerEquals(SKIP_METRIC_THRESHOLD) ?: false
-        }.mapToTotalBuildTimespanChartPoints()
+                    metric.overallBuildProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToOverallBuildProcessMedianTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
                 return report
             }
 
+        val meanChartPoints = metrics.filter { metric ->
+            metric.overallBuildProcessMetric.isNotNull() &&
+                    metric.overallBuildProcessMetric?.mean?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
+        }.mapToOverallBuildProcessMeanTimespanChartPoints()
+            .minimize(CHART_MAX_COLUMNS)
+            .mapToChartPoints()
+            .whenEmpty {
+                return report
+            }
+
+        val minimumValue = Math.min(medianChartPoints.minValue(), meanChartPoints.minValue())
+        val maximumValue = Math.max(medianChartPoints.minValue(), meanChartPoints.minValue())
+
         return report.apply {
             overallBuildProcessReport = OverallBuildProcessReport(
-                medianValues = chartPoints,
-                suggestedMaxValue = chartPoints.maxValue(),
-                suggestedMinValue = chartPoints.minValue()
+                medianValues = medianChartPoints,
+                meanValues = meanChartPoints,
+                suggestedMaxValue = maximumValue,
+                suggestedMinValue = minimumValue
             )
         }
     }
