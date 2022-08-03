@@ -30,6 +30,7 @@ package io.github.janbarari.gradle
  * them with a custom annotation with the following properties:
  *
  * 1- The name of the annotation should include 'Generated' keyword.
+ *
  * 2- The retention policy of annotation should be runtime or class.
  *
  */
