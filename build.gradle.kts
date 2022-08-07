@@ -68,8 +68,8 @@ tasks.test {
 
 tasks.jacocoTestReport {
     reports {
-        xml.required.set(true)
-        csv.required.set(true)
+        xml.required.set(false)
+        csv.required.set(false)
         html.required.set(true)
     }
 }
@@ -85,7 +85,7 @@ publishing {
 pluginBundle {
     website = pluginWebsite
     vcsUrl = pluginVcsUrl
-    tags = "pluginTags".split(",")
+    tags = "$pluginTags".split(",")
 }
 
 gradlePlugin {
