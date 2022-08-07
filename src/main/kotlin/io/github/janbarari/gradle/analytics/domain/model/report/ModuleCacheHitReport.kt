@@ -32,5 +32,5 @@ data class ModuleCacheHitReport(
     val path: String,
     val rate: Long,
     val diffRate: Float? = null,
-    val medianValues: List<ChartPoint>
+    val meanValues: List<ChartPoint>
 ): java.io.Serializable

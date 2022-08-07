@@ -93,7 +93,7 @@ class CreateCacheHitReportStage(
                     path = path,
                     rate = rate,
                     diffRate = null,
-                    medianValues = values
+                    meanValues = values
                 )
             )
         }
@@ -102,7 +102,7 @@ class CreateCacheHitReportStage(
             modules = modules.sortedByDescending { it.rate },
             overallRate = overallHit,
             overallDiffRate = null,
-            overallMedianValues = overallValues
+            overallMeanValues = overallValues
         )
     }
 
@@ -135,14 +135,14 @@ class CreateCacheHitReportStage(
                         path = path,
                         rate = rate,
                         diffRate = calculateModuleCacheHitDiffRatio(metrics, path, rate),
-                        medianValues = getModuleChartPoints(path)
+                        meanValues = getModuleChartPoints(path)
                     )
                 )
             }
 
         return CacheHitReport(
             modules = modules,
-            overallMedianValues = overallValues,
+            overallMeanValues = overallValues,
             overallRate = overallHit,
             overallDiffRate = overallDiffRatio
         )

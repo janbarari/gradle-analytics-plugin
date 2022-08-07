@@ -55,13 +55,13 @@ class RenderCacheHitReportStage(
     @Suppress("LongMethod")
     fun getMetricRender(): String {
         val overallChartValues = ensureNotNull(report.cacheHitReport)
-            .overallMedianValues
+            .overallMeanValues
             .map { it.value }
             .toIntList()
             .toString()
 
         val overallChartLabels = ensureNotNull(report.cacheHitReport)
-            .overallMedianValues
+            .overallMeanValues
             .map { it.description }
             .toArrayString()
 
@@ -108,7 +108,7 @@ class RenderCacheHitReportStage(
 
         val bestChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == bestModulePath }
-            .medianValues
+            .meanValues
             .map {
                 it.value
             }
@@ -117,7 +117,7 @@ class RenderCacheHitReportStage(
 
         val worstChartValues = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
-            .medianValues
+            .meanValues
             .map {
                 it.value
             }
@@ -126,7 +126,7 @@ class RenderCacheHitReportStage(
 
         val bwLabels = ensureNotNull(report.cacheHitReport).modules
             .first { it.path == worstModulePath }
-            .medianValues
+            .meanValues
             .map { it.description }
             .toArrayString()
 
@@ -149,14 +149,14 @@ class RenderCacheHitReportStage(
     fun getBestModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
-            module.medianValues.sumOf { it.value }
+            module.meanValues.sumOf { it.value }
         }.first().path
     }
 
     fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
         if (modules.isNull()) return null
         return modules.sortedByDescending { module ->
-            module.medianValues.sumOf { it.value }
+            module.meanValues.sumOf { it.value }
         }.last().path
     }
 
