@@ -41,7 +41,7 @@ class ModulesMethodCountMetricJsonAdapterTest {
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                okio.Buffer().writeUtf8(json)
+                Buffer().writeUtf8(json)
             )
         )
         assertTrue {
@@ -69,6 +69,23 @@ class ModulesMethodCountMetricJsonAdapterTest {
                 )
             )
         }
+        assertThrows<JsonDataException> {
+            val json = """
+                {
+                    "modules": [
+                        {
+                            "path": ":app"
+                        }
+                    ]
+                }
+            """.trimIndent()
+            adapter.fromJson(
+                JsonReader.of(
+                    Buffer().writeUtf8(json)
+                )
+            )
+        }
+
         assertThrows<JsonDataException> {
             val json = """
                 {

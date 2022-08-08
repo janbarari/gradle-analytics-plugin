@@ -52,6 +52,18 @@ class ExecutionProcessMetricJsonAdapterTest {
     }
 
     @Test
+    fun `Check fromJson() returns valid data with reflection`() {
+        val fromReader = adapter.fromJson(
+            JsonReader.of(
+                Buffer().writeUtf8("{}")
+            )
+        )
+        assertTrue {
+            fromReader.isNotNull()
+        }
+    }
+
+    @Test
     fun `Check fromJson() throws exception with unValid json`() {
         assertThrows<JsonEncodingException> {
             val json = """

@@ -31,13 +31,15 @@ class DependencyResolveProcessMetricJsonAdapterTest {
         val json = """
             {
                 "mean": 1200,
-                "median": 1000
+                "median": 1000,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                okio.Buffer().writeUtf8(json)
+                Buffer().writeUtf8(json)
             )
         )
         assertTrue {
@@ -48,6 +50,18 @@ class DependencyResolveProcessMetricJsonAdapterTest {
         }
         assertTrue {
             fromReader.median == 1000L
+        }
+    }
+
+    @Test
+    fun `Check fromJson() returns valid data with reflection`() {
+        val fromReader = adapter.fromJson(
+            JsonReader.of(
+                Buffer().writeUtf8("{}")
+            )
+        )
+        assertTrue {
+            fromReader.isNotNull()
         }
     }
 
@@ -95,8 +109,7 @@ class DependencyResolveProcessMetricJsonAdapterTest {
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
         val validModel = DependencyResolveProcessMetric(
-            median = 1000L,
-            mean = 1200L
+            median = 1000L, mean = 1200L
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))

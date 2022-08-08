@@ -15,51 +15,47 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class OverallBuildProcessMetricJsonAdapterTest {
+class CacheHitMetricJsonAdapterTest {
 
     lateinit var moshi: Moshi
-    lateinit var adapter: OverallBuildProcessMetricJsonAdapter
+    lateinit var adapter: CacheHitMetricJsonAdapter
 
     @BeforeAll
     fun setup() {
         moshi = Moshi.Builder().build()
-        adapter = OverallBuildProcessMetricJsonAdapter(moshi)
+        adapter = CacheHitMetricJsonAdapter(moshi)
     }
 
     @Test
     fun `Check fromJson() returns valid data model with valid json`() {
         val json = """
-            {
-                "mean": 1200,
-                "median": 1000
+            {              
+                "rate": 45,
+                "modules": [
+                    {
+                        "path": ":app",
+                        "rate": 14
+                    }
+                ]
             }
         """.trimIndent()
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                Buffer().writeUtf8(json)
+                okio.Buffer().writeUtf8(json)
             )
         )
         assertTrue {
             fromReader.isNotNull()
         }
         assertTrue {
-            fromReader.mean == 1200L
+            fromReader.rate == 45L
         }
         assertTrue {
-            fromReader.median == 1000L
+            fromReader.modules[0].path == ":app"
         }
-    }
-
-    @Test
-    fun `Check fromJson() returns valid data with reflection`() {
-        val fromReader = adapter.fromJson(
-            JsonReader.of(
-                Buffer().writeUtf8("{}")
-            )
-        )
         assertTrue {
-            fromReader.isNotNull()
+            fromReader.modules[0].rate == 14L
         }
     }
 
@@ -80,7 +76,7 @@ class OverallBuildProcessMetricJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "median": null
+                    "rate": null
                 }
             """.trimIndent()
             adapter.fromJson(
@@ -106,9 +102,9 @@ class OverallBuildProcessMetricJsonAdapterTest {
 
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
-        val validModel = OverallBuildProcessMetric(
-            median = 1000L,
-            mean = 1200L
+        val validModel = CacheHitMetric(
+            rate = 45,
+            modules = emptyList()
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))

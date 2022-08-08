@@ -34,13 +34,25 @@ class BuildMetricJsonAdapterTest {
                 "requested_tasks": [
                     ":app:assembleDebug"
                 ],
-                "created_at": 1654434829922
+                "created_at": 1654434829922,
+                "initialization_process_metric": null,
+                "configuration_process_metric": null,
+                "execution_process_metric": null,
+                "overall_build_process_metric": null,
+                "dependency_resolve_process_metric": null,
+                "modules_source_count_metric": null,
+                "modules_method_count_metric": null,
+                "cache_hit_metric": null,
+                "success_build_rate_metric": null,
+                "parallel_execution_rate_metric": null,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                okio.Buffer().writeUtf8(json)
+                Buffer().writeUtf8(json)
             )
         )
         assertTrue {
