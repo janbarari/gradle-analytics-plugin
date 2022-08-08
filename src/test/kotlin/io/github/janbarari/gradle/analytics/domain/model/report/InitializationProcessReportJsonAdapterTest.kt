@@ -51,7 +51,9 @@ class InitializationProcessReportJsonAdapterTest {
                     }
                 ],
                 "suggestedMinValue": 0,
-                "suggestedMaxValue": 600
+                "suggestedMaxValue": 600,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

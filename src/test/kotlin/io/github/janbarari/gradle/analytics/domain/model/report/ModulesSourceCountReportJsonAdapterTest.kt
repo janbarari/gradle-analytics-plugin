@@ -38,7 +38,9 @@ class ModulesSourceCountReportJsonAdapterTest {
                     }
                 ],
                 "totalSourceCount": 100,
-                "totalDiffRate": 4.3
+                "totalDiffRate": 4.3,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

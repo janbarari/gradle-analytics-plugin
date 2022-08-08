@@ -35,7 +35,9 @@ class SuccessBuildRateReportJsonAdapterTest {
                         "value": 1000,
                         "description": "20/10/2022"
                     }
-                ]
+                ],
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

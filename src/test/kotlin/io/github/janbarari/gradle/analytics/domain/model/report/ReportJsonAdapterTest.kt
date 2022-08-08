@@ -31,7 +31,9 @@ class ReportJsonAdapterTest {
         val json = """
             {
                 "branch": "develop",
-                "requestedTasks": ":app:assembleDebug"
+                "requestedTasks": ":app:assembleDebug",
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

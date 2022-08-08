@@ -51,7 +51,9 @@ class DependencyResolveProcessReportJsonAdapterTest {
                     }
                 ],
                 "suggestedMinValue": 200,
-                "suggestedMaxValue": 453
+                "suggestedMaxValue": 453,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

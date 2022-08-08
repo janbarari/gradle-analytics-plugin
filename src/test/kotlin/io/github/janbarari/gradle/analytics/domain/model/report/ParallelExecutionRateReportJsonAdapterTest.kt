@@ -37,7 +37,9 @@ class ParallelExecutionRateReportJsonAdapterTest {
                     }
                 ],
                 "suggestedMaxValue": 300,
-                "suggestedMinValue": 0
+                "suggestedMinValue": 0,
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 

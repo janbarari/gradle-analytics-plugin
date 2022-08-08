@@ -37,7 +37,9 @@ class ModuleCacheHitReportJsonAdapterTest {
                         "value": 30,
                         "description": "22/10/2022"
                     }
-                ]
+                ],
+                
+                "test-skipping-un-valid-field": true
             }
         """.trimIndent()
 
