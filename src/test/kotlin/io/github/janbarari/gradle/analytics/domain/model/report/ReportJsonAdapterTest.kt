@@ -32,7 +32,17 @@ class ReportJsonAdapterTest {
             {
                 "branch": "develop",
                 "requestedTasks": ":app:assembleDebug",
-                
+                "initializationProcessReport": null,
+                "configurationProcessReport": null,
+                "executionProcessReport": null,
+                "overallBuildProcessReport": null,
+                "modulesSourceCountReport": null,
+                "modulesMethodCountReport": null,
+                "cacheHitReport": null,
+                "successBuildRateReport": null,
+                "dependencyResolveProcessReport": null,
+                "parallelExecutionRateReport": null,
+
                 "test-skipping-un-valid-field": true
             }
         """.trimIndent()

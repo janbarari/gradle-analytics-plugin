@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.extension.isNotNull
+import okio.Buffer
 import org.gradle.internal.impldep.com.google.gson.JsonParser
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ class ModuleMethodCountReportJsonAdapterTest {
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                okio.Buffer().writeUtf8(json)
+                Buffer().writeUtf8(json)
             )
         )
         assertTrue {
@@ -57,6 +58,24 @@ class ModuleMethodCountReportJsonAdapterTest {
         }
         assertTrue {
             fromReader.diffRate == 3F
+        }
+    }
+
+    @Test
+    fun `Check fromJson() returns valid data with reflection`() {
+        val fromReader = adapter.fromJson(
+            JsonReader.of(
+                Buffer().writeUtf8("""
+                    {
+                        "path": ":app",
+                        "value": 10,
+                        "coverage": 30
+                    }
+                """.trimIndent())
+            )
+        )
+        assertTrue {
+            fromReader.isNotNull()
         }
     }
 
