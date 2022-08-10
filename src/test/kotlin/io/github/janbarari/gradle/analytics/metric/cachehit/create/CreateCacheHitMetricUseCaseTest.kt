@@ -49,39 +49,37 @@ class CreateCacheHitMetricUseCaseTest {
         )
 
         val tasks = listOf(
-            fakeTask(":app", cache = true),
-            fakeTask(":core", cache = true),
-            fakeTask(":domain", cache = true),
-            fakeTask(":app", cache = false),
-            fakeTask(":core", cache = false),
-            fakeTask(":domain", cache = true),
-            fakeTask(":app", cache = false),
-            fakeTask(":core", cache = false),
-            fakeTask(":domain", cache = false),
-            fakeTask(":domain", cache = true, isSkipped = true),
-            fakeTask(":app", cache = false, isSkipped = true),
+            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":core", isFromCache = false, isUpToDate = false, isSkipped = false),
+            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+            fakeTask(":domain", isFromCache = true, isUpToDate = true, isSkipped = false),
+            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = true)
         )
 
         val cacheHitMetric = usecase.execute(modules to tasks)
 
-        println(cacheHitMetric)
-
         assertTrue {
-            cacheHitMetric.rate == 33L
+            cacheHitMetric.rate == 90L
         }
 
         assertTrue {
-            cacheHitMetric.modules[0].rate == 0L
+            cacheHitMetric.modules[0].rate == 75L
         }
         assertTrue {
-            cacheHitMetric.modules[1].rate == 50L
+            cacheHitMetric.modules[1].rate == 100L
         }
         assertTrue {
-            cacheHitMetric.modules[2].rate == 33L
+            cacheHitMetric.modules[2].rate == 66L
         }
     }
 
-    private fun fakeTask(modulePath: String, cache: Boolean, isSkipped: Boolean = false): TaskInfo {
+    private fun fakeTask(modulePath: String, isFromCache: Boolean, isUpToDate: Boolean, isSkipped: Boolean): TaskInfo {
         return TaskInfo(
             startedAt = 0,
             finishedAt = 0,
@@ -91,9 +89,9 @@ class CreateCacheHitMetricUseCaseTest {
             isSuccessful = true,
             failures = null,
             dependencies = null,
-            isIncremental = cache,
-            isFromCache = cache,
-            isUpToDate = cache,
+            isIncremental = isFromCache || isUpToDate,
+            isFromCache = isFromCache,
+            isUpToDate = isUpToDate,
             isSkipped = isSkipped,
             executionReasons = null
         )
