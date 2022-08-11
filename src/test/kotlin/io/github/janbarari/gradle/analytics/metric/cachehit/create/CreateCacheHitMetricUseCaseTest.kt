@@ -35,54 +35,50 @@ class CreateCacheHitMetricUseCaseTest {
 
     lateinit var usecase: CreateCacheHitMetricUseCase
 
+    private val modules = listOf(
+        ModulePath(path = ":app", "TEMPORARY_DIRECTORY"),
+        ModulePath(path = ":domain", "TEMPORARY_DIRECTORY"),
+        ModulePath(path = ":core", "TEMPORARY_DIRECTORY")
+    )
+
+    private val tasks = listOf(
+        fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":core", isFromCache = false, isUpToDate = false, isSkipped = false),
+        fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
+        fakeTask(":domain", isFromCache = true, isUpToDate = true, isSkipped = false),
+        fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = true)
+    )
+
     @BeforeAll
     fun setup() {
         usecase = CreateCacheHitMetricUseCase()
     }
 
     @Test
-    fun `Check cache hit metric generates`() = runBlocking {
-        val modules = listOf(
-            ModulePath(path = ":app", "TEMPORARY_DIRECTORY"),
-            ModulePath(path = ":domain", "TEMPORARY_DIRECTORY"),
-            ModulePath(path = ":core", "TEMPORARY_DIRECTORY")
-        )
-
-        val tasks = listOf(
-            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":core", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":core", isFromCache = false, isUpToDate = false, isSkipped = false),
-            fakeTask(":domain", isFromCache = true, isUpToDate = false, isSkipped = false),
-            fakeTask(":domain", isFromCache = true, isUpToDate = true, isSkipped = false),
-            fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = true)
-        )
-
-        val cacheHitMetric = usecase.execute(modules to tasks)
+    fun `When CacheHitMetricUseCase executes, expect cacheHitMetric`() = runBlocking {
+        val cacheHitMetric = usecase.execute(input = modules to tasks)
 
         assertTrue {
-            cacheHitMetric.rate == 90L
-        }
-
-        assertTrue {
-            cacheHitMetric.modules[0].rate == 75L
-        }
-        assertTrue {
-            cacheHitMetric.modules[1].rate == 100L
-        }
-        assertTrue {
-            cacheHitMetric.modules[2].rate == 66L
+            cacheHitMetric.rate == 90L &&
+                    cacheHitMetric.modules[0].rate == 75L &&
+                    cacheHitMetric.modules[1].rate == 100L &&
+                    cacheHitMetric.modules[2].rate == 66L
         }
     }
 
-    private fun fakeTask(modulePath: String, isFromCache: Boolean, isUpToDate: Boolean, isSkipped: Boolean): TaskInfo {
+    private fun fakeTask(modulePath: String,
+                         isFromCache: Boolean,
+                         isUpToDate: Boolean,
+                         isSkipped: Boolean): TaskInfo {
         return TaskInfo(
-            startedAt = 0,
-            finishedAt = 0,
+            startedAt = 16578948883,
+            finishedAt = 16578948883,
             path = "$modulePath:fakeTask",
             displayName = "Fake task",
             name = "Fake task",
