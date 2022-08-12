@@ -139,13 +139,16 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     }
 
     private fun printEmptyResult() {
-        val message = "There is no data to process. Please check the plugin configuration and wait until the first desired " +
-                "task information is saved"
-        ConsolePrinter(message.length).run {
+        val message = listOf(
+            "There is no data to process. Please check the plugin configuration ",
+            "and wait until the first desired task information is saved"
+        )
+        ConsolePrinter(message[0].length).run {
             printFirstLine()
             printLine("Gradle Analytics Plugin", "")
             printBreakLine('-')
-            printLine(message, "")
+            printLine(message[0], "")
+            printLine(message[1], "")
             printLastLine()
         }
     }
