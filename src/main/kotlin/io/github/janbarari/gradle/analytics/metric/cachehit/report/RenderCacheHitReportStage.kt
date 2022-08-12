@@ -106,29 +106,33 @@ class RenderCacheHitReportStage(
         val bestModulePath = getBestModulePath(ensureNotNull(report.cacheHitReport).modules)
         val worstModulePath = getWorstModulePath(ensureNotNull(report.cacheHitReport).modules)
 
-        val bestChartValues = ensureNotNull(report.cacheHitReport).modules
-            .first { it.path == bestModulePath }
-            .meanValues
-            .map {
-                it.value
-            }
-            .toIntList()
-            .toString()
+        val modules = ensureNotNull(report.cacheHitReport).modules
 
-        val worstChartValues = ensureNotNull(report.cacheHitReport).modules
-            .first { it.path == worstModulePath }
-            .meanValues
-            .map {
-                it.value
-            }
-            .toIntList()
-            .toString()
+        var bestChartValues = "[]"
+        var worstChartValues = "[]"
+        var bwLabels = "[]"
 
-        val bwLabels = ensureNotNull(report.cacheHitReport).modules
-            .first { it.path == worstModulePath }
-            .meanValues
-            .map { it.description }
-            .toArrayString()
+        if (modules.isNotEmpty()) {
+            bestChartValues = modules
+                .first { it.path == bestModulePath }
+                .meanValues
+                .map { it.value }
+                .toIntList()
+                .toString()
+
+            worstChartValues = modules
+                .first { it.path == worstModulePath }
+                .meanValues
+                .map { it.value }
+                .toIntList()
+                .toString()
+
+            bwLabels = modules
+                .first { it.path == worstModulePath }
+                .meanValues
+                .map { it.description }
+                .toArrayString()
+        }
 
         var template = HtmlUtils.getTemplate(CACHE_HIT_METRIC_TEMPLATE_FILE_NAME)
         template = template
@@ -154,7 +158,7 @@ class RenderCacheHitReportStage(
     }
 
     fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
-        if (modules.isNull()) return null
+        if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
             module.meanValues.sumOf { it.value }
         }.last().path
