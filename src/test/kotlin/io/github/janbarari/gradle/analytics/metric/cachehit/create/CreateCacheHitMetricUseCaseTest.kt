@@ -61,7 +61,7 @@ class CreateCacheHitMetricUseCaseTest {
     }
 
     @Test
-    fun `When CacheHitMetricUseCase executes, expect cacheHitMetric`() = runBlocking {
+    fun `When the usecase executes, expect cacheHitMetric to be generated`() = runBlocking {
         val cacheHitMetric = usecase.execute(input = modules to tasks)
 
         assertTrue {
