@@ -66,7 +66,6 @@ fun calculatePointsMean(values: List<TimespanChartPoint>): List<TimespanChartPoi
     return mean
 }
 
-
 fun Collection<TimespanChartPoint>.mapToChartPoints(): List<ChartPoint> {
     return map {
         val period = if (it.to.isNull()) {
