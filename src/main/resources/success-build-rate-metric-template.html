@@ -3,7 +3,8 @@
 <div class="chart-container" style="margin-right: 20px;">
     <canvas id="buildSuccessRatioChart" style="width:100%; height: 100%;"></canvas>
     <script type="text/javascript">
-        var _values = %chart-median-values%;
+        var _medianValues = %chart-median-values%;
+        var _meanValues = %chart-mean-values%;
         var _labels = %chart-labels%;
 
         var chart = new Chart("buildSuccessRatioChart", {
@@ -16,7 +17,16 @@
                 fill: false,
                 backgroundColor: "#DBEAFE",
                 borderColor: "#3B82F6",
-                data: _values,
+                data: _medianValues,
+                cubicInterpolationMode: 'monotone',
+                tension: 0.4
+              },
+              {
+                label: "Mean",
+                fill: false,
+                backgroundColor: "#ffecb3",
+                borderColor: "#ffc107",
+                data: _meanValues,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
               }

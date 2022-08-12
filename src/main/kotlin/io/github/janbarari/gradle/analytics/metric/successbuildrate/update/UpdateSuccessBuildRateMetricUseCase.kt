@@ -34,26 +34,30 @@ class UpdateSuccessBuildRateMetricUseCase(
 ) : UseCaseNoInput<SuccessBuildRateMetric>() {
 
     override suspend fun execute(): SuccessBuildRateMetric {
-        var successes = 0
-        var failures = 0
+        var meanSuccesses = 0
+        var meanFailures = 0
+        var medianSuccesses = 0
+        var medianFailures = 0
 
         repo.getTemporaryMetrics().whenEach {
             successBuildRateMetric.whenNotNull {
-                when (rate) {
-                    0F -> {
-                        failures++
-                    }
-                    100F -> {
-                        successes++
-                    }
+                when (meanRate) {
+                    0F -> meanFailures++
+                    100F -> meanSuccesses++
+                }
+                when (medianRate) {
+                    0F -> medianFailures++
+                    100F -> medianSuccesses++
                 }
             }
         }
 
-        val totalBuildCount = failures + successes
+        val meanTotalBuildCount = meanFailures + meanSuccesses
+        val medianTotalBuildCount = medianFailures + medianSuccesses
 
         return SuccessBuildRateMetric(
-            rate = successes.toPercentageOf(totalBuildCount)
+            medianRate = medianSuccesses.toPercentageOf(medianTotalBuildCount),
+            meanRate = meanSuccesses.toPercentageOf(meanTotalBuildCount)
         )
     }
 

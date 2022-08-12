@@ -36,6 +36,12 @@ class SuccessBuildRateReportJsonAdapterTest {
                         "description": "20/10/2022"
                     }
                 ],
+                "meanValues": [
+                    {
+                        "value": 1000,
+                        "description": "20/10/2022"
+                    }
+                ],
                 
                 "test-skipping-un-valid-field": true
             }
@@ -47,7 +53,9 @@ class SuccessBuildRateReportJsonAdapterTest {
             )
         )
         assertTrue {
-            fromReader.isNotNull() && fromReader.medianValues[0].value == 1000L
+            fromReader.isNotNull() &&
+                    fromReader.medianValues[0].value == 1000L &&
+                    fromReader.meanValues[0].value == 1000L
         }
     }
 
@@ -68,7 +76,8 @@ class SuccessBuildRateReportJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "medianValues": null
+                    "medianValues": null,
+                    "meanValues": null
                 }
             """.trimIndent()
             adapter.fromJson(
@@ -94,7 +103,7 @@ class SuccessBuildRateReportJsonAdapterTest {
 
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
-        val validModel = SuccessBuildRateReport(emptyList())
+        val validModel = SuccessBuildRateReport(emptyList(), emptyList())
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))
         }

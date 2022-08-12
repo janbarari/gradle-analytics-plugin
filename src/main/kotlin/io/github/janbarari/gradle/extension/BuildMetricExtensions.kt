@@ -105,10 +105,20 @@ fun List<BuildMetric>.mapToOverallBuildProcessMeanTimespanChartPoints(): List<Ti
     }
 }
 
-fun List<BuildMetric>.mapToSuccessBuildRateTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToSuccessBuildRateMedianTimespanChartPoints(): List<TimespanChartPoint> {
     return map {
         TimespanChartPoint(
-            value = ensureNotNull(it.successBuildRateMetric).rate.toLong(),
+            value = ensureNotNull(it.successBuildRateMetric).medianRate.toLong(),
+            from = it.createdAt,
+            to = null
+        )
+    }
+}
+
+fun List<BuildMetric>.mapToSuccessBuildRateMeanTimespanChartPoints(): List<TimespanChartPoint> {
+    return map {
+        TimespanChartPoint(
+            value = ensureNotNull(it.successBuildRateMetric).meanRate.toLong(),
             from = it.createdAt,
             to = null
         )

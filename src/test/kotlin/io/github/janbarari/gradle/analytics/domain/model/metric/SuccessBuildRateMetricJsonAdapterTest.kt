@@ -30,7 +30,8 @@ class SuccessBuildRateMetricJsonAdapterTest {
     fun `Check fromJson() returns valid data model with valid json`() {
         val json = """
             {
-                "rate": 100
+                "median_rate": 100,
+                "mean_rate": 100
             }
         """.trimIndent()
 
@@ -43,7 +44,8 @@ class SuccessBuildRateMetricJsonAdapterTest {
             fromReader.isNotNull()
         }
         assertTrue {
-            fromReader.rate == 100F
+            fromReader.medianRate == 100F &&
+                    fromReader.meanRate == 100F
         }
     }
 
@@ -76,7 +78,8 @@ class SuccessBuildRateMetricJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "rate": null
+                    "median_rate": null,
+                    "mean_rate": null
                 }
             """.trimIndent()
             adapter.fromJson(
@@ -103,7 +106,8 @@ class SuccessBuildRateMetricJsonAdapterTest {
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
         val validModel = SuccessBuildRateMetric(
-            rate = 100F
+            medianRate = 100F,
+            meanRate = 100F
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))

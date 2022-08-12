@@ -7,6 +7,8 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class SuccessBuildRateMetric(
-    @Json(name = "rate")
-    var rate: Float = 0f
+    @Json(name = "median_rate")
+    var medianRate: Float = 0f,
+    @Json(name = "mean_rate")
+    var meanRate: Float = 0f
 ) : java.io.Serializable

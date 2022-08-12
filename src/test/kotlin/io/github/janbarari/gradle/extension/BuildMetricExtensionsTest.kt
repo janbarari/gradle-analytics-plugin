@@ -188,18 +188,38 @@ class BuildMetricExtensionsTest {
     }
 
     @Test
-    fun `Check SuccessBuildRateTimespanChartPoint mapper return correct result`() {
+    fun `Check SuccessBuildRateMedianTimespanChartPoint mapper return correct result`() {
         val buildMetrics = listOf(
             BuildMetric(
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
                 successBuildRateMetric = SuccessBuildRateMetric(
-                    rate = 100F
+                    medianRate = 100F,
+                    meanRate = 100F
                 )
             )
         )
-        val result = buildMetrics.mapToSuccessBuildRateTimespanChartPoints()
+        val result = buildMetrics.mapToSuccessBuildRateMedianTimespanChartPoints()
+        assertEquals(100, result.first().value)
+        assertEquals(1660318217387, result.first().from)
+        assertEquals(null, result.first().to)
+    }
+
+    @Test
+    fun `Check SuccessBuildRateMeanTimespanChartPoint mapper return correct result`() {
+        val buildMetrics = listOf(
+            BuildMetric(
+                branch = "master",
+                requestedTasks = listOf("assemble"),
+                createdAt = 1660318217387,
+                successBuildRateMetric = SuccessBuildRateMetric(
+                    medianRate = 100F,
+                    meanRate = 100F
+                )
+            )
+        )
+        val result = buildMetrics.mapToSuccessBuildRateMedianTimespanChartPoints()
         assertEquals(100, result.first().value)
         assertEquals(1660318217387, result.first().from)
         assertEquals(null, result.first().to)
