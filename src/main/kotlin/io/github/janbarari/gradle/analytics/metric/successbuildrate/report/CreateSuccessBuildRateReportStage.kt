@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.SuccessBuildRate
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.mapToBuildSuccessRatioTimespanChartPoints
+import io.github.janbarari.gradle.extension.mapToSuccessBuildRateTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
@@ -43,7 +43,7 @@ class CreateSuccessBuildRateReportStage(
     override suspend fun process(report: Report): Report {
         val chartPoints = metrics.filter { metric ->
             metric.successBuildRateMetric.isNotNull()
-        }.mapToBuildSuccessRatioTimespanChartPoints()
+        }.mapToSuccessBuildRateTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {

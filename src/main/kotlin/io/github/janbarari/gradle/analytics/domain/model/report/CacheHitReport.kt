@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @JsonClass(generateAdapter = true)
 data class CacheHitReport(
     val modules: List<ModuleCacheHitReport>,
-    val overallMedianValues: List<ChartPoint>,
+    val overallMeanValues: List<ChartPoint>,
     val overallRate: Long,
     val overallDiffRate: Float? = null
 )

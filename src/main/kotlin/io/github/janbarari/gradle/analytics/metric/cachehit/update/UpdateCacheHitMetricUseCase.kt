@@ -42,7 +42,7 @@ class UpdateCacheHitMetricUseCase(
             .map { ensureNotNull(it.cacheHitMetric).rate }
 
         val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
-            rate = getModuleMedianCacheHit(path, temporaryMetrics)
+            rate = getModuleMeanCacheHit(path, temporaryMetrics)
         } ?: return null
 
         return CacheHitMetric(
@@ -51,7 +51,7 @@ class UpdateCacheHitMetricUseCase(
         )
     }
 
-    private fun getModuleMedianCacheHit(path: String, metrics: List<BuildMetric>): Long {
+    private fun getModuleMeanCacheHit(path: String, metrics: List<BuildMetric>): Long {
         val hitRates = metrics
             .filter {
                 it.cacheHitMetric.isNotNull()
