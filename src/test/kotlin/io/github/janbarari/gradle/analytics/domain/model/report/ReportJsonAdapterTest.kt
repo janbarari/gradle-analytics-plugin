@@ -31,17 +31,17 @@ class ReportJsonAdapterTest {
         val json = """
             {
                 "branch": "develop",
-                "requestedTasks": ":app:assembleDebug",
-                "initializationProcessReport": null,
-                "configurationProcessReport": null,
-                "executionProcessReport": null,
-                "overallBuildProcessReport": null,
-                "modulesSourceCountReport": null,
-                "modulesMethodCountReport": null,
-                "cacheHitReport": null,
-                "successBuildRateReport": null,
-                "dependencyResolveProcessReport": null,
-                "parallelExecutionRateReport": null,
+                "requested_tasks": ":app:assembleDebug",
+                "initialization_process_report": null,
+                "configuration_process_report": null,
+                "execution_process_report": null,
+                "overall_build_process_report": null,
+                "modules_source_count_report": null,
+                "modules_method_count_report": null,
+                "cache_hit_report": null,
+                "success_build_rate_report": null,
+                "dependency_resolve_process_report": null,
+                "parallel_execution_rate_report": null,
 
                 "test-skipping-un-valid-field": true
             }

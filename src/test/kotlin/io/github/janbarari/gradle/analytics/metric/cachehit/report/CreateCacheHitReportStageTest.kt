@@ -150,36 +150,18 @@ class CreateCacheHitReportStageTest {
         assertTrue {
             report.cacheHitReport.isNotNull()
         }
-        assertTrue {
-            report.cacheHitReport?.overallRate == 88L
-        }
-        assertTrue {
-            report.cacheHitReport?.overallDiffRate == 49.15F
-        }
+        assertEquals(88, report.cacheHitReport?.overallRate)
+        assertEquals(49.15F, report.cacheHitReport?.overallDiffRate)
         assertTrue {
             report.cacheHitReport?.overallMeanValues?.hasMultipleItems() == true
         }
-        assertTrue {
-            report.cacheHitReport?.modules?.size == 3
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":data" }!!.diffRate == 0.0F
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":data" }!!.rate == 34L
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":domain" }!!.diffRate == 60.01F
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":domain" }!!.rate == 30L
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":core" }!!.diffRate == 55.55F
-        }
-        assertTrue {
-            report.cacheHitReport?.modules?.find { it.path == ":core" }!!.rate == 70L
-        }
+        assertEquals(3, report.cacheHitReport?.modules?.size)
+        assertEquals(0.0F, report.cacheHitReport?.modules?.find { it.path == ":data" }!!.diffRate)
+        assertEquals(34, report.cacheHitReport?.modules?.find { it.path == ":data" }!!.rate)
+        assertEquals(-60.01F, report.cacheHitReport?.modules?.find { it.path == ":domain" }!!.diffRate)
+        assertEquals(30, report.cacheHitReport?.modules?.find { it.path == ":domain" }!!.rate)
+        assertEquals(55.55F, report.cacheHitReport?.modules?.find { it.path == ":core" }!!.diffRate)
+        assertEquals(70, report.cacheHitReport?.modules?.find { it.path == ":core" }!!.rate)
     }
 
     @Test
