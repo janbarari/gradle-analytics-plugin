@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.execution.report
+package io.github.janbarari.gradle.analytics.metric.initializationprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -31,30 +31,30 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-class RenderExecutionProcessReportStage(
+class RenderInitializationProcessReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val EXECUTION_METRIC_TEMPLATE_ID = "%execution-process-metric%"
-        private const val EXECUTION_METRIC_TEMPLATE_FILE_NAME = "execution-process-metric-template"
+        private const val INITIALIZATION_METRIC_TEMPLATE_ID = "%initialization-process-metric%"
+        private const val INITIALIZATION_METRIC_TEMPLATE_FILE_NAME = "initialization-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.executionProcessReport.isNull())
-            return input.replace(EXECUTION_METRIC_TEMPLATE_ID, getEmptyRender())
+        if (report.initializationProcessReport.isNull())
+            return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(EXECUTION_METRIC_TEMPLATE_ID, getMetricRender())
+        return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Execution Process is not available!")
+        return HtmlUtils.renderMessage("Initialization Process is not available!")
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(EXECUTION_METRIC_TEMPLATE_FILE_NAME)
-        report.executionProcessReport.whenNotNull {
+        var renderedTemplate = HtmlUtils.getTemplate(INITIALIZATION_METRIC_TEMPLATE_FILE_NAME)
+        report.initializationProcessReport.whenNotNull {
             val medianChartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()

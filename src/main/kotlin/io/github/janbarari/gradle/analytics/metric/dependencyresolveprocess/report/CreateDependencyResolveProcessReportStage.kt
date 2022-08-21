@@ -24,16 +24,13 @@ package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.rep
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport
-import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.metric.execution.report.CreateExecutionProcessReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.mapToDependencyResolveMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToDependencyResolveMedianTimespanChartPoints
-import io.github.janbarari.gradle.extension.mapToExecutionMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty

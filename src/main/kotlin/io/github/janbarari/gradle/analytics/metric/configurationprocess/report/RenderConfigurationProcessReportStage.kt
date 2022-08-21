@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.initialization.report
+package io.github.janbarari.gradle.analytics.metric.configurationprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -31,30 +31,30 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-class RenderInitializationProcessReportStage(
+/**
+ * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport].
+ */
+class RenderConfigurationProcessReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
-        private const val INITIALIZATION_METRIC_TEMPLATE_ID = "%initialization-process-metric%"
-        private const val INITIALIZATION_METRIC_TEMPLATE_FILE_NAME = "initialization-process-metric-template"
+        private const val CONFIGURATION_METRIC_TEMPLATE_ID = "%configuration-process-metric%"
+        private const val CONFIGURATION_METRIC_TEMPLATE_FILE_NAME = "configuration-process-metric-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.initializationProcessReport.isNull())
-            return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getEmptyRender())
+        if (report.configurationProcessReport.isNull()) {
+            return input.replace(CONFIGURATION_METRIC_TEMPLATE_ID, getEmptyRender())
+        }
 
-        return input.replace(INITIALIZATION_METRIC_TEMPLATE_ID, getMetricRender())
-    }
-
-    fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Initialization Process is not available!")
+        return input.replace(CONFIGURATION_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(INITIALIZATION_METRIC_TEMPLATE_FILE_NAME)
-        report.initializationProcessReport.whenNotNull {
+        var renderedTemplate = HtmlUtils.getTemplate(CONFIGURATION_METRIC_TEMPLATE_FILE_NAME)
+        report.configurationProcessReport.whenNotNull {
             val medianChartValues = medianValues.map { it.value }
                 .toIntList()
                 .toString()
@@ -77,6 +77,10 @@ class RenderInitializationProcessReportStage(
                 .replace("%chart-labels%", chartLabels)
         }
         return renderedTemplate
+    }
+
+    fun getEmptyRender(): String {
+        return HtmlUtils.renderMessage("Configuration Process is not available!")
     }
 
 }

@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.initialization.update
+package io.github.janbarari.gradle.analytics.metric.configurationprocess.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
@@ -31,19 +31,22 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-class UpdateInitializationProcessMetricUseCase(
+/**
+ * Generates a new metric with Median mathematics based on temporary metrics.
+ */
+class UpdateConfigurationProcessMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<InitializationProcessMetric>() {
+) : UseCaseNoInput<ConfigurationProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
     }
 
-    override suspend fun execute(): InitializationProcessMetric {
+    override suspend fun execute(): ConfigurationProcessMetric {
         val medianValues = arrayListOf<Long>()
         val meanValues = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            initializationProcessMetric.whenNotNull {
+            configurationProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
                 median.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
                     medianValues.add(median)
@@ -54,7 +57,7 @@ class UpdateInitializationProcessMetricUseCase(
             }
         }
 
-        return InitializationProcessMetric(
+        return ConfigurationProcessMetric(
             median = MathUtils.longMedian(medianValues),
             mean = MathUtils.longMean(meanValues)
         )

@@ -20,11 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.configuration.update
+package io.github.janbarari.gradle.analytics.metric.initializationprocess.update
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach
@@ -32,22 +31,19 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.utils.MathUtils
 
-/**
- * Generates a new metric with Median mathematics based on temporary metrics.
- */
-class UpdateConfigurationProcessMetricUseCase(
+class UpdateInitializationProcessMetricUseCase(
     private val repo: DatabaseRepository
-) : UseCaseNoInput<ConfigurationProcessMetric>() {
+) : UseCaseNoInput<InitializationProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
     }
 
-    override suspend fun execute(): ConfigurationProcessMetric {
+    override suspend fun execute(): InitializationProcessMetric {
         val medianValues = arrayListOf<Long>()
         val meanValues = arrayListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
-            configurationProcessMetric.whenNotNull {
+            initializationProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.
                 median.isBiggerEquals(SKIP_THRESHOLD_IN_MS).whenTrue {
                     medianValues.add(median)
@@ -58,7 +54,7 @@ class UpdateConfigurationProcessMetricUseCase(
             }
         }
 
-        return ConfigurationProcessMetric(
+        return InitializationProcessMetric(
             median = MathUtils.longMedian(medianValues),
             mean = MathUtils.longMean(meanValues)
         )

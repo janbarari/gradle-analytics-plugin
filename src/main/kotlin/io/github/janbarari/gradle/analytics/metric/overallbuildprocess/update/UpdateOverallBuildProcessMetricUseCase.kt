@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.OverallBuildProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.initialization.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach

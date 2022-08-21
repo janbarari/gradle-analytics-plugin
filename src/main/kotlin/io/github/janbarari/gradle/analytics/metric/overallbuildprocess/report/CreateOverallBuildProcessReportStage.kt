@@ -23,15 +23,12 @@
 package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.OverallBuildProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.metric.initialization.report.CreateInitializationProcessReportStage
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToInitializationMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToOverallBuildProcessMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToOverallBuildProcessMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.minValue

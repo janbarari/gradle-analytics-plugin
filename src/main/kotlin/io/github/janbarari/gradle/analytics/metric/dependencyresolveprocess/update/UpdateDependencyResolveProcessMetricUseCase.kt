@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.upd
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveProcessMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.execution.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach
