@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
@@ -36,6 +37,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.report.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.RenderExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.RenderInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.CreateInitializationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.RenderModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
@@ -65,6 +68,7 @@ class ReportAnalyticsLogicImp(
     private val isCI: Boolean,
     private val outputPath: String,
     private val projectName: String,
+    private val modulesPath: List<ModulePath>
 ) : ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(EmptyMetricsException::class)
@@ -83,6 +87,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
+            .addStage(CreateModulesExecutionProcessReportStage(modulesPath, data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -105,6 +110,7 @@ class ReportAnalyticsLogicImp(
         val renderSuccessBuildRateReportStage = RenderSuccessBuildRateReportStage(report)
         val renderDependencyResolveProcessReportStage = RenderDependencyResolveProcessReportStage(report)
         val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
+        val renderModulesExecutionProcessReportStage = RenderModulesExecutionProcessReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -117,6 +123,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderSuccessBuildRateReportStage)
             .addStage(renderDependencyResolveProcessReportStage)
             .addStage(renderParallelExecutionRateReportStage)
+            .addStage(renderModulesExecutionProcessReportStage)
             .execute(rawHTML)
     }
 

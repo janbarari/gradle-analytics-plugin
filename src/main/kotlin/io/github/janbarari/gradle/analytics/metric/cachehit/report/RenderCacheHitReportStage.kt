@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
-import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.ensureNotNull
@@ -150,14 +150,14 @@ class RenderCacheHitReportStage(
         return template
     }
 
-    fun getBestModulePath(modules: List<ModuleCacheHitReport>): String? {
+    fun getBestModulePath(modules: List<ModuleCacheHit>): String? {
         if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
             module.meanValues.sumOf { it.value }
         }.first().path
     }
 
-    fun getWorstModulePath(modules: List<ModuleCacheHitReport>): String? {
+    fun getWorstModulePath(modules: List<ModuleCacheHit>): String? {
         if (modules.isEmpty()) return null
         return modules.sortedByDescending { module ->
             module.meanValues.sumOf { it.value }

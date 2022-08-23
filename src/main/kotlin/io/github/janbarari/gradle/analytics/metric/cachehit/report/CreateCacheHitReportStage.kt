@@ -25,7 +25,7 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.report
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.core.Stage
@@ -62,7 +62,7 @@ class CreateCacheHitReportStage(
     }
 
     private fun generateSingleItemReport(metric: BuildMetric): CacheHitReport {
-        val modules = mutableListOf<ModuleCacheHitReport>()
+        val modules = mutableListOf<ModuleCacheHit>()
         val overallHit = ensureNotNull(metric.cacheHitMetric).rate
 
         val overallHitTimespanChartPoint = TimespanChartPoint(
@@ -89,7 +89,7 @@ class CreateCacheHitReportStage(
                 )
             }
             modules.add(
-                ModuleCacheHitReport(
+                ModuleCacheHit(
                     path = path,
                     rate = rate,
                     diffRate = null,
@@ -128,10 +128,10 @@ class CreateCacheHitReportStage(
             ChartPoint(it.value, it.getTimespanString())
         }
 
-        val modules = mutableListOf<ModuleCacheHitReport>()
+        val modules = mutableListOf<ModuleCacheHit>()
         ensureNotNull(metrics.last().cacheHitMetric).modules.whenEach {
                 modules.add(
-                    ModuleCacheHitReport(
+                    ModuleCacheHit(
                         path = path,
                         rate = rate,
                         diffRate = calculateModuleCacheHitDiffRatio(metrics, path, rate),

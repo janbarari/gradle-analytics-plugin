@@ -24,12 +24,10 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ModuleSourceCountReport(
-    val path: String,
-    val value: Int,
-    val coverage: Float,
-    val diffRate: Float? = null
+data class ModulesExecutionProcessReport(
+    val modules: List<ModuleExecutionProcess>
 ): java.io.Serializable

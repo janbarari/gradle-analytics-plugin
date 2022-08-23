@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
-import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHitReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -36,7 +36,7 @@ class RenderCacheHitReportStageTest {
     fun `When the stage proceeds with positive data, expects the metric report`() = runBlocking {
         val cacheHitReport = CacheHitReport(
             modules = listOf(
-                ModuleCacheHitReport(
+                ModuleCacheHit(
                     path = ":core",
                     rate = 43L,
                     diffRate = 19F,
@@ -80,7 +80,7 @@ class RenderCacheHitReportStageTest {
     fun `When the stage proceeds with negative data, expects the metric report`() = runBlocking {
         val cacheHitReport = CacheHitReport(
             modules = listOf(
-                ModuleCacheHitReport(
+                ModuleCacheHit(
                     path = ":core",
                     rate = 43L,
                     diffRate = -19F,
@@ -90,7 +90,7 @@ class RenderCacheHitReportStageTest {
                         ChartPoint(30L, "14/04/2022")
                     )
                 ),
-                ModuleCacheHitReport(
+                ModuleCacheHit(
                     path = ":architecture",
                     rate = 43L,
                     diffRate = 0F,

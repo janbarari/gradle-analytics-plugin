@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCountReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -63,13 +63,13 @@ class CreateModulesMethodCountReportStage(
     }
 
     fun generateSingleItemReport(metric: ModulesMethodCountMetric): ModulesMethodCountReport {
-        val values = mutableListOf<ModuleMethodCountReport>()
+        val values = mutableListOf<ModuleMethodCount>()
 
         val totalSourceCount = metric.modules.sumOf { it.value }
 
         metric.modules.whenEach {
             values.add(
-                ModuleMethodCountReport(
+                ModuleMethodCount(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(totalSourceCount),
@@ -90,10 +90,10 @@ class CreateModulesMethodCountReportStage(
         val lastTotalSourceCount = metrics.last().modules.sumOf { it.value }
         val totalDiffRatio = firstTotalSourceCount.diffPercentageOf(lastTotalSourceCount)
 
-        val values = mutableListOf<ModuleMethodCountReport>()
+        val values = mutableListOf<ModuleMethodCount>()
         metrics.last().modules.whenEach {
             values.add(
-                ModuleMethodCountReport(
+                ModuleMethodCount(
                     path = path,
                     value = value,
                     coverage = value.toPercentageOf(lastTotalSourceCount),

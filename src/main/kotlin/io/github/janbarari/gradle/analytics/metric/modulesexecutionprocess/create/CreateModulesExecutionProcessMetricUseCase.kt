@@ -65,6 +65,7 @@ class CreateModulesExecutionProcessMetricUseCase: UseCase<Pair<List<ModulePath>,
         )
     }
 
+    @Suppress("NestedBlockDepth", "ComplexMethod")
     private fun calculateNonParallelExecutionDuration(executedTasks: Collection<TaskInfo>): Long {
 
         fun checkIfCanMerge(

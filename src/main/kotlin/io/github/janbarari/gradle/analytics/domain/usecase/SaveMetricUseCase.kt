@@ -36,6 +36,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.update.Updat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.update.UpdateModulesExecutionProcessMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.update.UpdateModulesExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricStage
@@ -60,7 +62,8 @@ class SaveMetricUseCase(
     private val updateCacheHitMetricUseCase: UpdateCacheHitMetricUseCase,
     private val updateSuccessBuildRateMetricUseCase: UpdateSuccessBuildRateMetricUseCase,
     private val updateDependencyResolveProcessMetricUseCase: UpdateDependencyResolveProcessMetricUseCase,
-    private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase
+    private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase,
+    private val updateModulesExecutionProcessMetricUseCase: UpdateModulesExecutionProcessMetricUseCase
 ) : UseCase<BuildMetric, Long>() {
 
     /**
@@ -85,6 +88,9 @@ class SaveMetricUseCase(
                 UpdateDependencyResolveProcessMetricStage(updateDependencyResolveProcessMetricUseCase)
             val updateParallelExecutionRateMetricStage =
                 UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase)
+            val updateModulesExecutionProcessMetricStage = UpdateModulesExecutionProcessMetricStage(
+                updateModulesExecutionProcessMetricUseCase
+            )
 
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationProcessMetricStage)
@@ -97,6 +103,7 @@ class SaveMetricUseCase(
                 .addStage(updateSuccessBuildRateMetricStage)
                 .addStage(updateDependencyResolveProcessMetricStage)
                 .addStage(updateParallelExecutionRateMetricStage)
+                .addStage(updateModulesExecutionProcessMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second

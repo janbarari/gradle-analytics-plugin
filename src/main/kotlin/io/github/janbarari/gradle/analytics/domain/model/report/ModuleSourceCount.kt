@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ModuleMethodCountReport(
+data class ModuleSourceCount(
     val path: String,
     val value: Int,
     val coverage: Float,

@@ -5,7 +5,6 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.extension.isNotNull
-import okio.Buffer
 import org.gradle.internal.impldep.com.google.gson.JsonParser
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -15,15 +14,15 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ModuleSourceCountReportJsonAdapterTest {
+class ModuleCacheHitJsonAdapterTest {
 
     lateinit var moshi: Moshi
-    lateinit var adapter: ModuleSourceCountReportJsonAdapter
+    lateinit var adapter: ModuleCacheHitJsonAdapter
 
     @BeforeAll
     fun setup() {
         moshi = Moshi.Builder().build()
-        adapter = ModuleSourceCountReportJsonAdapter(moshi)
+        adapter = ModuleCacheHitJsonAdapter(moshi)
     }
 
     @Test
@@ -31,9 +30,14 @@ class ModuleSourceCountReportJsonAdapterTest {
         val json = """
             {
                 "path": ":app",
-                "value": 33,
-                "coverage": 19,
+                "rate": 33,
                 "diffRate": 3,
+                "meanValues": [
+                    {
+                        "value": 30,
+                        "description": "22/10/2022"
+                    }
+                ],
                 
                 "test-skipping-un-valid-field": true
             }
@@ -51,31 +55,13 @@ class ModuleSourceCountReportJsonAdapterTest {
             fromReader.path == ":app"
         }
         assertTrue {
-            fromReader.value == 33
-        }
-        assertTrue {
-            fromReader.coverage == 19F
+            fromReader.rate == 33L
         }
         assertTrue {
             fromReader.diffRate == 3F
         }
-    }
-
-    @Test
-    fun `Check fromJson() returns valid data with reflection`() {
-        val fromReader = adapter.fromJson(
-            JsonReader.of(
-                Buffer().writeUtf8("""
-                    {
-                        "path": ":app",
-                        "value": 10,
-                        "coverage": 30
-                    }
-                """.trimIndent())
-            )
-        )
         assertTrue {
-            fromReader.isNotNull()
+            fromReader.meanValues.isNotEmpty()
         }
     }
 
@@ -89,14 +75,14 @@ class ModuleSourceCountReportJsonAdapterTest {
         """.trimIndent()
             adapter.fromJson(
                 JsonReader.of(
-                    Buffer().writeUtf8(json)
+                    okio.Buffer().writeUtf8(json)
                 )
             )
         }
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "path": null
+                    "meanValues": null
                 }
             """.trimIndent()
             adapter.fromJson(
@@ -122,11 +108,11 @@ class ModuleSourceCountReportJsonAdapterTest {
 
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
-        val validModel = ModuleSourceCountReport(
+        val validModel = ModuleCacheHit(
             path = ":app",
-            value = 2,
-            coverage = 33F,
-            diffRate = 23F
+            rate = 33,
+            diffRate = null,
+            meanValues = emptyList()
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))
