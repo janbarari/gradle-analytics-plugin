@@ -20,17 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.report
+package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.update
 
-import com.squareup.moshi.JsonClass
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-@ExcludeJacocoGenerated
-@JsonClass(generateAdapter = true)
-data class CacheHitReport(
-    val modules: List<ModuleCacheHit>,
-    val overallMeanValues: List<ChartPoint>,
-    val overallRate: Long,
-    val overallDiffRate: Float? = null
-)
+class UpdateModulesExecutionProcessMetricStage(
+    private val updateModulesExecutionProcessMetricUseCase: UpdateModulesExecutionProcessMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
+
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            modulesExecutionProcessMetric = updateModulesExecutionProcessMetricUseCase.execute()
+        }
+    }
+
+}

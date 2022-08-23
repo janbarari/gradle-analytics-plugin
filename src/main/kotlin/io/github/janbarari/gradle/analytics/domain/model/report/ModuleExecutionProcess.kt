@@ -28,9 +28,12 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ModuleCacheHitReport(
+data class ModuleExecutionProcess(
     val path: String,
-    val rate: Long,
-    val diffRate: Float? = null,
-    val meanValues: List<ChartPoint>
+    val avgMedianDuration: Long,
+    val avgMedianParallelDuration: Long,
+    val avgMedianParallelRate: Float,
+    val avgMedianCoverage: Float,
+    val avgMedianDurations: List<ChartPoint>,
+    val diffRate: Float?
 ): java.io.Serializable

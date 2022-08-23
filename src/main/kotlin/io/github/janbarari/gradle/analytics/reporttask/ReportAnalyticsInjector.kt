@@ -28,6 +28,7 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
@@ -40,7 +41,8 @@ class ReportAnalyticsInjector(
     var isCI: Boolean? = null,
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
-    var projectName: String? = null
+    var projectName: String? = null,
+    var modulesPath: List<ModulePath>? = null
 )
 
 @ExcludeJacocoGenerated
@@ -68,6 +70,7 @@ fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic 
         provideGetMetricsUseCase(),
         ensureNotNull(isCI),
         ensureNotNull(outputPath),
-        ensureNotNull(projectName)
+        ensureNotNull(projectName),
+        ensureNotNull(modulesPath)
     )
 }

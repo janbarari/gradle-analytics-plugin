@@ -20,16 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.report
+package io.github.janbarari.gradle.analytics.domain.model.metric
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ModuleMethodCountReport(
-    val path: String,
-    val value: Int,
-    val coverage: Float,
-    val diffRate: Float? = null
+data class ModulesExecutionProcessMetric(
+    @Json(name = "modules")
+    var modules: List<ModuleExecutionProcess>
 ): java.io.Serializable

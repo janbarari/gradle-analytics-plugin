@@ -27,13 +27,13 @@ import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.core.Stage
 
 class CreateModulesMethodCountMetricStage(
-    private val modulesInfo: List<ModulePath>,
+    private val modulesPath: List<ModulePath>,
     private val createModulesMethodCountMetricUseCase: CreateModulesMethodCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            modulesMethodCountMetric = createModulesMethodCountMetricUseCase.execute(modulesInfo)
+            modulesMethodCountMetric = createModulesMethodCountMetricUseCase.execute(modulesPath)
         }
     }
 

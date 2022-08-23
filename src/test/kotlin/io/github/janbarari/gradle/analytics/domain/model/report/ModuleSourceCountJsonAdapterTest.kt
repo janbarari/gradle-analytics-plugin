@@ -15,15 +15,15 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertTrue
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ModuleMethodCountReportJsonAdapterTest {
+class ModuleSourceCountJsonAdapterTest {
 
     lateinit var moshi: Moshi
-    lateinit var adapter: ModuleMethodCountReportJsonAdapter
+    lateinit var adapter: ModuleSourceCountJsonAdapter
 
     @BeforeAll
     fun setup() {
         moshi = Moshi.Builder().build()
-        adapter = ModuleMethodCountReportJsonAdapter(moshi)
+        adapter = ModuleSourceCountJsonAdapter(moshi)
     }
 
     @Test
@@ -41,7 +41,7 @@ class ModuleMethodCountReportJsonAdapterTest {
 
         val fromReader = adapter.fromJson(
             JsonReader.of(
-                Buffer().writeUtf8(json)
+                okio.Buffer().writeUtf8(json)
             )
         )
         assertTrue {
@@ -89,7 +89,7 @@ class ModuleMethodCountReportJsonAdapterTest {
         """.trimIndent()
             adapter.fromJson(
                 JsonReader.of(
-                    okio.Buffer().writeUtf8(json)
+                    Buffer().writeUtf8(json)
                 )
             )
         }
@@ -122,7 +122,7 @@ class ModuleMethodCountReportJsonAdapterTest {
 
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
-        val validModel = ModuleMethodCountReport(
+        val validModel = ModuleSourceCount(
             path = ":app",
             value = 2,
             coverage = 33F,

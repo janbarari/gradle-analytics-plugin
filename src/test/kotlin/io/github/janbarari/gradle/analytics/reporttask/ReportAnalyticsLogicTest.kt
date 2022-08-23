@@ -1,6 +1,7 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
@@ -34,7 +35,8 @@ class ReportAnalyticsLogicTest {
             },
             branch = "develop",
             outputPath = "./build/test/result/",
-            projectName = "gradle-analytics-plugin"
+            projectName = "gradle-analytics-plugin",
+            modulesPath = emptyList()
         )
     }
 
@@ -118,7 +120,8 @@ class ReportAnalyticsLogicTest {
             mockedGetMetricsUseCase,
             ensureNotNull(injector.isCI),
             ensureNotNull(injector.outputPath),
-            ensureNotNull(injector.projectName)
+            ensureNotNull(injector.projectName),
+            ensureNotNull(injector.modulesPath)
         )
 
         val result = logic.generateReport(
@@ -147,7 +150,8 @@ class ReportAnalyticsLogicTest {
             mockedGetMetricsUseCase,
             ensureNotNull(injector.isCI),
             ensureNotNull(injector.outputPath),
-            ensureNotNull(injector.projectName)
+            ensureNotNull(injector.projectName),
+            ensureNotNull(injector.modulesPath)
         )
 
         val result = logic.generateReport(

@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModulesMethodCountReport(
-    val values: List<ModuleMethodCountReport>,
+    val values: List<ModuleMethodCount>,
     val totalMethodCount: Int,
     val totalDiffRate: Float? = null
 )

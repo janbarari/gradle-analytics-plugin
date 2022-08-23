@@ -54,6 +54,17 @@ object MathUtils {
     }
 
     /**
+     * Calculates the median of a float dataset.
+     */
+    fun floatMedian(dataset: List<Float>): Float {
+        if (dataset.isEmpty()) return 0F
+        return dataset.sorted().let {
+            if (it.size % 2 == 0) ((it[it.size / 2] + it[(it.size - 1) / 2]) / 2)
+            else it[it.size / 2]
+        }
+    }
+
+    /**
      * Calculates the median of a long dataset.
      */
     fun longMedian(vararg values: Long): Long {

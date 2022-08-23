@@ -28,9 +28,9 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class CacheHitReport(
-    val modules: List<ModuleCacheHit>,
-    val overallMeanValues: List<ChartPoint>,
-    val overallRate: Long,
-    val overallDiffRate: Float? = null
-)
+data class ModuleCacheHit(
+    val path: String,
+    val rate: Long,
+    val diffRate: Float? = null,
+    val meanValues: List<ChartPoint>
+): java.io.Serializable
