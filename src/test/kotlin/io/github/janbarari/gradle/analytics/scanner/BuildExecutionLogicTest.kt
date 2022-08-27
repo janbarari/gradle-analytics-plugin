@@ -1,6 +1,7 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
 import io.github.janbarari.gradle.analytics.scanner.execution.provideBuildExecutionLogic
@@ -24,7 +25,8 @@ class BuildExecutionLogicTest {
         branch = "master",
         requestedTasks = listOf("assembleDebug"),
         trackingTasks = listOf("assembleDebug"),
-        modulesPath = emptyList()
+        modulesPath = emptyList(),
+        modulesDependencyGraph = ModulesDependencyGraph(dependencies = emptyList())
     )
 
     @Test

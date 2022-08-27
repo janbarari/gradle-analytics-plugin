@@ -67,7 +67,10 @@ data class Report(
     var parallelExecutionRateReport: ParallelExecutionRateReport? = null,
 
     @Json(name = "modules_execution_process_report")
-    var modulesExecutionProcessReport: ModulesExecutionProcessReport? = null
+    var modulesExecutionProcessReport: ModulesExecutionProcessReport? = null,
+
+    @Json(name = "modules_dependency_graph_report")
+    var modulesDependencyGraphReport: ModulesDependencyGraphReport? = null
 
 ) : java.io.Serializable {
 

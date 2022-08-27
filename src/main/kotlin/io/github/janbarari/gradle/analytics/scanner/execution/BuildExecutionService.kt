@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
@@ -58,6 +59,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val trackingTasks: ListProperty<String>
         val trackingBranches: ListProperty<String>
         val modulesPath: ListProperty<ModulePath>
+        val modulesDependencyGraph: Property<ModulesDependencyGraph>
     }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
@@ -176,7 +178,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
             requestedTasks = parameters.requestedTasks.get(),
             trackingBranches = parameters.trackingBranches.get(),
             trackingTasks = parameters.trackingTasks.get(),
-            modulesPath = parameters.modulesPath.get()
+            modulesPath = parameters.modulesPath.get(),
+            modulesDependencyGraph = parameters.modulesDependencyGraph.get()
         ).apply {
             provideBuildExecutionLogic().onExecutionFinished(executedTasks)
         }.also {

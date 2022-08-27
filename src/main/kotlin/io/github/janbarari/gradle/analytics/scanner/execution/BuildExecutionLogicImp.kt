@@ -26,6 +26,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
@@ -44,6 +45,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.create.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricStage
@@ -85,12 +88,14 @@ class BuildExecutionLogicImp(
     private val createDependencyResolveProcessMetricUseCase: CreateDependencyResolveProcessMetricUseCase,
     private val createParallelExecutionRateMetricUseCase: CreateParallelExecutionRateMetricUseCase,
     private val createModulesExecutionProcessMetricUseCase: CreateModulesExecutionProcessMetricUseCase,
+    private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
     private val trackingTasks: List<String>,
     private val requestedTasks: List<String>,
-    private val modulesPath: List<ModulePath>
+    private val modulesPath: List<ModulePath>,
+    private val modulesDependencyGraph: ModulesDependencyGraph
 ) : BuildExecutionLogic {
 
     @Suppress("LongMethod")
@@ -145,7 +150,10 @@ class BuildExecutionLogicImp(
         val createModulesExecutionProcessMetricStage = CreateModulesExecutionProcessMetricStage(
             info, modulesPath, createModulesExecutionProcessMetricUseCase
         )
-
+        val createModulesDependencyGraphMetricStage = CreateModulesDependencyGraphMetricStage(
+            modulesDependencyGraph,
+            createModulesDependencyGraphMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -158,6 +166,7 @@ class BuildExecutionLogicImp(
             .addStage(createDependencyResolveProcessMetricStage)
             .addStage(createParallelExecutionRateMetricStage)
             .addStage(createModulesExecutionProcessMetricStage)
+            .addStage(createModulesDependencyGraphMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(buildMetric)

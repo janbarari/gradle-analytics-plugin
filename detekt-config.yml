@@ -13,6 +13,9 @@ complexity:
     ignoreOverridden: false
   LongParameterList:
     active: false
+  NestedBlockDepth:
+    active: true
+    threshold: 6
 
 exceptions:
   active: true
