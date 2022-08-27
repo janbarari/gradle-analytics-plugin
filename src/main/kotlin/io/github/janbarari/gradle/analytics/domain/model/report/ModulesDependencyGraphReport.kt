@@ -20,43 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.extension
+package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import org.gradle.api.DefaultTask
-import org.gradle.api.Project
-import org.gradle.api.artifacts.ProjectDependency
-import org.gradle.api.invocation.Gradle
-import org.gradle.api.provider.Provider
-
-/**
- * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
- * sent them to Gradle to start the build process.
- */
-@ExcludeJacocoGenerated
-fun Gradle.getRequestedTasks(): List<String> {
-    return startParameter.taskNames
-}
-
-/**
- * Returns the 'CI' value provider from the system environments.
- */
-@ExcludeJacocoGenerated
-fun Project.envCI(): Provider<String> {
-    return providers.environmentVariable("CI").forUseAtConfigurationTime()
-}
+import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
+import java.io.Serializable
 
 @ExcludeJacocoGenerated
-fun Project.isDependingOnOtherProject(): Boolean {
-    return configurations.any { configuration -> configuration.dependencies.any { it is ProjectDependency } }
-}
-
-/**
- * Registers the given task.
- */
-@ExcludeJacocoGenerated
-inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
-    project.tasks.register(name, T::class.java) {
-        it.also(block)
-    }
-}
+@JsonClass(generateAdapter = true)
+data class ModulesDependencyGraphReport(
+    @Json(name = "dependencies")
+    var dependencies: List<ModuleDependency>
+): Serializable

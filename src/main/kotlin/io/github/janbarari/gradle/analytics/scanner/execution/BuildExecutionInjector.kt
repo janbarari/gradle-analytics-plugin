@@ -31,6 +31,7 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
@@ -42,6 +43,8 @@ import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.upda
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.update.UpdateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.update.UpdateModulesExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
@@ -67,7 +70,8 @@ data class BuildExecutionInjector(
     var requestedTasks: List<String>? = null,
     var trackingBranches: List<String>? = null,
     var trackingTasks: List<String>? = null,
-    var modulesPath: List<ModulePath>? = null
+    var modulesPath: List<ModulePath>? = null,
+    var modulesDependencyGraph: ModulesDependencyGraph? = null
 )
 
 @ExcludeJacocoGenerated
@@ -140,6 +144,11 @@ fun BuildExecutionInjector.provideUpdateModulesExecutionProcessMetricUseCase(): 
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateModulesDependencyGraphMetricUseCase(): UpdateModulesDependencyGraphMetricUseCase {
+    return UpdateModulesDependencyGraphMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -153,7 +162,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateBuildSuccessRatioMetricUseCase(),
         provideUpdateDependencyResolveMetricUseCase(),
         provideUpdateParallelRatioMetricUseCase(),
-        provideUpdateModulesExecutionProcessMetricUseCase()
+        provideUpdateModulesExecutionProcessMetricUseCase(),
+        provideUpdateModulesDependencyGraphMetricUseCase()
     )
 }
 
@@ -218,6 +228,11 @@ fun BuildExecutionInjector.provideCreateModulesExecutionProcessMetricUseCase(): 
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateModulesDependencyGraphMetricUseCase(): CreateModulesDependencyGraphMetricUseCase {
+    return CreateModulesDependencyGraphMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -233,11 +248,13 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateDependencyResolveMetricUseCase(),
         provideCreateParallelRatioMetricUseCase(),
         provideCreateModulesExecutionProcessMetricUseCase(),
+        provideCreateModulesDependencyGraphMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),
         ensureNotNull(trackingTasks),
         ensureNotNull(requestedTasks),
-        ensureNotNull(modulesPath)
+        ensureNotNull(modulesPath),
+        ensureNotNull(modulesDependencyGraph)
     )
 }

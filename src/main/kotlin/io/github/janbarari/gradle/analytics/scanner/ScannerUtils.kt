@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionServ
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getRequestedTasks
-import io.github.janbarari.gradle.utils.FileUtils
+import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 
@@ -53,14 +53,16 @@ object ScannerUtils {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
-        val modulesPath = mutableListOf<ModulePath>()
-        project.subprojects.forEach {
-            if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
-                modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
-            }
-        }
-
         project.gradle.projectsEvaluated {
+            val modulesPath = mutableListOf<ModulePath>()
+            project.subprojects
+                .filter { it.isDependingOnOtherProject() }
+                .forEach {
+                    modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
+                }
+
+            val modulesDependencyGraph = DependencyGraphGenerator.generate(project)
+
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
                 BuildExecutionService::class.java.simpleName,
                 BuildExecutionService::class.java
@@ -72,6 +74,7 @@ object ScannerUtils {
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
                     this.modulesPath.set(modulesPath)
+                    this.modulesDependencyGraph.set(modulesDependencyGraph)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

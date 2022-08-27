@@ -37,6 +37,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.report.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.RenderExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.RenderInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.CreateInitializationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.CreateModulesDependencyGraphReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.RenderModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.RenderModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
@@ -88,6 +90,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modulesPath, data))
+            .addStage(CreateModulesDependencyGraphReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -111,6 +114,7 @@ class ReportAnalyticsLogicImp(
         val renderDependencyResolveProcessReportStage = RenderDependencyResolveProcessReportStage(report)
         val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
         val renderModulesExecutionProcessReportStage = RenderModulesExecutionProcessReportStage(report)
+        val renderModulesDependencyGraphReportStage = RenderModulesDependencyGraphReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -124,6 +128,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderDependencyResolveProcessReportStage)
             .addStage(renderParallelExecutionRateReportStage)
             .addStage(renderModulesExecutionProcessReportStage)
+            .addStage(renderModulesDependencyGraphReportStage)
             .execute(rawHTML)
     }
 
