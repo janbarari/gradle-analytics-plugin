@@ -14,8 +14,8 @@
               {
                 label: "Median",
                 fill: false,
-                backgroundColor: "#ECFCCB",
-                borderColor: "#3F6212",
+                backgroundColor: shadeColor(getColor(), 25),
+                borderColor: getColor(),
                 data: _values,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -29,12 +29,13 @@
                 display: true
               },
               tooltip: {
-                mode: 'nearest',
+                mode: 'index',
                 axis: 'x',
                 intersect: false,
                 callbacks: {
                   label: function (context) {
-                    return context.parsed.y + "%";
+                    let label = context.dataset.label || '';
+                    return label + ": " + context.parsed.y + "%";
                   }
                 }
               }

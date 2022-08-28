@@ -30,7 +30,8 @@ class ReportAnalyticsLogicTest {
             isCI = false,
             databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
                 local = sqlite {
-                    path = "./build/"
+                    path = "./build"
+                    name = "testdb"
                 }
             },
             branch = "develop",

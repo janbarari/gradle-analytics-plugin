@@ -19,6 +19,7 @@ class BuildExecutionLogicTest {
         databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             local = sqlite {
                 path = "./build"
+                name = "testdb"
             }
         },
         isCI = false,
@@ -53,6 +54,7 @@ class BuildExecutionLogicTest {
         injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             local = sqlite {
                 path = "./build"
+                name = "testdb"
             }
         }
         assertEquals(true, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
@@ -64,6 +66,7 @@ class BuildExecutionLogicTest {
         injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             ci = sqlite {
                 path = "./build"
+                name = "testdb"
             }
         }
         assertEquals(true, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
@@ -75,6 +78,7 @@ class BuildExecutionLogicTest {
         injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             ci = sqlite {
                 path = "./build"
+                name = "testdb"
             }
         }
         assertEquals(false, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
@@ -86,6 +90,7 @@ class BuildExecutionLogicTest {
         injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
             local = sqlite {
                 path = "./build"
+                name = "testdb"
             }
         }
         assertEquals(false, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())

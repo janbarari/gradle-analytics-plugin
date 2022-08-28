@@ -54,7 +54,6 @@ class RenderModulesDependencyGraphReportStage(
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_FILE_NAME)
         report.modulesDependencyGraphReport.whenNotNull {
             val mermaidCommands = buildString {
-                append("graph TB")
                 appendLine()
                 dependencies.whenEach {
                     val type = when(configuration) {
@@ -62,7 +61,18 @@ class RenderModulesDependencyGraphReportStage(
                         "implementation" -> "impl"
                         else -> configuration
                     }
-                    append("$path ---> |$type| $dependency")
+
+                    val pathColor = dependencies.filter { it.dependency == dependency }.size
+                    var heatmapColor = ":::blue"
+                    if (pathColor in 3 .. 4) {
+                       heatmapColor = ":::yellow"
+                    } else if (pathColor in 5 .. 6) {
+                        heatmapColor = ":::orange"
+                    } else if (pathColor > 6) {
+                        heatmapColor = ":::red"
+                    }
+
+                    append("\t$path ---> |$type| $dependency$heatmapColor")
                     appendLine()
                 }
 

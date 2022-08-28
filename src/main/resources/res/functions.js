@@ -14,3 +14,18 @@ function shadeColor(color, amount) {
   .toString(16))
   .substr(-2));
 }
+
+var resetFlag = 0
+var randomColor = getRandomColor()
+
+function getColor(single = false) {
+  if(single) {
+    return getRandomColor();
+  }
+  if(resetFlag > 1) {
+    resetFlag = 0;
+    randomColor = getRandomColor();
+  }
+  resetFlag++;
+  return randomColor;
+}

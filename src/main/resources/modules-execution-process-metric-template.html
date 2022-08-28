@@ -3,18 +3,6 @@
 <div class="chart-container">
     <canvas id="modulesMedianExecutionProcessChart" style="width:100%; height: 365px;"></canvas>
     <script type="text/javascript">
-        var resetFlag = 0
-        var randomColor = getRandomColor()
-
-        function getColor() {
-          if(resetFlag > 1) {
-            resetFlag = 0;
-            randomColor = getRandomColor();
-          }
-          resetFlag++;
-          return randomColor;
-        }
-
         var chart = new Chart("modulesMedianExecutionProcessChart", {
           type: "line",
           data: {
@@ -31,12 +19,13 @@
                 display: true
               },
               tooltip: {
-                mode: 'nearest',
+                mode: 'index',
                 axis: 'x',
                 intersect: false,
                 callbacks: {
                   label: function (context) {
-                    return context.parsed.y + " s";
+                    let label = context.dataset.label || '';
+                    return label + ": " + context.parsed.y + "s";
                   }
                 }
               }
@@ -53,9 +42,8 @@
       </script>
 </div>
 <span class="gray-text center-text">
-      Overall Median Chart<br>
-      <span class="small-text">(Lower is better)</span>
-    </span>
+      Lower is better
+</span>
 <div class="space-small"></div>
 <div class="table-container">
     <table>

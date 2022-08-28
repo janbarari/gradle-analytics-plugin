@@ -15,8 +15,8 @@
               {
                 label: "Median",
                 fill: false,
-                backgroundColor: "#DCFCE7",
-                borderColor: "#15803D",
+                backgroundColor: shadeColor(getColor(), 25),
+                borderColor: getColor(),
                 data: _medianValues,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -24,8 +24,8 @@
               {
                 label: "Mean",
                 fill: false,
-                backgroundColor: "#ECFCCB",
-                borderColor: "#65A30D",
+                backgroundColor: shadeColor(getColor(), 25),
+                borderColor: getColor(),
                 data: _meanValues,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -39,12 +39,13 @@
                 display: true
               },
               tooltip: {
-                mode: 'nearest',
+                mode: 'index',
                 axis: 'x',
                 intersect: false,
                 callbacks: {
                   label: function (context) {
-                    return context.parsed.y + " s";
+                    let label = context.dataset.label || '';
+                    return label + ": " + context.parsed.y + "s";
                   }
                 }
               }

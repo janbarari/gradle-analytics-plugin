@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.data.database.connection
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.PLUGIN_NAME
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
@@ -40,8 +39,8 @@ class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): Data
     lateinit var path: String
 
     /**
-     * Database name, Default name is `gradleAnalyticsPlugin`
+     * Database name.
      */
-    var name: String = PLUGIN_NAME
+    lateinit var name: String
 
 }

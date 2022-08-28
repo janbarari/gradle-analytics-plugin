@@ -13,8 +13,8 @@
               {
                 label: "Mean",
                 fill: false,
-                backgroundColor: "#E0E7FF",
-                borderColor: "#4F46E5",
+                backgroundColor: shadeColor(getColor(), 25),
+                borderColor: getColor(),
                 data: _values,
                 cubicInterpolationMode: 'monotone',
                 tension: 0.4
@@ -29,12 +29,13 @@
                 display: true
               },
               tooltip: {
-                mode: 'nearest',
+                mode: 'index',
                 axis: 'x',
                 intersect: false,
                 callbacks: {
                   label: function (context) {
-                    return context.parsed.y + "%";
+                    let label = context.dataset.label || '';
+                    return label + ": " + context.parsed.y + "%";
                   }
                 }
               }
@@ -99,7 +100,7 @@
                   fill: false,
                   borderColor: "#ff4040",
                   pointRadius: 3,
-                  backgroundColor: "#F5FFF5",
+                  backgroundColor: "#f59191",
                   data: worstValues
                 },
                 {
@@ -107,7 +108,7 @@
                   fill: false,
                   borderColor: "#2e8b57",
                   pointRadius: 3,
-                  backgroundColor: "#F5FFF5",
+                  backgroundColor: "#36c475",
                   data: bestValues
                 }
               ]

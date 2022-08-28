@@ -9,6 +9,7 @@ package io.github.janbarari.gradle.extension
  *  a.diffPercentageOf(b) equals 100%+ (b is 100%+ of a)
  */
 fun Int.diffPercentageOf(target: Int): Float {
+    if(this == 0) return 0F
     val result = ((target.toFloat() - this.toFloat()) / this.toFloat()) * 100F
     return result.round()
 }
@@ -22,6 +23,7 @@ fun Int.diffPercentageOf(target: Int): Float {
  *  a.diffPercentageOf(b) equals 100%+ (b is 100%+ of a)
  */
 fun Long.diffPercentageOf(target: Long): Float {
+    if(this == 0L) return 0F
     val result = ((target.toFloat() - this.toFloat()) / this.toFloat()) * 100F
     return result.round()
 }
