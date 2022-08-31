@@ -53,6 +53,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricStage
@@ -89,6 +91,7 @@ class BuildExecutionLogicImp(
     private val createParallelExecutionRateMetricUseCase: CreateParallelExecutionRateMetricUseCase,
     private val createModulesExecutionProcessMetricUseCase: CreateModulesExecutionProcessMetricUseCase,
     private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase,
+    private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -154,6 +157,10 @@ class BuildExecutionLogicImp(
             modulesDependencyGraph,
             createModulesDependencyGraphMetricUseCase
         )
+        val createModulesTimelineMetricStage = CreateModulesTimelineMetricStage(
+            info,
+            createModulesTimelineMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -167,6 +174,7 @@ class BuildExecutionLogicImp(
             .addStage(createParallelExecutionRateMetricStage)
             .addStage(createModulesExecutionProcessMetricStage)
             .addStage(createModulesDependencyGraphMetricStage)
+            .addStage(createModulesTimelineMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(buildMetric)

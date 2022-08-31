@@ -45,6 +45,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.RenderModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
@@ -91,6 +93,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modulesPath, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
+            .addStage(CreateModulesTimelineReportStage(data))
             .execute(Report(branch = branch, requestedTasks = requestedTasks))
 
         val rawHTML: String = getTextResourceContent("index-template.html")
@@ -115,6 +118,7 @@ class ReportAnalyticsLogicImp(
         val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
         val renderModulesExecutionProcessReportStage = RenderModulesExecutionProcessReportStage(report)
         val renderModulesDependencyGraphReportStage = RenderModulesDependencyGraphReportStage(report)
+        val renderModulesTimelineReportStage = RenderModulesTimelineReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -129,6 +133,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderParallelExecutionRateReportStage)
             .addStage(renderModulesExecutionProcessReportStage)
             .addStage(renderModulesDependencyGraphReportStage)
+            .addStage(renderModulesTimelineReportStage)
             .execute(rawHTML)
     }
 
@@ -139,6 +144,9 @@ class ReportAnalyticsLogicImp(
         val stylesPath = "res/styles.css"
         val functionsPath = "res/functions.js"
         val chartPath = "res/chart.js"
+        val mermaidPath = "res/mermaid.js"
+        val d3Path = "res/d3.js"
+        val timelinePath = "res/timeline.js"
         val indexPath = "index.html"
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
@@ -165,6 +173,21 @@ class ReportAnalyticsLogicImp(
         FileUtils.copyInputStreamToFile(
             javaClass.getSafeResourceAsStream("/$stylesPath"),
             File("$savePath/$stylesPath")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$mermaidPath"),
+            File("$savePath/$mermaidPath")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$d3Path"),
+            File("$savePath/$d3Path")
+        )
+
+        FileUtils.copyInputStreamToFile(
+            javaClass.getSafeResourceAsStream("/$timelinePath"),
+            File("$savePath/$timelinePath")
         )
 
         File("$savePath/$indexPath")
