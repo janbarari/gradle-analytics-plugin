@@ -70,7 +70,10 @@ data class Report(
     var modulesExecutionProcessReport: ModulesExecutionProcessReport? = null,
 
     @Json(name = "modules_dependency_graph_report")
-    var modulesDependencyGraphReport: ModulesDependencyGraphReport? = null
+    var modulesDependencyGraphReport: ModulesDependencyGraphReport? = null,
+
+    @Json(name = "modules_timeline_report")
+    var modulesTimelineReport: ModulesTimelineReport? = null,
 
 ) : java.io.Serializable {
 

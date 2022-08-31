@@ -44,6 +44,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.Upd
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.update.UpdateModulesTimelineMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.update.UpdateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricStage
@@ -66,7 +68,8 @@ class SaveMetricUseCase(
     private val updateDependencyResolveProcessMetricUseCase: UpdateDependencyResolveProcessMetricUseCase,
     private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase,
     private val updateModulesExecutionProcessMetricUseCase: UpdateModulesExecutionProcessMetricUseCase,
-    private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase
+    private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase,
+    private val updateModulesTimelineMetricUseCase: UpdateModulesTimelineMetricUseCase
 ) : UseCase<BuildMetric, Long>() {
 
     /**
@@ -97,6 +100,9 @@ class SaveMetricUseCase(
             val updateModulesDependencyGraphMetricStage = UpdateModulesDependencyGraphMetricStage(
                 updateModulesDependencyGraphMetricUseCase
             )
+            val updateModulesTimelineMetricStage = UpdateModulesTimelineMetricStage(
+                updateModulesTimelineMetricUseCase
+            )
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationProcessMetricStage)
                 .addStage(updateConfigurationProcessMetricStage)
@@ -110,6 +116,7 @@ class SaveMetricUseCase(
                 .addStage(updateParallelExecutionRateMetricStage)
                 .addStage(updateModulesExecutionProcessMetricStage)
                 .addStage(updateModulesDependencyGraphMetricStage)
+                .addStage(updateModulesTimelineMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second
