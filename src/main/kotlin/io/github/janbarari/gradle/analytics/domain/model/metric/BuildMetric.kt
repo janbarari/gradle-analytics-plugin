@@ -75,7 +75,9 @@ data class BuildMetric(
     @Json(name = "modules_dependency_graph_metric")
     var modulesDependencyGraphMetric: ModulesDependencyGraphMetric? = null,
 
-    @Json(name = "modules_timeline_metric")
+): java.io.Serializable {
+
+    @Transient
     var modulesTimelineMetric: ModulesTimelineMetric? = null
 
-): java.io.Serializable
+}

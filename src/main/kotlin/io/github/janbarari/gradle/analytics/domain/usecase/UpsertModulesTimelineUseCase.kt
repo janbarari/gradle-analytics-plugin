@@ -14,30 +14,44 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.modulestimeline.update
+package io.github.janbarari.gradle.analytics.domain.usecase
 
+import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.extension.isNotNull
 
-class UpdateModulesTimelineMetricUseCase(
+class UpsertModulesTimelineUseCase(
+    private val moshi: Moshi,
     private val repo: DatabaseRepository
-): UseCaseNoInput<ModulesTimelineMetric>() {
+): UseCase<Pair<String, ModulesTimelineMetric>, Boolean>() {
 
-    override suspend fun execute(): ModulesTimelineMetric {
-        val temporaryMetrics = repo.getTemporaryMetrics()
+    override suspend fun execute(input: Pair<String, ModulesTimelineMetric>): Boolean {
+        val branch = input.first
+        val model = input.second
 
-        return ModulesTimelineMetric(
-            modules = temporaryMetrics.last().modulesTimelineMetric?.modules ?: emptyList(),
-            start = temporaryMetrics.last().modulesTimelineMetric?.start ?: 0L,
-            end = temporaryMetrics.last().modulesTimelineMetric?.end ?: 0L,
+        if (repo.getSingleMetric(key = "modulesExecTimeline", branch = branch).isNotNull()) {
+            return repo.updateSingleMetric(
+                key = "modulesExecTimeline",
+                branch = branch,
+                value = ModulesTimelineMetricJsonAdapter(moshi).toJson(model)
+            )
+        }
+
+        return repo.saveSingleMetric(
+            key = "modulesExecTimeline",
+            branch = branch,
+            value = ModulesTimelineMetricJsonAdapter(moshi).toJson(model)
         )
+
     }
 
 }

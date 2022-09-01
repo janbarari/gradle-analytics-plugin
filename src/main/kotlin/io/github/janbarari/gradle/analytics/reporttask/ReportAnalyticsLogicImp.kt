@@ -25,6 +25,9 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
+import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
+import io.github.janbarari.gradle.analytics.metric.buildstatus.render.CreateBuildStatusReportStage
+import io.github.janbarari.gradle.analytics.metric.buildstatus.render.RenderBuildStatusReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
@@ -69,6 +72,7 @@ import java.io.IOException
  */
 class ReportAnalyticsLogicImp(
     private val getMetricsUseCase: GetMetricsUseCase,
+    private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
     private val outputPath: String,
     private val projectName: String,
@@ -76,6 +80,7 @@ class ReportAnalyticsLogicImp(
 ) : ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(EmptyMetricsException::class)
+    @Suppress("LongMethod")
     override suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String {
         val data = getMetricsUseCase.execute(period)
 
@@ -93,8 +98,14 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modulesPath, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
-            .addStage(CreateModulesTimelineReportStage(data))
-            .execute(Report(branch = branch, requestedTasks = requestedTasks))
+            .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
+            .addStage(CreateBuildStatusReportStage(modulesPath, data))
+            .execute(
+                Report(
+                    branch = branch,
+                    requestedTasks = requestedTasks
+                )
+            )
 
         val rawHTML: String = getTextResourceContent("index-template.html")
 
@@ -106,6 +117,7 @@ class ReportAnalyticsLogicImp(
             .requestedTasks(requestedTasks)
             .isCI(isCI)
             .build()
+
         val renderInitializationProcessReportStage = RenderInitializationProcessReportStage(report)
         val renderConfigurationProcessReportStage = RenderConfigurationProcessReportStage(report)
         val renderExecutionProcessReportStage = RenderExecutionProcessReportStage(report)
@@ -119,6 +131,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesExecutionProcessReportStage = RenderModulesExecutionProcessReportStage(report)
         val renderModulesDependencyGraphReportStage = RenderModulesDependencyGraphReportStage(report)
         val renderModulesTimelineReportStage = RenderModulesTimelineReportStage(report)
+        val renderBuildStatusReportStage = RenderBuildStatusReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -134,6 +147,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesExecutionProcessReportStage)
             .addStage(renderModulesDependencyGraphReportStage)
             .addStage(renderModulesTimelineReportStage)
+            .addStage(renderBuildStatusReportStage)
             .execute(rawHTML)
     }
 

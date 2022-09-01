@@ -29,6 +29,7 @@ import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatab
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTable
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
@@ -81,7 +82,7 @@ class Database(
             }
         }
 
-        createTables(MetricTable, TemporaryMetricTable)
+        createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {

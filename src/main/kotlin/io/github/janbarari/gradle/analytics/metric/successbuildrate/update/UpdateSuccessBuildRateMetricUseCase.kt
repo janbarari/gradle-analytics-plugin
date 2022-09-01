@@ -38,6 +38,8 @@ class UpdateSuccessBuildRateMetricUseCase(
         var meanFailures = 0
         var medianSuccesses = 0
         var medianFailures = 0
+        var successesCount = 0
+        var failsCount = 0
 
         repo.getTemporaryMetrics().whenEach {
             successBuildRateMetric.whenNotNull {
@@ -49,6 +51,8 @@ class UpdateSuccessBuildRateMetricUseCase(
                     0F -> medianFailures++
                     100F -> medianSuccesses++
                 }
+                successesCount += successes
+                failsCount += fails
             }
         }
 
@@ -57,7 +61,9 @@ class UpdateSuccessBuildRateMetricUseCase(
 
         return SuccessBuildRateMetric(
             medianRate = medianSuccesses.toPercentageOf(medianTotalBuildCount),
-            meanRate = meanSuccesses.toPercentageOf(meanTotalBuildCount)
+            meanRate = meanSuccesses.toPercentageOf(meanTotalBuildCount),
+            successes = successesCount,
+            fails = failsCount
         )
     }
 

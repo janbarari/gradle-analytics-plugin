@@ -122,6 +122,14 @@ h4 {
     margin-bottom: 8px;
 }
 
+.basic-info-item {
+    width: 132px;
+    min-height:100px;
+    display: inline-flex;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
 .mt16 {
     margin-top: 16px;
 }

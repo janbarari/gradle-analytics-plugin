@@ -33,6 +33,7 @@ import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
+import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricStage
@@ -79,6 +80,7 @@ import kotlinx.coroutines.runBlocking
 class BuildExecutionLogicImp(
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
+    private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
     private val createInitializationProcessMetricUseCase: CreateInitializationProcessMetricUseCase,
     private val createConfigurationProcessMetricUseCase: CreateConfigurationProcessMetricUseCase,
     private val createExecutionProcessMetricUseCase: CreateExecutionProcessMetricUseCase,
@@ -179,6 +181,10 @@ class BuildExecutionLogicImp(
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
+
+        if(buildMetric.modulesTimelineMetric.isNotNull()) {
+            upsertModulesTimelineUseCase.execute(info.branch to buildMetric.modulesTimelineMetric!!)
+        }
 
         printBuildInfo(buildMetric)
     }

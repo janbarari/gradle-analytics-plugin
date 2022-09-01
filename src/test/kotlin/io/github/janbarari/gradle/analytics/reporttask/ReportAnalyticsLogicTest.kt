@@ -4,7 +4,9 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
+import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
 import io.github.janbarari.gradle.extension.ensureNotNull
@@ -108,6 +110,15 @@ class ReportAnalyticsLogicTest {
     @Test
     fun `check generateReport() returns result when ran on Local and metrics are not empty`() = runBlocking {
         val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
+        val mockedGetModulesTimelineUseCase = mockk<GetModulesTimelineUseCase>()
+        coEvery {
+            mockedGetModulesTimelineUseCase.execute(any())
+        } returns ModulesTimelineMetric(
+            start = 0,
+            end = 100,
+            createdAt = 16654899383,
+            modules = emptyList()
+        )
         coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
             BuildMetric(
                 "a",
@@ -119,6 +130,7 @@ class ReportAnalyticsLogicTest {
 
         logic = ReportAnalyticsLogicImp(
             mockedGetMetricsUseCase,
+            mockedGetModulesTimelineUseCase,
             ensureNotNull(injector.isCI),
             ensureNotNull(injector.outputPath),
             ensureNotNull(injector.projectName),
@@ -137,6 +149,16 @@ class ReportAnalyticsLogicTest {
     fun `check generateReport() returns result when ran on CI and metrics are not empty`() = runBlocking {
         injector.isCI = true
 
+        val mockedGetModulesTimelineUseCase = mockk<GetModulesTimelineUseCase>()
+        coEvery {
+            mockedGetModulesTimelineUseCase.execute(any())
+        } returns ModulesTimelineMetric(
+            start = 0,
+            end = 100,
+            createdAt = 16654899383,
+            modules = emptyList()
+        )
+
         val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
         coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
             BuildMetric(
@@ -149,6 +171,7 @@ class ReportAnalyticsLogicTest {
 
         logic = ReportAnalyticsLogicImp(
             mockedGetMetricsUseCase,
+            mockedGetModulesTimelineUseCase,
             ensureNotNull(injector.isCI),
             ensureNotNull(injector.outputPath),
             ensureNotNull(injector.projectName),

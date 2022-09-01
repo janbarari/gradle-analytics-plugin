@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.core.Stage
 class CreateModulesTimelineMetricStage(
     private val buildInfo: BuildInfo,
     private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+) : Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.scanner.execution
 
+import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
@@ -32,6 +33,7 @@ import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
+import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
@@ -52,7 +54,6 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.Upd
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.modulestimeline.update.UpdateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
@@ -79,6 +80,11 @@ data class BuildExecutionInjector(
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabase(): Database {
     return Database(ensureNotNull(databaseConfig), ensureNotNull(isCI))
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideMoshi(): Moshi {
+    return Moshi.Builder().build()
 }
 
 @ExcludeJacocoGenerated
@@ -151,11 +157,6 @@ fun BuildExecutionInjector.provideUpdateModulesDependencyGraphMetricUseCase(): U
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateModulesTimelineMetricUseCase(): UpdateModulesTimelineMetricUseCase {
-    return UpdateModulesTimelineMetricUseCase(provideDatabaseRepository())
-}
-
-@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -170,14 +171,21 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateDependencyResolveMetricUseCase(),
         provideUpdateParallelRatioMetricUseCase(),
         provideUpdateModulesExecutionProcessMetricUseCase(),
-        provideUpdateModulesDependencyGraphMetricUseCase(),
-        provideUpdateModulesTimelineMetricUseCase()
+        provideUpdateModulesDependencyGraphMetricUseCase()
     )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveTemporaryMetricUseCase(): SaveTemporaryMetricUseCase {
     return SaveTemporaryMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpsertModulesTimelineUseCase(): UpsertModulesTimelineUseCase {
+    return UpsertModulesTimelineUseCase(
+        moshi = provideMoshi(),
+        repo = provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -250,6 +258,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
         provideSaveTemporaryMetricUseCase(),
+        provideUpsertModulesTimelineUseCase(),
         provideCreateInitializationMetricUseCase(),
         provideCreateConfigurationMetricUseCase(),
         provideCreateExecutionMetricUseCase(),

@@ -31,5 +31,6 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
 data class ModulesTimelineReport(
     val start: Long,
     val end: Long,
-    val modules: List<ModuleTimeline>
+    val modules: List<ModuleTimeline>,
+    val createdAt: Long
 )

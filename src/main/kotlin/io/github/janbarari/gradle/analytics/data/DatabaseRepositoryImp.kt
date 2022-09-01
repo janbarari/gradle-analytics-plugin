@@ -27,6 +27,7 @@ import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.database.ResetAutoIncremental
 import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
+import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.value
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
@@ -183,6 +184,60 @@ class DatabaseRepositoryImp(
             } else {
                 return@transaction emptyList()
             }
+        }
+    }
+
+    override fun getSingleMetric(key: String, branch: String): String? {
+        return db.transaction {
+            val queryResult = SingleMetricTable.select {
+                (SingleMetricTable.key eq key) and (SingleMetricTable.branch eq branch)
+            }
+            if (queryResult.count() > 0) {
+                return@transaction queryResult.single()[SingleMetricTable.value]
+            }
+            return@transaction null
+        }
+    }
+
+    override fun updateSingleMetric(key: String, branch: String, value: String): Boolean {
+        return db.transaction {
+            val queryResult = SingleMetricTable.update(
+                {
+                    (SingleMetricTable.key eq key) and (SingleMetricTable.branch eq branch)
+                }
+            ) {
+                it[SingleMetricTable.value] = value
+                it[createdAt] = System.currentTimeMillis()
+            }
+            return@transaction queryResult == 1
+        }
+    }
+
+    override fun saveSingleMetric(key: String, branch: String, value: String): Boolean {
+        return db.transaction {
+            SingleMetricTable.insert {
+                it[SingleMetricTable.key] = key
+                it[createdAt] = System.currentTimeMillis()
+                it[SingleMetricTable.value] = value
+                it[SingleMetricTable.branch] = branch
+            }
+            return@transaction true
+        }
+    }
+
+    override fun dropSingleMetric(key: String, branch: String): Boolean {
+        return db.transaction {
+            SingleMetricTable.deleteWhere {
+                (SingleMetricTable.key eq key) and (SingleMetricTable.branch eq branch)
+            }
+            return@transaction true
+        }
+    }
+
+    override fun dropSingleMetrics(): Boolean {
+        return db.transaction {
+            SingleMetricTable.deleteAll()
+            return@transaction true
         }
     }
 

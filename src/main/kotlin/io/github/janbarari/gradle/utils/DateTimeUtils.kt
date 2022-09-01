@@ -28,6 +28,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.floor
 
 /**
  * A collection of datetime functions.
@@ -87,6 +88,23 @@ object DateTimeUtils {
      */
     fun formatToDateTime(timeInMs: Long): String {
         return format(timeInMs, "yyyy/MM/dd HH:mm a 'UTC'")
+    }
+
+    fun convertSecondsToHumanReadableTime(seconds: Long): String {
+        val numYears = floor(seconds / 31536000F)
+        val numDays = floor((seconds % 31536000) / 86400F)
+        val numHours = floor(((seconds % 31536000F) % 86400F) / 3600F)
+        val numMinutes = floor((((seconds % 31536000F) % 86400F) % 3600F) / 60F)
+        if (numYears > 0) {
+            return "${numYears}y ${numDays}d"
+        }
+        if (numDays > 0) {
+            return "${numDays}d ${numHours}h"
+        }
+        if (numHours > 0) {
+            return "${numHours}h ${numMinutes}m"
+        }
+        return "${numMinutes}m"
     }
 
 }

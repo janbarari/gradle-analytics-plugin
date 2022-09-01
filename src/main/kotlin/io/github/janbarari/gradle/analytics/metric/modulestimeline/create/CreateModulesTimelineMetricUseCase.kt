@@ -53,7 +53,8 @@ class CreateModulesTimelineMetricUseCase(
         return ModulesTimelineMetric(
             modules = result,
             start = start,
-            end = end
+            end = end,
+            createdAt = System.currentTimeMillis()
         )
     }
 

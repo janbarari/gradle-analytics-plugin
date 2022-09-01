@@ -20,19 +20,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.modulestimeline.update
+package io.github.janbarari.gradle.analytics.data.database.table
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
+import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.autoIncrement
+import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.uniqueIndex
+import org.jetbrains.exposed.sql.Table
 
-class UpdateModulesTimelineMetricStage(
-    private val updateModulesTimelineMetricUseCase: UpdateModulesTimelineMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+object SingleMetricTable : Table("single_metric") {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
-            modulesTimelineMetric = updateModulesTimelineMetricUseCase.execute()
-        }
-    }
+    val id = long("id").autoIncrement().uniqueIndex()
+
+    val key = varchar("key", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val createdAt = long("created_at")
+
+    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val value = registerColumn<String>("value", LongTextColumnType())
+
+    override val primaryKey = PrimaryKey(id)
 
 }

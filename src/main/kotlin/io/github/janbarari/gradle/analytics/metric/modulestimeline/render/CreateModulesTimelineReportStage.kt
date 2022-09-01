@@ -22,22 +22,28 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulestimeline.render
 
-import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesTimelineReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.whenNotNull
 
 class CreateModulesTimelineReportStage(
-    private val metrics: List<BuildMetric>
-): Stage<Report, Report> {
+    private val branch: String,
+    private val getModulesTimelineUseCase: GetModulesTimelineUseCase
+) : Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
+        val temp = getModulesTimelineUseCase.execute(branch)
         return input.apply {
-            modulesTimelineReport = ModulesTimelineReport(
-                start = metrics.last().modulesTimelineMetric?.start ?: 0,
-                end = metrics.last().modulesTimelineMetric?.end ?: 0,
-                modules = metrics.last().modulesTimelineMetric?.modules ?: emptyList()
-            )
+            temp.whenNotNull {
+                modulesTimelineReport = ModulesTimelineReport(
+                    start = start,
+                    end = end,
+                    createdAt = createdAt,
+                    modules = modules
+                )
+            }
         }
     }
 

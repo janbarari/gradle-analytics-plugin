@@ -14,27 +14,35 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.domain.usecase
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetricJsonAdapter
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.extension.isNotNull
 
-@ExcludeJacocoGenerated
-@JsonClass(generateAdapter = true)
-data class ModulesTimelineMetric(
-    @Json(name = "start")
-    val start: Long,
-    @Json(name = "end")
-    val end: Long,
-    @Json(name = "modules")
-    val modules: List<ModuleTimeline>,
-    @Json(name = "created_at")
-    val createdAt: Long,
-)
+class GetModulesTimelineUseCase(
+    val moshi: Moshi,
+    val repo: DatabaseRepository
+): UseCase<String, ModulesTimelineMetric?>() {
+
+    override suspend fun execute(branch: String): ModulesTimelineMetric? {
+        val result = repo.getSingleMetric(
+            key = "modulesExecTimeline",
+            branch = branch
+        )
+        if (result.isNotNull()) {
+            return ModulesTimelineMetricJsonAdapter(moshi).fromJson(result!!)
+        }
+        return null
+    }
+
+}

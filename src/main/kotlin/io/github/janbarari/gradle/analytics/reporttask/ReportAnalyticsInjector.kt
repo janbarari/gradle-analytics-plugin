@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
+import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.DatabaseConfig
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.database.Database
@@ -29,6 +30,8 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
+import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
 import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
@@ -51,6 +54,11 @@ fun ReportAnalyticsInjector.provideDatabase(): Database {
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideMoshi(): Moshi {
+    return Moshi.Builder().build()
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
         provideDatabase(),
@@ -65,9 +73,18 @@ fun ReportAnalyticsInjector.provideGetMetricsUseCase(): GetMetricsUseCase {
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideGetModulesTimelineUseCase(): GetModulesTimelineUseCase {
+    return GetModulesTimelineUseCase(
+        moshi = provideMoshi(),
+        repo = provideDatabaseRepository()
+    )
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
         provideGetMetricsUseCase(),
+        provideGetModulesTimelineUseCase(),
         ensureNotNull(isCI),
         ensureNotNull(outputPath),
         ensureNotNull(projectName),

@@ -14,27 +14,32 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import java.io.Serializable
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class ModulesTimelineMetric(
-    @Json(name = "start")
-    val start: Long,
-    @Json(name = "end")
-    val end: Long,
-    @Json(name = "modules")
-    val modules: List<ModuleTimeline>,
-    @Json(name = "created_at")
-    val createdAt: Long,
-)
+data class BuildStatusReport(
+    val cumulativeBuildProcessDuration: Long,
+    val avgBuildProcessDuration: Long,
+    val totalBuildProcessCount: Int,
+    val totalModulesCount: Int,
+    val cumulativeParallelExecutionDuration: Long,
+    val avgParallelExecutionRate: Float,
+    val totalSuccessBuildCount: Int,
+    val totalFailedBuildCount: Int,
+    val avgCacheHitRate: Float,
+    val cumulativeDependencyResolveDuration: Long,
+    val avgInitializationProcessDuration: Long,
+    val avgConfigurationProcessDuration: Long,
+    val avgExecutionProcessDuration: Long
+): Serializable

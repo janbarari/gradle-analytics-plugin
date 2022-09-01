@@ -75,6 +75,9 @@ data class Report(
     @Json(name = "modules_timeline_report")
     var modulesTimelineReport: ModulesTimelineReport? = null,
 
+    @Json(name = "build_status_report")
+    var buildStatusReport: BuildStatusReport? = null
+
 ) : java.io.Serializable {
 
     fun toJson(): String {

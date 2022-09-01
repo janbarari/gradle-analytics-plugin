@@ -38,4 +38,11 @@ interface DatabaseRepository {
 
     fun dropOutdatedTemporaryMetrics(): Boolean
     fun dropMetrics(): Boolean
+
+    fun getSingleMetric(key: String, branch: String): String?
+    fun updateSingleMetric(key: String, branch: String, value: String): Boolean
+    fun saveSingleMetric(key: String, branch: String, value: String): Boolean
+    fun dropSingleMetric(key: String, branch: String): Boolean
+    fun dropSingleMetrics(): Boolean
+
 }

@@ -31,7 +31,9 @@ class CreateSuccessBuildRateMetricUseCase: UseCase<BuildInfo, SuccessBuildRateMe
     override suspend fun execute(buildInfo: BuildInfo): SuccessBuildRateMetric {
         return SuccessBuildRateMetric(
             medianRate = if (buildInfo.isSuccessful) 100F else 0F,
-            meanRate = if (buildInfo.isSuccessful) 100F else 0F
+            meanRate = if (buildInfo.isSuccessful) 100F else 0F,
+            successes = if (buildInfo.isSuccessful) 1 else 0,
+            fails = if (!buildInfo.isSuccessful) 1 else 0
         )
     }
 
