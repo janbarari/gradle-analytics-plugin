@@ -24,14 +24,10 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import java.io.Serializable
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
-data class CacheHitReport(
-    val modules: List<ModuleCacheHit>,
-    val overallMeanValues: List<ChartPoint>,
-    val overallRate: Long,
-    val overallDiffRate: Float? = null
+data class ModulesBuildHeatmapReport(
+    val modules: List<ModuleBuildHeatmap>
 ): Serializable

@@ -33,7 +33,7 @@ class RenderModulesTimelineReportStage(
 ) : Stage<String, String> {
 
     companion object {
-        private const val MODULES_TIMELINE_METRIC_TEMPLATE_ID = "%modules-timeline-metric%"
+        private const val MODULES_TIMELINE_METRIC_TEMPLATE_ID = "%modules-execution-timeline-metric%"
         private const val MODULES_TIMELINE_METRIC_TEMPLATE_FILE_NAME = "modules-timeline-metric-template"
     }
 
@@ -46,7 +46,7 @@ class RenderModulesTimelineReportStage(
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Modules Timeline is not available!")
+        return HtmlUtils.renderMessage("Modules Execution Timeline is not available!")
     }
 
     fun getMetricRender(): String {

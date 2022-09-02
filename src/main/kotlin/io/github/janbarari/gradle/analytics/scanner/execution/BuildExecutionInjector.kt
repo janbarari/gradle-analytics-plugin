@@ -45,6 +45,8 @@ import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.upda
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.update.UpdateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.update.UpdateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricUseCase
@@ -157,6 +159,11 @@ fun BuildExecutionInjector.provideUpdateModulesDependencyGraphMetricUseCase(): U
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateModulesBuildHeatmapMetricUseCase(): UpdateModulesBuildHeatmapMetricUseCase {
+    return UpdateModulesBuildHeatmapMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -171,7 +178,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateDependencyResolveMetricUseCase(),
         provideUpdateParallelRatioMetricUseCase(),
         provideUpdateModulesExecutionProcessMetricUseCase(),
-        provideUpdateModulesDependencyGraphMetricUseCase()
+        provideUpdateModulesDependencyGraphMetricUseCase(),
+        provideUpdateModulesBuildHeatmapMetricUseCase()
     )
 }
 
@@ -254,6 +262,11 @@ fun BuildExecutionInjector.provideCreateModulesTimelineMetricUseCase(): CreateMo
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateModulesBuildHeatmapMetricUseCase(): CreateModulesBuildHeatmapMetricUseCase {
+    return CreateModulesBuildHeatmapMetricUseCase()
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -272,6 +285,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateModulesExecutionProcessMetricUseCase(),
         provideCreateModulesDependencyGraphMetricUseCase(),
         provideCreateModulesTimelineMetricUseCase(),
+        provideCreateModulesBuildHeatmapMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),

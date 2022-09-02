@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import java.io.Serializable
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
@@ -31,4 +32,4 @@ data class ModulesMethodCountReport(
     val values: List<ModuleMethodCount>,
     val totalMethodCount: Int,
     val totalDiffRate: Float? = null
-)
+): Serializable

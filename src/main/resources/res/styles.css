@@ -184,3 +184,35 @@ hr {
 .green {
     color: #2e8b57;
 }
+
+.copyright-text {
+    font-size: 13px;
+    margin: 10px auto;
+    color: #808080;
+    display: table;
+    text-align: center;
+}
+
+.supportus-text {
+    font-size: 15px;
+    margin: 10px auto;
+    color: #808080;
+    display: table;
+    text-align: center;
+}
+
+.footer-text {
+    font-size: 15px;
+    margin: 10px auto;
+    color: #808080;
+    display: table;
+    text-align: center;
+}
+
+.footer-logo {
+    width: 50px;
+    margin: 0px auto;
+    padding: 0px;
+    display: table;
+    text-align: center;
+}

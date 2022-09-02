@@ -46,6 +46,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.create.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricStage
@@ -94,6 +96,7 @@ class BuildExecutionLogicImp(
     private val createModulesExecutionProcessMetricUseCase: CreateModulesExecutionProcessMetricUseCase,
     private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase,
     private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase,
+    private val createModulesBuildHeatmapMetricUseCase: CreateModulesBuildHeatmapMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -163,6 +166,11 @@ class BuildExecutionLogicImp(
             info,
             createModulesTimelineMetricUseCase
         )
+        val createModulesBuildHeatmapMetricStage = CreateModulesBuildHeatmapMetricStage(
+            modulesDependencyGraph,
+            modulesPath,
+            createModulesBuildHeatmapMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -177,6 +185,7 @@ class BuildExecutionLogicImp(
             .addStage(createModulesExecutionProcessMetricStage)
             .addStage(createModulesDependencyGraphMetricStage)
             .addStage(createModulesTimelineMetricStage)
+            .addStage(createModulesBuildHeatmapMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(buildMetric)

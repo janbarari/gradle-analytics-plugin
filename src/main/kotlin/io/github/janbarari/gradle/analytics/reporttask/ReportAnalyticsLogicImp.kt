@@ -40,6 +40,8 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.report.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.RenderExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.RenderInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.CreateInitializationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.CreateModulesBuildHeatmapReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.RenderModulesBuildHeatmapReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.CreateModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.RenderModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
@@ -100,6 +102,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
             .addStage(CreateBuildStatusReportStage(modulesPath, data))
+            .addStage(CreateModulesBuildHeatmapReportStage(data))
             .execute(
                 Report(
                     branch = branch,
@@ -132,6 +135,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesDependencyGraphReportStage = RenderModulesDependencyGraphReportStage(report)
         val renderModulesTimelineReportStage = RenderModulesTimelineReportStage(report)
         val renderBuildStatusReportStage = RenderBuildStatusReportStage(report)
+        val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -148,6 +152,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesDependencyGraphReportStage)
             .addStage(renderModulesTimelineReportStage)
             .addStage(renderBuildStatusReportStage)
+            .addStage(renderModulesBuildHeatmapReportStage)
             .execute(rawHTML)
     }
 

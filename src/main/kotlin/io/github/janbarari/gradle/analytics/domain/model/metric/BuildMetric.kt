@@ -75,6 +75,9 @@ data class BuildMetric(
     @Json(name = "modules_dependency_graph_metric")
     var modulesDependencyGraphMetric: ModulesDependencyGraphMetric? = null,
 
+    @Json(name = "modules_build_heatmap_metric")
+    var modulesBuildHeatmap: ModulesBuildHeatmapMetric? = null,
+
 ): java.io.Serializable {
 
     @Transient
