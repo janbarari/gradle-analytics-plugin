@@ -38,8 +38,10 @@ class CreateBuildStatusReportStage(
 
     @Suppress("LongMethod")
     override suspend fun process(input: Report): Report {
-        val cumulativeBuildProcessDuration = metrics.filter { it.overallBuildProcessMetric.isNotNull() }.sumOf {
-                ensureNotNull(it.overallBuildProcessMetric).median
+        val cumulativeBuildProcessDuration = metrics
+            .filter { it.overallBuildProcessMetric.isNotNull() }
+            .sumOf {
+                it.overallBuildProcessMetric!!.median / 1000L
             }
 
         val avgBuildProcessDuration: Long =
