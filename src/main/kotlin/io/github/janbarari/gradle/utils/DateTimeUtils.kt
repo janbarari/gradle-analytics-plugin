@@ -91,10 +91,10 @@ object DateTimeUtils {
     }
 
     fun convertSecondsToHumanReadableTime(seconds: Long): String {
-        val numYears = floor(seconds / 31536000F)
-        val numDays = floor((seconds % 31536000) / 86400F)
-        val numHours = floor(((seconds % 31536000F) % 86400F) / 3600F)
-        val numMinutes = floor((((seconds % 31536000F) % 86400F) % 3600F) / 60F)
+        val numYears = floor(seconds / 31536000F).toInt()
+        val numDays = floor((seconds % 31536000) / 86400F).toInt()
+        val numHours = floor(((seconds % 31536000F) % 86400F) / 3600F).toInt()
+        val numMinutes = floor((((seconds % 31536000F) % 86400F) % 3600F) / 60F).toInt()
         if (numYears > 0) {
             return "${numYears}y ${numDays}d"
         }
