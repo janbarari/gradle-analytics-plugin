@@ -82,8 +82,10 @@ fun List<String>.toArrayString(): String {
         labels.append("\"$this\"")
             .append(",")
     }
-    // because the last item should not have ',' separator.
-    labels.removeLastChar()
+    if (labels.length > 1) {
+        // because the last item should not have ',' separator.
+        labels.removeLastChar()
+    }
     labels.append("]")
     return labels.toString()
 }

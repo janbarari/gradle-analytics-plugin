@@ -76,7 +76,10 @@ data class Report(
     var modulesTimelineReport: ModulesTimelineReport? = null,
 
     @Json(name = "build_status_report")
-    var buildStatusReport: BuildStatusReport? = null
+    var buildStatusReport: BuildStatusReport? = null,
+
+    @Json(name = "modules_build_heatmap_report")
+    var modulesBuildHeatmapReport: ModulesBuildHeatmapReport? = null,
 
 ) : java.io.Serializable {
 
