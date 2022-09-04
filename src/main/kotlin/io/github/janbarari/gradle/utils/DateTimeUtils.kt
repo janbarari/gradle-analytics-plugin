@@ -95,6 +95,7 @@ object DateTimeUtils {
         val numDays = floor((seconds % 31536000) / 86400F).toInt()
         val numHours = floor(((seconds % 31536000F) % 86400F) / 3600F).toInt()
         val numMinutes = floor((((seconds % 31536000F) % 86400F) % 3600F) / 60F).toInt()
+        val numSeconds = (((seconds % 31536000) % 86400) % 3600) % 60
         if (numYears > 0) {
             return "${numYears}y ${numDays}d"
         }
@@ -104,7 +105,10 @@ object DateTimeUtils {
         if (numHours > 0) {
             return "${numHours}h ${numMinutes}m"
         }
-        return "${numMinutes}m"
+        if (numMinutes > 0) {
+            return "${numMinutes}m ${numSeconds}s"
+        }
+        return "${numSeconds}s"
     }
 
 }

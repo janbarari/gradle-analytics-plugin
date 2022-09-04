@@ -11,17 +11,12 @@
       .margin({left:128, right:0, top:0, bottom:0})
 
       function load() {
-        document.getElementById("modules-timeline-graph").innerHTML = "";
         d3.select("#modules-timeline-graph")
           .append("svg")
           .attr("width", document.getElementById("container").offsetWidth)
           .datum(data)
           .call(chart);
       }
-
-      window.addEventListener('resize', function(event) {
-        load();
-      }, true);
 
       load();
 </script>

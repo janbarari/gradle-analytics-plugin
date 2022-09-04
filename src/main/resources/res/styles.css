@@ -4,6 +4,7 @@
 }
 
 body {
+    background-color: #fefefe;
     margin: 40px;
     font-family: "Nunito", Helvetica, Arial, Verdana, Tahoma, sans-serif;
     padding-bottom: 120px;
@@ -174,6 +175,7 @@ hr {
 }
 
 .logo-dimensions {
+    margin-top: 100px;
     width: 128px;
 }
 

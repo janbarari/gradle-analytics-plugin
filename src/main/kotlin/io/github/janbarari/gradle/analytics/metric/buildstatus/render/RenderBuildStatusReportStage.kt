@@ -29,7 +29,6 @@ import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.HtmlUtils
-import kotlin.math.floor
 
 class RenderBuildStatusReportStage(
     private val report: Report
@@ -56,22 +55,26 @@ class RenderBuildStatusReportStage(
         report.buildStatusReport.whenNotNull {
             renderedTemplate = renderedTemplate
                 .replace("%cumulative-build-process-duration%",
-                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeBuildProcessDuration))
+                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeOverallBuildProcessBySeconds)
+                )
                 .replace("%avg-build-process-duration%",
-                    DateTimeUtils.convertSecondsToHumanReadableTime(avgBuildProcessDuration))
+                    DateTimeUtils.convertSecondsToHumanReadableTime(avgOverallBuildProcessBySeconds)
+                )
                 .replace("%total-build-process-count%", totalBuildProcessCount.toString())
-                .replace("%total-modules-count%", totalModulesCount.toString())
+                .replace("%total-modules-count%", totalProjectModulesCount.toString())
                 .replace("%cumulative-parallel-exec-duration%",
-                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeParallelExecutionDuration))
+                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeParallelExecutionBySeconds)
+                )
                 .replace("%avg-parallel-exec-rate%", "${avgParallelExecutionRate.round()}%")
-                .replace("%total-success-build-count%", "$totalSuccessBuildCount")
-                .replace("%total-fails-build-count%", "$totalFailedBuildCount")
+                .replace("%total-succeed-build-count%", "$totalSucceedBuildCount")
+                .replace("%total-failed-build-count%", "$totalFailedBuildCount")
                 .replace("%avg-cache-hit-rate%", "${avgCacheHitRate.round()}%")
                 .replace("%cumulative-dependency-resolve-duration%",
-                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeDependencyResolveDuration))
-                .replace("%avg-initialization-process-duration%", "${avgInitializationProcessDuration}ms")
-                .replace("%avg-configuration-resolve-duration%", "${avgConfigurationProcessDuration}ms")
-                .replace("%avg-execution-process-duration%", "${avgExecutionProcessDuration}s")
+                    DateTimeUtils.convertSecondsToHumanReadableTime(cumulativeDependencyResolveBySeconds)
+                )
+                .replace("%avg-initialization-process-duration%", "${avgInitializationProcessByMillis}ms")
+                .replace("%avg-configuration-process-duration%", "${avgConfigurationProcessByMillis}ms")
+                .replace("%avg-execution-process-duration%", "${avgExecutionProcessBySeconds}s")
         }
         return renderedTemplate
     }

@@ -27,94 +27,110 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.BuildStatusReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.millisToSeconds
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateBuildStatusReportStage(
-    private val modulesPath: List<ModulePath>,
+    private val projectModules: List<ModulePath>,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
     @Suppress("LongMethod")
     override suspend fun process(input: Report): Report {
-        val cumulativeBuildProcessDuration = metrics
+        val cumulativeOverallBuildProcessDuration = metrics
             .filter { it.overallBuildProcessMetric.isNotNull() }
-            .sumOf {
-                it.overallBuildProcessMetric!!.median / 1000L
+            .sumOf { metric ->
+                metric.overallBuildProcessMetric!!.median.millisToSeconds()
             }
 
-        val avgBuildProcessDuration: Long =
-            MathUtils.longMedian(metrics.filter { it.overallBuildProcessMetric.isNotNull() }.map {
-                    it.overallBuildProcessMetric!!.median / 1000L
-                })
+        val avgOverallBuildProcessDuration: Long = MathUtils.longMedian(
+            metrics.filter { it.overallBuildProcessMetric.isNotNull() }
+                .map { metric ->
+                    metric.overallBuildProcessMetric!!.median.millisToSeconds()
+                }
+        )
 
         val totalBuildProcessCount = metrics.size
 
-        val totalModulesCount = modulesPath.size
+        val totalModulesCount = projectModules.size
 
-        val cumulativeDependencyResolveDuration = metrics.filter { it.dependencyResolveProcessMetric.isNotNull() }
-            .sumOf { it.dependencyResolveProcessMetric!!.median / 1000L }
+        val cumulativeDependencyResolveBySeconds = metrics.filter { it.dependencyResolveProcessMetric.isNotNull() }
+            .sumOf { metric ->
+                metric.dependencyResolveProcessMetric!!.median.millisToSeconds()
+            }
 
-        val cumulativeParallelExecutionDuration =
-            metrics.filter { it.executionProcessMetric.isNotNull() && it.parallelExecutionRateMetric.isNotNull() }.sumOf {
+        val cumulativeParallelExecutionBySeconds =
+            metrics.filter { it.executionProcessMetric.isNotNull() && it.parallelExecutionRateMetric.isNotNull() }
+                .sumOf { metric ->
                     MathUtils.sumWithPercentage(
-                        it.executionProcessMetric!!.median / 1000L, it.parallelExecutionRateMetric!!.rate.toInt()
+                        metric.executionProcessMetric!!.median.millisToSeconds(),
+                        metric.parallelExecutionRateMetric!!.rate.toInt()
                     )
                 }
 
-        val avgParallelExecutionRate: Float =
-            MathUtils.floatMedian(metrics.filter { it.parallelExecutionRateMetric.isNotNull() }.map {
-                    it.parallelExecutionRateMetric!!.rate.toFloat()
-                })
+        val avgParallelExecutionRate: Float = MathUtils.floatMedian(
+            metrics.filter { it.parallelExecutionRateMetric.isNotNull() }
+                .map { metric ->
+                    metric.parallelExecutionRateMetric!!.rate.toFloat()
+                }
+        )
 
         val totalFailedBuildCount = metrics.filter {
-                it.successBuildRateMetric.isNotNull()
-            }.sumOf {
-                it.successBuildRateMetric!!.fails
-            }
+            it.successBuildRateMetric.isNotNull()
+        }.sumOf { metric ->
+            metric.successBuildRateMetric!!.fails
+        }
 
         val totalSuccessBuildCount = metrics.filter {
-                it.successBuildRateMetric.isNotNull()
-            }.sumOf {
-                it.successBuildRateMetric!!.successes
-            }
+            it.successBuildRateMetric.isNotNull()
+        }.sumOf { metric ->
+            metric.successBuildRateMetric!!.successes
+        }
 
-        val avgCacheHitRate: Float =
-            MathUtils.floatMedian(metrics.filter { it.cacheHitMetric.isNotNull() }.map {
-                it.cacheHitMetric!!.rate.toFloat()
-            })
+        val avgCacheHitRate: Float = MathUtils.floatMedian(
+            metrics.filter { it.cacheHitMetric.isNotNull() }
+                .map { metric ->
+                    metric.cacheHitMetric!!.rate.toFloat()
+                }
+        )
 
-        val avgInitializationProcessDuration: Long =
-            MathUtils.longMedian(metrics.filter { it.initializationProcessMetric.isNotNull() }.map {
-                it.initializationProcessMetric!!.median
-            })
+        val avgInitializationProcessByMillis: Long = MathUtils.longMedian(
+            metrics.filter { it.initializationProcessMetric.isNotNull() }
+                .map { metric ->
+                    metric.initializationProcessMetric!!.median
+                }
+        )
 
-        val avgConfigurationProcessDuration: Long =
-            MathUtils.longMedian(metrics.filter { it.configurationProcessMetric.isNotNull() }.map {
-                it.configurationProcessMetric!!.median
-            })
+        val avgConfigurationProcessByMillis: Long = MathUtils.longMedian(
+            metrics.filter { it.configurationProcessMetric.isNotNull() }
+                .map { metric ->
+                    metric.configurationProcessMetric!!.median
+                }
+        )
 
-        val avgExecutionProcessDuration: Long =
-            MathUtils.longMedian(metrics.filter { it.executionProcessMetric.isNotNull() }.map {
-                it.executionProcessMetric!!.median / 1000L
-            })
+        val avgExecutionProcessBySeconds: Long = MathUtils.longMedian(
+            metrics.filter { it.executionProcessMetric.isNotNull() }
+                .map { metric ->
+                    metric.executionProcessMetric!!.median.millisToSeconds()
+                }
+        )
 
         return input.apply {
             buildStatusReport = BuildStatusReport(
-                cumulativeBuildProcessDuration = cumulativeBuildProcessDuration,
-                avgBuildProcessDuration = avgBuildProcessDuration,
+                cumulativeOverallBuildProcessBySeconds = cumulativeOverallBuildProcessDuration,
+                avgOverallBuildProcessBySeconds = avgOverallBuildProcessDuration,
                 totalBuildProcessCount = totalBuildProcessCount,
-                totalModulesCount = totalModulesCount,
-                cumulativeDependencyResolveDuration = cumulativeDependencyResolveDuration,
-                cumulativeParallelExecutionDuration = cumulativeParallelExecutionDuration,
+                totalProjectModulesCount = totalModulesCount,
+                cumulativeDependencyResolveBySeconds = cumulativeDependencyResolveBySeconds,
+                cumulativeParallelExecutionBySeconds = cumulativeParallelExecutionBySeconds,
                 avgParallelExecutionRate = avgParallelExecutionRate,
                 totalFailedBuildCount = totalFailedBuildCount,
-                totalSuccessBuildCount = totalSuccessBuildCount,
+                totalSucceedBuildCount = totalSuccessBuildCount,
                 avgCacheHitRate = avgCacheHitRate,
-                avgInitializationProcessDuration = avgInitializationProcessDuration,
-                avgConfigurationProcessDuration = avgConfigurationProcessDuration,
-                avgExecutionProcessDuration = avgExecutionProcessDuration
+                avgInitializationProcessByMillis = avgInitializationProcessByMillis,
+                avgConfigurationProcessByMillis = avgConfigurationProcessByMillis,
+                avgExecutionProcessBySeconds = avgExecutionProcessBySeconds
             )
         }
     }

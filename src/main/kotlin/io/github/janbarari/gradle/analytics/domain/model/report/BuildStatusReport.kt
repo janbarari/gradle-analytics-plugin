@@ -29,17 +29,17 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class BuildStatusReport(
-    val cumulativeBuildProcessDuration: Long,
-    val avgBuildProcessDuration: Long,
+    val cumulativeOverallBuildProcessBySeconds: Long,
+    val avgOverallBuildProcessBySeconds: Long,
     val totalBuildProcessCount: Int,
-    val totalModulesCount: Int,
-    val cumulativeParallelExecutionDuration: Long,
+    val totalProjectModulesCount: Int,
+    val cumulativeParallelExecutionBySeconds: Long,
     val avgParallelExecutionRate: Float,
-    val totalSuccessBuildCount: Int,
+    val totalSucceedBuildCount: Int,
     val totalFailedBuildCount: Int,
     val avgCacheHitRate: Float,
-    val cumulativeDependencyResolveDuration: Long,
-    val avgInitializationProcessDuration: Long,
-    val avgConfigurationProcessDuration: Long,
-    val avgExecutionProcessDuration: Long
+    val cumulativeDependencyResolveBySeconds: Long,
+    val avgInitializationProcessByMillis: Long,
+    val avgConfigurationProcessByMillis: Long,
+    val avgExecutionProcessBySeconds: Long
 ): Serializable

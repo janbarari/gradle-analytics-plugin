@@ -42,3 +42,7 @@ fun Long.isBiggerEquals(target: Long): Boolean {
 fun Long.isBigger(target: Long): Boolean {
     return this > target
 }
+
+fun Long.millisToSeconds(): Long {
+    return this / 1000L
+}
