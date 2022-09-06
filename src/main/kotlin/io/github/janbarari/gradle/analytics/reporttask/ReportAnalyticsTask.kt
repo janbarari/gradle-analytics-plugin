@@ -131,19 +131,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             }
         }
 
-        project.subprojects.flatMap { project ->
-            project.configurations
-                .filter { it.isCanBeResolved }
-                .filter {
-                    val raw = it.name.replace("compileClasspath", "", ignoreCase = true)
-                    it.name.contains("compileClassPath", ignoreCase = true) &&
-                            listOf("test", "AndroidTest", "UnitTest").none { raw.contains(it) }
-                }
-                .flatMap { it.resolvedConfiguration.firstLevelModuleDependencies }
-        }.forEach {
-            println(it.name)
-        }
-
     }
 
     private fun printSuccessfulResult(reportPath: String) {
@@ -155,7 +142,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             printLine(reportPath, "")
             printBreakLine('-')
             printLine("Made with ❤ for developers", "")
-            printLine( "https://github.com/janbarari/gradle-analytics-plugin", "")
+            printLine("https://github.com/janbarari/gradle-analytics-plugin", "")
             printLine("", " ↖ Tap the ☆ button to support this plugin")
             printLastLine()
         }

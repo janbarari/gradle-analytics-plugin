@@ -34,6 +34,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.CreateConfigurationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.RenderConfigurationProcessReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.CreateDependencyDetailsReportStage
+import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.RenderDependencyDetailsReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.CreateDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.RenderDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.CreateExecutionProcessReportStage
@@ -103,6 +105,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
             .addStage(CreateBuildStatusReportStage(modulesPath, data))
             .addStage(CreateModulesBuildHeatmapReportStage(data))
+            .addStage(CreateDependencyDetailsReportStage(data))
             .execute(
                 Report(
                     branch = branch,
@@ -136,6 +139,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesTimelineReportStage = RenderModulesTimelineReportStage(report)
         val renderBuildStatusReportStage = RenderBuildStatusReportStage(report)
         val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
+        val renderDependencyDetailsReportStage = RenderDependencyDetailsReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -153,6 +157,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesTimelineReportStage)
             .addStage(renderBuildStatusReportStage)
             .addStage(renderModulesBuildHeatmapReportStage)
+            .addStage(renderDependencyDetailsReportStage)
             .execute(rawHTML)
     }
 

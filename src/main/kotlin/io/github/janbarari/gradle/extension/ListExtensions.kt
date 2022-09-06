@@ -56,6 +56,22 @@ inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
 }
 
 /**
+ * Executes the function body if the given list is not empty.
+ */
+inline fun <T> List<T>.whenNotEmpty(block: Collection<T>.() -> Unit): List<T> {
+    if (isNotEmpty()) block(this)
+    return this
+}
+
+/**
+ * Executes the function body if the given set is not empty.
+ */
+inline fun <T> Set<T>.whenNotEmpty(block: Collection<T>.() -> Unit): Set<T> {
+    if (isNotEmpty()) block(this)
+    return this
+}
+
+/**
  * Represents the first index value.
  */
 val <T> List<T>.firstIndex: Int
