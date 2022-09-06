@@ -61,6 +61,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.Crea
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricStage
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricStage
@@ -101,6 +103,7 @@ class BuildExecutionLogicImp(
     private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase,
     private val createModulesBuildHeatmapMetricUseCase: CreateModulesBuildHeatmapMetricUseCase,
     private val createDependencyDetailsMetricUseCase: CreateDependencyDetailsMetricUseCase,
+    private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -180,6 +183,10 @@ class BuildExecutionLogicImp(
             dependencies,
             createDependencyDetailsMetricUseCase
         )
+        val createNonCacheableTasksMetricStage = CreateNonCacheableTasksMetricStage(
+            info,
+            createNonCacheableTasksMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -196,6 +203,7 @@ class BuildExecutionLogicImp(
             .addStage(createModulesTimelineMetricStage)
             .addStage(createModulesBuildHeatmapMetricStage)
             .addStage(createDependencyDetailsMetricStage)
+            .addStage(createNonCacheableTasksMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
 
         saveTemporaryMetricUseCase.execute(buildMetric)

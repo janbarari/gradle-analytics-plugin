@@ -20,44 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model
+package io.github.janbarari.gradle.analytics.domain.model.report
 
-import org.gradle.tooling.Failure
-import org.gradle.tooling.events.OperationDescriptor
+import com.squareup.moshi.JsonClass
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
+import java.io.Serializable
 
-data class TaskInfo(
-    val startedAt: Long,
-    val finishedAt: Long,
-    val path: String,
-    val displayName: String,
-    val name: String,
-    val isSuccessful: Boolean,
-    val failures: List<Failure>?,
-    val dependencies: List<OperationDescriptor>?,
-    val isIncremental: Boolean,
-    val isFromCache: Boolean,
-    val isUpToDate: Boolean,
-    val isSkipped: Boolean,
-    val executionReasons: List<String>?
-) : java.io.Serializable {
-
-    /**
-     * Returns the task execution duration in milliseconds.
-     */
-    fun getDurationInMillis(): Long {
-        if (finishedAt < startedAt) return 0L
-        return finishedAt - startedAt
-    }
-
-    /**
-     * Returns the task module name.
-     */
-    fun getModule(): String {
-        val module = path.split(":")
-        return if (module.size > 2) module.toList()
-            .dropLast(1)
-            .joinToString(separator = ":")
-        else "no_module"
-    }
-
-}
+@ExcludeJacocoGenerated
+@JsonClass(generateAdapter = true)
+data class NonCacheableTasksReport(
+    val tasks: List<NonCacheableTasksMetric.NonCacheableTask>
+): Serializable

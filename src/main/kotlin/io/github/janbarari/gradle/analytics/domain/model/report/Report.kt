@@ -84,6 +84,9 @@ data class Report(
     @Json(name = "dependency_details_report")
     var dependencyDetailsReport: DependencyDetailsReport? = null,
 
+    @Json(name = "non_cacheable_tasks_report")
+    var nonCacheableTasksReport: NonCacheableTasksReport? = null,
+
 ) : java.io.Serializable {
 
     fun toJson(): String {

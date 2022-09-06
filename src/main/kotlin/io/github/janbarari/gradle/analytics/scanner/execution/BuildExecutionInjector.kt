@@ -59,6 +59,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.Upd
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
@@ -174,6 +176,11 @@ fun BuildExecutionInjector.provideUpdateDependencyDetailsMetricUseCase(): Update
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideUpdateNonCacheableTasksMetricUseCase(): UpdateNonCacheableTasksMetricUseCase {
+    return UpdateNonCacheableTasksMetricUseCase(provideDatabaseRepository())
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
         provideDatabaseRepository(),
@@ -190,7 +197,8 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateModulesExecutionProcessMetricUseCase(),
         provideUpdateModulesDependencyGraphMetricUseCase(),
         provideUpdateModulesBuildHeatmapMetricUseCase(),
-        provideUpdateDependencyDetailsMetricUseCase()
+        provideUpdateDependencyDetailsMetricUseCase(),
+        provideUpdateNonCacheableTasksMetricUseCase()
     )
 }
 
@@ -283,6 +291,11 @@ fun BuildExecutionInjector.provideCreateDependencyDetailsMetricUseCase(): Create
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCreateNonCacheableTasksMetricUseCase(): CreateNonCacheableTasksMetricUseCase {
+    return CreateNonCacheableTasksMetricUseCase(nonCachableTasks!!)
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         provideSaveMetricUseCase(),
@@ -303,6 +316,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateModulesTimelineMetricUseCase(),
         provideCreateModulesBuildHeatmapMetricUseCase(),
         provideCreateDependencyDetailsMetricUseCase(),
+        provideCreateNonCacheableTasksMetricUseCase(),
         ensureNotNull(databaseConfig),
         ensureNotNull(isCI),
         ensureNotNull(trackingBranches),
