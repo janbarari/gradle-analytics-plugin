@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDe
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.envCI
-import io.github.janbarari.gradle.extension.getNonCachableTasks
+import io.github.janbarari.gradle.extension.getNonCacheableTasks
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import org.gradle.api.Project
@@ -56,9 +56,9 @@ object ScannerUtils {
         configuration: GradleAnalyticsPluginConfig
     ) {
         project.gradle.projectsEvaluated {
-            val nonCachableTasks = project.allprojects
+            val nonCacheableTasks = project.allprojects
                 .flatMap { project ->
-                    project.tasks.getNonCachableTasks()
+                    project.tasks.getNonCacheableTasks()
                 }
 
             val modulesPath = mutableListOf<ModulePath>()
@@ -102,7 +102,7 @@ object ScannerUtils {
                     this.modulesPath.set(modulesPath)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.dependencies.set(dependencies)
-                    this.nonCachableTasks.set(nonCachableTasks)
+                    this.nonCachableTasks.set(nonCacheableTasks)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

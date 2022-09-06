@@ -62,7 +62,7 @@ inline fun <reified T : DefaultTask> Project.registerTask(name: String, crossinl
     }
 }
 
-fun Task.isCachable(): Boolean {
+fun Task.isCacheable(): Boolean {
     return this.outputs.hasOutput && this.inputs.hasInputs
 }
 
@@ -74,14 +74,14 @@ fun Task.getSafeTaskDependencies(): Set<Task> {
     }
 }
 
-fun Collection<Task>.getNonCachableTasks(): Set<String> {
-    val nonCachableTasks = mutableSetOf<String>()
+fun Collection<Task>.getNonCacheableTasks(): Set<String> {
+    val nonCacheableTasks = mutableSetOf<String>()
     forEach { task ->
         task.getSafeTaskDependencies()
-            .filter { !it.isCachable() }
+            .filter { !it.isCacheable() }
             .whenNotEmpty {
-                nonCachableTasks.addAll(this.map { it.path })
+                nonCacheableTasks.addAll(this.map { it.path })
             }
     }
-    return nonCachableTasks
+    return nonCacheableTasks
 }
