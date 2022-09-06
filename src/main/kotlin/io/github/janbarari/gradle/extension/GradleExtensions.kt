@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.extension
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
@@ -55,8 +56,32 @@ fun Project.isDependingOnOtherProject(): Boolean {
  * Registers the given task.
  */
 @ExcludeJacocoGenerated
-inline fun <reified T: DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
+inline fun <reified T : DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
     project.tasks.register(name, T::class.java) {
         it.also(block)
     }
+}
+
+fun Task.isCachable(): Boolean {
+    return this.outputs.hasOutput && this.inputs.hasInputs
+}
+
+fun Task.getSafeTaskDependencies(): Set<Task> {
+    return try {
+        taskDependencies.getDependencies(this)
+    } catch (e: Throwable) {
+        emptySet()
+    }
+}
+
+fun Collection<Task>.getNonCachableTasks(): Set<String> {
+    val nonCachableTasks = mutableSetOf<String>()
+    forEach { task ->
+        task.getSafeTaskDependencies()
+            .filter { !it.isCachable() }
+            .whenNotEmpty {
+                nonCachableTasks.addAll(this.map { it.path })
+            }
+    }
+    return nonCachableTasks
 }

@@ -30,6 +30,8 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.dependencydetails.update.UpdateDependencyDetailsMetricStage
+import io.github.janbarari.gradle.analytics.metric.dependencydetails.update.UpdateDependencyDetailsMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricStage
@@ -69,7 +71,8 @@ class SaveMetricUseCase(
     private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase,
     private val updateModulesExecutionProcessMetricUseCase: UpdateModulesExecutionProcessMetricUseCase,
     private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase,
-    private val updateModulesBuildHeatmapMetricUseCase: UpdateModulesBuildHeatmapMetricUseCase
+    private val updateModulesBuildHeatmapMetricUseCase: UpdateModulesBuildHeatmapMetricUseCase,
+    private val updateDependencyDetailsMetricUseCase: UpdateDependencyDetailsMetricUseCase
 ) : UseCase<BuildMetric, Long>() {
 
     /**
@@ -103,6 +106,9 @@ class SaveMetricUseCase(
             val updateModulesBuildHeatmapMetricStage = UpdateModulesBuildHeatmapMetricStage(
                 updateModulesBuildHeatmapMetricUseCase
             )
+            val updateDependencyDetailsMetricStage = UpdateDependencyDetailsMetricStage(
+                updateDependencyDetailsMetricUseCase
+            )
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationProcessMetricStage)
                 .addStage(updateConfigurationProcessMetricStage)
@@ -117,6 +123,7 @@ class SaveMetricUseCase(
                 .addStage(updateModulesExecutionProcessMetricStage)
                 .addStage(updateModulesDependencyGraphMetricStage)
                 .addStage(updateModulesBuildHeatmapMetricStage)
+                .addStage(updateDependencyDetailsMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
 
             val dayMetricNumber = repo.getDayMetric().second

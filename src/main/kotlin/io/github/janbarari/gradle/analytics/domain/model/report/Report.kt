@@ -81,6 +81,9 @@ data class Report(
     @Json(name = "modules_build_heatmap_report")
     var modulesBuildHeatmapReport: ModulesBuildHeatmapReport? = null,
 
+    @Json(name = "dependency_details_report")
+    var dependencyDetailsReport: DependencyDetailsReport? = null,
+
 ) : java.io.Serializable {
 
     fun toJson(): String {
