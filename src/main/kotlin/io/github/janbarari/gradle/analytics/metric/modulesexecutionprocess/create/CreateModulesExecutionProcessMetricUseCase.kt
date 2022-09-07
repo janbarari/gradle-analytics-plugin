@@ -43,7 +43,7 @@ class CreateModulesExecutionProcessMetricUseCase: UseCase<Pair<List<ModulePath>,
             val tasks = buildInfo.executedTasks.filter { it.path.startsWith(path) }
 
             val overallDuration = buildInfo.getExecutionDuration().toMillis()
-            val moduleParallelDuration = tasks.sumOf { it.getDuration() }
+            val moduleParallelDuration = tasks.sumOf { it.getDurationInMillis() }
             val moduleNonParallelDuration = calculateNonParallelExecutionDuration(tasks)
             val moduleParallelRate = (moduleParallelDuration - moduleNonParallelDuration)
                 .toPercentageOf(moduleNonParallelDuration)

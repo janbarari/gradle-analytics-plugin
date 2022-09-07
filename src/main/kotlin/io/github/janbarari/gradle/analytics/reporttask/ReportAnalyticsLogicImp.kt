@@ -54,6 +54,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.Crea
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.RenderModulesTimelineReportStage
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.CreateNonCacheableTasksReportStage
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.RenderNonCacheableTasksReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
@@ -106,6 +108,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateBuildStatusReportStage(modulesPath, data))
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateDependencyDetailsReportStage(data))
+            .addStage(CreateNonCacheableTasksReportStage(data))
             .execute(
                 Report(
                     branch = branch,
@@ -140,6 +143,7 @@ class ReportAnalyticsLogicImp(
         val renderBuildStatusReportStage = RenderBuildStatusReportStage(report)
         val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
         val renderDependencyDetailsReportStage = RenderDependencyDetailsReportStage(report)
+        val renderNonCacheableTasksReportStage = RenderNonCacheableTasksReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -158,6 +162,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderBuildStatusReportStage)
             .addStage(renderModulesBuildHeatmapReportStage)
             .addStage(renderDependencyDetailsReportStage)
+            .addStage(renderNonCacheableTasksReportStage)
             .execute(rawHTML)
     }
 

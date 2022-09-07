@@ -126,7 +126,7 @@ class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelExec
     }
 
     fun getParallelExecutionDuration(executedTasks: Collection<TaskInfo>): Long {
-        return executedTasks.sumOf { it.getDuration() }
+        return executedTasks.sumOf { it.getDurationInMillis() }
     }
 
 }
