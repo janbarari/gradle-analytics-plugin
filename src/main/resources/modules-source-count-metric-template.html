@@ -44,6 +44,13 @@
                 tooltip: {
                   bodyFont: {
                     size: 16
+                  },
+                  callbacks: {
+                    label: function (context) {
+                      let label = context.label || '';
+                      let value = context.formattedValue;
+                      return label + "=" + value;
+                    }
                   }
                 },
                 legend: {

@@ -48,6 +48,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.Upd
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.update.UpdateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.update.UpdateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.UpdateModulesSourceSizeMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.UpdateModulesSourceSizeMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricStage
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricStage
@@ -75,7 +77,8 @@ class SaveMetricUseCase(
     private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase,
     private val updateModulesBuildHeatmapMetricUseCase: UpdateModulesBuildHeatmapMetricUseCase,
     private val updateDependencyDetailsMetricUseCase: UpdateDependencyDetailsMetricUseCase,
-    private val updateNonCacheableTasksMetricUseCase: UpdateNonCacheableTasksMetricUseCase
+    private val updateNonCacheableTasksMetricUseCase: UpdateNonCacheableTasksMetricUseCase,
+    private val updateModulesSourceSizeMetricUseCase: UpdateModulesSourceSizeMetricUseCase,
 ) : UseCase<BuildMetric, Long>() {
 
     /**
@@ -115,6 +118,9 @@ class SaveMetricUseCase(
             val updateNonCacheableTasksMetricStage = UpdateNonCacheableTasksMetricStage(
                 updateNonCacheableTasksMetricUseCase
             )
+            val updateModulesSourceSizeMetricStage = UpdateModulesSourceSizeMetricStage(
+                updateModulesSourceSizeMetricUseCase
+            )
 
             val updatedMetric = UpdateMetricPipeline(updateInitializationProcessMetricStage)
                 .addStage(updateConfigurationProcessMetricStage)
@@ -131,6 +137,7 @@ class SaveMetricUseCase(
                 .addStage(updateModulesBuildHeatmapMetricStage)
                 .addStage(updateDependencyDetailsMetricStage)
                 .addStage(updateNonCacheableTasksMetricStage)
+                .addStage(updateModulesSourceSizeMetricStage)
                 .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt, input.gitHeadCommitHash))
 
             val dayMetricNumber = repo.getDayMetric().second

@@ -56,9 +56,11 @@ import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.create.CreateModulesSourceSizeMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create.CreateModulesMethodCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.create.CreateModulesSourceCountMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.create.CreateModulesSourceSizeMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricStage
@@ -104,6 +106,7 @@ class BuildExecutionLogicImp(
     private val createModulesBuildHeatmapMetricUseCase: CreateModulesBuildHeatmapMetricUseCase,
     private val createDependencyDetailsMetricUseCase: CreateDependencyDetailsMetricUseCase,
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
+    private val createModulesSourceSizeMetricUseCase: CreateModulesSourceSizeMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -188,6 +191,10 @@ class BuildExecutionLogicImp(
             info,
             createNonCacheableTasksMetricUseCase
         )
+        val createModulesSourceSizeMetricStage = CreateModulesSourceSizeMetricStage(
+            modulesPath,
+            createModulesSourceSizeMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -205,6 +212,7 @@ class BuildExecutionLogicImp(
             .addStage(createModulesBuildHeatmapMetricStage)
             .addStage(createDependencyDetailsMetricStage)
             .addStage(createNonCacheableTasksMetricStage)
+            .addStage(createModulesSourceSizeMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt, info.gitHeadCommitHash))
 
         saveTemporaryMetricUseCase.execute(buildMetric)

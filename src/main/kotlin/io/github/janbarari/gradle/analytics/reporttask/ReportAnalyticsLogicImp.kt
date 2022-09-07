@@ -52,6 +52,8 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Cre
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.CreateModulesSourceSizeReportStage
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.RenderModulesSourceSizeStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.RenderModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.CreateNonCacheableTasksReportStage
@@ -109,6 +111,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateDependencyDetailsReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
+            .addStage(CreateModulesSourceSizeReportStage(data))
             .execute(
                 Report(
                     branch = branch,
@@ -145,6 +148,7 @@ class ReportAnalyticsLogicImp(
         val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
         val renderDependencyDetailsReportStage = RenderDependencyDetailsReportStage(report)
         val renderNonCacheableTasksReportStage = RenderNonCacheableTasksReportStage(report)
+        val renderModulesSourceSizeReportStage = RenderModulesSourceSizeStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -164,6 +168,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderModulesBuildHeatmapReportStage)
             .addStage(renderDependencyDetailsReportStage)
             .addStage(renderNonCacheableTasksReportStage)
+            .addStage(renderModulesSourceSizeReportStage)
             .execute(rawHTML)
     }
 

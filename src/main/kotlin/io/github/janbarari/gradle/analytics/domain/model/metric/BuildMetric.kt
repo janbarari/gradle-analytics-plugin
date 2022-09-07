@@ -87,6 +87,9 @@ data class BuildMetric(
     @Json(name = "non_cacheable_tasks_metric")
     var nonCacheableTasksMetric: NonCacheableTasksMetric? = null,
 
+    @Json(name = "modules_source_size_metric")
+    var modulesSourceSizeMetric: ModulesSourceSizeMetric? = null,
+
 ): java.io.Serializable {
 
     @Transient
