@@ -20,23 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.metric.modulescrashcount.update
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Stage
 
-@ExcludeJacocoGenerated
-@JsonClass(generateAdapter = true)
-data class ModuleExecutionProcess(
-    @Json(name = "path")
-    val path: String,
-    @Json(name = "average_duration")
-    val duration: Long,
-    @Json(name = "average_parallel_duration")
-    val parallelDuration: Long,
-    @Json(name = "parallel_rate")
-    val parallelRate: Float,
-    @Json(name = "coverage")
-    val coverage: Float
-) : java.io.Serializable
+class UpdateModulesCrashCountMetricStage(
+    private val updateModulesCrashCountMetricUseCase: UpdateModulesCrashCountMetricUseCase
+): Stage<BuildMetric, BuildMetric> {
+
+    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
+        return buildMetric.apply {
+            modulesCrashCountMetric = updateModulesCrashCountMetricUseCase.execute()
+        }
+    }
+
+}

@@ -90,7 +90,10 @@ data class BuildMetric(
     @Json(name = "modules_source_size_metric")
     var modulesSourceSizeMetric: ModulesSourceSizeMetric? = null,
 
-): java.io.Serializable {
+    @Json(name = "modules_crash_count_metric")
+    var modulesCrashCountMetric: ModulesCrashCountMetric? = null,
+
+    ): java.io.Serializable {
 
     @Transient
     var modulesTimelineMetric: ModulesTimelineMetric? = null
