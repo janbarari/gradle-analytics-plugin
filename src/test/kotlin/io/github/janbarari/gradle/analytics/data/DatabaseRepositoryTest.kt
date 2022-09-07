@@ -32,7 +32,8 @@ class DatabaseRepositoryTest {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
-            createdAt = 16194745374333
+            createdAt = 16194745374333,
+            gitHeadCommitHash = "unknown",
         )
         assertDoesNotThrow {
             repo.saveNewMetric(metric)
@@ -44,7 +45,8 @@ class DatabaseRepositoryTest {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
-            createdAt = 16194745374333
+            createdAt = 16194745374333,
+            gitHeadCommitHash = "unknown",
         )
         assertDoesNotThrow {
             repo.saveTemporaryMetric(metric)
@@ -62,7 +64,8 @@ class DatabaseRepositoryTest {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
         )
         repo.saveNewMetric(metric)
         assertEquals(true, repo.isDayMetricExists())
@@ -74,7 +77,8 @@ class DatabaseRepositoryTest {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
         )
         repo.saveNewMetric(metric)
         assertEquals("develop", repo.getDayMetric().first.branch)
@@ -97,7 +101,8 @@ class DatabaseRepositoryTest {
             val metric = BuildMetric(
                 branch = "develop",
                 listOf("assembleDebug"),
-                createdAt = System.currentTimeMillis()
+                createdAt = System.currentTimeMillis(),
+                gitHeadCommitHash = "unknown",
             )
             repo.saveNewMetric(metric)
         }
@@ -105,7 +110,8 @@ class DatabaseRepositoryTest {
         val newMetric = BuildMetric(
             branch = "master",
             listOf("assembleRelease"),
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
         )
         repo.updateDayMetric(dayMetric.second, newMetric)
         assertEquals("master", repo.getDayMetric().first.branch)

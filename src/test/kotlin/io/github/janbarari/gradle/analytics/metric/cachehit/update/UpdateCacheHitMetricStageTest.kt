@@ -40,7 +40,8 @@ class UpdateCacheHitMetricStageTest {
     private val buildMetric = BuildMetric(
         branch = "develop",
         requestedTasks = listOf("assemble"),
-        createdAt = 16588904332
+        createdAt = 16588904332,
+        gitHeadCommitHash = "unknown",
     )
 
     @BeforeAll

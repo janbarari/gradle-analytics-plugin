@@ -19,7 +19,7 @@
 <div id="container">
 
     <img alt="logo" class="logo-dimensions" src="res/plugin-logo.png"/>
-    <h1>%root-project-name% Gradle Analytics Report</h1>
+    <h1>%root-project-name% Build Analytics Report</h1>
     <h3>
         Analytics
         <span class="tag-style-1">%task-path%</span>
@@ -29,10 +29,11 @@
         <span class="tag-style-3">%time-period-title%</span>
     </h3>
 
-    <h4><span class="gray-text">Time period</span> %time-period-start% ~ %time-period-end%</h4>
-    <h4><span class="gray-text">Reported at</span> %reported-at%</h4>
-    <h4><span class="gray-text">Is on CI/CD</span> %is-ci%</h4>
-    <h4><span class="gray-text">Version</span> %plugin-version%</h4>
+    <h4><span class="gray-text">Git head commit hash: </span> %git-head-commit-hash%</h4>
+    <h4><span class="gray-text">Time period: </span> %time-period-start% ~ %time-period-end%</h4>
+    <h4><span class="gray-text">Reported at: </span> %reported-at%</h4>
+    <h4><span class="gray-text">Is on CI/CD: </span> %is-ci%</h4>
+    <h4><span class="gray-text">Version: </span> %plugin-version%</h4>
 
     <div class="space"></div>
 

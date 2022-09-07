@@ -20,6 +20,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -49,6 +50,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -68,6 +70,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -87,6 +90,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -106,6 +110,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -125,6 +130,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -144,6 +150,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -163,6 +170,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -182,6 +190,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
@@ -201,6 +210,7 @@ class BuildInfoTest {
             osInfo = OsInfo("macOS"),
             hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )

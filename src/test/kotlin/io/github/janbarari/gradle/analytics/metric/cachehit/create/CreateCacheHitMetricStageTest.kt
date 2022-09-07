@@ -46,7 +46,8 @@ class CreateCacheHitMetricStageTest {
     private val buildMetric = BuildMetric(
         branch = "develop",
         requestedTasks = listOf("assemble"),
-        createdAt = 16588904332
+        createdAt = 16588904332,
+        gitHeadCommitHash = "unknown"
     )
 
     private var buildInfo = BuildInfo(
@@ -60,6 +61,7 @@ class CreateCacheHitMetricStageTest {
         osInfo = OsInfo("macOS"),
         hardwareInfo = HardwareInfo(availableMemory = 1000, maximumMemoryCapacity = 2000),
         branch = "develop",
+        gitHeadCommitHash = "unknown",
         requestedTasks = listOf("assemble"),
         isSuccessful = true
     )

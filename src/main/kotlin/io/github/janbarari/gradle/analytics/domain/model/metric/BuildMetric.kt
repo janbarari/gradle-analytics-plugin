@@ -39,6 +39,9 @@ data class BuildMetric(
     @Json(name = "created_at")
     var createdAt: Long,
 
+    @Json(name = "git_head_commit_hash")
+    var gitHeadCommitHash: String,
+
     @Json(name = "initialization_process_metric")
     var initializationProcessMetric: InitializationProcessMetric? = null,
 

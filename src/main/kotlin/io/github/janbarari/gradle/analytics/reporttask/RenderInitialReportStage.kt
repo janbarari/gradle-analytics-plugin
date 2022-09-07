@@ -32,6 +32,7 @@ class RenderInitialReportStage private constructor(
     private val projectName: String,
     private val requestedTasks: String,
     private val branch: String,
+    private val gitHeadCommitHash: String,
     private val period: Long,
     private val isCI: Boolean
 ) : Stage<String, String> {
@@ -42,6 +43,7 @@ class RenderInitialReportStage private constructor(
         private var projectName: String? = null
         private var requestedTasks: String? = null
         private var branch: String? = null
+        private var gitHeadCommitHash: String? = null
         private var period: Long? = null
         private var isCI: Boolean? = null
 
@@ -61,6 +63,10 @@ class RenderInitialReportStage private constructor(
             branch = value
         }
 
+        fun gitHeadCommitHash(value: String) = apply {
+            gitHeadCommitHash = value
+        }
+
         fun period(value: Long) = apply {
             period = value
         }
@@ -75,6 +81,7 @@ class RenderInitialReportStage private constructor(
                 projectName!!,
                 requestedTasks!!,
                 branch!!,
+                gitHeadCommitHash!!,
                 period!!,
                 isCI!!
             )
@@ -86,6 +93,7 @@ class RenderInitialReportStage private constructor(
         var result = input.replace("%root-project-name%", projectName)
             .replace("%task-path%", requestedTasks)
             .replace("%branch%", branch)
+            .replace("%git-head-commit-hash%", gitHeadCommitHash)
             .replace("%time-period-title%", "$period Months")
             .replace("%reported-at%", DateTimeUtils.formatToDateTime(System.currentTimeMillis()))
             .replace("%is-ci%", if (isCI) "Yes" else "No")

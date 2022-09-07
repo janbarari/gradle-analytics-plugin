@@ -131,7 +131,7 @@ class SaveMetricUseCase(
                 .addStage(updateModulesBuildHeatmapMetricStage)
                 .addStage(updateDependencyDetailsMetricStage)
                 .addStage(updateNonCacheableTasksMetricStage)
-                .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt))
+                .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt, input.gitHeadCommitHash))
 
             val dayMetricNumber = repo.getDayMetric().second
             repo.updateDayMetric(dayMetricNumber, updatedMetric)

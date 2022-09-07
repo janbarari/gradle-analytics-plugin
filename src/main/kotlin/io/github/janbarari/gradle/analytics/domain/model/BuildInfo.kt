@@ -38,6 +38,7 @@ data class BuildInfo(
     val osInfo: OsInfo,
     val hardwareInfo: HardwareInfo,
     val branch: String,
+    val gitHeadCommitHash: String,
     val requestedTasks: List<String>,
     val isSuccessful: Boolean,
     val failure: List<Failure>? = null

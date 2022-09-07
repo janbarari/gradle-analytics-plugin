@@ -124,6 +124,7 @@ class ReportAnalyticsLogicTest {
                 "a",
                 listOf("b"),
                 100L,
+                gitHeadCommitHash = "unknown",
                 InitializationProcessMetric(1000L)
             )
         )
@@ -165,6 +166,7 @@ class ReportAnalyticsLogicTest {
                 "a",
                 listOf("b"),
                 100L,
+                gitHeadCommitHash = "unknown",
                 InitializationProcessMetric(1000L)
             )
         )

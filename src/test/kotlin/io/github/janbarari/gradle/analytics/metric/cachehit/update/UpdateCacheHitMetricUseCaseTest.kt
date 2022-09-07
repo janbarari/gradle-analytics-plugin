@@ -52,7 +52,7 @@ class UpdateCacheHitMetricUseCaseTest {
     @Test
     fun `When usecase executes, expect cacheHitMetric to be returned`() = runBlocking {
         val buildMetrics = listOf(
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213),
+            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
             fakeBuildMetric(33, 89, 45, 37),
@@ -76,12 +76,12 @@ class UpdateCacheHitMetricUseCaseTest {
     @Test
     fun `When usecase executes with empty modules, expect null to be returned`() = runBlocking {
         val buildMetrics = listOf(
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213),
+            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
             fakeBuildMetric(33, 89, 45, 37),
             fakeBuildMetric(99, 32, 122, 65),
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213)
+            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",)
         )
 
         every {
@@ -103,6 +103,7 @@ class UpdateCacheHitMetricUseCaseTest {
     ): BuildMetric {
         return BuildMetric(
             branch = "develop",
+            gitHeadCommitHash = "unknown",
             requestedTasks = listOf("assemble"),
             createdAt = 1660202190213
         ).apply {

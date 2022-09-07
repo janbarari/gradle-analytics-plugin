@@ -122,6 +122,7 @@ class ReportAnalyticsLogicImp(
             .data(data)
             .projectName(projectName)
             .branch(branch)
+            .gitHeadCommitHash(data.last().gitHeadCommitHash.replace("\"", ""))
             .period(period)
             .requestedTasks(requestedTasks)
             .isCI(isCI)

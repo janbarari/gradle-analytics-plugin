@@ -31,6 +31,7 @@ class BuildMetricJsonAdapterTest {
         val json = """
             {
                 "branch": "develop",
+                "git_head_commit_hash": "unknown",
                 "requested_tasks": [
                     ":app:assembleDebug"
                 ],
@@ -115,7 +116,8 @@ class BuildMetricJsonAdapterTest {
         val validModel = BuildMetric(
             branch = "",
             requestedTasks = emptyList(),
-            createdAt = 0
+            createdAt = 0,
+            gitHeadCommitHash = "unknown"
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))

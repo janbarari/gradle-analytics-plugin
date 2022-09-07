@@ -139,6 +139,7 @@ class BuildExecutionLogicImp(
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
             executedTasks = executedTasks.toList(),
             branch = GitUtils.currentBranch(),
+            gitHeadCommitHash = GitUtils.getHeadCommitHash(),
             requestedTasks = requestedTasks,
             isSuccessful = isSuccessful,
             failure = failure
@@ -204,7 +205,7 @@ class BuildExecutionLogicImp(
             .addStage(createModulesBuildHeatmapMetricStage)
             .addStage(createDependencyDetailsMetricStage)
             .addStage(createNonCacheableTasksMetricStage)
-            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt))
+            .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt, info.gitHeadCommitHash))
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)

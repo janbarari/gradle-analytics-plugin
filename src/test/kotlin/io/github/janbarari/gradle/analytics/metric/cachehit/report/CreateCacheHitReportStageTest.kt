@@ -43,6 +43,7 @@ class CreateCacheHitReportStageTest {
 
     private val sampleBuildMetricWithCacheHit2 = BuildMetric(
         branch = "develop",
+        gitHeadCommitHash = "unknown",
         requestedTasks = listOf(
             "assemble"
         ),
@@ -68,6 +69,7 @@ class CreateCacheHitReportStageTest {
 
     private val sampleBuildMetricWithCacheHit = BuildMetric(
         branch = "develop",
+        gitHeadCommitHash = "unknown",
         requestedTasks = listOf(
             "assemble"
         ),
@@ -96,7 +98,8 @@ class CreateCacheHitReportStageTest {
         requestedTasks = listOf(
             "assemble"
         ),
-        createdAt = 16588904332
+        createdAt = 16588904332,
+        gitHeadCommitHash = "unknown",
     )
 
     @Test

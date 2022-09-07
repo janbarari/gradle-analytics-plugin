@@ -42,6 +42,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 initializationProcessMetric = InitializationProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -61,6 +62,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 initializationProcessMetric = InitializationProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -80,6 +82,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 configurationProcessMetric = ConfigurationProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -99,6 +102,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 configurationProcessMetric = ConfigurationProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -118,6 +122,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 executionProcessMetric = ExecutionProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -137,6 +142,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 executionProcessMetric = ExecutionProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -156,6 +162,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -175,6 +182,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 1000L,
                     mean = 1000L
@@ -194,6 +202,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 successBuildRateMetric = SuccessBuildRateMetric(
                     medianRate = 100F,
                     meanRate = 100F
@@ -213,6 +222,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 successBuildRateMetric = SuccessBuildRateMetric(
                     medianRate = 100F,
                     meanRate = 100F
@@ -232,6 +242,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(
                     mean = 1000L,
                     median = 1000L
@@ -251,6 +262,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(
                     mean = 1000L,
                     median = 1000L
@@ -270,6 +282,7 @@ class BuildMetricExtensionsTest {
                 branch = "master",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660318217387,
+                gitHeadCommitHash = "unknown",
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(
                     rate = 90L
                 )
