@@ -1,5 +1,5 @@
-<h2>Modules Method Count</h2>
-<p class="gray-text pb16">Represents the project and modules method count.</p>
+<h2>Modules Source Size</h2>
+<p class="gray-text pb16">Represents the project and modules cumulative source files size.</p>
 <div class="flex-container">
     <div class="flex-child pr16">
         <div class="table-container">
@@ -7,14 +7,14 @@
                 <tr style="background-color: #B4B4B4;">
                     <th>#</th>
                     <th>Module</th>
-                    <th>Count</th>
+                    <th>Size</th>
                     <th>Coverage</th>
                     <th>Diff Rate</th>
                 </tr>
                 %table-data%
                 <tr>
                     <td colspan="2">Total</td>
-                    <td>%total-method-count%</td>
+                    <td>%total-source-size%kb</td>
                     <td>Σ</td>
                     %total-diff-rate%
                 </tr>
@@ -22,13 +22,13 @@
         </div>
     </div>
     <div class="flex-child" style="padding-left: 12px;">
-        <canvas id="modulesMethodCountChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
+        <canvas id="modulesSourceSizeChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
         <script type="text/javascript">
           var _labels = %module-labels%;
           var _data = %module-values%;
           var _colors = Array.from({length: _data.length}, () => getRandomColor());
 
-          new Chart("modulesMethodCountChart", {
+          new Chart("modulesSourceSizeChart", {
             type: "pie",
             data: {
               labels: _labels,
@@ -49,7 +49,7 @@
                     label: function (context) {
                       let label = context.label || '';
                       let value = context.formattedValue;
-                      return label + "=" + value;
+                      return label + "=" + value +"kb";
                     }
                   }
                 },
