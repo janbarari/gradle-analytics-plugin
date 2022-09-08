@@ -25,7 +25,6 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.report
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
@@ -54,13 +53,13 @@ class RenderCacheHitReportStage(
 
     @Suppress("LongMethod")
     fun getMetricRender(): String {
-        val overallChartValues = ensureNotNull(report.cacheHitReport)
+        val overallChartValues = report.cacheHitReport!!
             .overallMeanValues
             .map { it.value }
             .toIntList()
             .toString()
 
-        val overallChartLabels = ensureNotNull(report.cacheHitReport)
+        val overallChartLabels = report.cacheHitReport!!
             .overallMeanValues
             .map { it.description }
             .toArrayString()
@@ -90,10 +89,10 @@ class RenderCacheHitReportStage(
             }
         }
 
-        val overallCacheHit = ensureNotNull(report.cacheHitReport).overallRate.toString() + "%"
+        val overallCacheHit = report.cacheHitReport!!.overallRate.toString() + "%"
 
         var overallDiffRatioRender = "<td>-</td>"
-        ensureNotNull(report.cacheHitReport).overallDiffRate.whenNotNull {
+        report.cacheHitReport!!.overallDiffRate.whenNotNull {
             overallDiffRatioRender = if (this > 0) {
                 "<td class=\"green\">+${this}%</td>"
             } else if (this < 0) {
@@ -103,10 +102,10 @@ class RenderCacheHitReportStage(
             }
         }
 
-        val bestModulePath = getBestModulePath(ensureNotNull(report.cacheHitReport).modules)
-        val worstModulePath = getWorstModulePath(ensureNotNull(report.cacheHitReport).modules)
+        val bestModulePath = getBestModulePath(report.cacheHitReport!!.modules)
+        val worstModulePath = getWorstModulePath(report.cacheHitReport!!.modules)
 
-        val modules = ensureNotNull(report.cacheHitReport).modules
+        val modules = report.cacheHitReport!!.modules
 
         var bestChartValues = "[]"
         var worstChartValues = "[]"

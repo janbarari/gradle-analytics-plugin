@@ -1,7 +1,6 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
@@ -9,7 +8,6 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -132,10 +130,10 @@ class ReportAnalyticsLogicTest {
         logic = ReportAnalyticsLogicImp(
             mockedGetMetricsUseCase,
             mockedGetModulesTimelineUseCase,
-            ensureNotNull(injector.isCI),
-            ensureNotNull(injector.outputPath),
-            ensureNotNull(injector.projectName),
-            ensureNotNull(injector.modulesPath)
+            injector.isCI!!,
+            injector.outputPath!!,
+            injector.projectName!!,
+            injector.modulesPath!!
         )
 
         val result = logic.generateReport(
@@ -174,10 +172,10 @@ class ReportAnalyticsLogicTest {
         logic = ReportAnalyticsLogicImp(
             mockedGetMetricsUseCase,
             mockedGetModulesTimelineUseCase,
-            ensureNotNull(injector.isCI),
-            ensureNotNull(injector.outputPath),
-            ensureNotNull(injector.projectName),
-            ensureNotNull(injector.modulesPath)
+            injector.isCI!!,
+            injector.outputPath!!,
+            injector.projectName!!,
+            injector.modulesPath!!
         )
 
         val result = logic.generateReport(

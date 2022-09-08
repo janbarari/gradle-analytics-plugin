@@ -69,7 +69,6 @@ import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.C
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 
 /**
@@ -92,7 +91,7 @@ data class BuildExecutionInjector(
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabase(): Database {
-    return Database(ensureNotNull(databaseConfig), ensureNotNull(isCI))
+    return Database(databaseConfig!!, isCI!!)
 }
 
 @ExcludeJacocoGenerated
@@ -104,8 +103,8 @@ fun BuildExecutionInjector.provideMoshi(): Moshi {
 fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
         provideDatabase(),
-        ensureNotNull(branch),
-        ensureNotNull(requestedTasks).separateElementsWithSpace()
+        branch!!,
+        requestedTasks!!.separateElementsWithSpace()
     )
 }
 
@@ -161,7 +160,7 @@ fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdatePara
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesExecutionProcessMetricUseCase(): UpdateModulesExecutionProcessMetricUseCase {
-    return UpdateModulesExecutionProcessMetricUseCase(provideDatabaseRepository(), ensureNotNull(modulesPath))
+    return UpdateModulesExecutionProcessMetricUseCase(provideDatabaseRepository(), modulesPath!!)
 }
 
 @ExcludeJacocoGenerated
@@ -293,7 +292,7 @@ fun BuildExecutionInjector.provideCreateModulesDependencyGraphMetricUseCase(): C
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesTimelineMetricUseCase(): CreateModulesTimelineMetricUseCase {
-    return CreateModulesTimelineMetricUseCase(ensureNotNull(modulesPath))
+    return CreateModulesTimelineMetricUseCase(modulesPath!!)
 }
 
 @ExcludeJacocoGenerated
@@ -345,13 +344,13 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateNonCacheableTasksMetricUseCase(),
         provideCreateModulesSourceSizeMetricUseCase(),
         provideCreateModulesCrashCountMetricUseCase(),
-        ensureNotNull(databaseConfig),
-        ensureNotNull(isCI),
-        ensureNotNull(trackingBranches),
-        ensureNotNull(trackingTasks),
-        ensureNotNull(requestedTasks),
-        ensureNotNull(modulesPath),
-        ensureNotNull(modulesDependencyGraph),
-        ensureNotNull(dependencies)
+        databaseConfig!!,
+        isCI!!,
+        trackingBranches!!,
+        trackingTasks!!,
+        requestedTasks!!,
+        modulesPath!!,
+        modulesDependencyGraph!!,
+        dependencies!!
     )
 }

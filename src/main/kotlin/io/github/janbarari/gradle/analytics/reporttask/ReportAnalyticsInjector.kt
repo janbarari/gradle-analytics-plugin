@@ -31,8 +31,6 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
-import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
  * Dependency injection for [ReportAnalyticsTask].
@@ -50,7 +48,7 @@ class ReportAnalyticsInjector(
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
-    return Database(ensureNotNull(databaseConfig), ensureNotNull(isCI))
+    return Database(databaseConfig!!, isCI!!)
 }
 
 @ExcludeJacocoGenerated
@@ -62,8 +60,8 @@ fun ReportAnalyticsInjector.provideMoshi(): Moshi {
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
         provideDatabase(),
-        ensureNotNull(branch),
-        ensureNotNull(requestedTasks)
+        branch!!,
+        requestedTasks!!
     )
 }
 
@@ -85,9 +83,9 @@ fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic 
     return ReportAnalyticsLogicImp(
         provideGetMetricsUseCase(),
         provideGetModulesTimelineUseCase(),
-        ensureNotNull(isCI),
-        ensureNotNull(outputPath),
-        ensureNotNull(projectName),
-        ensureNotNull(modulesPath)
+        isCI!!,
+        outputPath!!,
+        projectName!!,
+        modulesPath!!
     )
 }

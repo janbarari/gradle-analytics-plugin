@@ -22,8 +22,6 @@
  */
 package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-
 /**
  * Returns True, If the object is null.
  */
@@ -50,15 +48,4 @@ fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
  */
 fun <T: Any> T?.whenNull(block: () -> Unit) {
     if(this == null) block()
-}
-
-/**
- * Converts nullable object to non-null object.
- *
- * @throws java.lang.NullPointerException if the given value is null.
- */
-@ExcludeJacocoGenerated
-inline fun <reified T: Any> ensureNotNull(value: T?): T {
-    if (value.isNull()) throw java.lang.NullPointerException("${T::class} can not be null")
-    return value as T
 }

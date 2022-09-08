@@ -28,7 +28,6 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCou
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -44,12 +43,12 @@ class CreateModulesSourceCountReportStage(
         val metrics = metrics.filter {
                 it.modulesSourceCountMetric.isNotNull()
             }.map {
-                ensureNotNull(it.modulesSourceCountMetric)
+                it.modulesSourceCountMetric!!
             }
 
         if (metrics.hasSingleItem()) {
             return report.apply {
-                modulesSourceCountReport = generateSingleItemReport(ensureNotNull(metrics.single()))
+                modulesSourceCountReport = generateSingleItemReport(metrics.single())
             }
         }
 

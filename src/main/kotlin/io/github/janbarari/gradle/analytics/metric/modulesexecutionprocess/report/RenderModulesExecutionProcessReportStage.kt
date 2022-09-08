@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.repo
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
@@ -59,8 +58,8 @@ class RenderModulesExecutionProcessReportStage(
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME)
         report.modulesExecutionProcessReport.whenNotNull {
 
-            val min = ensureNotNull(report.modulesExecutionProcessReport).modules.minOfOrNull { it.avgMedianDuration } ?: 0L
-            val max = ensureNotNull(report.modulesExecutionProcessReport).modules.maxOfOrNull { it.avgMedianDuration } ?: 0L
+            val min = modules.minOfOrNull { it.avgMedianDuration } ?: 0L
+            val max = modules.maxOfOrNull { it.avgMedianDuration } ?: 0L
 
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(
                 min / 1000L,

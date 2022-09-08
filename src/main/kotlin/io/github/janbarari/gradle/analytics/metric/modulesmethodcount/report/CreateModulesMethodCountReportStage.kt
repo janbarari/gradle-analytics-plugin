@@ -29,7 +29,6 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCou
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -44,7 +43,7 @@ class CreateModulesMethodCountReportStage(
         val metrics = metrics.filter {
             it.modulesMethodCountMetric.isNotNull()
         }.map {
-            ensureNotNull(it.modulesMethodCountMetric)
+            it.modulesMethodCountMetric!!
         }
 
         if (metrics.hasSingleItem()) {

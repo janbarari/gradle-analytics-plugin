@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
@@ -36,7 +35,7 @@ class TimespanChartPoint(
         return if (to.isNull()) {
             DateTimeUtils.format(from, "dd/MM")
         } else {
-            DateTimeUtils.format(from, "dd/MM") + "-" + DateTimeUtils.format(ensureNotNull(to), "dd/MM")
+            DateTimeUtils.format(from, "dd/MM") + "-" + DateTimeUtils.format(to!!, "dd/MM")
         }
     }
 

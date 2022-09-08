@@ -72,7 +72,7 @@ fun Collection<TimespanChartPoint>.mapToChartPoints(): List<ChartPoint> {
             DateTimeUtils.format(it.from, "dd/MM")
         } else {
             DateTimeUtils.format(it.from, "dd/MM") + "-" +
-                    DateTimeUtils.format(ensureNotNull(it.to), "dd/MM")
+                    DateTimeUtils.format(it.to!!, "dd/MM")
         }
         ChartPoint(it.value, period)
     }

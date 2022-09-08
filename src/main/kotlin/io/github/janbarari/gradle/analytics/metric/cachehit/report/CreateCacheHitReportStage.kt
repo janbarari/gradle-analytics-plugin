@@ -30,7 +30,6 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -63,7 +62,7 @@ class CreateCacheHitReportStage(
 
     private fun generateSingleItemReport(metric: BuildMetric): CacheHitReport {
         val modules = mutableListOf<ModuleCacheHit>()
-        val overallHit = ensureNotNull(metric.cacheHitMetric).rate
+        val overallHit = metric.cacheHitMetric!!.rate
 
         val overallHitTimespanChartPoint = TimespanChartPoint(
             value = overallHit,
@@ -77,7 +76,7 @@ class CreateCacheHitReportStage(
             )
         )
 
-        ensureNotNull(metric.cacheHitMetric).modules.whenEach {
+        metric.cacheHitMetric!!.modules.whenEach {
             val values = mutableListOf<ChartPoint>()
             TimespanChartPoint(
                 value = rate, from = metric.createdAt
@@ -107,18 +106,18 @@ class CreateCacheHitReportStage(
     }
 
     private fun generateMultipleItemsReport(metrics: List<BuildMetric>): CacheHitReport {
-        val firstCacheHitRatio = ensureNotNull(metrics.first().cacheHitMetric).rate
-        val lastCacheHitRatio = ensureNotNull(metrics.last().cacheHitMetric).rate
+        val firstCacheHitRatio = metrics.first().cacheHitMetric!!.rate
+        val lastCacheHitRatio = metrics.last().cacheHitMetric!!.rate
 
         val overallDiffRatio = firstCacheHitRatio.diffPercentageOf(lastCacheHitRatio)
 
-        val overallHit = ensureNotNull(metrics.last().cacheHitMetric).rate
+        val overallHit = metrics.last().cacheHitMetric!!.rate
 
         val overallValuesTimestampChartPoints = mutableListOf<TimespanChartPoint>()
         metrics.whenEach {
             overallValuesTimestampChartPoints.add(
                 TimespanChartPoint(
-                    value = ensureNotNull(cacheHitMetric).rate, from = createdAt
+                    value = cacheHitMetric!!.rate, from = createdAt
                 )
             )
         }
@@ -129,7 +128,7 @@ class CreateCacheHitReportStage(
         }
 
         val modules = mutableListOf<ModuleCacheHit>()
-        ensureNotNull(metrics.last().cacheHitMetric).modules.whenEach {
+        metrics.last().cacheHitMetric!!.modules.whenEach {
                 modules.add(
                     ModuleCacheHit(
                         path = path,
@@ -149,7 +148,7 @@ class CreateCacheHitReportStage(
     }
 
     private fun calculateModuleCacheHitDiffRatio(metrics: List<BuildMetric>, path: String, value: Long): Float? {
-        return ensureNotNull(metrics.first().cacheHitMetric)
+        return metrics.first().cacheHitMetric!!
             .modules.find { it.path == path }?.rate?.diffPercentageOf(value)
     }
 
@@ -159,7 +158,9 @@ class CreateCacheHitReportStage(
             .filter {
                 it.cacheHitMetric.isNotNull()
             }.whenEach {
-                ensureNotNull(cacheHitMetric).modules.filter { it.path == path }.whenEach {
+                cacheHitMetric!!.modules
+                    .filter { it.path == path }
+                    .whenEach {
                         timestampChartPoints.add(
                             TimespanChartPoint(
                                 value = rate,
