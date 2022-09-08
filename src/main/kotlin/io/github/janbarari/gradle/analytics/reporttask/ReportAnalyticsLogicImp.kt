@@ -44,6 +44,8 @@ import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.CreateInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.CreateModulesBuildHeatmapReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.RenderModulesBuildHeatmapReportStage
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.render.CreateModulesCrashCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.render.RenderModulesCrashCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.CreateModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.RenderModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
@@ -53,7 +55,7 @@ import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.Ren
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.CreateModulesSourceSizeReportStage
-import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.RenderModulesSourceSizeStage
+import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.RenderModulesSourceSizeReportStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.RenderModulesTimelineReportStage
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.CreateNonCacheableTasksReportStage
@@ -112,6 +114,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateDependencyDetailsReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
             .addStage(CreateModulesSourceSizeReportStage(data))
+            .addStage(CreateModulesCrashCountReportStage(modulesPath, data))
             .execute(
                 Report(
                     branch = branch,
@@ -148,7 +151,8 @@ class ReportAnalyticsLogicImp(
         val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
         val renderDependencyDetailsReportStage = RenderDependencyDetailsReportStage(report)
         val renderNonCacheableTasksReportStage = RenderNonCacheableTasksReportStage(report)
-        val renderModulesSourceSizeReportStage = RenderModulesSourceSizeStage(report)
+        val renderModulesSourceSizeReportStage = RenderModulesSourceSizeReportStage(report)
+        val renderModulesCrashCountReportStage = RenderModulesCrashCountReportStage(report)
 
         return RenderReportPipeline(renderInitialReportStage)
             .addStage(renderInitializationProcessReportStage)
@@ -169,6 +173,7 @@ class ReportAnalyticsLogicImp(
             .addStage(renderDependencyDetailsReportStage)
             .addStage(renderNonCacheableTasksReportStage)
             .addStage(renderModulesSourceSizeReportStage)
+            .addStage(renderModulesCrashCountReportStage)
             .execute(rawHTML)
     }
 

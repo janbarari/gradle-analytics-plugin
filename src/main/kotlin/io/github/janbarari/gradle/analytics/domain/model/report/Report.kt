@@ -88,7 +88,10 @@ data class Report(
     var nonCacheableTasksReport: NonCacheableTasksReport? = null,
 
     @Json(name = "modules_source_size_report")
-    var modulesSourceSizeReport: ModulesSourceSizeReport? = null
+    var modulesSourceSizeReport: ModulesSourceSizeReport? = null,
+
+    @Json(name = "modules_crash_count_report")
+    var modulesCrashCountReport: ModulesCrashCountReport? = null,
 
 ) : java.io.Serializable {
 

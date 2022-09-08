@@ -51,6 +51,8 @@ import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.create.CreateModulesCrashCountMetricStage
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.create.CreateModulesCrashCountMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create.CreateModulesDependencyGraphMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create.CreateModulesExecutionProcessMetricStage
@@ -107,6 +109,7 @@ class BuildExecutionLogicImp(
     private val createDependencyDetailsMetricUseCase: CreateDependencyDetailsMetricUseCase,
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
     private val createModulesSourceSizeMetricUseCase: CreateModulesSourceSizeMetricUseCase,
+    private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
     private val databaseConfig: DatabaseConfig,
     private val envCI: Boolean,
     private val trackingBranches: List<String>,
@@ -195,6 +198,10 @@ class BuildExecutionLogicImp(
             modulesPath,
             createModulesSourceSizeMetricUseCase
         )
+        val createModulesCrashCountMetricStage = CreateModulesCrashCountMetricStage(
+            info,
+            createModulesCrashCountMetricUseCase
+        )
 
         val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
             .addStage(createConfigurationProcessMetricStage)
@@ -213,6 +220,7 @@ class BuildExecutionLogicImp(
             .addStage(createDependencyDetailsMetricStage)
             .addStage(createNonCacheableTasksMetricStage)
             .addStage(createModulesSourceSizeMetricStage)
+            .addStage(createModulesCrashCountMetricStage)
             .execute(BuildMetric(info.branch, info.requestedTasks, info.createdAt, info.gitHeadCommitHash))
 
         saveTemporaryMetricUseCase.execute(buildMetric)
