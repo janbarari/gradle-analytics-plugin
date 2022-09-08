@@ -282,7 +282,7 @@ fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreatePara
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesExecutionProcessMetricUseCase(): CreateModulesExecutionProcessMetricUseCase {
-    return CreateModulesExecutionProcessMetricUseCase()
+    return CreateModulesExecutionProcessMetricUseCase(modulesPath!!)
 }
 
 @ExcludeJacocoGenerated

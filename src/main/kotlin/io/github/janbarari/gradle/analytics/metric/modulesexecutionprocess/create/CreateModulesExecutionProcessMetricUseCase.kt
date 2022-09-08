@@ -31,15 +31,14 @@ import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
-class CreateModulesExecutionProcessMetricUseCase: UseCase<Pair<List<ModulePath>, BuildInfo>, ModulesExecutionProcessMetric>() {
+class CreateModulesExecutionProcessMetricUseCase(
+    private val modulesPath: List<ModulePath>
+): UseCase<BuildInfo, ModulesExecutionProcessMetric>() {
 
-    override suspend fun execute(input: Pair<List<ModulePath>, BuildInfo>): ModulesExecutionProcessMetric {
-        val modulePaths = input.first
-        val buildInfo = input.second
-
+    override suspend fun execute(buildInfo: BuildInfo): ModulesExecutionProcessMetric {
         val moduleExecutionProcesses = mutableListOf<ModuleExecutionProcess>()
 
-        modulePaths.whenEach {
+        modulesPath.whenEach {
             val tasks = buildInfo.executedTasks.filter { it.path.startsWith(path) }
 
             val overallDuration = buildInfo.getExecutionDuration().toMillis()

@@ -171,7 +171,7 @@ class BuildExecutionLogicImp(
         val createParallelExecutionRateMetricStage =
             CreateParallelExecutionRateMetricStage(info, createParallelExecutionRateMetricUseCase)
         val createModulesExecutionProcessMetricStage = CreateModulesExecutionProcessMetricStage(
-            info, modulesPath, createModulesExecutionProcessMetricUseCase
+            info, createModulesExecutionProcessMetricUseCase
         )
         val createModulesDependencyGraphMetricStage = CreateModulesDependencyGraphMetricStage(
             modulesDependencyGraph,
