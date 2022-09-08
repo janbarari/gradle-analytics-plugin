@@ -22,10 +22,10 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isJavaFile
 import io.github.janbarari.gradle.extension.isKotlinFile
 import io.github.janbarari.gradle.extension.readText
@@ -37,29 +37,28 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class CreateModulesMethodCountMetricUseCase : UseCase<List<ModulePath>, ModulesMethodCountMetric>() {
+class CreateModulesMethodCountMetricUseCase(
+    private val modules: List<Module>
+) : UseCaseNoInput<ModulesMethodCountMetric>() {
 
     private val commentRegex = """(//.*)|(\/\*[^/*]*(?:(?!\/\*|\*\/)[/*][^/*]*)*\*\/)""".toRegex()
 
     private val javaModifiers = "public|private|protected|static|final|native|synchronized|abstract|transient|"
-    private val javaMethodRegex =
-        """($javaModifiers)+[\w\<\>\[\]\,\s]*\s*(\w+) *\([^\)]*\) *(\{|[^;])""".toRegex()
+    private val javaMethodRegex = """($javaModifiers)+[\w\<\>\[\]\,\s]*\s*(\w+) *\([^\)]*\) *(\{|[^;])""".toRegex()
 
     private val kotlinMethodRegex = """((fun)+[\\${'$'}\w\<\>\w\s\[\]]*\s+\w.*\([^\)]*\) *(.*) *(\{|\=))""".toRegex()
     private val kotlinConstructorRegex =
-        """(.*class[\\${'$'}\w\<\>\w\s\[\]]*\s+\w.*\([^\)]*\)|.*constructor.*\([^\)]*\))|((\sinit) *(\{|\=))"""
-            .toRegex()
+        """(.*class[\\${'$'}\w\<\>\w\s\[\]]*\s+\w.*\([^\)]*\)|.*constructor.*\([^\)]*\))|((\sinit) *(\{|\=))""".toRegex()
 
-    override suspend fun execute(modulesPath: List<ModulePath>): ModulesMethodCountMetric {
+    override suspend fun execute(): ModulesMethodCountMetric {
         val modulesProperties = Collections.synchronizedList(mutableListOf<ModuleMethodCount>())
         withContext(dispatcher) {
             val defers = mutableListOf<Deferred<Boolean>>()
-            modulesPath.whenEach {
+            modules.whenEach {
                 defers.add(async {
                     modulesProperties.add(
                         ModuleMethodCount(
-                            path = path,
-                            value = getModuleMethodCount(absoluteDir)
+                            path = path, value = getModuleMethodCount(absoluteDir)
                         )
                     )
                 })

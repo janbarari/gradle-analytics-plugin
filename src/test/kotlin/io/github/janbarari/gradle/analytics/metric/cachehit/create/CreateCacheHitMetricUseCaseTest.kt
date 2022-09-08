@@ -22,8 +22,11 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
+import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -36,9 +39,9 @@ class CreateCacheHitMetricUseCaseTest {
     lateinit var usecase: CreateCacheHitMetricUseCase
 
     private val modules = listOf(
-        ModulePath(path = ":app", "TEMPORARY_DIRECTORY"),
-        ModulePath(path = ":domain", "TEMPORARY_DIRECTORY"),
-        ModulePath(path = ":core", "TEMPORARY_DIRECTORY")
+        Module(path = ":app", "TEMPORARY_DIRECTORY"),
+        Module(path = ":domain", "TEMPORARY_DIRECTORY"),
+        Module(path = ":core", "TEMPORARY_DIRECTORY")
     )
 
     private val tasks = listOf(
@@ -55,14 +58,30 @@ class CreateCacheHitMetricUseCaseTest {
         fakeTask(":app", isFromCache = true, isUpToDate = false, isSkipped = true)
     )
 
+    private val buildInfo = BuildInfo(
+        createdAt = 1650000000,
+        startedAt = 0,
+        initializedAt = 100,
+        configuredAt = 200,
+        dependenciesResolveInfo = emptyList(),
+        executedTasks = tasks,
+        finishedAt = 2000,
+        osInfo = OsInfo(name = "macOS"),
+        hardwareInfo = HardwareInfo(availableMemory = 1000, maximumMemoryCapacity = 2000),
+        branch = "develop",
+        gitHeadCommitHash = "ksdjhfakjsfhajskfhajkf",
+        requestedTasks = emptyList(),
+        isSuccessful = true
+    )
+
     @BeforeAll
     fun setup() {
-        usecase = CreateCacheHitMetricUseCase()
+        usecase = CreateCacheHitMetricUseCase(modules)
     }
 
     @Test
     fun `When the usecase executes, expect cacheHitMetric to be generated`() = runBlocking {
-        val cacheHitMetric = usecase.execute(input = modules to tasks)
+        val cacheHitMetric = usecase.execute(buildInfo)
 
         assertTrue {
             cacheHitMetric.rate == 90L &&

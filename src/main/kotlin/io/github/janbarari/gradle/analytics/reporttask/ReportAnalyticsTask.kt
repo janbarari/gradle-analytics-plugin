@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
+import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.utils.ConsolePrinter
-import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
@@ -102,12 +102,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @TaskAction
     fun execute() = runBlocking {
 
-        val modulesPath = mutableListOf<ModulePath>()
-        project.subprojects.forEach {
-            if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
-                modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
-            }
-        }
+        val modules = project.subprojects
+            .filter { it.isDependingOnOtherProject() }
+            .map { it.toModule() }
 
         val injector = ReportAnalyticsInjector(
             requestedTasks = requestedTasksArgument,
@@ -116,7 +113,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
-            modulesPath = modulesPath
+            modules = modules
         )
 
         with(injector.provideReportAnalyticsLogic()) {

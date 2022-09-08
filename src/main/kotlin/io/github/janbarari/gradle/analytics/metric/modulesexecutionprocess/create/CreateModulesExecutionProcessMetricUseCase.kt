@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesExecutionProcessMetric
@@ -32,13 +32,13 @@ import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
 class CreateModulesExecutionProcessMetricUseCase(
-    private val modulesPath: List<ModulePath>
+    private val modules: List<Module>
 ): UseCase<BuildInfo, ModulesExecutionProcessMetric>() {
 
     override suspend fun execute(buildInfo: BuildInfo): ModulesExecutionProcessMetric {
         val moduleExecutionProcesses = mutableListOf<ModuleExecutionProcess>()
 
-        modulesPath.whenEach {
+        modules.whenEach {
             val tasks = buildInfo.executedTasks.filter { it.path.startsWith(path) }
 
             val overallDuration = buildInfo.getExecutionDuration().toMillis()

@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
@@ -86,7 +86,7 @@ class ReportAnalyticsLogicImp(
     private val isCI: Boolean,
     private val outputPath: String,
     private val projectName: String,
-    private val modulesPath: List<ModulePath>
+    private val modules: List<Module>
 ) : ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(EmptyMetricsException::class)
@@ -106,15 +106,15 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
-            .addStage(CreateModulesExecutionProcessReportStage(modulesPath, data))
+            .addStage(CreateModulesExecutionProcessReportStage(modules, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modulesPath, data))
+            .addStage(CreateBuildStatusReportStage(modules, data))
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateDependencyDetailsReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
             .addStage(CreateModulesSourceSizeReportStage(data))
-            .addStage(CreateModulesCrashCountReportStage(modulesPath, data))
+            .addStage(CreateModulesCrashCountReportStage(modules, data))
             .execute(
                 Report(
                     branch = branch,

@@ -24,8 +24,8 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.Dependency
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Dependency.Companion.getThirdPartyDependencies
+import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
@@ -57,35 +57,11 @@ object ScannerUtils {
     ) {
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = project.allprojects
-                .flatMap { project ->
-                    project.tasks.getNonCacheableTasks()
-                }
+                .flatMap { it.tasks.getNonCacheableTasks() }
 
-            val modulesPath = mutableListOf<ModulePath>()
-            project.subprojects
+            val modules = project.subprojects
                 .filter { it.isDependingOnOtherProject() }
-                .forEach {
-                    modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
-                }
-
-            val dependencies = project.subprojects.flatMap { project ->
-                project.configurations.filter {
-                    it.isCanBeResolved && it.name.contains("compileClassPath", ignoreCase = true)
-                }.flatMap { configuration ->
-                    configuration.resolvedConfiguration.firstLevelModuleDependencies.filter { resolvedDependency ->
-                        !resolvedDependency.moduleVersion.equals("unspecified", true)
-                    }.map { it }
-                }
-            }.toSet()
-                .map {
-                    Dependency(
-                        name = it.name,
-                        moduleName = it.moduleName,
-                        moduleGroup = it.moduleGroup,
-                        moduleVersion = it.moduleVersion,
-                        sizeInKb = it.moduleArtifacts.sumOf { artifact -> artifact.file.length() / 1024L }
-                    )
-                }
+                .map { it.toModule() }
 
             val modulesDependencyGraph = DependencyGraphGenerator.generate(project)
 
@@ -99,15 +75,14 @@ object ScannerUtils {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    this.modulesPath.set(modulesPath)
+                    this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
-                    this.dependencies.set(dependencies)
+                    this.dependencies.set(project.getThirdPartyDependencies())
                     this.nonCachableTasks.set(nonCacheableTasks)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)
         }
-
     }
 
     private fun setupInitializationService(project: Project) {

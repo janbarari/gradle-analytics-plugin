@@ -25,13 +25,12 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.Dependency
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.utils.GitUtils
-import org.gradle.api.Task
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.services.BuildService
@@ -60,7 +59,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val requestedTasks: ListProperty<String>
         val trackingTasks: ListProperty<String>
         val trackingBranches: ListProperty<String>
-        val modulesPath: ListProperty<ModulePath>
+        val modules: ListProperty<Module>
         val modulesDependencyGraph: Property<ModulesDependencyGraph>
         val dependencies: ListProperty<Dependency>
         val nonCachableTasks: ListProperty<String>
@@ -182,9 +181,9 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
             requestedTasks = parameters.requestedTasks.get(),
             trackingBranches = parameters.trackingBranches.get(),
             trackingTasks = parameters.trackingTasks.get(),
-            modulesPath = parameters.modulesPath.get(),
+            modules = parameters.modules.get(),
             modulesDependencyGraph = parameters.modulesDependencyGraph.get(),
-            dependencies = parameters.dependencies.get(),
+            thirdPartyDependencies = parameters.dependencies.get(),
             nonCachableTasks = parameters.nonCachableTasks.get()
         ).apply {
             provideBuildExecutionLogic().onExecutionFinished(executedTasks)

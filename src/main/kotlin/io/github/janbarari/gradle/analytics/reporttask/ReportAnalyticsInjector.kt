@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 
 /**
@@ -43,7 +43,7 @@ class ReportAnalyticsInjector(
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
     var projectName: String? = null,
-    var modulesPath: List<ModulePath>? = null
+    var modules: List<Module>? = null
 )
 
 @ExcludeJacocoGenerated
@@ -86,6 +86,6 @@ fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic 
         isCI!!,
         outputPath!!,
         projectName!!,
-        modulesPath!!
+        modules!!
     )
 }

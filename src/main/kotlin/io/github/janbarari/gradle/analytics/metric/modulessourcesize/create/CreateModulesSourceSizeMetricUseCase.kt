@@ -22,9 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulessourcesize.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceSizeMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.Deferred
@@ -33,13 +33,15 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class CreateModulesSourceSizeMetricUseCase : UseCase<List<ModulePath>, ModulesSourceSizeMetric>() {
+class CreateModulesSourceSizeMetricUseCase(
+    private val modules: List<Module>
+) : UseCaseNoInput<ModulesSourceSizeMetric>() {
 
-    override suspend fun execute(modulesPath: List<ModulePath>): ModulesSourceSizeMetric {
+    override suspend fun execute(): ModulesSourceSizeMetric {
         val modulesProperties = Collections.synchronizedList(mutableListOf<ModulesSourceSizeMetric.ModuleSourceSize>())
         withContext(dispatcher) {
             val defers = mutableListOf<Deferred<Boolean>>()
-            modulesPath.whenEach {
+            modules.whenEach {
                 defers.add(async {
                     modulesProperties.add(
                         ModulesSourceSizeMetric.ModuleSourceSize(

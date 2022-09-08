@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
@@ -66,12 +66,6 @@ class CreateCacheHitMetricStageTest {
         isSuccessful = true
     )
 
-    private val modules = listOf(
-        ModulePath(path = ":app", absoluteDir = "TEMPORARY_DIRECTORY"),
-        ModulePath(path = ":core", absoluteDir = "TEMPORARY_DIRECTORY"),
-        ModulePath(path = ":domain", absoluteDir = "TEMPORARY_DIRECTORY")
-    )
-
     @BeforeAll
     fun setup() {
         useCase = mockk()
@@ -84,7 +78,7 @@ class CreateCacheHitMetricStageTest {
     fun `When the stage proceeds with successful build, expect cacheHitMetric to be generated`() = runBlocking {
         val buildInfo = buildInfo.copy(isSuccessful = true)
         val buildMetric = buildMetric.copy()
-        val stage = CreateCacheHitMetricStage(buildInfo, modules, useCase)
+        val stage = CreateCacheHitMetricStage(buildInfo, useCase)
 
         stage.process(buildMetric)
 
@@ -98,7 +92,7 @@ class CreateCacheHitMetricStageTest {
         val buildInfo = buildInfo.copy(isSuccessful = false)
         val buildMetric = buildMetric.copy()
 
-        val stage = CreateCacheHitMetricStage(buildInfo, modules, useCase)
+        val stage = CreateCacheHitMetricStage(buildInfo, useCase)
 
         stage.process(buildMetric)
 

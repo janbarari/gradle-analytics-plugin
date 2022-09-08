@@ -23,17 +23,16 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.core.Stage
 
 class CreateModulesSourceCountMetricStage(
-    private val modulesInfo: List<ModulePath>,
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            modulesSourceCountMetric = createModulesSourceCountMetricUseCase.execute(modulesInfo)
+            modulesSourceCountMetric = createModulesSourceCountMetricUseCase.execute()
         }
     }
 

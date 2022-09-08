@@ -22,7 +22,20 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-data class ModulePath(
+import org.gradle.api.Project
+
+data class Module(
     val path: String,
     val absoluteDir: String
-): java.io.Serializable
+): java.io.Serializable {
+
+    companion object {
+        fun Project.toModule(): Module {
+            return Module(
+                path = path,
+                absoluteDir = projectDir.absolutePath
+            )
+        }
+    }
+
+}

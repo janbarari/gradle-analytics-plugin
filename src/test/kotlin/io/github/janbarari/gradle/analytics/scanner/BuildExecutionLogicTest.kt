@@ -26,9 +26,9 @@ class BuildExecutionLogicTest {
         branch = "master",
         requestedTasks = listOf("assembleDebug"),
         trackingTasks = listOf("assembleDebug"),
-        modulesPath = emptyList(),
+        modules = emptyList(),
         modulesDependencyGraph = ModulesDependencyGraph(dependencies = emptyList()),
-        dependencies = emptyList(),
+        thirdPartyDependencies = emptyList(),
         nonCachableTasks = emptyList()
     )
 

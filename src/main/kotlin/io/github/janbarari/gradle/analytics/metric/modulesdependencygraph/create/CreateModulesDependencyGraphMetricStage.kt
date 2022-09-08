@@ -22,18 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class CreateModulesDependencyGraphMetricStage(
-    private var modulesDependencyGraph: ModulesDependencyGraph,
     private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+) : Stage<BuildMetric, BuildMetric> {
 
     override suspend fun process(buildMetric: BuildMetric): BuildMetric {
         return buildMetric.apply {
-            modulesDependencyGraphMetric = createModulesDependencyGraphMetricUseCase.execute(modulesDependencyGraph)
+            modulesDependencyGraphMetric = createModulesDependencyGraphMetricUseCase.execute()
         }
     }
 

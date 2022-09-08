@@ -32,7 +32,7 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.Dependency
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
@@ -74,7 +74,6 @@ import io.github.janbarari.gradle.extension.separateElementsWithSpace
 /**
  * Dependency injector for [BuildExecutionLogic].
  */
-
 @ExcludeJacocoGenerated
 data class BuildExecutionInjector(
     var databaseConfig: DatabaseConfig? = null,
@@ -83,9 +82,9 @@ data class BuildExecutionInjector(
     var requestedTasks: List<String>? = null,
     var trackingBranches: List<String>? = null,
     var trackingTasks: List<String>? = null,
-    var modulesPath: List<ModulePath>? = null,
+    var modules: List<Module>? = null,
     var modulesDependencyGraph: ModulesDependencyGraph? = null,
-    var dependencies: List<Dependency>? = null,
+    var thirdPartyDependencies: List<Dependency>? = null,
     var nonCachableTasks: List<String>? = null
 )
 
@@ -160,7 +159,7 @@ fun BuildExecutionInjector.provideUpdateParallelRatioMetricUseCase(): UpdatePara
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesExecutionProcessMetricUseCase(): UpdateModulesExecutionProcessMetricUseCase {
-    return UpdateModulesExecutionProcessMetricUseCase(provideDatabaseRepository(), modulesPath!!)
+    return UpdateModulesExecutionProcessMetricUseCase(provideDatabaseRepository(), modules!!)
 }
 
 @ExcludeJacocoGenerated
@@ -190,7 +189,7 @@ fun BuildExecutionInjector.provideUpdateModulesSourceSizeMetricUseCase(): Update
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesCrashCountMetricUseCase(): UpdateModulesCrashCountMetricUseCase {
-    return UpdateModulesCrashCountMetricUseCase(modulesPath!!, provideDatabaseRepository())
+    return UpdateModulesCrashCountMetricUseCase(provideDatabaseRepository(), modules!!)
 }
 
 @ExcludeJacocoGenerated
@@ -252,17 +251,17 @@ fun BuildExecutionInjector.provideCreateTotalBuildMetricUseCase(): CreateOverall
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesSourceCountMetricUseCase(): CreateModulesSourceCountMetricUseCase {
-    return CreateModulesSourceCountMetricUseCase()
+    return CreateModulesSourceCountMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesMethodCountMetricUseCase(): CreateModulesMethodCountMetricUseCase {
-    return CreateModulesMethodCountMetricUseCase()
+    return CreateModulesMethodCountMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitMetricUseCase {
-    return CreateCacheHitMetricUseCase()
+    return CreateCacheHitMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
@@ -282,27 +281,27 @@ fun BuildExecutionInjector.provideCreateParallelRatioMetricUseCase(): CreatePara
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesExecutionProcessMetricUseCase(): CreateModulesExecutionProcessMetricUseCase {
-    return CreateModulesExecutionProcessMetricUseCase(modulesPath!!)
+    return CreateModulesExecutionProcessMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesDependencyGraphMetricUseCase(): CreateModulesDependencyGraphMetricUseCase {
-    return CreateModulesDependencyGraphMetricUseCase()
+    return CreateModulesDependencyGraphMetricUseCase(modulesDependencyGraph!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesTimelineMetricUseCase(): CreateModulesTimelineMetricUseCase {
-    return CreateModulesTimelineMetricUseCase(modulesPath!!)
+    return CreateModulesTimelineMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesBuildHeatmapMetricUseCase(): CreateModulesBuildHeatmapMetricUseCase {
-    return CreateModulesBuildHeatmapMetricUseCase()
+    return CreateModulesBuildHeatmapMetricUseCase(modules!!, modulesDependencyGraph!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateDependencyDetailsMetricUseCase(): CreateDependencyDetailsMetricUseCase {
-    return CreateDependencyDetailsMetricUseCase()
+    return CreateDependencyDetailsMetricUseCase(thirdPartyDependencies!!)
 }
 
 @ExcludeJacocoGenerated
@@ -312,12 +311,12 @@ fun BuildExecutionInjector.provideCreateNonCacheableTasksMetricUseCase(): Create
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesSourceSizeMetricUseCase(): CreateModulesSourceSizeMetricUseCase {
-    return CreateModulesSourceSizeMetricUseCase()
+    return CreateModulesSourceSizeMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesCrashCountMetricUseCase(): CreateModulesCrashCountMetricUseCase {
-    return CreateModulesCrashCountMetricUseCase(modulesPath!!)
+    return CreateModulesCrashCountMetricUseCase(modules!!)
 }
 
 @ExcludeJacocoGenerated
@@ -348,9 +347,6 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         isCI!!,
         trackingBranches!!,
         trackingTasks!!,
-        requestedTasks!!,
-        modulesPath!!,
-        modulesDependencyGraph!!,
-        dependencies!!
+        requestedTasks!!
     )
 }

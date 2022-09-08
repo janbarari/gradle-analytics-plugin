@@ -23,20 +23,20 @@
 package io.github.janbarari.gradle.analytics.metric.modulestimeline.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
 import io.github.janbarari.gradle.core.UseCase
 
 class CreateModulesTimelineMetricUseCase(
-    private val modulesPath: List<ModulePath>
+    private val modules: List<Module>
 ): UseCase<BuildInfo, ModulesTimelineMetric>() {
 
     override suspend fun execute(buildInfo: BuildInfo): ModulesTimelineMetric {
         val start = buildInfo.executedTasks.minOfOrNull { it.startedAt } ?: 0
         val end = buildInfo.executedTasks.maxOfOrNull { it.finishedAt } ?: 0
 
-        val result = modulesPath.map { module ->
+        val result = modules.map { module ->
             ModuleTimeline(
                 path = module.path,
                 timelines = buildInfo.executedTasks.filter { it.path.startsWith(module.path) }

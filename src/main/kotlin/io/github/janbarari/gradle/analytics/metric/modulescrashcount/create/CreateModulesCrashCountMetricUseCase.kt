@@ -23,14 +23,14 @@
 package io.github.janbarari.gradle.analytics.metric.modulescrashcount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenNotNull
 
 class CreateModulesCrashCountMetricUseCase(
-    private val modulesPath: List<ModulePath>
+    private val modules: List<Module>
 ) : UseCase<BuildInfo, ModulesCrashCountMetric>() {
 
     override suspend fun execute(buildInfo: BuildInfo): ModulesCrashCountMetric {
@@ -40,7 +40,7 @@ class CreateModulesCrashCountMetricUseCase(
             val findFirstFailedTask = buildInfo.executedTasks.sortedBy { it.startedAt }.firstOrNull { !it.isSuccessful }
 
             findFirstFailedTask.whenNotNull {
-                val module = modulesPath.firstOrNull {
+                val module = this@CreateModulesCrashCountMetricUseCase.modules.firstOrNull {
                     it.path == getModule()
                 }
                 module.whenNotNull {

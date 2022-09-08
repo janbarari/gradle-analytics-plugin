@@ -24,13 +24,15 @@ package io.github.janbarari.gradle.analytics.metric.dependencydetails.create
 
 import io.github.janbarari.gradle.analytics.domain.model.Dependency
 import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyDetailsMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.core.UseCaseNoInput
 
-class CreateDependencyDetailsMetricUseCase: UseCase<List<Dependency>, DependencyDetailsMetric>() {
+class CreateDependencyDetailsMetricUseCase(
+    private val thirdPartyDependencies: List<Dependency>
+) : UseCaseNoInput<DependencyDetailsMetric>() {
 
-    override suspend fun execute(dependencies: List<Dependency>): DependencyDetailsMetric {
+    override suspend fun execute(): DependencyDetailsMetric {
         return DependencyDetailsMetric(
-            dependencies = dependencies
+            dependencies = thirdPartyDependencies
         )
     }
 

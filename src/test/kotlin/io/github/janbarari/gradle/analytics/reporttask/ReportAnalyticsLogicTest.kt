@@ -37,7 +37,7 @@ class ReportAnalyticsLogicTest {
             branch = "develop",
             outputPath = "./build/test/result/",
             projectName = "gradle-analytics-plugin",
-            modulesPath = emptyList()
+            modules = emptyList()
         )
     }
 
@@ -133,7 +133,7 @@ class ReportAnalyticsLogicTest {
             injector.isCI!!,
             injector.outputPath!!,
             injector.projectName!!,
-            injector.modulesPath!!
+            injector.modules!!
         )
 
         val result = logic.generateReport(
@@ -175,7 +175,7 @@ class ReportAnalyticsLogicTest {
             injector.isCI!!,
             injector.outputPath!!,
             injector.projectName!!,
-            injector.modulesPath!!
+            injector.modules!!
         )
 
         val result = logic.generateReport(

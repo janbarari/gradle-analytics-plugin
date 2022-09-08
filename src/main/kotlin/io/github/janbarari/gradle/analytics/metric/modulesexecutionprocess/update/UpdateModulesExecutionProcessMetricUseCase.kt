@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.update
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesExecutionProcessMetric
@@ -34,17 +34,14 @@ import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateModulesExecutionProcessMetricUseCase(
     private val repo: DatabaseRepository,
-    private val modulesPath: List<ModulePath>
+    private val modules: List<Module>
 ): UseCaseNoInput<ModulesExecutionProcessMetric>() {
 
     override suspend fun execute(): ModulesExecutionProcessMetric {
-        val temporaryMetrics = repo.getTemporaryMetrics()
-
-        val modulesMedianExecutionProcess = mutableListOf<ModuleExecutionProcess>()
-
-        modulesPath.whenEach {
-            modulesMedianExecutionProcess.add(
-                calculateMedianModuleExecutionProcess(path, temporaryMetrics)
+        val modulesMedianExecutionProcess = modules.map {
+            calculateMedianModuleExecutionProcess(
+                modulePath = it.path,
+                metrics = repo.getTemporaryMetrics()
             )
         }
 

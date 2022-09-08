@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleExecutionProcess
@@ -38,7 +38,7 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateModulesExecutionProcessReportStage(
-    private val modulesPath: List<ModulePath>,
+    private val modules: List<Module>,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
@@ -51,7 +51,7 @@ class CreateModulesExecutionProcessReportStage(
 
         val modules = mutableListOf<ModuleExecutionProcess>()
 
-        modulesPath.forEach { modulePath ->
+        this.modules.forEach { module ->
 
             var firstAvgMedianDuration: Long? = null
             metrics.firstOrNull { metric ->
@@ -59,7 +59,7 @@ class CreateModulesExecutionProcessReportStage(
             }.whenNotNull {
                 modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == modulePath.path }
+                    .find { it.path == module.path }
                     .whenNotNull {
                         firstAvgMedianDuration = duration
                     }
@@ -71,7 +71,7 @@ class CreateModulesExecutionProcessReportStage(
             }.whenNotNull {
                 modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == modulePath.path }
+                    .find { it.path == module.path }
                     .whenNotNull {
                         lastAvgMedianDuration = duration
                     }
@@ -93,7 +93,7 @@ class CreateModulesExecutionProcessReportStage(
             }.forEach { metric ->
                 metric.modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == modulePath.path }
+                    .find { it.path == module.path }
                     .whenNotNull {
                         avgMedianDurations.add(
                             TimespanChartPoint(
@@ -110,7 +110,7 @@ class CreateModulesExecutionProcessReportStage(
 
             modules.add(
                 ModuleExecutionProcess(
-                    path = modulePath.path,
+                    path = module.path,
                     avgMedianDuration = MathUtils.longMedian(avgMedianDuration),
                     avgMedianParallelDuration = MathUtils.longMedian(avgMedianParallelDuration),
                     avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRate).round(),

@@ -22,35 +22,34 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
+import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
-import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
-class CreateCacheHitMetricUseCase: UseCase<Pair<List<ModulePath>, Collection<TaskInfo>>, CacheHitMetric>() {
+class CreateCacheHitMetricUseCase(
+    private val modules: List<Module>
+): UseCase<BuildInfo, CacheHitMetric>() {
 
-    override suspend fun execute(input: Pair<List<ModulePath>, Collection<TaskInfo>>): CacheHitMetric {
-        val modulesPath = input.first
-        val executedTasks = input.second
-
+    override suspend fun execute(buildInfo: BuildInfo): CacheHitMetric {
         var cachedTasksCount = 0
-        executedTasks.whenEach {
+        buildInfo.executedTasks.whenEach {
             if (!isSkipped) {
                 if (isUpToDate || isFromCache) {
                     cachedTasksCount++
                 }
             }
         }
-        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(executedTasks.filter { it.isSkipped.not() }.size)
+        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(buildInfo.executedTasks.filter { it.isSkipped.not() }.size)
 
         val modulesCacheHit = mutableListOf<ModuleCacheHit>()
-        modulesPath.whenEach {
+        modules.whenEach {
             var moduleCachedTasksCount = 0
             var moduleTasksCount = 0
-            executedTasks.filter { it.path.startsWith(path) }
+            buildInfo.executedTasks.filter { it.path.startsWith(path) }
                 .whenEach {
                     moduleTasksCount++
                     if (!isSkipped) {
