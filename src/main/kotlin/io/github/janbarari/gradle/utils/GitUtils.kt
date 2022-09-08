@@ -50,7 +50,9 @@ object GitUtils {
     @kotlin.jvm.Throws(GitException::class)
     fun getHeadCommitHash(): String {
         try {
-            return TerminalUtils.execCommand("git log --format=\"%H\" -n 1")
+            return TerminalUtils
+                .execCommand("git log --format=\"%H\" -n 1")
+                .replace("\"","")
         } catch (e: IllegalStateException) {
             throw GitException("Git command execution failed with message of ${e.message}")
         } catch (e: RuntimeException) {

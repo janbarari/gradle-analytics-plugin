@@ -127,38 +127,38 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
                 printSuccessfulResult(reportPath)
             } catch (e: EmptyMetricsException) {
-                printEmptyResult()
+                printNoData()
             }
         }
 
     }
 
     private fun printSuccessfulResult(reportPath: String) {
-        ConsolePrinter(reportPath.length).run {
+        ConsolePrinter(blockCharWidth = reportPath.length).run {
             printFirstLine()
-            printLine("Gradle Analytics Plugin", "")
-            printBreakLine('-')
-            printLine("Report generated successfully", "")
-            printLine(reportPath, "")
-            printBreakLine('-')
-            printLine("Made with ❤ for developers", "")
-            printLine("https://github.com/janbarari/gradle-analytics-plugin", "")
-            printLine("", " ↖ Tap the ☆ button to support this plugin")
+            printLine(left = "Gradle Analytics Plugin")
+            printBreakLine(char = '-')
+            printLine(left = "Report generated successfully")
+            printLine(left = reportPath)
+            printBreakLine(char = '-')
+            printLine(left = "Made with ❤ for everyone")
+            printLine(left = "https://github.com/janbarari/gradle-analytics-plugin")
+            printLine(right = " ↖ Tap the ☆ button to support us")
             printLastLine()
         }
     }
 
-    private fun printEmptyResult() {
+    private fun printNoData() {
         val message = listOf(
-            "There is no data to process. Please check the plugin configuration ",
-            "and wait until the first desired task information is saved"
+            "There is no data to process. Please check the plugin configuration",
+            "and wait until the first desired task information is saved."
         )
-        ConsolePrinter(message[0].length).run {
+        ConsolePrinter(blockCharWidth = message[0].length).run {
             printFirstLine()
-            printLine("Gradle Analytics Plugin", "")
-            printBreakLine('-')
-            printLine(message[0], "")
-            printLine(message[1], "")
+            printLine(left = "Gradle Analytics Plugin")
+            printBreakLine(char = '-')
+            printLine(left = message[0])
+            printLine(left = message[1])
             printLastLine()
         }
     }

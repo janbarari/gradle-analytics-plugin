@@ -238,29 +238,29 @@ class BuildExecutionLogicImp(
         val repoLink = "https://github.com/janbarari/gradle-analytics-plugin"
 
         var width = requestedTasks.length + 25
-        if (width < repoLink.length) width = repoLink.length
+        if (width < 60) width = 60
 
         ConsolePrinter(width).run {
             printFirstLine()
-            printLine("Gradle Analytics Plugin", "")
-            printBreakLine('-')
-            printLine("Requested Tasks:", requestedTasks)
-            printLine("Branch:", buildMetric.branch)
-            printBreakLine('-')
-            printLine("Build Info", "")
-            printLine("Initialization Process:", "${buildMetric.initializationProcessMetric?.median} ms")
-            printLine("Configuration Process:", "${buildMetric.configurationProcessMetric?.median} ms")
-            printLine("Dependency Resolve Process:", "${buildMetric.dependencyResolveProcessMetric?.median} ms")
-            printLine("Execution Process:", "${buildMetric.executionProcessMetric?.median} ms")
-            printLine("Overall Build Process:", "${buildMetric.overallBuildProcessMetric?.median} ms")
-            printLine("Cache Hit:", "${buildMetric.cacheHitMetric?.rate}%")
-            printLine("Parallel Execution Rate:", "${buildMetric.parallelExecutionRateMetric?.rate}%")
-            printBreakLine('-')
-            printLine("Datetime:", DateTimeUtils.formatToDateTime(buildMetric.createdAt))
-            printBreakLine('-')
-            printLine("Made with ❤ for developers", "")
-            printLine(repoLink, "")
-            printLine("","↖ Tap the ☆ button to support this plugin")
+            printLine(left = "Gradle Analytics Plugin")
+            printBreakLine(char = '-')
+            printLine(left = "Requested Tasks:", right = requestedTasks)
+            printLine(left = "Branch:", right = buildMetric.branch)
+            printLine(left = "Head Commit Hash:", right = buildMetric.gitHeadCommitHash)
+            printBreakLine(char = '-')
+            printLine(left = "Initialization Process:", right = "${buildMetric.initializationProcessMetric?.median}ms")
+            printLine(left = "Configuration Process:", right = "${buildMetric.configurationProcessMetric?.median}ms")
+            printLine(left = "Dependency Resolve Process:", right = "${buildMetric.dependencyResolveProcessMetric?.median}ms")
+            printLine(left = "Execution Process:", right = "${buildMetric.executionProcessMetric?.median}ms")
+            printLine(left = "Overall Build Process:", right = "${buildMetric.overallBuildProcessMetric?.median}ms")
+            printLine(left = "Cache Hit:", right = "${buildMetric.cacheHitMetric?.rate}%")
+            printLine(left = "Parallel Execution Rate:", right = "${buildMetric.parallelExecutionRateMetric?.rate}%")
+            printBreakLine(char = '-')
+            printLine(left = "Datetime:", right = DateTimeUtils.formatToDateTime(buildMetric.createdAt))
+            printBreakLine(char = '-')
+            printLine(left = "Made with ❤ for everyone")
+            printLine(left = repoLink)
+            printLine(right = "↖ Tap the ☆ button to support us")
             printLastLine()
         }
 

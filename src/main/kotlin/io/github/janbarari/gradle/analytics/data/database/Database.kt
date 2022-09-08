@@ -33,6 +33,7 @@ import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTabl
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.extension.whenNotNull
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -65,24 +66,24 @@ class Database(
             databaseConfig = config.ci
         }
 
-        if (databaseConfig.isNull()) {
-            return
-        }
+        databaseConfig.whenNotNull {
 
-        when (databaseConfig) {
-            is MySqlDatabaseConnection -> {
-                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
-                connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
-                ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
+            when (databaseConfig) {
+                is MySqlDatabaseConnection -> {
+                    LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
+                    connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
+                    ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
+                }
+                is SqliteDatabaseConnection -> {
+                    LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
+                    connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
+                    ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
+                }
             }
-            is SqliteDatabaseConnection -> {
-                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
-                connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
-                ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
-            }
-        }
 
-        createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
+            createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
+
+        }
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {
@@ -107,9 +108,8 @@ class Database(
      * Creates the database tables if not exist.
      */
     private fun createTables(vararg entities: Table) {
-        transaction {
-            addLogger(StdOutSqlLogger)
-            SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = true)
+        transaction  {
+            SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = false)
         }
     }
 
