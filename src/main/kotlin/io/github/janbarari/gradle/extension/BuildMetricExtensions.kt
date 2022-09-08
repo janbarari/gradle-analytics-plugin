@@ -22,12 +22,12 @@
  */
 package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 
-fun List<BuildMetric>.mapToInitializationMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToInitializationMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.initializationProcessMetric!!.median,
             from = it.createdAt,
             to = null
@@ -35,9 +35,9 @@ fun List<BuildMetric>.mapToInitializationMedianTimespanChartPoints(): List<Times
     }
 }
 
-fun List<BuildMetric>.mapToInitializationMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToInitializationMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.initializationProcessMetric!!.mean,
             from = it.createdAt,
             to = null
@@ -45,9 +45,9 @@ fun List<BuildMetric>.mapToInitializationMeanTimespanChartPoints(): List<Timespa
     }
 }
 
-fun List<BuildMetric>.mapToConfigurationMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToConfigurationMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.configurationProcessMetric!!.median,
             from = it.createdAt,
             to = null
@@ -55,9 +55,9 @@ fun List<BuildMetric>.mapToConfigurationMedianTimespanChartPoints(): List<Timesp
     }
 }
 
-fun List<BuildMetric>.mapToConfigurationMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToConfigurationMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.configurationProcessMetric!!.mean,
             from = it.createdAt,
             to = null
@@ -65,9 +65,9 @@ fun List<BuildMetric>.mapToConfigurationMeanTimespanChartPoints(): List<Timespan
     }
 }
 
-fun List<BuildMetric>.mapToExecutionMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToExecutionMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.executionProcessMetric!!.median / 1000L,
             from = it.createdAt,
             to = null
@@ -75,9 +75,9 @@ fun List<BuildMetric>.mapToExecutionMedianTimespanChartPoints(): List<TimespanCh
     }
 }
 
-fun List<BuildMetric>.mapToExecutionMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToExecutionMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.executionProcessMetric!!.mean / 1000L,
             from = it.createdAt,
             to = null
@@ -85,9 +85,9 @@ fun List<BuildMetric>.mapToExecutionMeanTimespanChartPoints(): List<TimespanChar
     }
 }
 
-fun List<BuildMetric>.mapToOverallBuildProcessMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToOverallBuildProcessMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.overallBuildProcessMetric!!.median / 1000L,
             from = it.createdAt,
             to = null
@@ -95,9 +95,9 @@ fun List<BuildMetric>.mapToOverallBuildProcessMedianTimespanChartPoints(): List<
     }
 }
 
-fun List<BuildMetric>.mapToOverallBuildProcessMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToOverallBuildProcessMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.overallBuildProcessMetric!!.mean / 1000L,
             from = it.createdAt,
             to = null
@@ -105,9 +105,9 @@ fun List<BuildMetric>.mapToOverallBuildProcessMeanTimespanChartPoints(): List<Ti
     }
 }
 
-fun List<BuildMetric>.mapToSuccessBuildRateMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToSuccessBuildRateMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.successBuildRateMetric!!.medianRate.toLong(),
             from = it.createdAt,
             to = null
@@ -115,9 +115,9 @@ fun List<BuildMetric>.mapToSuccessBuildRateMedianTimespanChartPoints(): List<Tim
     }
 }
 
-fun List<BuildMetric>.mapToSuccessBuildRateMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToSuccessBuildRateMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.successBuildRateMetric!!.meanRate.toLong(),
             from = it.createdAt,
             to = null
@@ -125,9 +125,9 @@ fun List<BuildMetric>.mapToSuccessBuildRateMeanTimespanChartPoints(): List<Times
     }
 }
 
-fun List<BuildMetric>.mapToDependencyResolveMedianTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToDependencyResolveMedianTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.dependencyResolveProcessMetric!!.median,
             from = it.createdAt,
             to = null
@@ -135,9 +135,9 @@ fun List<BuildMetric>.mapToDependencyResolveMedianTimespanChartPoints(): List<Ti
     }
 }
 
-fun List<BuildMetric>.mapToDependencyResolveMeanTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToDependencyResolveMeanTimespanChartPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
+        TimespanPoint(
             value = it.dependencyResolveProcessMetric!!.mean,
             from = it.createdAt,
             to = null
@@ -145,10 +145,10 @@ fun List<BuildMetric>.mapToDependencyResolveMeanTimespanChartPoints(): List<Time
     }
 }
 
-fun List<BuildMetric>.mapToParallelRatioTimespanChartPoints(): List<TimespanChartPoint> {
+fun List<BuildMetric>.mapToParallelExecutionRateTimespanPoints(): List<TimespanPoint> {
     return map {
-        TimespanChartPoint(
-            value = it.parallelExecutionRateMetric!!.rate,
+        TimespanPoint(
+            value = it.parallelExecutionRateMetric!!.medianRate,
             from = it.createdAt,
             to = null
         )

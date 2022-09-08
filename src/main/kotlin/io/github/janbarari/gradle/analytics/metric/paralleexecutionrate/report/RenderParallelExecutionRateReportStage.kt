@@ -25,6 +25,9 @@ package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -39,6 +42,7 @@ class RenderParallelExecutionRateReportStage(
 ): Stage<String, String> {
 
     companion object {
+        private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MAX_PERCENTAGE = 30
         private const val PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_ID = "%parallel-execution-rate-metric%"
         private const val PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_FILE_NAME = "parallel-execution-rate-metric-template"
@@ -54,14 +58,18 @@ class RenderParallelExecutionRateReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(PARALLEL_EXECUTION_RATE_METRIC_TEMPLATE_FILE_NAME)
         report.parallelExecutionRateReport.whenNotNull {
-            val chartValues = medianValues.map { it.value }
+            val chartPoints = medianValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+
+            val chartValues = chartPoints.map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = medianValues.map { it.description }
+            val chartLabels = chartPoints.map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(chartPoints.maxValue(), CHART_SUGGESTED_MAX_PERCENTAGE)
             val chartSuggestedMinValue = 0
 
             renderedTemplate = renderedTemplate

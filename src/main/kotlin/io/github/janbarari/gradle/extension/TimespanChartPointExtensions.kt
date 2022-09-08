@@ -23,21 +23,21 @@
 package io.github.janbarari.gradle.extension
 
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-fun List<TimespanChartPoint>.minimize(targetSize: Int): List<TimespanChartPoint> {
+fun List<TimespanPoint>.minimize(targetSize: Int): List<TimespanPoint> {
     return if (size > targetSize)
         calculatePointsMean(this).minimize(targetSize)
     else this
 }
 
-fun calculatePointsMean(values: List<TimespanChartPoint>): List<TimespanChartPoint> {
+fun calculatePointsMean(values: List<TimespanPoint>): List<TimespanPoint> {
 
     if (values.isEmpty()) return values
 
-    val mean = arrayListOf<TimespanChartPoint>()
+    val mean = arrayListOf<TimespanPoint>()
     val size = values.size
     var nextIndex = 0
 
@@ -52,7 +52,7 @@ fun calculatePointsMean(values: List<TimespanChartPoint>): List<TimespanChartPoi
             if (finishedAt.isNull()) finishedAt = values[i + 1].from
 
             mean.add(
-                TimespanChartPoint(
+                TimespanPoint(
                     value = MathUtils.longMean(values[i].value, values[i + 1].value),
                     from = values[i].from,
                     to = finishedAt
@@ -66,7 +66,7 @@ fun calculatePointsMean(values: List<TimespanChartPoint>): List<TimespanChartPoi
     return mean
 }
 
-fun Collection<TimespanChartPoint>.mapToChartPoints(): List<ChartPoint> {
+fun Collection<TimespanPoint>.mapToChartPoints(): List<ChartPoint> {
     return map {
         val period = if (it.to.isNull()) {
             DateTimeUtils.format(it.from, "dd/MM")

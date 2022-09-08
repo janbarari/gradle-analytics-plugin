@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.hasMultipleItems
@@ -64,7 +64,7 @@ class CreateCacheHitReportStage(
         val modules = mutableListOf<ModuleCacheHit>()
         val overallHit = metric.cacheHitMetric!!.rate
 
-        val overallHitTimespanChartPoint = TimespanChartPoint(
+        val overallHitTimespanChartPoint = TimespanPoint(
             value = overallHit,
             from = metric.createdAt
         )
@@ -78,7 +78,7 @@ class CreateCacheHitReportStage(
 
         metric.cacheHitMetric!!.modules.whenEach {
             val values = mutableListOf<ChartPoint>()
-            TimespanChartPoint(
+            TimespanPoint(
                 value = rate, from = metric.createdAt
             ).also {
                 values.add(
@@ -113,10 +113,10 @@ class CreateCacheHitReportStage(
 
         val overallHit = metrics.last().cacheHitMetric!!.rate
 
-        val overallValuesTimestampChartPoints = mutableListOf<TimespanChartPoint>()
+        val overallValuesTimestampChartPoints = mutableListOf<TimespanPoint>()
         metrics.whenEach {
             overallValuesTimestampChartPoints.add(
-                TimespanChartPoint(
+                TimespanPoint(
                     value = cacheHitMetric!!.rate, from = createdAt
                 )
             )
@@ -153,7 +153,7 @@ class CreateCacheHitReportStage(
     }
 
     private fun getModuleChartPoints(path: String): List<ChartPoint> {
-        val timestampChartPoints = mutableListOf<TimespanChartPoint>()
+        val timestampChartPoints = mutableListOf<TimespanPoint>()
         metrics
             .filter {
                 it.cacheHitMetric.isNotNull()
@@ -162,7 +162,7 @@ class CreateCacheHitReportStage(
                     .filter { it.path == path }
                     .whenEach {
                         timestampChartPoints.add(
-                            TimespanChartPoint(
+                            TimespanPoint(
                                 value = rate,
                                 from = createdAt
                             )

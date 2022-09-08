@@ -245,7 +245,7 @@ class BuildExecutionLogicImp(
             printLine(left = "Execution Process:", right = "${buildMetric.executionProcessMetric?.median}ms")
             printLine(left = "Overall Build Process:", right = "${buildMetric.overallBuildProcessMetric?.median}ms")
             printLine(left = "Cache Hit:", right = "${buildMetric.cacheHitMetric?.rate}%")
-            printLine(left = "Parallel Execution Rate:", right = "${buildMetric.parallelExecutionRateMetric?.rate}%")
+            printLine(left = "Parallel Execution Rate:", right = "${buildMetric.parallelExecutionRateMetric?.medianRate}%")
             printBreakLine(char = '-')
             printLine(left = "Datetime:", right = DateTimeUtils.formatToDateTime(buildMetric.createdAt))
             printBreakLine(char = '-')

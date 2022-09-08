@@ -22,10 +22,12 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
-class TimespanChartPoint(
+@JsonClass(generateAdapter = true)
+data class TimespanPoint(
     val value: Long,
     val from: Long,
     val to: Long? = null

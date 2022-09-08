@@ -28,9 +28,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToParallelRatioTimespanChartPoints
-import io.github.janbarari.gradle.extension.maxValue
-import io.github.janbarari.gradle.extension.minValue
+import io.github.janbarari.gradle.extension.mapToParallelExecutionRateTimespanPoints
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEmpty
 
@@ -38,25 +36,17 @@ class CreateParallelExecutionRateReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    companion object {
-        private const val CHART_MAX_COLUMNS = 12
-    }
-
-    override suspend fun process(report: Report): Report {
-        val chartPoints = metrics.filter { metric ->
-            metric.parallelExecutionRateMetric.isNotNull()
-        }.mapToParallelRatioTimespanChartPoints()
-            .minimize(CHART_MAX_COLUMNS)
-            .mapToChartPoints()
+    override suspend fun process(input: Report): Report {
+        val timespanPoints = metrics
+            .filter { it.parallelExecutionRateMetric.isNotNull() }
+            .mapToParallelExecutionRateTimespanPoints()
             .whenEmpty {
-                return report
+                return input
             }
 
-        return report.apply {
+        return input.apply {
             parallelExecutionRateReport = ParallelExecutionRateReport(
-                medianValues = chartPoints,
-                suggestedMaxValue = chartPoints.maxValue(),
-                suggestedMinValue = chartPoints.minValue()
+                medianValues = timespanPoints
             )
         }
     }

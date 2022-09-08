@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.Module
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport
@@ -77,7 +77,7 @@ class CreateModulesExecutionProcessReportStage(
                     }
             }
 
-            val avgMedianDurations = mutableListOf<TimespanChartPoint>()
+            val avgMedianDurations = mutableListOf<TimespanPoint>()
             val avgMedianDuration = mutableListOf<Long>()
             val avgMedianParallelDuration = mutableListOf<Long>()
             val avgMedianParallelRate = mutableListOf<Float>()
@@ -96,7 +96,7 @@ class CreateModulesExecutionProcessReportStage(
                     .find { it.path == module.path }
                     .whenNotNull {
                         avgMedianDurations.add(
-                            TimespanChartPoint(
+                            TimespanPoint(
                                 value = duration,
                                 from = metric.createdAt
                             )

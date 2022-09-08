@@ -27,105 +27,107 @@ import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutionRateMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
+import io.github.janbarari.gradle.extension.whenNotNull
 
 class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelExecutionRateMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ParallelExecutionRateMetric {
-        val nonParallelExecutionDuration = getNonParallelExecutionDuration(buildInfo.executedTasks)
-        val parallelExecutionDuration = getParallelExecutionDuration(buildInfo.executedTasks)
-        val ratio = (parallelExecutionDuration - nonParallelExecutionDuration).toPercentageOf(nonParallelExecutionDuration)
-        return ParallelExecutionRateMetric(
-            rate = ratio.toLong()
-        )
+    override suspend fun execute(input: BuildInfo): ParallelExecutionRateMetric {
+        val nonParallelExecutionInMillis = calculateNonParallelExecutionDuration(input.executedTasks)
+        val parallelExecutionInMillis = calculateParallelExecutionInMillis(input.executedTasks)
+        val rate = (parallelExecutionInMillis - nonParallelExecutionInMillis)
+            .toPercentageOf(nonParallelExecutionInMillis)
+            .toLong()
+
+        return ParallelExecutionRateMetric(medianRate = rate)
     }
 
-    private fun checkIfCanMerge(
-        parallelTaskReport: TaskInfo,
-        linearTask: Map.Entry<Int, Pair<Long, Long>>,
-        linearTasks: HashMap<Int, Pair<Long, Long>>
-    ) {
-
-        if (parallelTaskReport.startedAt <= linearTask.value.second &&
-            parallelTaskReport.finishedAt >= linearTask.value.second
+    /**
+     * Gradle executes the project tasks in parallel to use maximum performance of
+     * the system resources, Which means by adding the task's duration together,
+     * We calculated the serial duration. to calculate the non-parallel
+     * duration(real-life duration) we need to ignore those tasks that are executed at
+     * the same time or covered times by another task.
+     */
+    @Suppress("NestedBlockDepth", "ComplexMethod")
+    fun calculateNonParallelExecutionDuration(executedTasks: Collection<TaskInfo>): Long {
+        fun checkIfCanMerge(
+            parallelTask: TaskInfo,
+            nonParallelTask: Map.Entry<Int, Pair<Long, Long>>,
+            nonParallelTasks: HashMap<Int, Pair<Long, Long>>
         ) {
-            var start = linearTask.value.first
-            var end = linearTask.value.second
-            if (parallelTaskReport.startedAt < linearTask.value.first) {
-                start = parallelTaskReport.startedAt
+            if (parallelTask.startedAt <= nonParallelTask.value.second &&
+                parallelTask.finishedAt >= nonParallelTask.value.second
+            ) {
+                var start = nonParallelTask.value.first
+                var end = nonParallelTask.value.second
+                if (parallelTask.startedAt < nonParallelTask.value.first) {
+                    start = parallelTask.startedAt
+                }
+                if (parallelTask.finishedAt > nonParallelTask.value.second) {
+                    end = parallelTask.finishedAt
+                }
+                nonParallelTasks[nonParallelTask.key] = Pair(start, end)
             }
-            if (parallelTaskReport.finishedAt > linearTask.value.second) {
-                end = parallelTaskReport.finishedAt
-            }
-            linearTasks[linearTask.key] = Pair(start, end)
         }
 
-    }
-
-    @Suppress("NestedBlockDepth", "ComplexMethod")
-    fun getNonParallelExecutionDuration(executedTasks: Collection<TaskInfo>): Long {
         val nonParallelDurations = hashMapOf<Int, Pair<Long, Long>>()
 
-        val iterator = executedTasks
+        val executedTaskIterator = executedTasks
             .sortedBy { task -> task.startedAt }
             .iterator()
 
-        while (iterator.hasNext()) {
-
-            val executedTask = iterator.next()
+        while (executedTaskIterator.hasNext()) {
+            val executedTask = executedTaskIterator.next()
             if (nonParallelDurations.isEmpty()) {
                 nonParallelDurations[nonParallelDurations.size] = Pair(executedTask.startedAt, executedTask.finishedAt)
                 continue
             }
 
-            var shouldBeAddedItem: Pair<Long, Long>? = null
-            val linearTasksIterator = nonParallelDurations.iterator()
-            while (linearTasksIterator.hasNext()) {
-                val linearTask = linearTasksIterator.next()
+            var tempTask: Pair<Long, Long>? = null
+            val nonParallelTasksIterator = nonParallelDurations.iterator()
+            while (nonParallelTasksIterator.hasNext()) {
+                val nonParallelTask = nonParallelTasksIterator.next()
 
-                checkIfCanMerge(executedTask, linearTask, nonParallelDurations)
+                checkIfCanMerge(executedTask, nonParallelTask, nonParallelDurations)
 
-                if (executedTask.startedAt > linearTask.value.first &&
-                    executedTask.finishedAt > linearTask.value.second &&
-                    executedTask.finishedAt > executedTask.startedAt
-                ) {
-                    shouldBeAddedItem = Pair(executedTask.startedAt, executedTask.finishedAt)
+                if (executedTask.startedAt > nonParallelTask.value.first &&
+                    executedTask.finishedAt > nonParallelTask.value.second &&
+                    executedTask.finishedAt > executedTask.startedAt) {
+                    tempTask = Pair(executedTask.startedAt, executedTask.finishedAt)
                 }
-
             }
 
-            shouldBeAddedItem?.let { new ->
-                val itr = nonParallelDurations.iterator()
-                while (itr.hasNext()) {
-                    val linearTask = itr.next()
-
-                    if (new.first <= linearTask.value.second &&
-                        new.second >= linearTask.value.second
-                    ) {
-                        var start = linearTask.value.first
-                        var end = linearTask.value.second
-                        if (new.first < linearTask.value.first) {
-                            start = new.first
+            tempTask.whenNotNull {
+                val iterator = nonParallelDurations.iterator()
+                while (iterator.hasNext()) {
+                    val nonParallelTask = iterator.next()
+                    if (nonParallelTask.value.second in first..second) {
+                        var start = nonParallelTask.value.first
+                        var end = nonParallelTask.value.second
+                        if (first < nonParallelTask.value.first) {
+                            start = first
                         }
-                        if (new.second > linearTask.value.second) {
-                            end = new.second
+                        if (second > nonParallelTask.value.second) {
+                            end = second
                         }
-                        nonParallelDurations[linearTask.key] = Pair(start, end)
+                        nonParallelDurations[nonParallelTask.key] = Pair(start, end)
                     }
                 }
 
-                val biggestLTEnd = nonParallelDurations.toList().maxByOrNull { it.second.second }!!.second.second
-                if (new.first > biggestLTEnd) {
-                    nonParallelDurations[nonParallelDurations.size] = new
+                val biggestNonParallelTaskEnd = nonParallelDurations.toList().maxByOrNull { it.second.second }!!.second.second
+                if (first > biggestNonParallelTaskEnd) {
+                    nonParallelDurations[nonParallelDurations.size] = this
                 }
-
             }
-
         }
 
         return nonParallelDurations.toList().sumOf { (it.second.second - it.second.first) }
     }
 
-    fun getParallelExecutionDuration(executedTasks: Collection<TaskInfo>): Long {
+    /**
+     * Calculates the cumulative parallel duration.
+     */
+    fun calculateParallelExecutionInMillis(executedTasks: Collection<TaskInfo>): Long {
         return executedTasks.sumOf { it.getDurationInMillis() }
     }
 

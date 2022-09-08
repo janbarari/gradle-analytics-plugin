@@ -27,34 +27,6 @@ class ParallelExecutionRateReportJsonAdapterTest {
     }
 
     @Test
-    fun `Check fromJson() returns valid data model with valid json`() {
-        val json = """
-            {
-                "medianValues": [
-                    {
-                        "value": 90,
-                        "description": "20/10/2022"
-                    }
-                ],
-                "suggestedMaxValue": 300,
-                "suggestedMinValue": 0,
-                
-                "test-skipping-un-valid-field": true
-            }
-        """.trimIndent()
-
-        val fromReader = adapter.fromJson(
-            JsonReader.of(
-                okio.Buffer().writeUtf8(json)
-            )
-        )
-        assertTrue {
-            fromReader.isNotNull() && fromReader.medianValues[0].value == 90L &&
-                    fromReader.suggestedMinValue == 0L && fromReader.suggestedMaxValue == 300L
-        }
-    }
-
-    @Test
     fun `Check fromJson() throws exception with unValid json`() {
         assertThrows<JsonEncodingException> {
             val json = """
@@ -97,7 +69,7 @@ class ParallelExecutionRateReportJsonAdapterTest {
 
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
-        val validModel = ParallelExecutionRateReport(emptyList(), 300, 0)
+        val validModel = ParallelExecutionRateReport(emptyList())
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))
         }

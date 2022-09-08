@@ -65,14 +65,14 @@ class CreateBuildStatusReportStage(
                 .sumOf { metric ->
                     MathUtils.sumWithPercentage(
                         metric.executionProcessMetric!!.median.millisToSeconds(),
-                        metric.parallelExecutionRateMetric!!.rate.toInt()
+                        metric.parallelExecutionRateMetric!!.medianRate.toInt()
                     )
                 }
 
         val avgParallelExecutionRate: Float = MathUtils.floatMedian(
             metrics.filter { it.parallelExecutionRateMetric.isNotNull() }
                 .map { metric ->
-                    metric.parallelExecutionRateMetric!!.rate.toFloat()
+                    metric.parallelExecutionRateMetric!!.medianRate.toFloat()
                 }
         )
 
