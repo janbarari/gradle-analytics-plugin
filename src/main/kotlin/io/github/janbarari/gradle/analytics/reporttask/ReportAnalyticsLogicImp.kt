@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.domain.model.Module
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
@@ -72,6 +73,7 @@ import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.extension.whenEach
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.io.IOException
@@ -90,13 +92,28 @@ class ReportAnalyticsLogicImp(
 ) : ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(EmptyMetricsException::class)
-    @Suppress("LongMethod")
     override suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String {
         val data = getMetricsUseCase.execute(period)
 
         if (data.isEmpty()) throw EmptyMetricsException()
 
-        val report = CreateReportPipeline(CreateInitializationProcessReportStage(data))
+        val report = generateReport(
+            data = data,
+            branch = branch,
+            requestedTasks = requestedTasks
+        )
+
+        return generateRender(
+            data = data,
+            report = report,
+            branch = branch,
+            requestedTasks = requestedTasks,
+            period = period
+        )
+    }
+
+    private suspend fun generateReport(data: List<BuildMetric>, branch: String, requestedTasks: String): Report {
+        return CreateReportPipeline(CreateInitializationProcessReportStage(data))
             .addStage(CreateConfigurationProcessReportStage(data))
             .addStage(CreateExecutionProcessReportStage(data))
             .addStage(CreateOverallBuildProcessReportStage(data))
@@ -121,7 +138,15 @@ class ReportAnalyticsLogicImp(
                     requestedTasks = requestedTasks
                 )
             )
+    }
 
+    private suspend fun generateRender(
+        data: List<BuildMetric>,
+        report: Report,
+        branch: String,
+        requestedTasks: String,
+        period: Long
+    ): String {
         val rawHTML: String = getTextResourceContent("index-template.html")
 
         val renderInitialReportStage = RenderInitialReportStage.Builder()
@@ -134,106 +159,56 @@ class ReportAnalyticsLogicImp(
             .isCI(isCI)
             .build()
 
-        val renderInitializationProcessReportStage = RenderInitializationProcessReportStage(report)
-        val renderConfigurationProcessReportStage = RenderConfigurationProcessReportStage(report)
-        val renderExecutionProcessReportStage = RenderExecutionProcessReportStage(report)
-        val renderOverallBuildProcessReportStage = RenderOverallBuildProcessReportStage(report)
-        val renderModulesSourceCountReportStage = RenderModulesSourceCountStage(report)
-        val renderModulesMethodCountReportStage = RenderModulesMethodCountStage(report)
-        val renderCacheHitReportStage = RenderCacheHitReportStage(report)
-        val renderSuccessBuildRateReportStage = RenderSuccessBuildRateReportStage(report)
-        val renderDependencyResolveProcessReportStage = RenderDependencyResolveProcessReportStage(report)
-        val renderParallelExecutionRateReportStage = RenderParallelExecutionRateReportStage(report)
-        val renderModulesExecutionProcessReportStage = RenderModulesExecutionProcessReportStage(report)
-        val renderModulesDependencyGraphReportStage = RenderModulesDependencyGraphReportStage(report)
-        val renderModulesTimelineReportStage = RenderModulesTimelineReportStage(report)
-        val renderBuildStatusReportStage = RenderBuildStatusReportStage(report)
-        val renderModulesBuildHeatmapReportStage = RenderModulesBuildHeatmapReportStage(report)
-        val renderDependencyDetailsReportStage = RenderDependencyDetailsReportStage(report)
-        val renderNonCacheableTasksReportStage = RenderNonCacheableTasksReportStage(report)
-        val renderModulesSourceSizeReportStage = RenderModulesSourceSizeReportStage(report)
-        val renderModulesCrashCountReportStage = RenderModulesCrashCountReportStage(report)
-
         return RenderReportPipeline(renderInitialReportStage)
-            .addStage(renderInitializationProcessReportStage)
-            .addStage(renderConfigurationProcessReportStage)
-            .addStage(renderExecutionProcessReportStage)
-            .addStage(renderOverallBuildProcessReportStage)
-            .addStage(renderModulesSourceCountReportStage)
-            .addStage(renderModulesMethodCountReportStage)
-            .addStage(renderCacheHitReportStage)
-            .addStage(renderSuccessBuildRateReportStage)
-            .addStage(renderDependencyResolveProcessReportStage)
-            .addStage(renderParallelExecutionRateReportStage)
-            .addStage(renderModulesExecutionProcessReportStage)
-            .addStage(renderModulesDependencyGraphReportStage)
-            .addStage(renderModulesTimelineReportStage)
-            .addStage(renderBuildStatusReportStage)
-            .addStage(renderModulesBuildHeatmapReportStage)
-            .addStage(renderDependencyDetailsReportStage)
-            .addStage(renderNonCacheableTasksReportStage)
-            .addStage(renderModulesSourceSizeReportStage)
-            .addStage(renderModulesCrashCountReportStage)
+            .addStage(RenderInitializationProcessReportStage(report))
+            .addStage(RenderConfigurationProcessReportStage(report))
+            .addStage(RenderExecutionProcessReportStage(report))
+            .addStage(RenderOverallBuildProcessReportStage(report))
+            .addStage(RenderModulesSourceCountStage(report))
+            .addStage(RenderModulesMethodCountStage(report))
+            .addStage(RenderCacheHitReportStage(report))
+            .addStage(RenderSuccessBuildRateReportStage(report))
+            .addStage(RenderDependencyResolveProcessReportStage(report))
+            .addStage(RenderParallelExecutionRateReportStage(report))
+            .addStage(RenderModulesExecutionProcessReportStage(report))
+            .addStage(RenderModulesDependencyGraphReportStage(report))
+            .addStage(RenderModulesTimelineReportStage(report))
+            .addStage(RenderBuildStatusReportStage(report))
+            .addStage(RenderModulesBuildHeatmapReportStage(report))
+            .addStage(RenderDependencyDetailsReportStage(report))
+            .addStage(RenderNonCacheableTasksReportStage(report))
+            .addStage(RenderModulesSourceSizeReportStage(report))
+            .addStage(RenderModulesCrashCountReportStage(report))
             .execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
-        val fontPath = "res/nunito.ttf"
-        val logoPath = "res/plugin-logo.png"
-        val stylesPath = "res/styles.css"
-        val functionsPath = "res/functions.js"
-        val chartPath = "res/chart.js"
-        val mermaidPath = "res/mermaid.js"
-        val d3Path = "res/d3.js"
-        val timelinePath = "res/timeline.js"
-        val indexPath = "index.html"
+        val resources = listOf(
+            "nunito.ttf",
+            "plugin-logo.png",
+            "styles.css",
+            "functions.js",
+            "chart.js",
+            "mermaid.js",
+            "d3.js",
+            "timeline.js"
+        )
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$fontPath"),
-            File("$savePath/$fontPath")
-        )
+        //copy resources
+        resources.forEach { resource ->
+            FileUtils.copyInputStreamToFile(
+                javaClass.getSafeResourceAsStream("/res/$resource"),
+                File("$savePath/res/$resource")
+            )
+        }
 
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$logoPath"),
-            File("$savePath/$logoPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$functionsPath"),
-            File("$savePath/$functionsPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$chartPath"),
-            File("$savePath/$chartPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$stylesPath"),
-            File("$savePath/$stylesPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$mermaidPath"),
-            File("$savePath/$mermaidPath")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$d3Path"),
-            File("$savePath/$d3Path")
-        )
-
-        FileUtils.copyInputStreamToFile(
-            javaClass.getSafeResourceAsStream("/$timelinePath"),
-            File("$savePath/$timelinePath")
-        )
-
-        File("$savePath/$indexPath")
+        //write index.html
+        File("$savePath/index.html")
             .writeText(renderedHTML)
 
-        return "$savePath/$indexPath"
+        return "$savePath/index.html"
     }
 
     /**
