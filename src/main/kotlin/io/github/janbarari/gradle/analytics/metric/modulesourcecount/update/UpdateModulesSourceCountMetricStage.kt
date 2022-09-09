@@ -29,8 +29,8 @@ class UpdateModulesSourceCountMetricStage(
     private val updateModulesSourceCountMetricUseCase: UpdateModulesSourceCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             modulesSourceCountMetric = updateModulesSourceCountMetricUseCase.execute()
         }
     }

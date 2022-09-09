@@ -28,12 +28,12 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateSuccessBuildRateMetricUseCase: UseCase<BuildInfo, SuccessBuildRateMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): SuccessBuildRateMetric {
+    override suspend fun execute(input: BuildInfo): SuccessBuildRateMetric {
         return SuccessBuildRateMetric(
-            medianRate = if (buildInfo.isSuccessful) 100F else 0F,
-            meanRate = if (buildInfo.isSuccessful) 100F else 0F,
-            successes = if (buildInfo.isSuccessful) 1 else 0,
-            fails = if (!buildInfo.isSuccessful) 1 else 0
+            medianRate = if (input.isSuccessful) 100F else 0F,
+            meanRate = if (input.isSuccessful) 100F else 0F,
+            successes = if (input.isSuccessful) 1 else 0,
+            fails = if (!input.isSuccessful) 1 else 0
         )
     }
 

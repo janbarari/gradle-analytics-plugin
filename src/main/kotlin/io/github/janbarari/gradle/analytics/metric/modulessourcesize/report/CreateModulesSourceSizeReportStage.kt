@@ -38,7 +38,7 @@ class CreateModulesSourceSizeReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
             it.modulesSourceSizeMetric.isNotNull()
         }.map {
@@ -46,18 +46,18 @@ class CreateModulesSourceSizeReportStage(
         }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceSizeReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceSizeReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     fun generateSingleItemReport(metric: ModulesSourceSizeMetric): ModulesSourceSizeReport {

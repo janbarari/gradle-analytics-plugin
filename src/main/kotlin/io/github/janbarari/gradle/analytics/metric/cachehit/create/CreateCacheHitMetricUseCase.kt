@@ -34,22 +34,22 @@ class CreateCacheHitMetricUseCase(
     private val modules: List<Module>
 ): UseCase<BuildInfo, CacheHitMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): CacheHitMetric {
+    override suspend fun execute(input: BuildInfo): CacheHitMetric {
         var cachedTasksCount = 0
-        buildInfo.executedTasks.whenEach {
+        input.executedTasks.whenEach {
             if (!isSkipped) {
                 if (isUpToDate || isFromCache) {
                     cachedTasksCount++
                 }
             }
         }
-        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(buildInfo.executedTasks.filter { it.isSkipped.not() }.size)
+        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(input.executedTasks.filter { it.isSkipped.not() }.size)
 
         val modulesCacheHit = mutableListOf<ModuleCacheHit>()
         modules.whenEach {
             var moduleCachedTasksCount = 0
             var moduleTasksCount = 0
-            buildInfo.executedTasks.filter { it.path.startsWith(path) }
+            input.executedTasks.filter { it.path.startsWith(path) }
                 .whenEach {
                     moduleTasksCount++
                     if (!isSkipped) {

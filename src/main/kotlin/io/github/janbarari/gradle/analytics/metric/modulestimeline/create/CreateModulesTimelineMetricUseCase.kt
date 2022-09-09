@@ -32,14 +32,14 @@ class CreateModulesTimelineMetricUseCase(
     private val modules: List<Module>
 ): UseCase<BuildInfo, ModulesTimelineMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ModulesTimelineMetric {
-        val start = buildInfo.executedTasks.minOfOrNull { it.startedAt } ?: 0
-        val end = buildInfo.executedTasks.maxOfOrNull { it.finishedAt } ?: 0
+    override suspend fun execute(input: BuildInfo): ModulesTimelineMetric {
+        val start = input.executedTasks.minOfOrNull { it.startedAt } ?: 0
+        val end = input.executedTasks.maxOfOrNull { it.finishedAt } ?: 0
 
         val result = modules.map { module ->
             ModuleTimeline(
                 path = module.path,
-                timelines = buildInfo.executedTasks.filter { it.path.startsWith(module.path) }
+                timelines = input.executedTasks.filter { it.path.startsWith(module.path) }
                     .map {
                         ModuleTimeline.Timeline(
                             start = it.startedAt,

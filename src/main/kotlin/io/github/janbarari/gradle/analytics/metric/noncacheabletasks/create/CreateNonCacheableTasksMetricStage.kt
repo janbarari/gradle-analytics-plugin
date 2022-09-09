@@ -31,8 +31,8 @@ class CreateNonCacheableTasksMetricStage(
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             if (buildInfo.isSuccessful) {
                 nonCacheableTasksMetric = createNonCacheableTasksMetricUseCase.execute(buildInfo)
             }

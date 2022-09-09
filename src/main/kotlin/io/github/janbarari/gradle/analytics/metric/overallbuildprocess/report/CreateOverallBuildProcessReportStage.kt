@@ -44,7 +44,7 @@ class CreateOverallBuildProcessReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val medianChartPoints = metrics.filter { metric ->
             metric.overallBuildProcessMetric.isNotNull() &&
                     metric.overallBuildProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
@@ -52,7 +52,7 @@ class CreateOverallBuildProcessReportStage(
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
-                return report
+                return input
             }
 
         val meanChartPoints = metrics.filter { metric ->
@@ -62,13 +62,13 @@ class CreateOverallBuildProcessReportStage(
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
-                return report
+                return input
             }
 
         val minimumValue = Math.min(medianChartPoints.minValue(), meanChartPoints.minValue())
         val maximumValue = Math.max(medianChartPoints.minValue(), meanChartPoints.minValue())
 
-        return report.apply {
+        return input.apply {
             overallBuildProcessReport = OverallBuildProcessReport(
                 medianValues = medianChartPoints,
                 meanValues = meanChartPoints,

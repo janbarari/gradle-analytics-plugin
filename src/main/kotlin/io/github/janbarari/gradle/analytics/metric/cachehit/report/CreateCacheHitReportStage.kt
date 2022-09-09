@@ -40,24 +40,24 @@ class CreateCacheHitReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
             it.cacheHitMetric.isNotNull()
         }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
+            return input.apply {
                 cacheHitReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 cacheHitReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     private fun generateSingleItemReport(metric: BuildMetric): CacheHitReport {

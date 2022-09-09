@@ -31,8 +31,8 @@ class CreateNonCacheableTasksMetricUseCase(
     private val nonCacheableTasks: List<String>
 ): UseCase<BuildInfo, NonCacheableTasksMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): NonCacheableTasksMetric {
-        val executedTasks = buildInfo.executedTasks
+    override suspend fun execute(input: BuildInfo): NonCacheableTasksMetric {
+        val executedTasks = input.executedTasks
         val temp = mutableListOf<NonCacheableTasksMetric.NonCacheableTask>()
 
         nonCacheableTasks.whenEach {

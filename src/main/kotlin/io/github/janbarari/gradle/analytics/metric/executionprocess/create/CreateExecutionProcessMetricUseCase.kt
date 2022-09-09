@@ -28,10 +28,10 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateExecutionProcessMetricUseCase: UseCase<BuildInfo, ExecutionProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ExecutionProcessMetric {
+    override suspend fun execute(input: BuildInfo): ExecutionProcessMetric {
         return ExecutionProcessMetric(
-            median = buildInfo.getExecutionDuration().toMillis(),
-            mean = buildInfo.getExecutionDuration().toMillis()
+            median = input.getExecutionDuration().toMillis(),
+            mean = input.getExecutionDuration().toMillis()
         )
     }
 

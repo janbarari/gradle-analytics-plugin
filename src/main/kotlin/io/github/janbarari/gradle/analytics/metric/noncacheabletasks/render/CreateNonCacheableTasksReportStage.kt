@@ -35,8 +35,8 @@ class CreateNonCacheableTasksReportStage(
     private val metrics: List<BuildMetric>
 ): Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
-        return report.apply {
+    override suspend fun process(input: Report): Report {
+        return input.apply {
             val tasks = metrics.last().nonCacheableTasksMetric?.tasks
                 ?.modify {
                     val medianValue = metrics

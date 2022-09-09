@@ -33,11 +33,11 @@ class CreateModulesCrashCountMetricUseCase(
     private val modules: List<Module>
 ) : UseCase<BuildInfo, ModulesCrashCountMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ModulesCrashCountMetric {
+    override suspend fun execute(input: BuildInfo): ModulesCrashCountMetric {
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
-        if (!buildInfo.isSuccessful && buildInfo.failure.isNotNull()) {
-            val findFirstFailedTask = buildInfo.executedTasks.sortedBy { it.startedAt }.firstOrNull { !it.isSuccessful }
+        if (!input.isSuccessful && input.failure.isNotNull()) {
+            val findFirstFailedTask = input.executedTasks.sortedBy { it.startedAt }.firstOrNull { !it.isSuccessful }
 
             findFirstFailedTask.whenNotNull {
                 val module = this@CreateModulesCrashCountMetricUseCase.modules.firstOrNull {

@@ -47,7 +47,7 @@ class CreateModulesExecutionProcessReportStage(
     }
 
     @Suppress("LongMethod")
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
 
         val modules = mutableListOf<ModuleExecutionProcess>()
 
@@ -122,7 +122,7 @@ class CreateModulesExecutionProcessReportStage(
 
         }
 
-        return report.apply {
+        return input.apply {
             modulesExecutionProcessReport = ModulesExecutionProcessReport(
                 modules = modules
             )

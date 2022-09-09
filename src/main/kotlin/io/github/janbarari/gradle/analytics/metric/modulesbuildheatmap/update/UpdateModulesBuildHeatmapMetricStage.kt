@@ -29,8 +29,8 @@ class UpdateModulesBuildHeatmapMetricStage(
     private val updateModulesBuildHeatmapMetricUseCase: UpdateModulesBuildHeatmapMetricUseCase
 ) : Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             modulesBuildHeatmap = updateModulesBuildHeatmapMetricUseCase.execute()
         }
     }

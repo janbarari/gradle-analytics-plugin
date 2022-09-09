@@ -39,7 +39,7 @@ class CreateModulesSourceCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
                 it.modulesSourceCountMetric.isNotNull()
             }.map {
@@ -47,18 +47,18 @@ class CreateModulesSourceCountReportStage(
             }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceCountReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceCountReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     fun generateSingleItemReport(metric: ModulesSourceCountMetric): ModulesSourceCountReport {

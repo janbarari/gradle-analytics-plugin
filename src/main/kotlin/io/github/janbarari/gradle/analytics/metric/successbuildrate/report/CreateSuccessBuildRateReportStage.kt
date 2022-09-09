@@ -41,14 +41,14 @@ class CreateSuccessBuildRateReportStage(
         private const val CHART_MAX_COLUMNS = 12
     }
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val medianChartPoints = metrics.filter { metric ->
             metric.successBuildRateMetric.isNotNull()
         }.mapToSuccessBuildRateMedianTimespanChartPoints()
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
-                return report
+                return input
             }
 
         val meanChartPoints = metrics.filter { metric ->
@@ -57,10 +57,10 @@ class CreateSuccessBuildRateReportStage(
             .minimize(CHART_MAX_COLUMNS)
             .mapToChartPoints()
             .whenEmpty {
-                return report
+                return input
             }
 
-        return report.apply {
+        return input.apply {
             successBuildRateReport = SuccessBuildRateReport(
                 meanValues = meanChartPoints,
                 medianValues = medianChartPoints

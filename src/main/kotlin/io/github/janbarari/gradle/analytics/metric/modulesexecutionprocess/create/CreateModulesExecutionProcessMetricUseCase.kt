@@ -35,13 +35,13 @@ class CreateModulesExecutionProcessMetricUseCase(
     private val modules: List<Module>
 ): UseCase<BuildInfo, ModulesExecutionProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): ModulesExecutionProcessMetric {
+    override suspend fun execute(input: BuildInfo): ModulesExecutionProcessMetric {
         val moduleExecutionProcesses = mutableListOf<ModuleExecutionProcess>()
 
         modules.whenEach {
-            val tasks = buildInfo.executedTasks.filter { it.path.startsWith(path) }
+            val tasks = input.executedTasks.filter { it.path.startsWith(path) }
 
-            val overallDuration = buildInfo.getExecutionDuration().toMillis()
+            val overallDuration = input.getExecutionDuration().toMillis()
             val moduleParallelDuration = tasks.sumOf { it.getDurationInMillis() }
             val moduleNonParallelDuration = calculateNonParallelExecutionDuration(tasks)
             val moduleParallelRate = (moduleParallelDuration - moduleNonParallelDuration)
