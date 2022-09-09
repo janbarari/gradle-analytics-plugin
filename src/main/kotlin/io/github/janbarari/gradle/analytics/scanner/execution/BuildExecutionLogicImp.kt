@@ -114,9 +114,7 @@ class BuildExecutionLogicImp(
     private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
 ) : BuildExecutionLogic {
 
-    @Suppress("LongMethod")
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) = runBlocking {
-
         if (isForbiddenTasksRequested()) return@runBlocking
 
         if (!isDatabaseConfigurationValid()) return@runBlocking
@@ -147,79 +145,32 @@ class BuildExecutionLogicImp(
 
         resetDependentServices()
 
-        val createInitializationProcessMetricStage =
-            CreateInitializationProcessMetricStage(buildInfo, createInitializationProcessMetricUseCase)
-        val createConfigurationProcessMetricStage =
-            CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase)
-        val createExecutionProcessMetricStage =
-            CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase)
-        val createOverallBuildProcessMetricStage =
-            CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase)
-        val createModulesSourceCountMetricStage =
-            CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase)
-        val createModulesMethodCountMetricStage =
-            CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase)
-        val createCacheHitMetricStage = CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase)
-        val createSuccessBuildRateMetricStage =
-            CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase)
-        val createDependencyResolveProcessMetricStage =
-            CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase)
-        val createParallelExecutionRateMetricStage =
-            CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase)
-        val createModulesExecutionProcessMetricStage = CreateModulesExecutionProcessMetricStage(
-            buildInfo, createModulesExecutionProcessMetricUseCase
-        )
-        val createModulesDependencyGraphMetricStage = CreateModulesDependencyGraphMetricStage(
-            createModulesDependencyGraphMetricUseCase
-        )
-        val createModulesTimelineMetricStage = CreateModulesTimelineMetricStage(
-            buildInfo,
-            createModulesTimelineMetricUseCase
-        )
-        val createModulesBuildHeatmapMetricStage = CreateModulesBuildHeatmapMetricStage(
-            createModulesBuildHeatmapMetricUseCase
-        )
-        val createDependencyDetailsMetricStage = CreateDependencyDetailsMetricStage(
-            createDependencyDetailsMetricUseCase
-        )
-        val createNonCacheableTasksMetricStage = CreateNonCacheableTasksMetricStage(
-            buildInfo,
-            createNonCacheableTasksMetricUseCase
-        )
-        val createModulesSourceSizeMetricStage = CreateModulesSourceSizeMetricStage(
-            createModulesSourceSizeMetricUseCase
-        )
-        val createModulesCrashCountMetricStage = CreateModulesCrashCountMetricStage(
-            buildInfo,
-            createModulesCrashCountMetricUseCase
-        )
-
-        val buildMetric = CreateMetricPipeline(createInitializationProcessMetricStage)
-            .addStage(createConfigurationProcessMetricStage)
-            .addStage(createExecutionProcessMetricStage)
-            .addStage(createOverallBuildProcessMetricStage)
-            .addStage(createModulesSourceCountMetricStage)
-            .addStage(createModulesMethodCountMetricStage)
-            .addStage(createCacheHitMetricStage)
-            .addStage(createSuccessBuildRateMetricStage)
-            .addStage(createDependencyResolveProcessMetricStage)
-            .addStage(createParallelExecutionRateMetricStage)
-            .addStage(createModulesExecutionProcessMetricStage)
-            .addStage(createModulesDependencyGraphMetricStage)
-            .addStage(createModulesTimelineMetricStage)
-            .addStage(createModulesBuildHeatmapMetricStage)
-            .addStage(createDependencyDetailsMetricStage)
-            .addStage(createNonCacheableTasksMetricStage)
-            .addStage(createModulesSourceSizeMetricStage)
-            .addStage(createModulesCrashCountMetricStage)
+        val buildMetric =
+            CreateMetricPipeline(CreateInitializationProcessMetricStage(buildInfo, createInitializationProcessMetricUseCase))
+            .addStage(CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase))
+            .addStage(CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase))
+            .addStage(CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase))
+            .addStage(CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase))
+            .addStage(CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase))
+            .addStage(CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase))
+            .addStage(CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase))
+            .addStage(CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase))
+            .addStage(CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase))
+            .addStage(CreateModulesExecutionProcessMetricStage(buildInfo, createModulesExecutionProcessMetricUseCase))
+            .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
+            .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
+            .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
+            .addStage(CreateDependencyDetailsMetricStage(createDependencyDetailsMetricUseCase))
+            .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
+            .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
+            .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase))
             .execute(BuildMetric(buildInfo.branch, buildInfo.requestedTasks, buildInfo.createdAt, buildInfo.gitHeadCommitHash))
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
 
-        if (buildMetric.modulesTimelineMetric.isNotNull()) {
+        if (buildMetric.modulesTimelineMetric.isNotNull())
             upsertModulesTimelineUseCase.execute(buildInfo.branch to buildMetric.modulesTimelineMetric!!)
-        }
 
         printBuildInfo(buildMetric)
     }
