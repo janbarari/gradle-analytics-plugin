@@ -86,6 +86,11 @@ import kotlinx.coroutines.runBlocking
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
 class BuildExecutionLogicImp(
+    private val databaseConfig: DatabaseConfig,
+    private val envCI: Boolean,
+    private val trackingBranches: List<String>,
+    private val trackingTasks: List<String>,
+    private val requestedTasks: List<String>,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -107,11 +112,6 @@ class BuildExecutionLogicImp(
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
     private val createModulesSourceSizeMetricUseCase: CreateModulesSourceSizeMetricUseCase,
     private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
-    private val databaseConfig: DatabaseConfig,
-    private val envCI: Boolean,
-    private val trackingBranches: List<String>,
-    private val trackingTasks: List<String>,
-    private val requestedTasks: List<String>
 ) : BuildExecutionLogic {
 
     @Suppress("LongMethod")

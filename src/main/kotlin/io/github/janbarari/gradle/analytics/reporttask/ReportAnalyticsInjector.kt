@@ -33,7 +33,7 @@ import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 
 /**
- * Dependency injection for [ReportAnalyticsTask].
+ * Dependency injection for [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask].
  */
 @ExcludeJacocoGenerated
 class ReportAnalyticsInjector(
