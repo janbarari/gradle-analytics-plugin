@@ -1,23 +1,41 @@
+<!--
+   MIT License
+   Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+-->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>%root-project-name% Gradle Analytics Report</title>
-    <script type="text/javascript" src="res/chart.js"></script>
+    <title>%root-project-name% Build Analytics Report</title>
+    <script src="res/chart.js" type="text/javascript"></script>
+    <script src="res/d3.js" type="text/javascript"></script>
+    <script src="res/timeline.js" type="text/javascript"></script>
+    <script src="res/mermaid.js" type="text/javascript"></script>
     <link href="res/styles.css" rel="stylesheet">
     <link href="res/plugin-logo.png" rel="icon">
-    <script type="text/javascript" src="res/functions.js"></script>
-    <script type="text/javascript" src="res/d3.js"></script>
-    <script type="text/javascript" src="res/timeline.js"></script>
-    <script type="text/javascript" src="res/mermaid.js"></script>
+    <script src="res/functions.js" type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
     <script>mermaid.initialize({startOnLoad:true});</script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
 </head>
-
 <body>
-
 <div id="container">
-
     <img alt="logo" class="logo-dimensions" src="res/plugin-logo.png"/>
     <h1>%root-project-name% Build Analytics Report</h1>
     <h3>
@@ -28,13 +46,11 @@
         in
         <span class="tag-style-3">%time-period-title%</span>
     </h3>
-
     <h4><span class="gray-text">Git head commit hash: </span> %git-head-commit-hash%</h4>
     <h4><span class="gray-text">Time period: </span> %time-period-start% ~ %time-period-end%</h4>
     <h4><span class="gray-text">Reported at: </span> %reported-at%</h4>
     <h4><span class="gray-text">Is on CI/CD: </span> %is-ci%</h4>
     <h4><span class="gray-text">Version: </span> %plugin-version%</h4>
-
     <div class="space"></div>
 
     %build-status-metric%
@@ -76,13 +92,16 @@
     %non-cacheable-tasks-metric%
 
     <div class="space"></div>
-    <img src="res/plugin-logo.png" class="footer-logo" alt="logo" />
-    <span class="footer-text"><b><a href="https://github.com/janbarari/gradle-analytics-plugin" target="_blank">Gradle Analytics Plugin</a></b></span>
-    <span class="supportus-text"><b>Made with 🧡 for everyone, don't forget to support us ☝🏻</b></span>
-    <span class="copyright-text"><b>MIT License | Copyright ©️ 2022</b></span>
-
+    <img alt="logo" class="footer-logo" src="res/plugin-logo.png"/>
+    <span class="footer-text">
+        <b><a href="https://github.com/janbarari/gradle-analytics-plugin" target="_blank">Gradle Analytics Plugin</a></b>
+    </span>
+    <span class="supportus-text">
+        <b>Made with 🧡 for everyone, don't forget to support us ☝🏻</b>
+    </span>
+    <span class="copyright-text">
+        <b>MIT License | Copyright ©️ 2022</b>
+    </span>
 </div>
-
 </body>
-
 </html>
