@@ -24,8 +24,6 @@ package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricStage
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricStage
@@ -54,10 +52,12 @@ import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.Upda
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.UpdateModulesSourceSizeMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricStage
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricStage
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricStage
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricStage
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.core.UseCase
 
 /**
@@ -85,76 +85,42 @@ class SaveMetricUseCase(
 ) : UseCase<BuildMetric, Long>() {
 
     /**
-     * Saves/Updates the daily metric in the database.
+     * Upsert the daily metric in the database.
+     *
+     * @param input BuildMetric of the build.
      */
-    @Suppress("LongMethod")
     override suspend fun execute(input: BuildMetric): Long {
+        if (!repo.isDayMetricExists()) return repo.saveNewMetric(input)
 
-        if (repo.isDayMetricExists()) {
+        val pipeline = UpdateMetricPipeline(UpdateInitializationProcessMetricStage(updateInitializationProcessMetricUseCase))
+                .addStage(UpdateConfigurationProcessMetricStage(updateConfigurationProcessMetricUseCase))
+                .addStage(UpdateExecutionProcessMetricStage(updateExecutionProcessMetricUseCase))
+                .addStage(UpdateOverallBuildProcessMetricStage(updateOverallBuildProcessMetricUseCase))
+                .addStage(UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase))
+                .addStage(UpdateModulesMethodCountMetricStage(updateModulesMethodCountMetricUseCase))
+                .addStage(UpdateCacheHitMetricStage(updateCacheHitMetricUseCase))
+                .addStage(UpdateSuccessBuildRateMetricStage(updateSuccessBuildRateMetricUseCase))
+                .addStage(UpdateDependencyResolveProcessMetricStage(updateDependencyResolveProcessMetricUseCase))
+                .addStage(UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase))
+                .addStage(UpdateModulesExecutionProcessMetricStage(updateModulesExecutionProcessMetricUseCase))
+                .addStage(UpdateModulesDependencyGraphMetricStage(updateModulesDependencyGraphMetricUseCase))
+                .addStage(UpdateModulesBuildHeatmapMetricStage(updateModulesBuildHeatmapMetricUseCase))
+                .addStage(UpdateDependencyDetailsMetricStage(updateDependencyDetailsMetricUseCase))
+                .addStage(UpdateNonCacheableTasksMetricStage(updateNonCacheableTasksMetricUseCase))
+                .addStage(UpdateModulesSourceSizeMetricStage(updateModulesSourceSizeMetricUseCase))
+                .addStage(UpdateModulesCrashCountMetricStage(updateModulesCrashCountMetricUseCase))
+                .execute(
+                    BuildMetric(
+                        branch = input.branch,
+                        requestedTasks = input.requestedTasks,
+                        createdAt = input.createdAt,
+                        gitHeadCommitHash = input.gitHeadCommitHash
+                    )
+                )
 
-            val updateInitializationProcessMetricStage =
-                UpdateInitializationProcessMetricStage(updateInitializationProcessMetricUseCase)
-            val updateConfigurationProcessMetricStage =
-                UpdateConfigurationProcessMetricStage(updateConfigurationProcessMetricUseCase)
-            val updateExecutionProcessMetricStage = UpdateExecutionProcessMetricStage(updateExecutionProcessMetricUseCase)
-            val updateOverallBuildProcessMetricStage =
-                UpdateOverallBuildProcessMetricStage(updateOverallBuildProcessMetricUseCase)
-            val updateModulesSourceCountMetricStage = UpdateModulesSourceCountMetricStage(updateModulesSourceCountMetricUseCase)
-            val updateModulesMethodCountMetricStage = UpdateModulesMethodCountMetricStage(updateModulesMethodCountMetricUseCase)
-            val updateCacheHitMetricStage = UpdateCacheHitMetricStage(updateCacheHitMetricUseCase)
-            val updateSuccessBuildRateMetricStage = UpdateSuccessBuildRateMetricStage(updateSuccessBuildRateMetricUseCase)
-            val updateDependencyResolveProcessMetricStage =
-                UpdateDependencyResolveProcessMetricStage(updateDependencyResolveProcessMetricUseCase)
-            val updateParallelExecutionRateMetricStage =
-                UpdateParallelExecutionRateMetricStage(updateParallelExecutionRateMetricUseCase)
-            val updateModulesExecutionProcessMetricStage = UpdateModulesExecutionProcessMetricStage(
-                updateModulesExecutionProcessMetricUseCase
-            )
-            val updateModulesDependencyGraphMetricStage = UpdateModulesDependencyGraphMetricStage(
-                updateModulesDependencyGraphMetricUseCase
-            )
-            val updateModulesBuildHeatmapMetricStage = UpdateModulesBuildHeatmapMetricStage(
-                updateModulesBuildHeatmapMetricUseCase
-            )
-            val updateDependencyDetailsMetricStage = UpdateDependencyDetailsMetricStage(
-                updateDependencyDetailsMetricUseCase
-            )
-            val updateNonCacheableTasksMetricStage = UpdateNonCacheableTasksMetricStage(
-                updateNonCacheableTasksMetricUseCase
-            )
-            val updateModulesSourceSizeMetricStage = UpdateModulesSourceSizeMetricStage(
-                updateModulesSourceSizeMetricUseCase
-            )
-            val updateModulesCrashCountMetricStage = UpdateModulesCrashCountMetricStage(
-                updateModulesCrashCountMetricUseCase
-            )
-
-            val updatedMetric = UpdateMetricPipeline(updateInitializationProcessMetricStage)
-                .addStage(updateConfigurationProcessMetricStage)
-                .addStage(updateExecutionProcessMetricStage)
-                .addStage(updateOverallBuildProcessMetricStage)
-                .addStage(updateModulesSourceCountMetricStage)
-                .addStage(updateModulesMethodCountMetricStage)
-                .addStage(updateCacheHitMetricStage)
-                .addStage(updateSuccessBuildRateMetricStage)
-                .addStage(updateDependencyResolveProcessMetricStage)
-                .addStage(updateParallelExecutionRateMetricStage)
-                .addStage(updateModulesExecutionProcessMetricStage)
-                .addStage(updateModulesDependencyGraphMetricStage)
-                .addStage(updateModulesBuildHeatmapMetricStage)
-                .addStage(updateDependencyDetailsMetricStage)
-                .addStage(updateNonCacheableTasksMetricStage)
-                .addStage(updateModulesSourceSizeMetricStage)
-                .addStage(updateModulesCrashCountMetricStage)
-                .execute(BuildMetric(input.branch, input.requestedTasks, input.createdAt, input.gitHeadCommitHash))
-
-            val dayMetricNumber = repo.getDayMetric().second
-            repo.updateDayMetric(dayMetricNumber, updatedMetric)
-
-            return dayMetricNumber
-        }
-
-        return repo.saveNewMetric(input)
+        val dayMetricNumber = repo.getDayMetric().second
+        repo.updateDayMetric(dayMetricNumber, pipeline)
+        return dayMetricNumber
     }
 
 }
