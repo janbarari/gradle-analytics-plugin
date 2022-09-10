@@ -59,8 +59,8 @@ class UpdateModulesExecutionProcessMetricUseCase(
         metrics.whenEach {
             modulesExecutionProcessMetric.whenNotNull {
                 modules.find { it.path == modulePath }.whenNotNull {
-                    medianDurations.add(duration)
-                    medianParallelDurations.add(parallelDuration)
+                    medianDurations.add(median)
+                    medianParallelDurations.add(medianParallel)
                     medianParallelRates.add(parallelRate)
                     medianCoverages.add(coverage)
                 }
@@ -69,8 +69,8 @@ class UpdateModulesExecutionProcessMetricUseCase(
 
         return ModuleExecutionProcess(
             path = modulePath,
-            duration = MathUtils.longMedian(medianDurations),
-            parallelDuration = MathUtils.longMedian(medianParallelDurations),
+            median = MathUtils.longMedian(medianDurations),
+            medianParallel = MathUtils.longMedian(medianParallelDurations),
             parallelRate = MathUtils.floatMedian(medianParallelRates),
             coverage = MathUtils.floatMedian(medianCoverages)
         )

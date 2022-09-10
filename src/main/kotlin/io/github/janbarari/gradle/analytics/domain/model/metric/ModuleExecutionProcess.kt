@@ -31,10 +31,10 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 data class ModuleExecutionProcess(
     @Json(name = "path")
     val path: String,
-    @Json(name = "average_duration")
-    val duration: Long,
-    @Json(name = "average_parallel_duration")
-    val parallelDuration: Long,
+    @Json(name = "median")
+    val median: Long,
+    @Json(name = "median_parallel")
+    val medianParallel: Long,
     @Json(name = "parallel_rate")
     val parallelRate: Float,
     @Json(name = "coverage")

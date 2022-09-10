@@ -58,7 +58,7 @@ class CreateModulesExecutionProcessReportStage(
                     .modules
                     .find { it.path == module.path }
                     .whenNotNull {
-                        firstAvgMedianDuration = duration
+                        firstAvgMedianDuration = median
                     }
             }
 
@@ -69,7 +69,7 @@ class CreateModulesExecutionProcessReportStage(
                     .modules
                     .find { it.path == module.path }
                     .whenNotNull {
-                        lastAvgMedianDuration = duration
+                        lastAvgMedianDuration = median
                     }
             }
 
@@ -85,12 +85,12 @@ class CreateModulesExecutionProcessReportStage(
                     .whenNotNull {
                         avgMedianDurations.add(
                             TimespanPoint(
-                                value = duration,
+                                value = median,
                                 from = metric.createdAt
                             )
                         )
-                        avgMedianDuration.add(duration)
-                        avgMedianParallelDuration.add(parallelDuration)
+                        avgMedianDuration.add(median)
+                        avgMedianParallelDuration.add(medianParallel)
                         avgMedianParallelRate.add(parallelRate)
                         avgMedianCoverage.add(coverage)
                     }

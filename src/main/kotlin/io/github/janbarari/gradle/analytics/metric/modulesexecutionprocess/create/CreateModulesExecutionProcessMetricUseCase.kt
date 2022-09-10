@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.crea
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.Module
-import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesExecutionProcessMetric
 import io.github.janbarari.gradle.core.UseCase
@@ -50,8 +49,8 @@ class CreateModulesExecutionProcessMetricUseCase(
             moduleExecutionProcesses.add(
                 ModuleExecutionProcess(
                     path = path,
-                    duration = moduleNonParallelDuration,
-                    parallelDuration = moduleParallelDuration,
+                    median = moduleNonParallelDuration,
+                    medianParallel = moduleParallelDuration,
                     parallelRate = moduleParallelRate,
                     coverage = moduleCoverage
                 )
