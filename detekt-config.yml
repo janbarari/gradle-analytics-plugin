@@ -19,6 +19,9 @@ complexity:
   LongMethod:
     active: true
     threshold: 75
+  ComplexMethod:
+    active: true
+    threshold: 20
 
 exceptions:
   active: true

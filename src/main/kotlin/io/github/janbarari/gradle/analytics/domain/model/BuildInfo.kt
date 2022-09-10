@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.domain.model
 
 import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
 import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
+import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.tooling.Failure
 import java.time.Duration
 
@@ -92,6 +93,95 @@ data class BuildInfo(
             result += info.getDuration()
         }
         return Duration.ofMillis(result)
+    }
+
+    /**
+     * Calculates the cumulative parallel execution duration in milliseconds.
+     */
+    fun calculateParallelExecutionInMillis(): Long {
+        return executedTasks.sumOf { it.getDurationInMillis() }
+    }
+
+    /**
+     * Gradle executes the project tasks in parallel to use maximum performance of
+     * the system resources, Which means by adding the task's duration together,
+     * We calculated the serial duration. to calculate the non-parallel
+     * duration(real-life duration) we need to ignore those tasks that are executed at
+     * the same time or covered times by another task.
+     */
+    fun calculateNonParallelExecutionDuration(executedTasks: List<TaskInfo> = this.executedTasks): Long {
+        fun checkIfCanMerge(
+            parallelTask: TaskInfo,
+            nonParallelTask: Map.Entry<Int, Pair<Long, Long>>,
+            nonParallelTasks: HashMap<Int, Pair<Long, Long>>
+        ) {
+            if (parallelTask.startedAt <= nonParallelTask.value.second &&
+                parallelTask.finishedAt >= nonParallelTask.value.second
+            ) {
+                var start = nonParallelTask.value.first
+                var end = nonParallelTask.value.second
+                if (parallelTask.startedAt < nonParallelTask.value.first) {
+                    start = parallelTask.startedAt
+                }
+                if (parallelTask.finishedAt > nonParallelTask.value.second) {
+                    end = parallelTask.finishedAt
+                }
+                nonParallelTasks[nonParallelTask.key] = Pair(start, end)
+            }
+        }
+
+        val nonParallelDurations = hashMapOf<Int, Pair<Long, Long>>()
+
+        val executedTaskIterator = executedTasks
+            .sortedBy { task -> task.startedAt }
+            .iterator()
+
+        while (executedTaskIterator.hasNext()) {
+            val executedTask = executedTaskIterator.next()
+            if (nonParallelDurations.isEmpty()) {
+                nonParallelDurations[nonParallelDurations.size] = Pair(executedTask.startedAt, executedTask.finishedAt)
+                continue
+            }
+
+            var tempTask: Pair<Long, Long>? = null
+            val nonParallelTasksIterator = nonParallelDurations.iterator()
+            while (nonParallelTasksIterator.hasNext()) {
+                val nonParallelTask = nonParallelTasksIterator.next()
+
+                checkIfCanMerge(executedTask, nonParallelTask, nonParallelDurations)
+
+                if (executedTask.startedAt > nonParallelTask.value.first &&
+                    executedTask.finishedAt > nonParallelTask.value.second &&
+                    executedTask.finishedAt > executedTask.startedAt) {
+                    tempTask = Pair(executedTask.startedAt, executedTask.finishedAt)
+                }
+            }
+
+            tempTask.whenNotNull {
+                val iterator = nonParallelDurations.iterator()
+                while (iterator.hasNext()) {
+                    val nonParallelTask = iterator.next()
+                    if (nonParallelTask.value.second in first..second) {
+                        var start = nonParallelTask.value.first
+                        var end = nonParallelTask.value.second
+                        if (first < nonParallelTask.value.first) {
+                            start = first
+                        }
+                        if (second > nonParallelTask.value.second) {
+                            end = second
+                        }
+                        nonParallelDurations[nonParallelTask.key] = Pair(start, end)
+                    }
+                }
+
+                val biggestNonParallelTaskEnd = nonParallelDurations.toList().maxByOrNull { it.second.second }!!.second.second
+                if (first > biggestNonParallelTaskEnd) {
+                    nonParallelDurations[nonParallelDurations.size] = this
+                }
+            }
+        }
+
+        return nonParallelDurations.toList().sumOf { (it.second.second - it.second.first) }
     }
 
 }
