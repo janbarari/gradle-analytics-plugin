@@ -103,13 +103,14 @@ class DatabaseRepositoryImp(
         }
     }
 
-    override fun getMetrics(period: Long): List<BuildMetric> {
+    override fun getMetrics(period: Pair<Long, Long>): List<BuildMetric> {
         return db.transaction {
             val result = arrayListOf<BuildMetric>()
             MetricTable.select {
-                MetricTable.createdAt greaterEq DateTimeUtils.calculateDayInPastMonthsMs(
-                    DateTimeUtils.getDayStartMs(), period
-                ) and (MetricTable.branch eq branch) and (MetricTable.requestedTasks eq requestedTasks)
+                (MetricTable.createdAt greaterEq period.first) and
+                    (MetricTable.createdAt lessEq period.second) and
+                        (MetricTable.branch eq branch) and
+                        (MetricTable.requestedTasks eq requestedTasks)
             }.orderBy(MetricTable.number, SortOrder.ASC).forEach {
                 result.add(
                     jsonAdapter.fromJson(it[MetricTable.value])!!

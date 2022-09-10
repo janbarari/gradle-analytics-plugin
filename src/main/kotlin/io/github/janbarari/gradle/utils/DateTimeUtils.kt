@@ -77,6 +77,15 @@ object DateTimeUtils {
     }
 
     /**
+     * Converts time in milliseconds to dedicated datetime pattern.
+     */
+    fun convertDateToEpochMilli(date: String): Long {
+        return ZonedDateTime.parse("$date 00:00:00 AM UTC", DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a z"))
+            .toInstant()
+            .toEpochMilli()
+    }
+
+    /**
      * Converts time in milliseconds to a formatted date string.
      */
     fun formatToDate(timeInMs: Long): String {

@@ -31,13 +31,13 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
  */
 class GetMetricsUseCase(
     private val repo: DatabaseRepository
-): UseCase<Long, List<BuildMetric>>() {
+): UseCase<Pair<Long, Long>, List<BuildMetric>>() {
 
     /**
      * Returns a list of metrics from database by giving the end timestamp,
      * It uses the end timestamp to calculate the metric dataset period.
      */
-    override suspend fun execute(input: Long): List<BuildMetric> {
+    override suspend fun execute(input: Pair<Long, Long>): List<BuildMetric> {
         return repo.getMetrics(input)
     }
 

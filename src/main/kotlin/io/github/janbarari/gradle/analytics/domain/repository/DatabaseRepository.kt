@@ -31,7 +31,7 @@ interface DatabaseRepository {
     fun isDayMetricExists(): Boolean
 
     fun getDayMetric(): Pair<BuildMetric, Long>
-    fun getMetrics(period: Long): List<BuildMetric>
+    fun getMetrics(period: Pair<Long, Long>): List<BuildMetric>
     fun getTemporaryMetrics(): List<BuildMetric>
 
     fun updateDayMetric(number: Long, metric: BuildMetric): Boolean

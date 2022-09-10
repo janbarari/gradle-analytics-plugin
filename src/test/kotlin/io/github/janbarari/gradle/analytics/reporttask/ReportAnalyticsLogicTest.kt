@@ -21,7 +21,6 @@ import org.junit.jupiter.api.assertThrows
 class ReportAnalyticsLogicTest {
 
     private lateinit var injector: ReportAnalyticsInjector
-    private lateinit var logic: ReportAnalyticsLogic
 
     @BeforeAll
     fun setup() {
@@ -43,7 +42,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensureBranchArgumentValid() throws exception when branch is empty`() {
-        logic = injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertThrows<MissingPropertyException> {
             logic.ensureBranchArgumentValid("")
         }
@@ -51,7 +50,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensureBranchArgumentValid() throws exception when branch is not valid`() {
-        logic = injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertThrows<InvalidPropertyException> {
             logic.ensureBranchArgumentValid("mas ter")
         }
@@ -59,7 +58,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensureBranchArgumentValid() works fine`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertDoesNotThrow {
             logic.ensureBranchArgumentValid("master")
         }
@@ -67,7 +66,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensurePeriodArgumentValid() throws exception when period is empty`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertThrows<MissingPropertyException> {
             logic.ensurePeriodArgumentValid("")
         }
@@ -75,7 +74,7 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensurePeriodArgumentValid() throws exception when period is not valid`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertThrows<InvalidPropertyException> {
             logic.ensurePeriodArgumentValid("ABC")
         }
@@ -83,15 +82,15 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensurePeriodArgumentValid() works fine`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertDoesNotThrow {
-            logic.ensurePeriodArgumentValid("3")
+            logic.ensurePeriodArgumentValid("3m")
         }
     }
 
     @Test
     fun `check ensureTaskArgumentValid() throws exception when task is empty`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertThrows<MissingPropertyException> {
             logic.ensureTaskArgumentValid("")
         }
@@ -99,100 +98,9 @@ class ReportAnalyticsLogicTest {
 
     @Test
     fun `check ensureTaskArgumentValid() works fine`() {
-        injector.provideReportAnalyticsLogic()
+        val logic = injector.provideReportAnalyticsLogic()
         assertDoesNotThrow {
             logic.ensureTaskArgumentValid("assembleDebug")
         }
     }
-
-    @Test
-    fun `check generateReport() returns result when ran on Local and metrics are not empty`() = runBlocking {
-        val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
-        val mockedGetModulesTimelineUseCase = mockk<GetModulesTimelineUseCase>()
-        coEvery {
-            mockedGetModulesTimelineUseCase.execute(any())
-        } returns ModulesTimelineMetric(
-            start = 0,
-            end = 100,
-            createdAt = 16654899383,
-            modules = emptyList()
-        )
-        coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
-            BuildMetric(
-                "a",
-                listOf("b"),
-                100L,
-                gitHeadCommitHash = "unknown",
-                InitializationProcessMetric(1000L)
-            )
-        )
-
-        logic = ReportAnalyticsLogicImp(
-            mockedGetMetricsUseCase,
-            mockedGetModulesTimelineUseCase,
-            injector.isCI!!,
-            injector.outputPath!!,
-            injector.projectName!!,
-            injector.modules!!
-        )
-
-        val result = logic.generateReport(
-            "develop", "assembleDebug", 3
-        )
-        assert(result.contains("3 Months"))
-        assert(result.contains("develop"))
-        assert(result.contains("assembleDebug"))
-    }
-
-    @Test
-    fun `check generateReport() returns result when ran on CI and metrics are not empty`() = runBlocking {
-        injector.isCI = true
-
-        val mockedGetModulesTimelineUseCase = mockk<GetModulesTimelineUseCase>()
-        coEvery {
-            mockedGetModulesTimelineUseCase.execute(any())
-        } returns ModulesTimelineMetric(
-            start = 0,
-            end = 100,
-            createdAt = 16654899383,
-            modules = emptyList()
-        )
-
-        val mockedGetMetricsUseCase = mockk<GetMetricsUseCase>()
-        coEvery { mockedGetMetricsUseCase.execute(3) } returns listOf(
-            BuildMetric(
-                "a",
-                listOf("b"),
-                100L,
-                gitHeadCommitHash = "unknown",
-                InitializationProcessMetric(1000L)
-            )
-        )
-
-        logic = ReportAnalyticsLogicImp(
-            mockedGetMetricsUseCase,
-            mockedGetModulesTimelineUseCase,
-            injector.isCI!!,
-            injector.outputPath!!,
-            injector.projectName!!,
-            injector.modules!!
-        )
-
-        val result = logic.generateReport(
-            "develop", "assembleDebug", 3
-        )
-        assert(result.contains("3 Months"))
-        assert(result.contains("develop"))
-        assert(result.contains("assembleDebug"))
-    }
-
-    @Test
-    fun `check saveReport() returns true`() = runBlocking {
-        logic = injector.provideReportAnalyticsLogic()
-        val result = logic.generateReport(
-            "develop", "assembleDebug", 3
-        )
-        assert(logic.saveReport(result).isNotBlank())
-    }
-
 }

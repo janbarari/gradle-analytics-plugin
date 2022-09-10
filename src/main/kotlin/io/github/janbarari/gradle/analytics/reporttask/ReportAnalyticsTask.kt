@@ -70,11 +70,11 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     var branchArgument: String = ""
 
-    @set:Option(option = "task", description = "Tracking task name")
+    @set:Option(option = "task", description = "Tracking task path")
     @get:Input
     var requestedTasksArgument: String = ""
 
-    @set:Option(option = "period", description = "Number of months")
+    @set:Option(option = "period", description = "Report period")
     @get:Input
     var periodArgument: String = ""
 
@@ -101,7 +101,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
      */
     @TaskAction
     fun execute() = runBlocking {
-
         val modules = project.subprojects
             .filter { it.isDependingOnOtherProject() }
             .map { it.toModule() }
@@ -121,13 +120,12 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             ensurePeriodArgumentValid(periodArgument)
             ensureTaskArgumentValid(requestedTasksArgument)
             try {
-                val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+                val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument))
                 printSuccessfulResult(reportPath)
             } catch (e: EmptyMetricsException) {
                 printNoData()
             }
         }
-
     }
 
     private fun printSuccessfulResult(reportPath: String) {

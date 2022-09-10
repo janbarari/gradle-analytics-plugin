@@ -119,7 +119,7 @@ class DatabaseRepositoryTest {
 
     @Test
     fun `check getMetrics() returns correct result`() {
-        assert(repo.getMetrics(3) is List<BuildMetric>)
+        assert(repo.getMetrics(3L to 3L) is List<BuildMetric>)
     }
 
 }
