@@ -25,6 +25,8 @@ package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.repo
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
@@ -33,13 +35,14 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 /**
- * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport].
+ * Generates html render for [io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport].
  */
 class RenderModulesExecutionProcessReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
+        private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID = "%modules-execution-process-metric%"
         private const val MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME = "modules-execution-process-metric-template"
@@ -53,26 +56,19 @@ class RenderModulesExecutionProcessReportStage(
         return input.replace(MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
-    @Suppress("LongMethod")
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME)
         report.modulesExecutionProcessReport.whenNotNull {
+            val min = (modules.minOfOrNull { it.avgMedianDuration } ?: 0L) / 1000L
+            val max = (modules.maxOfOrNull { it.avgMedianDuration } ?: 0L) / 1000L
 
-            val min = modules.minOfOrNull { it.avgMedianDuration } ?: 0L
-            val max = modules.maxOfOrNull { it.avgMedianDuration } ?: 0L
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(min, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(max, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(
-                min / 1000L,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(
-                max / 1000L,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-
-            val chartLabels: String = modules
-                .firstOrNull()
+            val chartLabels: String = modules.firstOrNull()
                 ?.avgMedianDurations
+                ?.minimize(CHART_MAX_COLUMNS)
+                ?.mapToChartPoints()
                 ?.map { it.description }
                 ?.toArrayString()
                 ?: "[]"
@@ -97,7 +93,7 @@ class RenderModulesExecutionProcessReportStage(
             val tableData = buildString {
                 modules.forEachIndexed { i, module ->
                     append("<tr>")
-                    append("<th>${i+1}</th>")
+                    append("<th>${i + 1}</th>")
                     append("<th>${module.path}</th>")
                     append("<th>${module.avgMedianDuration / 1000L}s</th>")
                     append("<th>${module.avgMedianParallelDuration / 1000L}s</th>")
@@ -105,7 +101,7 @@ class RenderModulesExecutionProcessReportStage(
                     append("<th>${module.avgMedianCoverage}%</th>")
                     if (module.diffRate.isNull()) {
                         append("<th>Unknown</th>")
-                    } else if(module.diffRate!! > 0) {
+                    } else if (module.diffRate!! > 0) {
                         append("<th class=\"red\">${module.diffRate}%</th>")
                     } else {
                         append("<th class=\"green\">${module.diffRate}%</th>")

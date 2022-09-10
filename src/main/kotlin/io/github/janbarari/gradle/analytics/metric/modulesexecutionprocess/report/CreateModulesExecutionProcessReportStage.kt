@@ -31,8 +31,6 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
@@ -42,18 +40,17 @@ class CreateModulesExecutionProcessReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    companion object {
-        private const val CHART_MAX_COLUMNS = 12
-    }
-
-    @Suppress("LongMethod")
     override suspend fun process(input: Report): Report {
-
-        val modules = mutableListOf<ModuleExecutionProcess>()
-
-        this.modules.forEach { module ->
-
+        val temp = modules.map { module ->
             var firstAvgMedianDuration: Long? = null
+            var lastAvgMedianDuration: Long? = null
+            val avgMedianDurations = mutableListOf<TimespanPoint>()
+            val avgMedianDuration = mutableListOf<Long>()
+            val avgMedianParallelDuration = mutableListOf<Long>()
+            val avgMedianParallelRate = mutableListOf<Float>()
+            val avgMedianCoverage = mutableListOf<Float>()
+            var diffRate: Float? = null
+
             metrics.firstOrNull { metric ->
                 metric.modulesExecutionProcessMetric.isNotNull()
             }.whenNotNull {
@@ -65,7 +62,6 @@ class CreateModulesExecutionProcessReportStage(
                     }
             }
 
-            var lastAvgMedianDuration: Long? = null
             metrics.lastOrNull { metric ->
                 metric.modulesExecutionProcessMetric.isNotNull()
             }.whenNotNull {
@@ -77,16 +73,8 @@ class CreateModulesExecutionProcessReportStage(
                     }
             }
 
-            val avgMedianDurations = mutableListOf<TimespanPoint>()
-            val avgMedianDuration = mutableListOf<Long>()
-            val avgMedianParallelDuration = mutableListOf<Long>()
-            val avgMedianParallelRate = mutableListOf<Float>()
-            val avgMedianCoverage = mutableListOf<Float>()
-            var diffRate: Float? = null
-
-            if (firstAvgMedianDuration.isNotNull() && lastAvgMedianDuration.isNotNull()) {
+            if (firstAvgMedianDuration.isNotNull() && lastAvgMedianDuration.isNotNull())
                 diffRate = firstAvgMedianDuration!!.diffPercentageOf(lastAvgMedianDuration!!)
-            }
 
             metrics.filter { metric ->
                 metric.modulesExecutionProcessMetric.isNotNull()
@@ -108,24 +96,19 @@ class CreateModulesExecutionProcessReportStage(
                     }
             }
 
-            modules.add(
-                ModuleExecutionProcess(
-                    path = module.path,
-                    avgMedianDuration = MathUtils.longMedian(avgMedianDuration),
-                    avgMedianParallelDuration = MathUtils.longMedian(avgMedianParallelDuration),
-                    avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRate).round(),
-                    avgMedianCoverage = MathUtils.floatMedian(avgMedianCoverage).round(),
-                    avgMedianDurations = avgMedianDurations.minimize(CHART_MAX_COLUMNS).mapToChartPoints(),
-                    diffRate = diffRate
-                )
+            ModuleExecutionProcess(
+                path = module.path,
+                avgMedianDuration = MathUtils.longMedian(avgMedianDuration),
+                avgMedianParallelDuration = MathUtils.longMedian(avgMedianParallelDuration),
+                avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRate).round(),
+                avgMedianCoverage = MathUtils.floatMedian(avgMedianCoverage).round(),
+                avgMedianDurations = avgMedianDurations,
+                diffRate = diffRate
             )
-
         }
 
         return input.apply {
-            modulesExecutionProcessReport = ModulesExecutionProcessReport(
-                modules = modules
-            )
+            modulesExecutionProcessReport = ModulesExecutionProcessReport(modules = temp)
         }
     }
 

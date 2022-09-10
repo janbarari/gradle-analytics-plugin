@@ -51,102 +51,80 @@ class RenderCacheHitReportStage(
         return HtmlUtils.renderMessage("Cache Hit is not available!")
     }
 
-    @Suppress("LongMethod")
     fun getMetricRender(): String {
-        val overallChartValues = report.cacheHitReport!!
-            .overallMeanValues
-            .map { it.value }
-            .toIntList()
-            .toString()
-
-        val overallChartLabels = report.cacheHitReport!!
-            .overallMeanValues
-            .map { it.description }
-            .toArrayString()
-
-        val tableData = buildString {
-            report.cacheHitReport?.modules?.forEachIndexed { index, it ->
-                var diffRatioRender = "<td>-</td>"
-                it.diffRate.whenNotNull {
-                    diffRatioRender = if (this > 0) {
-                        "<td class=\"green\">+${this}%</td>"
-                    } else if (this < 0) {
-                        "<td class=\"red\">${this}%</td>"
-                    } else {
-                        "<td>Equals</td>"
+        var renderedTemplate = HtmlUtils.getTemplate(CACHE_HIT_METRIC_TEMPLATE_FILE_NAME)
+        report.cacheHitReport.whenNotNull {
+            val tableData = buildString {
+                modules.forEachIndexed { index, it ->
+                    var diffRatioRender = "<td>-</td>"
+                    it.diffRate.whenNotNull {
+                        diffRatioRender = if (this > 0)
+                            "<td class=\"green\">+${this}%</td>"
+                        else if (this < 0)
+                            "<td class=\"red\">${this}%</td>"
+                        else
+                            "<td>Equals</td>"
                     }
-                }
-                append(
-                    """
+                    append("""
                     <tr>
                         <td>${index + 1}</td>
                         <td>${it.path}</td>
                         <td>${it.rate}%</td>
                         $diffRatioRender
                     </tr>
-                """.trimIndent()
-                )
+                """.trimIndent())
+                }
             }
-        }
 
-        val overallCacheHit = report.cacheHitReport!!.overallRate.toString() + "%"
-
-        var overallDiffRatioRender = "<td>-</td>"
-        report.cacheHitReport!!.overallDiffRate.whenNotNull {
-            overallDiffRatioRender = if (this > 0) {
-                "<td class=\"green\">+${this}%</td>"
-            } else if (this < 0) {
-                "<td class=\"red\">${this}%</td>"
-            } else {
-                "<td>Equals</td>"
+            val overallCacheHit = "$overallRate%"
+            var overallDiffRatioRender = "<td>-</td>"
+            overallDiffRate.whenNotNull {
+                overallDiffRatioRender = if (this > 0)
+                    "<td class=\"green\">+${this}%</td>"
+                else if (this < 0)
+                    "<td class=\"red\">${this}%</td>"
+                else
+                    "<td>Equals</td>"
             }
+
+            var bestChartValues = "[]"
+            var worstChartValues = "[]"
+            var bwLabels = "[]"
+            if (modules.isNotEmpty()) {
+                bestChartValues = modules
+                    .first { it.path == getBestModulePath(modules) }
+                    .meanValues
+                    .map { it.value }
+                    .toIntList()
+                    .toString()
+
+                worstChartValues = modules
+                    .first { it.path == getWorstModulePath(modules) }
+                    .meanValues
+                    .map { it.value }
+                    .toIntList()
+                    .toString()
+
+                bwLabels = modules
+                    .first { it.path == getWorstModulePath(modules) }
+                    .meanValues
+                    .map { it.description }
+                    .toArrayString()
+            }
+
+            renderedTemplate = renderedTemplate
+                .replace("%chart-values%", getOverallChartValues().toString())
+                .replace("%chart-labels%", getOverallChartLabels().toArrayString())
+                .replace("%table-data%", tableData)
+                .replace("%overall-cache-hit%", overallCacheHit)
+                .replace("%overall-diff-rate%", overallDiffRatioRender)
+                .replace("%best-values%", bestChartValues)
+                .replace("%worst-values%", worstChartValues)
+                .replace("%bw-labels%", bwLabels)
+                .replace("%worst-module-name%", "\"${getWorstModulePath(modules)}\"")
+                .replace("%best-module-name%", "\"${getBestModulePath(modules)}\"")
         }
-
-        val bestModulePath = getBestModulePath(report.cacheHitReport!!.modules)
-        val worstModulePath = getWorstModulePath(report.cacheHitReport!!.modules)
-
-        val modules = report.cacheHitReport!!.modules
-
-        var bestChartValues = "[]"
-        var worstChartValues = "[]"
-        var bwLabels = "[]"
-
-        if (modules.isNotEmpty()) {
-            bestChartValues = modules
-                .first { it.path == bestModulePath }
-                .meanValues
-                .map { it.value }
-                .toIntList()
-                .toString()
-
-            worstChartValues = modules
-                .first { it.path == worstModulePath }
-                .meanValues
-                .map { it.value }
-                .toIntList()
-                .toString()
-
-            bwLabels = modules
-                .first { it.path == worstModulePath }
-                .meanValues
-                .map { it.description }
-                .toArrayString()
-        }
-
-        var template = HtmlUtils.getTemplate(CACHE_HIT_METRIC_TEMPLATE_FILE_NAME)
-        template = template
-            .replace("%chart-values%", overallChartValues)
-            .replace("%chart-labels%", overallChartLabels)
-            .replace("%table-data%", tableData)
-            .replace("%overall-cache-hit%", overallCacheHit)
-            .replace("%overall-diff-rate%", overallDiffRatioRender)
-            .replace("%best-values%", bestChartValues)
-            .replace("%worst-values%", worstChartValues)
-            .replace("%bw-labels%", bwLabels.toString())
-            .replace("%worst-module-name%", "\"$worstModulePath\"")
-            .replace("%best-module-name%", "\"$bestModulePath\"")
-
-        return template
+        return renderedTemplate
     }
 
     fun getBestModulePath(modules: List<ModuleCacheHit>): String? {
@@ -161,6 +139,19 @@ class RenderCacheHitReportStage(
         return modules.sortedByDescending { module ->
             module.meanValues.sumOf { it.value }
         }.last().path
+    }
+
+    fun getOverallChartValues(): List<Int> {
+        return report.cacheHitReport!!
+            .overallMeanValues
+            .map { it.value }
+            .toIntList()
+    }
+
+    fun getOverallChartLabels(): List<String> {
+        return report.cacheHitReport!!
+            .overallMeanValues
+            .map { it.description }
     }
 
 }
