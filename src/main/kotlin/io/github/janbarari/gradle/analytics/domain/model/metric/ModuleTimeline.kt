@@ -38,10 +38,13 @@ data class ModuleTimeline(
     @ExcludeJacocoGenerated
     @JsonClass(generateAdapter = true)
     data class Timeline(
+        @Json(name = "path")
+        val path: String,
         @Json(name = "start")
         val start: Long,
         @Json(name = "end")
         val end: Long,
+        @Json(name = "is_cached")
         val isCached: Boolean
     )
 

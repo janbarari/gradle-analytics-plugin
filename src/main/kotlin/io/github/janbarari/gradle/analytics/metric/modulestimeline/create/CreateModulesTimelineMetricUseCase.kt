@@ -42,6 +42,7 @@ class CreateModulesTimelineMetricUseCase(
                 timelines = input.executedTasks.filter { it.path.startsWith(module.path) }
                     .map {
                         ModuleTimeline.Timeline(
+                            path = it.path,
                             start = it.startedAt,
                             end = it.finishedAt,
                             isCached = it.isFromCache || it.isUpToDate
