@@ -41,9 +41,9 @@ class UpdateNonCacheableTasksMetricUseCase(
                     .flatMap {
                         it.nonCacheableTasksMetric!!.tasks
                             .filter { it.path == path }
-                            .map { it.avgExecutionDurationInMillis }
+                            .map { it.avgExecutionDurationByMillis }
                     }
-                avgExecutionDurationInMillis = MathUtils.longMedian(medianValue)
+                avgExecutionDurationByMillis = MathUtils.longMedian(medianValue)
             }
 
         return NonCacheableTasksMetric(

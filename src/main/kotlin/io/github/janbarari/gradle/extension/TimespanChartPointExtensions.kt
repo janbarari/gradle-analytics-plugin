@@ -77,3 +77,11 @@ fun Collection<TimespanPoint>.mapToChartPoints(): List<ChartPoint> {
         ChartPoint(it.value, period)
     }
 }
+
+fun List<TimespanPoint>.maxValue(): Long {
+    return this.maxOf { it.value }
+}
+
+fun List<TimespanPoint>.minValue(): Long {
+    return this.minOf { it.value }
+}

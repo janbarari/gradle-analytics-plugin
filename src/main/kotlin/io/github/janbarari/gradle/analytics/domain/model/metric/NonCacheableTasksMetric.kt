@@ -36,7 +36,7 @@ data class NonCacheableTasksMetric(
     @JsonClass(generateAdapter = true)
     data class NonCacheableTask(
         val path: String,
-        var avgExecutionDurationInMillis: Long
+        var avgExecutionDurationByMillis: Long
     ): Serializable
 
 }

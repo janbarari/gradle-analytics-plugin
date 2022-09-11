@@ -22,14 +22,18 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
 @JsonClass(generateAdapter = true)
 data class TimespanPoint(
+    @Json(name = "value")
     val value: Long,
+    @Json(name = "from")
     val from: Long,
+    @Json(name = "to")
     val to: Long? = null
 ): io.github.janbarari.gradle.core.Triple<Long, Long, Long?>(value, from, to) {
 

@@ -34,11 +34,11 @@ class ModulesSourceCountReportJsonAdapterTest {
                         "path": ":app",
                         "value": 30,
                         "coverage": 44.4,
-                        "diffRate": 33.3
+                        "diff_rate": 33.3
                     }
                 ],
-                "totalSourceCount": 100,
-                "totalDiffRate": 4.3,
+                "total_source_count": 100,
+                "total_diff_rate": 4.3,
                 
                 "test-skipping-un-valid-field": true
             }
@@ -83,7 +83,7 @@ class ModulesSourceCountReportJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "medianValues": null
+                    "values": null
                 }
             """.trimIndent()
             adapter.fromJson(

@@ -41,7 +41,7 @@ class CreateNonCacheableTasksMetricUseCase(
                     temp.add(
                         NonCacheableTasksMetric.NonCacheableTask(
                             path = task.path,
-                            avgExecutionDurationInMillis = task.getDurationInMillis()
+                            avgExecutionDurationByMillis = task.getDurationByMillis()
                         )
                     )
                 }

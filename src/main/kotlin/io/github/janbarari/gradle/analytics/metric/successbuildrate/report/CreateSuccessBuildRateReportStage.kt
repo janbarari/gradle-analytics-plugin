@@ -23,30 +23,22 @@
 package io.github.janbarari.gradle.analytics.metric.successbuildrate.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.SuccessBuildRateReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
+import io.github.janbarari.gradle.analytics.domain.model.report.SuccessBuildRateReport
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.mapToSuccessBuildRateMedianTimespanChartPoints
-import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.mapToSuccessBuildRateMeanTimespanChartPoints
-import io.github.janbarari.gradle.extension.minimize
+import io.github.janbarari.gradle.extension.mapToSuccessBuildRateMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.whenEmpty
 
 class CreateSuccessBuildRateReportStage(
     private val metrics: List<BuildMetric>
-): Stage<Report, Report> {
-
-    companion object {
-        private const val CHART_MAX_COLUMNS = 12
-    }
+) : Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
         val medianChartPoints = metrics.filter { metric ->
             metric.successBuildRateMetric.isNotNull()
         }.mapToSuccessBuildRateMedianTimespanChartPoints()
-            .minimize(CHART_MAX_COLUMNS)
-            .mapToChartPoints()
             .whenEmpty {
                 return input
             }
@@ -54,8 +46,6 @@ class CreateSuccessBuildRateReportStage(
         val meanChartPoints = metrics.filter { metric ->
             metric.successBuildRateMetric.isNotNull()
         }.mapToSuccessBuildRateMeanTimespanChartPoints()
-            .minimize(CHART_MAX_COLUMNS)
-            .mapToChartPoints()
             .whenEmpty {
                 return input
             }

@@ -22,15 +22,18 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
+import java.sql.Time
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ConfigurationProcessReport(
-    val medianValues: List<ChartPoint>,
-    val meanValues: List<ChartPoint>,
-    val suggestedMaxValue: Long,
-    val suggestedMinValue: Long
+    @Json(name = "median_values")
+    val medianValues: List<TimespanPoint>,
+    @Json(name = "mean_values")
+    val meanValues: List<TimespanPoint>,
 ): java.io.Serializable

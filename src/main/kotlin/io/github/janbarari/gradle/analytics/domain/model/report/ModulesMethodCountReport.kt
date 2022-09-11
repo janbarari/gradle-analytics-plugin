@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import java.io.Serializable
@@ -29,7 +30,10 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModulesMethodCountReport(
+    @Json(name = "values")
     val values: List<ModuleMethodCount>,
+    @Json(name = "total_method_count")
     val totalMethodCount: Int,
+    @Json(name = "total_diff_rate")
     val totalDiffRate: Float? = null
 ): Serializable

@@ -33,4 +33,4 @@ import java.io.Serializable
 data class ModulesDependencyGraphReport(
     @Json(name = "dependencies")
     var dependencies: List<ModuleDependency>
-): Serializable
+) : Serializable

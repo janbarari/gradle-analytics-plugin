@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
@@ -30,8 +31,12 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModulesTimelineReport(
+    @Json(name = "start")
     val start: Long,
+    @Json(name = "end")
     val end: Long,
+    @Json(name = "modules")
     val modules: List<ModuleTimeline>,
+    @Json(name = "created_at")
     val createdAt: Long
 ): Serializable

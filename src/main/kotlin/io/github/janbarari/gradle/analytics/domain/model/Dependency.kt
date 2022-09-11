@@ -32,14 +32,14 @@ import org.gradle.api.Project
 data class Dependency(
     @Json(name = "name")
     val name: String,
-    @Json(name = "moduleName")
+    @Json(name = "module_name")
     val moduleName: String,
-    @Json(name = "moduleGroup")
+    @Json(name = "module_group")
     val moduleGroup: String,
-    @Json(name = "moduleVersion")
+    @Json(name = "module_version")
     val moduleVersion: String,
-    @Json(name = "size")
-    val sizeInKb: Long
+    @Json(name = "size_by_kb")
+    val sizeByKb: Long
 ): java.io.Serializable {
 
     companion object {
@@ -60,7 +60,7 @@ data class Dependency(
                         moduleName = it.moduleName,
                         moduleGroup = it.moduleGroup,
                         moduleVersion = it.moduleVersion,
-                        sizeInKb = it.moduleArtifacts.sumOf { artifact -> artifact.file.length() / 1024L }
+                        sizeByKb = it.moduleArtifacts.sumOf { artifact -> artifact.file.length() / 1024L }
                     )
                 }
         }

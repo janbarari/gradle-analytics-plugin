@@ -22,14 +22,19 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModuleMethodCount(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "value")
     val value: Int,
+    @Json(name = "coverage")
     val coverage: Float,
+    @Json(name = "diff_rate")
     val diffRate: Float? = null
 ): java.io.Serializable

@@ -58,18 +58,18 @@ class RenderDependencyDetailsReportStage(
             val chartDataset = mutableListOf<Long>()
             dependencies.whenEach {
                 chartLabels.add("$moduleGroup:$moduleName")
-                chartDataset.add(sizeInKb)
+                chartDataset.add(sizeByKb)
             }
 
             val tableDataset = buildString {
                 dependencies
-                    .filter { it.sizeInKb > 0 }
-                    .sortedByDescending { it.sizeInKb }
+                    .filter { it.sizeByKb > 0 }
+                    .sortedByDescending { it.sizeByKb }
                     .forEachIndexed { index, dependency ->
                         append("<tr>")
                         append("<td>${index + 1}</td>")
                         append("<td>${dependency.name}</td>")
-                        append("<td>${dependency.sizeInKb}kb</td>")
+                        append("<td>${dependency.sizeByKb}kb</td>")
                         append("</tr>")
                     }
             }

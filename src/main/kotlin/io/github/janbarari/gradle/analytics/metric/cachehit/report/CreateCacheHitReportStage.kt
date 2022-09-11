@@ -70,23 +70,15 @@ class CreateCacheHitReportStage(
         )
 
         val overallValues = listOf(
-            ChartPoint(
-                value = overallHitTimespanChartPoint.value,
-                description = overallHitTimespanChartPoint.getTimespanString()
-            )
+            overallHitTimespanChartPoint
         )
 
         metric.cacheHitMetric!!.modules.whenEach {
-            val values = mutableListOf<ChartPoint>()
-            TimespanPoint(
-                value = rate, from = metric.createdAt
-            ).also {
-                values.add(
-                    ChartPoint(
-                        value = it.value, description = it.getTimespanString()
-                    )
+            val values = mutableListOf(
+                TimespanPoint(
+                    value = rate, from = metric.createdAt
                 )
-            }
+            )
             modules.add(
                 ModuleCacheHit(
                     path = path,
@@ -121,11 +113,7 @@ class CreateCacheHitReportStage(
                 )
             )
         }
-        val minimizedOverallValues =
-            DatasetUtils.minimizeTimespanChartPoints(overallValuesTimestampChartPoints, 12)
-        val overallValues = minimizedOverallValues.map {
-            ChartPoint(it.value, it.getTimespanString())
-        }
+        val overallMeanValues = DatasetUtils.minimizeTimespanChartPoints(overallValuesTimestampChartPoints, 12)
 
         val modules = mutableListOf<ModuleCacheHit>()
         metrics.last().cacheHitMetric!!.modules.whenEach {
@@ -141,7 +129,7 @@ class CreateCacheHitReportStage(
 
         return CacheHitReport(
             modules = modules,
-            overallMeanValues = overallValues,
+            overallMeanValues = overallMeanValues,
             overallRate = overallHit,
             overallDiffRate = overallDiffRatio
         )
@@ -152,7 +140,7 @@ class CreateCacheHitReportStage(
             .modules.find { it.path == path }?.rate?.diffPercentageOf(value)
     }
 
-    private fun getModuleChartPoints(path: String): List<ChartPoint> {
+    private fun getModuleChartPoints(path: String): List<TimespanPoint> {
         val timestampChartPoints = mutableListOf<TimespanPoint>()
         metrics
             .filter {
@@ -169,9 +157,7 @@ class CreateCacheHitReportStage(
                         )
                     }
             }
-        val minimizedOverallValues = DatasetUtils.minimizeTimespanChartPoints(timestampChartPoints, 12)
-        return minimizedOverallValues.map {
-            ChartPoint(it.value, it.getTimespanString())
-        }
+        
+        return DatasetUtils.minimizeTimespanChartPoints(timestampChartPoints, 12)
     }
 }

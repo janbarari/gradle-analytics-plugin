@@ -22,26 +22,33 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceSizeMetric
 import java.io.Serializable
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModulesSourceSizeReport(
+    @Json(name = "values")
     val values: List<ModuleSourceSize>,
-    val totalSourceSizeInKb: Long,
+    @Json(name = "total_source_size_by_kb")
+    val totalSourceSizeByKb: Long,
+    @Json(name = "total_diff_rate")
     val totalDiffRate: Float? = null
 ): Serializable {
 
     @ExcludeJacocoGenerated
     @JsonClass(generateAdapter = true)
     data class ModuleSourceSize(
+        @Json(name = "path")
         val path: String,
-        val sizeInKb: Long,
+        @Json(name = "size_by_kb")
+        val sizeByKb: Long,
+        @Json(name = "coverage")
         val coverage: Float,
+        @Json(name = "diff_rate")
         val diffRate: Float? = null
-    ): java.io.Serializable
+    ): Serializable
 
 }

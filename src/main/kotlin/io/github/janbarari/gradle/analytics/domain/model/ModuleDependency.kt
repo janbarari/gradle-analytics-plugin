@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import java.io.Serializable
@@ -29,7 +30,10 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModuleDependency(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "configuration")
     val configuration: String,
+    @Json(name = "dependency")
     val dependency: String
 ): Serializable

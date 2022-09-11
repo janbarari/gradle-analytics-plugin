@@ -25,6 +25,10 @@ package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.rep
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.minValue
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -36,9 +40,10 @@ import io.github.janbarari.gradle.utils.MathUtils
  */
 class RenderDependencyResolveProcessReportStage(
     private val report: Report
-): Stage<String, String> {
+) : Stage<String, String> {
 
     companion object {
+        private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID = "%dependency-resolve-process-metric%"
         private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependency-resolve-process-metric-template"
@@ -55,23 +60,30 @@ class RenderDependencyResolveProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME)
         report.dependencyResolveProcessReport.whenNotNull {
-            val medianChartValues = medianValues.map { it.value }
+            val medianChartValues = medianValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.value }
                 .toIntList()
                 .toString()
 
-            val meanChartValues = meanValues.map { it.value }
+            val meanChartValues = meanValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = medianValues.map { it.description }
+            val chartLabels = medianValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
+            val maximumValue = Math.max(medianValues.maxValue(), meanValues.maxValue())
+            val minimumValue = Math.min(medianValues.minValue(), meanValues.minValue())
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maximumValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minimumValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())

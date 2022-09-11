@@ -25,6 +25,10 @@ package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.maxValue
+import io.github.janbarari.gradle.extension.minValue
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -36,6 +40,7 @@ class RenderOverallBuildProcessReportStage(
 ) : Stage<String, String> {
 
     companion object {
+        private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID = "%overall-build-process-metric%"
         private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME = "overall-build-process-metric-template"
@@ -55,19 +60,30 @@ class RenderOverallBuildProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME)
         report.overallBuildProcessReport.whenNotNull {
-            val medianChartValues = medianValues.map { it.value }
+            val medianChartValues = medianValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.value }
                 .toIntList()
                 .toString()
 
-            val meanChartValues = meanValues.map { it.value }
+            val meanChartValues = meanValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.value }
                 .toIntList()
                 .toString()
 
-            val chartLabels = medianValues.map { it.description }
+            val chartLabels = medianValues
+                .minimize(CHART_MAX_COLUMNS)
+                .mapToChartPoints()
+                .map { it.description }
                 .toArrayString()
 
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(suggestedMaxValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(suggestedMinValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val maximumValue = Math.max(medianValues.maxValue(), meanValues.maxValue())
+            val minimumValue = Math.min(medianValues.minValue(), meanValues.minValue())
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(maximumValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(minimumValue, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             renderedTemplate = renderedTemplate
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())

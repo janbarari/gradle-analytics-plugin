@@ -98,8 +98,8 @@ data class BuildInfo(
     /**
      * Calculates the cumulative parallel execution duration in milliseconds.
      */
-    fun calculateParallelExecutionInMillis(): Long {
-        return executedTasks.sumOf { it.getDurationInMillis() }
+    fun calculateParallelExecutionByMillis(): Long {
+        return executedTasks.sumOf { it.getDurationByMillis() }
     }
 
     /**

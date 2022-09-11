@@ -33,7 +33,7 @@ class ModuleSourceCountJsonAdapterTest {
                 "path": ":app",
                 "value": 33,
                 "coverage": 19,
-                "diffRate": 3,
+                "diff_rate": 3,
                 
                 "test-skipping-un-valid-field": true
             }

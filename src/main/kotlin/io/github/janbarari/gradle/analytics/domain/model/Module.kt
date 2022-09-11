@@ -22,10 +22,15 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import org.gradle.api.Project
 
+@JsonClass(generateAdapter = true)
 data class Module(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "absoluteDir")
     val absoluteDir: String
 ): java.io.Serializable {
 

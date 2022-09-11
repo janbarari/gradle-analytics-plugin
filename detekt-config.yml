@@ -21,7 +21,7 @@ complexity:
     threshold: 75
   ComplexMethod:
     active: true
-    threshold: 20
+    threshold: 25
 
 exceptions:
   active: true

@@ -34,11 +34,11 @@ class ModulesMethodCountReportJsonAdapterTest {
                         "path": ":app",
                         "value": 30,
                         "coverage": 44.4,
-                        "diffRate": 33.3
+                        "diff_rate": 33.3
                     }
                 ],
-                "totalMethodCount": 100,
-                "totalDiffRate": 4.3,
+                "total_method_count": 100,
+                "total_diff_rate": 4.3,
                 
                 "test-skipping-un-valid-field": true
             }
@@ -83,7 +83,7 @@ class ModulesMethodCountReportJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "medianValues": null
+                    "values": null
                 }
             """.trimIndent()
             adapter.fromJson(

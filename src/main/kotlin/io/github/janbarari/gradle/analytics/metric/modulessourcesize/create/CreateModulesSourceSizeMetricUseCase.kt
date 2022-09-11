@@ -46,7 +46,7 @@ class CreateModulesSourceSizeMetricUseCase(
                     modulesProperties.add(
                         ModulesSourceSizeMetric.ModuleSourceSize(
                             path = path,
-                            sizeInKb = getModuleSourceSize(absoluteDir)
+                            sizeByKb = getModuleSourceSize(absoluteDir)
                         )
                     )
                 })

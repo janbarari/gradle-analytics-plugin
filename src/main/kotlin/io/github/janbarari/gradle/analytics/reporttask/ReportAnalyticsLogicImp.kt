@@ -98,115 +98,74 @@ class ReportAnalyticsLogicImp(
         if (data.isEmpty()) throw EmptyMetricsException()
 
         val report = generateReport(
-            data = data,
-            branch = branch,
-            requestedTasks = requestedTasks
+            data = data, branch = branch, requestedTasks = requestedTasks
         )
 
         return generateRender(
-            data = data,
-            report = report,
-            branch = branch,
-            requestedTasks = requestedTasks,
-            period = convertedPeriod
+            data = data, report = report, branch = branch, requestedTasks = requestedTasks, period = convertedPeriod
         )
     }
 
     private suspend fun generateReport(data: List<BuildMetric>, branch: String, requestedTasks: String): Report {
-        return CreateReportPipeline(CreateInitializationProcessReportStage(data))
-            .addStage(CreateConfigurationProcessReportStage(data))
-            .addStage(CreateExecutionProcessReportStage(data))
-            .addStage(CreateOverallBuildProcessReportStage(data))
-            .addStage(CreateModulesSourceCountReportStage(data))
-            .addStage(CreateModulesMethodCountReportStage(data))
-            .addStage(CreateCacheHitReportStage(data))
-            .addStage(CreateSuccessBuildRateReportStage(data))
-            .addStage(CreateDependencyResolveProcessReportStage(data))
-            .addStage(CreateParallelExecutionRateReportStage(data))
+        return CreateReportPipeline(CreateInitializationProcessReportStage(data)).addStage(
+                CreateConfigurationProcessReportStage(
+                    data
+                )
+            ).addStage(CreateExecutionProcessReportStage(data)).addStage(CreateOverallBuildProcessReportStage(data))
+            .addStage(CreateModulesSourceCountReportStage(data)).addStage(CreateModulesMethodCountReportStage(data))
+            .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
+            .addStage(CreateDependencyResolveProcessReportStage(data)).addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modules, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modules, data))
-            .addStage(CreateModulesBuildHeatmapReportStage(data))
-            .addStage(CreateDependencyDetailsReportStage(data))
-            .addStage(CreateNonCacheableTasksReportStage(data))
-            .addStage(CreateModulesSourceSizeReportStage(data))
-            .addStage(CreateModulesCrashCountReportStage(modules, data))
+            .addStage(CreateBuildStatusReportStage(modules, data)).addStage(CreateModulesBuildHeatmapReportStage(data))
+            .addStage(CreateDependencyDetailsReportStage(data)).addStage(CreateNonCacheableTasksReportStage(data))
+            .addStage(CreateModulesSourceSizeReportStage(data)).addStage(CreateModulesCrashCountReportStage(modules, data))
             .execute(
                 Report(
-                    branch = branch,
-                    requestedTasks = requestedTasks
+                    branch = branch, requestedTasks = requestedTasks
                 )
             )
     }
 
     private suspend fun generateRender(
-        data: List<BuildMetric>,
-        report: Report,
-        branch: String,
-        requestedTasks: String,
-        period: Pair<Long, Long>
+        data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String, period: Pair<Long, Long>
     ): String {
         val rawHTML: String = getTextResourceContent("index-template.html")
 
-        val renderInitialReportStage = RenderInitialReportStage.Builder()
-            .data(data)
-            .projectName(projectName)
-            .branch(branch)
-            .gitHeadCommitHash(data.last().gitHeadCommitHash.replace("\"", ""))
-            .period(period)
-            .requestedTasks(requestedTasks)
-            .isCI(isCI)
-            .build()
+        val renderInitialReportStage = RenderInitialReportStage.Builder().data(data).projectName(projectName).branch(branch)
+            .gitHeadCommitHash(data.last().gitHeadCommitHash.replace("\"", "")).period(period).requestedTasks(requestedTasks)
+            .isCI(isCI).build()
 
-        return RenderReportPipeline(renderInitialReportStage)
-            .addStage(RenderInitializationProcessReportStage(report))
-            .addStage(RenderConfigurationProcessReportStage(report))
-            .addStage(RenderExecutionProcessReportStage(report))
-            .addStage(RenderOverallBuildProcessReportStage(report))
-            .addStage(RenderModulesSourceCountStage(report))
-            .addStage(RenderModulesMethodCountStage(report))
-            .addStage(RenderCacheHitReportStage(report))
-            .addStage(RenderSuccessBuildRateReportStage(report))
-            .addStage(RenderDependencyResolveProcessReportStage(report))
-            .addStage(RenderParallelExecutionRateReportStage(report))
-            .addStage(RenderModulesExecutionProcessReportStage(report))
-            .addStage(RenderModulesDependencyGraphReportStage(report))
-            .addStage(RenderModulesTimelineReportStage(report))
-            .addStage(RenderBuildStatusReportStage(report))
-            .addStage(RenderModulesBuildHeatmapReportStage(report))
-            .addStage(RenderDependencyDetailsReportStage(report))
-            .addStage(RenderNonCacheableTasksReportStage(report))
-            .addStage(RenderModulesSourceSizeReportStage(report))
-            .addStage(RenderModulesCrashCountReportStage(report))
+        return RenderReportPipeline(renderInitialReportStage).addStage(RenderInitializationProcessReportStage(report))
+            .addStage(RenderConfigurationProcessReportStage(report)).addStage(RenderExecutionProcessReportStage(report))
+            .addStage(RenderOverallBuildProcessReportStage(report)).addStage(RenderModulesSourceCountStage(report))
+            .addStage(RenderModulesMethodCountStage(report)).addStage(RenderCacheHitReportStage(report))
+            .addStage(RenderSuccessBuildRateReportStage(report)).addStage(RenderDependencyResolveProcessReportStage(report))
+            .addStage(RenderParallelExecutionRateReportStage(report)).addStage(RenderModulesExecutionProcessReportStage(report))
+            .addStage(RenderModulesDependencyGraphReportStage(report)).addStage(RenderModulesTimelineReportStage(report))
+            .addStage(RenderBuildStatusReportStage(report)).addStage(RenderModulesBuildHeatmapReportStage(report))
+            .addStage(RenderDependencyDetailsReportStage(report)).addStage(RenderNonCacheableTasksReportStage(report))
+            .addStage(RenderModulesSourceSizeReportStage(report)).addStage(RenderModulesCrashCountReportStage(report))
             .execute(rawHTML)
     }
 
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
         val resources = listOf(
-            "nunito.ttf",
-            "plugin-logo.png",
-            "styles.css",
-            "functions.js",
-            "chart.js",
-            "mermaid.js",
-            "d3.js",
-            "timeline.js"
+            "nunito.ttf", "plugin-logo.png", "styles.css", "functions.js", "chart.js", "mermaid.js", "d3.js", "timeline.js"
         )
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 
         //copy resources
         resources.forEach { resource ->
             FileUtils.copyInputStreamToFile(
-                javaClass.getSafeResourceAsStream("/res/$resource"),
-                File("$savePath/res/$resource")
+                javaClass.getSafeResourceAsStream("/res/$resource"), File("$savePath/res/$resource")
             )
         }
 
         //write index.html
-        File("$savePath/index.html")
-            .writeText(renderedHTML)
+        File("$savePath/index.html").writeText(renderedHTML)
 
         return "$savePath/index.html"
     }
@@ -239,10 +198,26 @@ class ReportAnalyticsLogicImp(
 
     @kotlin.jvm.Throws(InvalidPropertyException::class)
     override fun convertQueryToPeriod(query: String): Pair<Long, Long> {
+
+        @Suppress("ComplexCondition")
+        fun isCorrectlySorted(query: String): Boolean {
+            val temp = query.split(" ").filter { it.isNotEmpty() }.map { it.last() }
+
+            return when (temp) {
+                listOf('y', 'm', 'd') -> true
+                listOf('y', 'd') -> true
+                listOf('y', 'm') -> true
+                listOf('y') -> true
+                listOf('m', 'd') -> true
+                listOf('m') -> true
+                listOf('d') -> true
+                else -> false
+            }
+        }
+
         try {
             // today
-            if (query == "today")
-                return DateTimeUtils.getDayStartMs() to DateTimeUtils.getDayStartMs()
+            if (query == "today") return DateTimeUtils.getDayStartMs() to DateTimeUtils.getDayEndMs()
 
             // custom dates
             if (query.contains(",")) {
@@ -256,56 +231,34 @@ class ReportAnalyticsLogicImp(
             }
 
             // relative
-            var years = 0; var months = 0; var days = 0;
-            if (query.chars().filter { it == 'y'.code }.count() >= 2 ||
-                query.chars().filter { it == 'm'.code }.count() >= 2 ||
-                query.chars().filter { it == 'd'.code }.count() >= 2
-            ) throw InvalidPropertyException("--period has duplicate input")
+            var years = 0
+            var months = 0
+            var days = 0
+            if (query.chars().filter { it == 'y'.code }.count() >= 2 || query.chars().filter { it == 'm'.code }
+                    .count() >= 2 || query.chars().filter { it == 'd'.code }
+                    .count() >= 2) throw InvalidPropertyException("--period has duplicate input")
 
-            query.split(" ")
-                .forEach {
-                    if (it.last() == 'y')
-                        years = it.substring(0, it.length - 1).toInt()
-                    else if (it.last() == 'm')
-                        months = it.substring(0, it.length - 1).toInt()
-                    else if (it.last() == 'd')
-                        days = it.substring(0, it.length - 1).toInt()
+            query.split(" ").forEach {
+                    if (it.last() == 'y') years = it.substring(0, it.length - 1).toInt()
+                    else if (it.last() == 'm') months = it.substring(0, it.length - 1).toInt()
+                    else if (it.last() == 'd') days = it.substring(0, it.length - 1).toInt()
                     else throw InvalidPropertyException("--period is wrong")
 
                 }
 
-            if(!isCorrectlySorted(query)) throw InvalidPropertyException("--period is wrong sorted")
+            if (!isCorrectlySorted(query)) throw InvalidPropertyException("--period is wrong sorted")
 
             val duration: Long = (years * 32_140_800_000L) + (months * 2_678_400_000L) + (days * 86_400_000L)
-            if (duration > 32_140_800_000L)
-                throw InvalidPropertyException("--period can not be more than 1 year!")
+            if (duration > 32_140_800_000L) throw InvalidPropertyException("--period can not be more than 1 year!")
 
             val start = DateTimeUtils.getDayStartMs() - duration
-            val end = DateTimeUtils.getDayStartMs()
+            val end = DateTimeUtils.getDayEndMs()
             return start to end
         } catch (e: Throwable) {
             if (e is InvalidPropertyException) throw e
             throw InvalidPropertyException(
                 "--period can be like \"today\", \"s:yyyy/MM/dd,e:yyyy/MM/dd\", \"1y\", \"4m\", \"38d\", \"3m 06d\""
             )
-        }
-    }
-
-    @Suppress("ComplexCondition")
-    fun isCorrectlySorted(query: String): Boolean {
-        val temp = query.split(" ")
-            .filter { it.isNotEmpty() }
-            .map { it.last() }
-
-        return when (temp) {
-            listOf('y', 'm', 'd') -> true
-            listOf('y', 'd') -> true
-            listOf('y', 'm') -> true
-            listOf('y') -> true
-            listOf('m', 'd') -> true
-            listOf('m') -> true
-            listOf('d') -> true
-            else -> false
         }
     }
 

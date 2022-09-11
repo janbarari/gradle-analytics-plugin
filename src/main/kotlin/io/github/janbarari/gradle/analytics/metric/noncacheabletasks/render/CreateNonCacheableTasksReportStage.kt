@@ -44,11 +44,11 @@ class CreateNonCacheableTasksReportStage(
                         .flatMap { metric ->
                             metric.nonCacheableTasksMetric!!.tasks
                                 .filter { it.path == path }
-                                .map { it.avgExecutionDurationInMillis }
+                                .map { it.avgExecutionDurationByMillis }
                         }
-                    avgExecutionDurationInMillis = MathUtils.longMedian(medianValue)
+                    avgExecutionDurationByMillis = MathUtils.longMedian(medianValue)
                 }
-                ?.filter { it.avgExecutionDurationInMillis.isBigger(0) }
+                ?.filter { it.avgExecutionDurationByMillis.isBigger(0) }
                 ?: emptyList()
 
             nonCacheableTasksReport = NonCacheableTasksReport(

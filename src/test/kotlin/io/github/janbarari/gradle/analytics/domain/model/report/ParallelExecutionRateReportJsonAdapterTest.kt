@@ -43,7 +43,7 @@ class ParallelExecutionRateReportJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "medianValues": null
+                    "median_values": null
                 }
             """.trimIndent()
             adapter.fromJson(

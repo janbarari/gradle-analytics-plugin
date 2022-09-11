@@ -40,7 +40,7 @@ class CreateModulesExecutionProcessMetricUseCase(
         modules.whenEach {
             val tasks = input.executedTasks.filter { it.path.startsWith(path) }
             val overallDuration = input.getExecutionDuration().toMillis()
-            val moduleParallelDuration = tasks.sumOf { it.getDurationInMillis() }
+            val moduleParallelDuration = tasks.sumOf { it.getDurationByMillis() }
             val moduleNonParallelDuration = input.calculateNonParallelExecutionDuration(tasks)
             val moduleParallelRate = (moduleParallelDuration - moduleNonParallelDuration)
                 .toPercentageOf(moduleNonParallelDuration)

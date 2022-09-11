@@ -26,6 +26,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -108,6 +109,7 @@ class RenderCacheHitReportStage(
                 bwLabels = modules
                     .first { it.path == getWorstModulePath(modules) }
                     .meanValues
+                    .mapToChartPoints()
                     .map { it.description }
                     .toArrayString()
             }
@@ -151,6 +153,7 @@ class RenderCacheHitReportStage(
     fun getOverallChartLabels(): List<String> {
         return report.cacheHitReport!!
             .overallMeanValues
+            .mapToChartPoints()
             .map { it.description }
     }
 

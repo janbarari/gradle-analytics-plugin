@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
@@ -29,5 +30,6 @@ import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModulesExecutionProcessReport(
+    @Json(name = "modules")
     val modules: List<ModuleExecutionProcess>
 ): java.io.Serializable

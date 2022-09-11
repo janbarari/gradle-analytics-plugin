@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import java.io.Serializable
@@ -29,17 +30,30 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class BuildStatusReport(
+    @Json(name = "cumulative_overall_build_process_by_seconds")
     val cumulativeOverallBuildProcessBySeconds: Long,
+    @Json(name = "avg_overall_build_process_by_seconds")
     val avgOverallBuildProcessBySeconds: Long,
+    @Json(name = "total_build_process_count")
     val totalBuildProcessCount: Int,
+    @Json(name = "total_project_modules_count")
     val totalProjectModulesCount: Int,
+    @Json(name = "cumulative_parallel_execution_by_seconds")
     val cumulativeParallelExecutionBySeconds: Long,
+    @Json(name = "avg_parallel_execution_rate")
     val avgParallelExecutionRate: Float,
+    @Json(name = "total_succeed_build_count")
     val totalSucceedBuildCount: Int,
+    @Json(name = "total_failed_build_count")
     val totalFailedBuildCount: Int,
+    @Json(name = "avg_cache_hit_rate")
     val avgCacheHitRate: Float,
+    @Json(name = "cumulative_dependency_resolve_by_seconds")
     val cumulativeDependencyResolveBySeconds: Long,
+    @Json(name = "avg_initialization_process_by_millis")
     val avgInitializationProcessByMillis: Long,
+    @Json(name = "avg_configuration_process_by_millis")
     val avgConfigurationProcessByMillis: Long,
+    @Json(name = "avg_execution_process_by_seconds")
     val avgExecutionProcessBySeconds: Long
 ): Serializable

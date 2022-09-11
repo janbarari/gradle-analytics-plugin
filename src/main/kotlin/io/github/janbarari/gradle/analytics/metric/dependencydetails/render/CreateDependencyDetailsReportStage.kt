@@ -37,7 +37,7 @@ class CreateDependencyDetailsReportStage(
             metrics.last().dependencyDetailsMetric.whenNotNull {
                 dependencyDetailsReport = DependencyDetailsReport(
                     dependencies = dependencies,
-                    cumulativeDependenciesSizeInKb = dependencies.sumOf { it.sizeInKb }
+                    cumulativeDependenciesSizeByKb = dependencies.sumOf { it.sizeByKb }
                 )
             }
         }
