@@ -21,12 +21,13 @@
         <div class="flex-child">
             <canvas id="dependencyDetailsChart" style="width: 300px; height: 300px; margin: 0 auto;"></canvas>
             <script type="text/javascript">
+              var _data = %chart-dataset%;
               new Chart("dependencyDetailsChart", {
                 type: "pie",
                 data: {
                   labels: %chart-labels%,
                   datasets: [{
-                    data: %chart-dataset%,
+                    data: _data,
                     backgroundColor: Array.from({ length: _data.length }, () => getRandomColor())
                   }]
                 },
