@@ -1,57 +1,57 @@
-<h2>Parallel Execution Rate</h2>
-<p class="gray-text pb16">Represents how much time is saved in the execution of the build process with parallel builds.</p>
-<div class="chart-container" style="margin-right: 20px;">
-    <canvas id="parallelRatioChart" style="width:100%; height: 100%;"></canvas>
-    <script type="text/javascript">
-        var _values = %chart-median-values%;
-        var _labels = %chart-labels%;
+    <h2>Parallel Execution Rate</h2>
+    <p class="gray-text pb16">Represents how much time is saved in the execution of the build process with parallel builds.</p>
+    <div class="chart-container" style="margin-right: 20px;">
+        <canvas id="parallelRatioChart" style="width:100%; height: 100%;"></canvas>
+        <script type="text/javascript">
+            var _values = %chart-median-values%;
+            var _labels = %chart-labels%;
 
-        var chart = new Chart("parallelRatioChart", {
-          type: "line",
-          data: {
-            labels: _labels,
-            datasets: [
-              {
-                label: "Median",
-                fill: false,
-                backgroundColor: shadeColor(getColor(), 25),
-                borderColor: getColor(),
-                data: _values,
-                cubicInterpolationMode: 'monotone',
-                tension: 0.4
-              }
-            ]
-          },
-          options: {
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: true
+            var chart = new Chart("parallelRatioChart", {
+              type: "line",
+              data: {
+                labels: _labels,
+                datasets: [
+                  {
+                    label: "Median",
+                    fill: false,
+                    backgroundColor: shadeColor(getColor(), 25),
+                    borderColor: getColor(),
+                    data: _values,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.4
+                  }
+                ]
               },
-              tooltip: {
-                mode: 'index',
-                axis: 'x',
-                intersect: false,
-                callbacks: {
-                  label: function (context) {
-                    let label = context.dataset.label || '';
-                    return label + ": " + context.parsed.y + "%";
+              options: {
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    display: true
+                  },
+                  tooltip: {
+                    mode: 'index',
+                    axis: 'x',
+                    intersect: false,
+                    callbacks: {
+                      label: function (context) {
+                        let label = context.dataset.label || '';
+                        return label + ": " + context.parsed.y + "%";
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    display: true,
+                    suggestedMin: %suggested-min-value%,
+                    suggestedMax: %suggested-max-value%
                   }
                 }
               }
-            },
-            scales: {
-              y: {
-                display: true,
-                suggestedMin: %suggested-min-value%,
-                suggestedMax: %suggested-max-value%
-              }
-            }
-          }
-        });
-      </script>
-</div>
-<span class="gray-text center-text">
-      <span>Higher is better</span>
-    </span>
-<div class="space"></div>
+            });
+          </script>
+    </div>
+    <span class="gray-text center-text">
+          <span>Higher is better</span>
+        </span>
+    <div class="space"></div>

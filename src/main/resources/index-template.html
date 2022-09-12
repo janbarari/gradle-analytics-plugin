@@ -39,57 +39,70 @@
     <img alt="logo" class="logo-dimensions" src="res/plugin-logo.png"/>
     <h1>%root-project-name% Build Analytics Report</h1>
     <h3>
-        Analytics
+        Analyze task
         <span class="tag-style-1">%task-path%</span>
         on branch
         <span class="tag-style-2">%branch%</span>
-        in
-        <span class="tag-style-3">%time-period-title%</span>
     </h3>
-    <h4><span class="gray-text">Git head commit hash: </span> %git-head-commit-hash%</h4>
-    <h4><span class="gray-text">Time period: </span> %time-period-start% ~ %time-period-end%</h4>
+    <h4><span class="gray-text">Head commit hash: </span> %git-head-commit-hash%</h4>
+    <h4><span class="gray-text">Time period: </span> %time-period-start% - %time-period-end%</h4>
     <h4><span class="gray-text">Reported at: </span> %reported-at%</h4>
     <h4><span class="gray-text">Is on CI/CD: </span> %is-ci%</h4>
-    <h4><span class="gray-text">Version: </span> %plugin-version%</h4>
+    <h4><span class="gray-text">Plugin version: </span> %plugin-version%</h4>
     <div class="space"></div>
 
-    %build-status-metric%
+%build-status-metric%
 
-    %initialization-process-metric%
+%initialization-process-metric%
 
-    %configuration-process-metric%
+%configuration-process-metric%
 
-    %dependency-resolve-process-metric%
+%dependency-resolve-process-metric%
 
-    %execution-process-metric%
+%execution-process-metric%
 
-    %modules-execution-process-metric%
+%modules-execution-process-metric%
 
-    %overall-build-process-metric%
+%overall-build-process-metric%
 
-    %modules-source-count-metric%
+%modules-source-count-metric%
 
-    %modules-source-size-metric%
+%modules-source-size-metric%
 
-    %modules-method-count-metric%
+%modules-method-count-metric%
 
-    %cache-hit-metric%
+%cache-hit-metric%
 
-    %success-build-rate-metric%
+%success-build-rate-metric%
 
-    %modules-crash-count-metric%
+%modules-crash-count-metric%
 
-    %parallel-execution-rate-metric%
+%parallel-execution-rate-metric%
 
-    %modules-dependency-graph-metric%
+%modules-dependency-graph-metric%
 
-    %modules-execution-timeline-metric%
+%modules-execution-timeline-metric%
 
-    %modules-build-heatmap-metric%
+%modules-build-heatmap-metric%
 
-    %dependency-details-metric%
+%dependency-details-metric%
 
-    %non-cacheable-tasks-metric%
+%non-cacheable-tasks-metric%
+
+    <div class="space"></div>
+    <div class="disclaimer-container">
+        <h4><i class="bi bi-exclamation-diamond-fill orange"></i>  DISCLAIMER</h4>
+        <span class="gray-text">
+        The report is provided "as is", without warranty of any kind, express or
+        implied, including but not limited to the warranties of merchantability,
+        fitness for a particular purpose and noninfringement. In no event shall the
+        authors or copyright holders be liable for any claim, damages or other
+        liability, whether in an action of contract, tort or otherwise, arising from,
+        out of or in connection with the report or the use or other dealings in the
+        report.
+      </span>
+    </div>
+    <div class="space"></div>
 
     <div class="space"></div>
     <img alt="logo" class="footer-logo" src="res/plugin-logo.png"/>
@@ -102,6 +115,7 @@
     <span class="copyright-text">
         <b>MIT License | Copyright ©️ 2022</b>
     </span>
+
 </div>
 </body>
 </html>

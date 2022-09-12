@@ -98,11 +98,16 @@ class ReportAnalyticsLogicImp(
         if (data.isEmpty()) throw EmptyMetricsException()
 
         val report = generateReport(
-            data = data, branch = branch, requestedTasks = requestedTasks
+            data = data,
+            branch = branch,
+            requestedTasks = requestedTasks
         )
 
         return generateRender(
-            data = data, report = report, branch = branch, requestedTasks = requestedTasks, period = convertedPeriod
+            data = data,
+            report = report,
+            branch = branch,
+            requestedTasks = requestedTasks
         )
     }
 
@@ -129,24 +134,39 @@ class ReportAnalyticsLogicImp(
     }
 
     private suspend fun generateRender(
-        data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String, period: Pair<Long, Long>
+        data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String
     ): String {
         val rawHTML: String = getTextResourceContent("index-template.html")
 
-        val renderInitialReportStage = RenderInitialReportStage.Builder().data(data).projectName(projectName).branch(branch)
-            .gitHeadCommitHash(data.last().gitHeadCommitHash.replace("\"", "")).period(period).requestedTasks(requestedTasks)
-            .isCI(isCI).build()
+        val renderInitialReportStage = RenderInitialReportStage.Builder()
+            .gitHeadCommitHash(data.last().gitHeadCommitHash.replace("\"", ""))
+            .requestedTasks(requestedTasks)
+            .projectName(projectName)
+            .branch(branch)
+            .data(data)
+            .isCI(isCI)
+            .build()
 
-        return RenderReportPipeline(renderInitialReportStage).addStage(RenderInitializationProcessReportStage(report))
-            .addStage(RenderConfigurationProcessReportStage(report)).addStage(RenderExecutionProcessReportStage(report))
-            .addStage(RenderOverallBuildProcessReportStage(report)).addStage(RenderModulesSourceCountStage(report))
-            .addStage(RenderModulesMethodCountStage(report)).addStage(RenderCacheHitReportStage(report))
-            .addStage(RenderSuccessBuildRateReportStage(report)).addStage(RenderDependencyResolveProcessReportStage(report))
-            .addStage(RenderParallelExecutionRateReportStage(report)).addStage(RenderModulesExecutionProcessReportStage(report))
-            .addStage(RenderModulesDependencyGraphReportStage(report)).addStage(RenderModulesTimelineReportStage(report))
-            .addStage(RenderBuildStatusReportStage(report)).addStage(RenderModulesBuildHeatmapReportStage(report))
-            .addStage(RenderDependencyDetailsReportStage(report)).addStage(RenderNonCacheableTasksReportStage(report))
-            .addStage(RenderModulesSourceSizeReportStage(report)).addStage(RenderModulesCrashCountReportStage(report))
+        return RenderReportPipeline(renderInitialReportStage)
+            .addStage(RenderInitializationProcessReportStage(report))
+            .addStage(RenderConfigurationProcessReportStage(report))
+            .addStage(RenderExecutionProcessReportStage(report))
+            .addStage(RenderOverallBuildProcessReportStage(report))
+            .addStage(RenderModulesSourceCountStage(report))
+            .addStage(RenderModulesMethodCountStage(report))
+            .addStage(RenderCacheHitReportStage(report))
+            .addStage(RenderSuccessBuildRateReportStage(report))
+            .addStage(RenderDependencyResolveProcessReportStage(report))
+            .addStage(RenderParallelExecutionRateReportStage(report))
+            .addStage(RenderModulesExecutionProcessReportStage(report))
+            .addStage(RenderModulesDependencyGraphReportStage(report))
+            .addStage(RenderModulesTimelineReportStage(report))
+            .addStage(RenderBuildStatusReportStage(report))
+            .addStage(RenderModulesBuildHeatmapReportStage(report))
+            .addStage(RenderDependencyDetailsReportStage(report))
+            .addStage(RenderNonCacheableTasksReportStage(report))
+            .addStage(RenderModulesSourceSizeReportStage(report))
+            .addStage(RenderModulesCrashCountReportStage(report))
             .execute(rawHTML)
     }
 

@@ -183,6 +183,10 @@ hr {
     color: #ff4040;
 }
 
+.orange {
+    color: #ff9800;
+}
+
 .green {
     color: #2e8b57;
 }
@@ -217,4 +221,11 @@ hr {
     padding: 0px;
     display: table;
     text-align: center;
+}
+
+.disclaimer-container {
+    width: 600px;
+    margin: 0 auto;
+    text-align: justify;
+    text-justify: inter-word;
 }

@@ -1,43 +1,43 @@
-<h2>Non-cacheable Tasks</h2>
-<p class="gray-text pb16">This is a description.</p>
-<div class="chart-container" style="margin-right: 20px; height: %chart-height%;">
-  <canvas id="nonCacheableTasksChart" style="width:100%; height: 100%;"></canvas>
-  <script type="text/javascript">
-    var chart = new Chart("nonCacheableTasksChart", {
-      type: "bar",
-      data: {
-        labels: %labels%,
-        datasets: [
-          {
-            backgroundColor: %colors%,
-            data: %dataset%
-          }
-        ]
-      },
-      options: {
-        indexAxis: 'y',
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
+    <h2>Non-cacheable Tasks</h2>
+    <p class="gray-text pb16">This is a description.</p>
+    <div class="chart-container" style="margin-right: 20px; height: %chart-height%;">
+      <canvas id="nonCacheableTasksChart" style="width:100%; height: 100%;"></canvas>
+      <script type="text/javascript">
+        var chart = new Chart("nonCacheableTasksChart", {
+          type: "bar",
+          data: {
+            labels: %labels%,
+            datasets: [
+              {
+                backgroundColor: %colors%,
+                data: %dataset%
+              }
+            ]
           },
-          tooltip: {
-            mode: 'index',
-            axis: 'y',
-            intersect: false,
-            callbacks: {
-              label: function (context) {
-                let label = context.dataset.label || '';
-                return " " + context.parsed.x + "ms";
+          options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: 'index',
+                axis: 'y',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    return " " + context.parsed.x + "ms";
+                  }
+                }
               }
             }
           }
-        }
-      }
-    });
-  </script>
-</div>
-<span class="gray-text center-text">
-  <span>Smaller Bars Are Better</span>
-</span>
-<div class="space"></div>
+        });
+      </script>
+    </div>
+    <span class="gray-text center-text">
+      <span>Smaller Bars Are Better</span>
+    </span>
+    <div class="space"></div>
