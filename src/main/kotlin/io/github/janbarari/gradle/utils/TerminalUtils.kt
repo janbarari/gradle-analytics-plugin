@@ -33,9 +33,9 @@ object TerminalUtils {
     /**
      * Executes the cmd in terminal.
      *
-     * @throws io.github.janbarari.gradle.utils.TerminalException if the command execution failed.
+     * @throws io.github.janbarari.gradle.utils.TerminalCommandException if the command execution failed.
      */
-    @kotlin.jvm.Throws(TerminalException::class)
+    @kotlin.jvm.Throws(TerminalCommandException::class)
     fun execCommand(cmd: String): String {
         val runtime = Runtime.getRuntime()
         try {
@@ -44,7 +44,7 @@ object TerminalUtils {
             )
             return reader.readLine()
         } catch (e: Exception) {
-            throw TerminalException(cmd, e)
+            throw TerminalCommandException(cmd, e)
         }
     }
 
