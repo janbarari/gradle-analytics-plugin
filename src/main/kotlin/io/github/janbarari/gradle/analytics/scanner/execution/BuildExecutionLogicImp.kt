@@ -27,8 +27,6 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig.Database
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
@@ -75,8 +73,6 @@ import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitiali
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
-import io.github.janbarari.gradle.os.provideHardwareInfo
-import io.github.janbarari.gradle.os.provideOperatingSystem
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.GitUtils
@@ -132,8 +128,6 @@ class BuildExecutionLogicImp(
             initializedAt = BuildInitializationService.INITIALIZED_AT,
             configuredAt = BuildConfigurationService.CONFIGURED_AT,
             finishedAt = System.currentTimeMillis(),
-            osInfo = OsInfo(provideOperatingSystem().getName()),
-            hardwareInfo = HardwareInfo(provideHardwareInfo().availableMemory(), provideHardwareInfo().totalMemory()),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
             executedTasks = executedTasks.toList(),
             branch = GitUtils.currentBranch(),
@@ -147,24 +141,31 @@ class BuildExecutionLogicImp(
 
         val buildMetric =
             CreateMetricPipeline(CreateInitializationProcessMetricStage(buildInfo, createInitializationProcessMetricUseCase))
-            .addStage(CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase))
-            .addStage(CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase))
-            .addStage(CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase))
-            .addStage(CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase))
-            .addStage(CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase))
-            .addStage(CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase))
-            .addStage(CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase))
-            .addStage(CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase))
-            .addStage(CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase))
-            .addStage(CreateModulesExecutionProcessMetricStage(buildInfo, createModulesExecutionProcessMetricUseCase))
-            .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
-            .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
-            .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
-            .addStage(CreateDependencyDetailsMetricStage(createDependencyDetailsMetricUseCase))
-            .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
-            .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
-            .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase))
-            .execute(BuildMetric(buildInfo.branch, buildInfo.requestedTasks, buildInfo.createdAt, buildInfo.gitHeadCommitHash))
+                .addStage(CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase))
+                .addStage(CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase))
+                .addStage(CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase))
+                .addStage(CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase))
+                .addStage(CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase))
+                .addStage(CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase))
+                .addStage(CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase))
+                .addStage(CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase))
+                .addStage(CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase))
+                .addStage(CreateModulesExecutionProcessMetricStage(buildInfo, createModulesExecutionProcessMetricUseCase))
+                .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
+                .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
+                .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
+                .addStage(CreateDependencyDetailsMetricStage(createDependencyDetailsMetricUseCase))
+                .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
+                .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
+                .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase))
+                .execute(
+                    BuildMetric(
+                        buildInfo.branch,
+                        buildInfo.requestedTasks,
+                        buildInfo.createdAt,
+                        buildInfo.gitHeadCommitHash
+                    )
+                )
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)

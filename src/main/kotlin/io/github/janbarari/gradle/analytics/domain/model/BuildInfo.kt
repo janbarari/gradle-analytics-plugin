@@ -22,8 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.tooling.Failure
 import java.time.Duration
@@ -36,8 +34,6 @@ data class BuildInfo(
     var dependenciesResolveInfo: Collection<DependencyResolveInfo>,
     val executedTasks: List<TaskInfo>,
     val finishedAt: Long,
-    val osInfo: OsInfo,
-    val hardwareInfo: HardwareInfo,
     val branch: String,
     val gitHeadCommitHash: String,
     val requestedTasks: List<String>,
@@ -152,7 +148,8 @@ data class BuildInfo(
 
                 if (executedTask.startedAt > nonParallelTask.value.first &&
                     executedTask.finishedAt > nonParallelTask.value.second &&
-                    executedTask.finishedAt > executedTask.startedAt) {
+                    executedTask.finishedAt > executedTask.startedAt
+                ) {
                     tempTask = Pair(executedTask.startedAt, executedTask.finishedAt)
                 }
             }

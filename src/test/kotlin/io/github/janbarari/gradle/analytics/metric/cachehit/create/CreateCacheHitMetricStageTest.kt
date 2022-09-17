@@ -58,8 +58,6 @@ class CreateCacheHitMetricStageTest {
         dependenciesResolveInfo = emptyList(),
         executedTasks = emptyList(),
         finishedAt = 16589012344,
-        osInfo = OsInfo("macOS"),
-        hardwareInfo = HardwareInfo(availableMemory = 1000, maximumMemoryCapacity = 2000),
         branch = "develop",
         gitHeadCommitHash = "unknown",
         requestedTasks = listOf("assemble"),

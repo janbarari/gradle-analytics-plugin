@@ -65,15 +65,13 @@
             1. Every process in the Gradle build system starts with a task, the `requested task` means the task you defined
             to be analyzed.
             <br />
-            2. Metrics are getting saved daily basis, if build process executed in CI/CD, metrics will be saved on its
-            database.
+            2. Metrics are getting saved on daily basis and if build process executes in CI/CD, metrics will be saved in its caching database.
             <br />
-            3. Plugin only holds maximum 1 year of metrics in database.
+            3. Plugin only holds the metrics results in the caching database up to one year.
             <br />
-            4. It is recommended to keep tracking the report after important stages of you CI/CD or Local build in order to
-            see the effects.
+            4. It is recommended to keep track of the reports after important stages of your CI/CD or Local build in order to see the actual result.
             <br />
-            5. It is required you to understand median/mean to be able to read the metric effects from metrics charts.
+            5. You need to understand median/mean to be able to read the chart of metrics results.
             <br />
             6. Plugin runs the metrics process when `requested task` executed on branch you configured.
         </p>

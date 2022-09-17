@@ -66,8 +66,6 @@ class CreateCacheHitMetricUseCaseTest {
         dependenciesResolveInfo = emptyList(),
         executedTasks = tasks,
         finishedAt = 2000,
-        osInfo = OsInfo(name = "macOS"),
-        hardwareInfo = HardwareInfo(availableMemory = 1000, maximumMemoryCapacity = 2000),
         branch = "develop",
         gitHeadCommitHash = "ksdjhfakjsfhajskfhajkf",
         requestedTasks = emptyList(),

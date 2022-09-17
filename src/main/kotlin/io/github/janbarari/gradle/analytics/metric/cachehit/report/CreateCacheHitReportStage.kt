@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
@@ -33,8 +32,8 @@ import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.whenEach
-import io.github.janbarari.gradle.utils.DatasetUtils
 
 class CreateCacheHitReportStage(
     private val metrics: List<BuildMetric>
@@ -113,7 +112,7 @@ class CreateCacheHitReportStage(
                 )
             )
         }
-        val overallMeanValues = DatasetUtils.minimizeTimespanChartPoints(overallValuesTimestampChartPoints, 12)
+        val overallMeanValues = overallValuesTimestampChartPoints.minimize(12)
 
         val modules = mutableListOf<ModuleCacheHit>()
         metrics.last().cacheHitMetric!!.modules.whenEach {
@@ -158,6 +157,6 @@ class CreateCacheHitReportStage(
                     }
             }
         
-        return DatasetUtils.minimizeTimespanChartPoints(timestampChartPoints, 12)
+        return timestampChartPoints.minimize(12)
     }
 }

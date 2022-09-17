@@ -17,8 +17,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -30,8 +28,6 @@ class BuildInfoTest {
         assertEquals(150, info.configuredAt)
         assertEquals(0, info.dependenciesResolveInfo.size)
         assertEquals(0, info.executedTasks.size)
-        assertEquals("macOS", info.osInfo.name)
-        assertEquals(10000, info.hardwareInfo.availableMemory)
         assertEquals(800, info.finishedAt)
         assertEquals("master", info.branch)
         assertEquals(0, info.requestedTasks.size)
@@ -47,8 +43,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -67,8 +61,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -87,8 +79,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -107,8 +97,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -127,8 +115,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -147,8 +133,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -167,8 +151,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -187,8 +169,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
@@ -207,8 +187,6 @@ class BuildInfoTest {
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
-            osInfo = OsInfo("macOS"),
-            hardwareInfo = HardwareInfo(10000, 16000),
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),

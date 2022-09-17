@@ -101,10 +101,12 @@ class RenderModulesExecutionProcessReportStage(
                     append("<th>${module.avgMedianCoverage}%</th>")
                     if (module.diffRate.isNull()) {
                         append("<th>Unknown</th>")
-                    } else if (module.diffRate!! > 0) {
-                        append("<th class=\"red\">${module.diffRate}%</th>")
+                    } else if (module.diffRate!! == 0F) {
+                        append("<th>Equals</th>")
+                    } else if (module.diffRate > 0) {
+                        append("<th class=\"red\">+${module.diffRate}%</th>")
                     } else {
-                        append("<th class=\"green\">${module.diffRate}%</th>")
+                        append("<th class=\"green\">-${module.diffRate}%</th>")
                     }
                     append("</tr>")
                 }

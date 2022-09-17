@@ -36,7 +36,6 @@ dependencies {
     compileOnly(gradleApi())
 
     implementation(kotlin("stdlib-jdk8"))
-    implementation(libs.oshi)
     implementation(libs.sqlite.driver)
     implementation(libs.mysql.driver)
     implementation(libs.jetbrains.exposed.core)
