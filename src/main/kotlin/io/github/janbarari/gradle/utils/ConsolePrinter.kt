@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.utils
 
+/**
+ * Prints the messages in the terminal console in a visual format.
+ */
 class ConsolePrinter(private var blockCharWidth: Int) {
 
     init {
@@ -30,9 +33,8 @@ class ConsolePrinter(private var blockCharWidth: Int) {
 
     fun printFirstLine(firstSpace: Boolean = true) {
         val output = StringBuilder()
-        if (firstSpace) {
+        if (firstSpace)
             output.append("\n")
-        }
         output.append(" ")
         output.append("┌")
         (0..blockCharWidth).forEach {

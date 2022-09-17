@@ -72,9 +72,7 @@ object ProjectUtils {
     }
 
     /**
-     * Checks the project Gradle version is above the entered gradle version.
-     *
-     * @return True, if Gradle version is compatible.
+     * Check the project Gradle version is compatible(above the entered gradle version).
      */
     fun isCompatibleWith(version: GradleVersions): Boolean {
         val projectGradleVersion = GradleVersion.current()

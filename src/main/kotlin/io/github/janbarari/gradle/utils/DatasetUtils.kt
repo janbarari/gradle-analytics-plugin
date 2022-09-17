@@ -32,7 +32,7 @@ import io.github.janbarari.gradle.extension.isNull
 object DatasetUtils {
 
     /**
-     * Calculates the given time span chart point dataset mean.
+     * Calculate the Mean average of timespanChartPoint dataset.
      */
     fun getTimespanChartPointMean(values: List<TimespanPoint>): List<TimespanPoint> {
         if (values.isEmpty()) return values
@@ -63,7 +63,7 @@ object DatasetUtils {
     }
 
     /**
-     * Minimizes the given timespan chart point dataset.
+     * Minimize the timespanChartPoint dataset.
      */
     fun minimizeTimespanChartPoints(dataset: List<TimespanPoint>, maximumSize: Int): List<TimespanPoint> {
         return if (dataset.isBiggerThan(maximumSize))

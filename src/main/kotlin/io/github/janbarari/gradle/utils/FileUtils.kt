@@ -29,12 +29,12 @@ import java.util.stream.Collectors
 import kotlin.io.path.Path
 
 /**
- * A collection of datetime functions.
+ * A collection of I/O functions.
  */
 object FileUtils {
 
     /**
-     * Returns list of source files in the module path.
+     * Get all source files in the module path.
      */
     fun getModuleSources(directory: String): List<Path> {
         var sourcePaths: List<Path>

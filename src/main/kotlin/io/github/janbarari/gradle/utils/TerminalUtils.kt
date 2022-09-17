@@ -31,7 +31,7 @@ import java.io.InputStreamReader
 object TerminalUtils {
 
     /**
-     * Executes the cmd in terminal.
+     * Execute the command in terminal.
      *
      * @throws io.github.janbarari.gradle.utils.TerminalCommandException if the command execution failed.
      */
@@ -39,9 +39,7 @@ object TerminalUtils {
     fun execCommand(cmd: String): String {
         val runtime = Runtime.getRuntime()
         try {
-            val reader = BufferedReader(
-                InputStreamReader(runtime.exec(cmd).inputStream)
-            )
+            val reader = BufferedReader(InputStreamReader(runtime.exec(cmd).inputStream))
             return reader.readLine()
         } catch (e: Exception) {
             throw TerminalCommandException(cmd, e)
