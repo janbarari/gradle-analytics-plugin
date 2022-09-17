@@ -51,6 +51,35 @@
     <h4><span class="gray-text">Plugin version: </span> %plugin-version%</h4>
     <div class="space"></div>
 
+    <h4><i class="bi bi-exclamation-diamond-fill orange"></i> ATTENTION</h4>
+    <span class="gray-text">
+      To understand the metrics that plugin provides, It is required to understand Gradle basics and how this build
+      system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html"
+                            target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
+    </span>
+    <div class="space"></div>
+
+    <h4 class="green"><i class="bi bi-exclamation-circle-fill green"></i> Things you should know</h4>
+    <div class="gray-text">
+        <p>
+            1. Every process in the Gradle build system starts with a task, the `requested task` means the task you defined
+            to be analyzed.
+            <br />
+            2. Metrics are getting saved daily basis, if build process executed in CI/CD, metrics will be saved on its
+            database.
+            <br />
+            3. Plugin only holds maximum 1 year of metrics in database.
+            <br />
+            4. It is recommended to keep tracking the report after important stages of you CI/CD or Local build in order to
+            see the effects.
+            <br />
+            5. It is required you to understand median/mean to be able to read the metric effects from metrics charts.
+            <br />
+            6. Plugin runs the metrics process when `requested task` executed on branch you configured.
+        </p>
+    </div>
+    <div class="space"></div>
+
 %build-status-metric%
 
 %initialization-process-metric%

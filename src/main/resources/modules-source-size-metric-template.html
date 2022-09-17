@@ -1,5 +1,5 @@
     <h2>Modules Source Size</h2>
-    <p class="gray-text pb16">Represents the project and modules cumulative source files size.</p>
+    <p class="gray-text pb16">It represents the project and its modules source file size.</p>
     <div class="flex-container">
         <div class="flex-child pr16">
             <div class="table-container">
@@ -24,17 +24,15 @@
         <div class="flex-child" style="padding-left: 12px;">
             <canvas id="modulesSourceSizeChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
             <script type="text/javascript">
-              var _labels = %module-labels%;
               var _data = %module-values%;
-              var _colors = Array.from({length: _data.length}, () => getRandomColor());
 
               new Chart("modulesSourceSizeChart", {
                 type: "pie",
                 data: {
-                  labels: _labels,
+                  labels: %module-labels%,
                   datasets: [{
                     data: _data,
-                    backgroundColor: _colors
+                    backgroundColor: Array.from({length: _data.length}, () => getRandomColor())
                   }]
                 },
                 options: {
@@ -64,6 +62,6 @@
         </div>
     </div>
     <div class="space-small"></div>
-    <span class="gray-text"><strong>Coverage</strong> represents the percentage of the project methods filled by the module.</span><br>
-    <span class="gray-text"><strong>Diff Rate</strong> represents the change percentage of the period.</span>
+    <span class="gray-text"><strong>Coverage</strong> represents the ratio of the project source files size occupied with the module source files size.</span><br>
+    <span class="gray-text"><strong>Diff Rate</strong> represents the change rate of source files size during the report period.</span>
     <div class="space"></div>

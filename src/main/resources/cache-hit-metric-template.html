@@ -1,21 +1,24 @@
     <h2>Cache Hit</h2>
-    <p class="gray-text pb16">Represents the project and modules tasks cache average hit rate(Tasks run with FROM_CACHE or UP_TO_DATE).</p>
+    <p class="gray-text pb16">
+        Gradle creates a cache for the executed task to be reused in the next incremental builds,
+        the more cached tasks lead to faster builds.
+        <br /><br />
+        It represents the project and modules tasks average cache hit rate (tasks run with FROM_CACHE or UP_TO_DATE).
+    </p>
     <div class="chart-container">
         <canvas id="cacheHitChart" style="width:100%; height: 200px;"></canvas>
         <script type="text/javascript">
-            var _values = %chart-values%;
-            var _labels = %chart-labels%;
             var chart = new Chart("cacheHitChart", {
               type: "line",
               data: {
-                labels: _labels,
+                labels: %chart-labels%,
                 datasets: [
                   {
                     label: "Mean",
                     fill: false,
                     backgroundColor: shadeColor(getColor(), 25),
                     borderColor: getColor(),
-                    data: _values,
+                    data: %chart-values%,
                     cubicInterpolationMode: 'monotone',
                     tension: 0.4
                   }
@@ -56,7 +59,6 @@
     </span>
     <div class="space-small"></div>
     <div class="flex-container">
-
         <div class="flex-child pr16">
             <div class="table-container">
                 <table>
@@ -75,21 +77,15 @@
                 </table>
             </div>
             <div class="space-small"></div>
-            <span class="gray-text"><strong>Hit</strong> is the percentage of using cache by module.</span>
-            <span class="gray-text"><strong>Diff Rate</strong> is the cache hit difference in the reports period.</span>
         </div>
 
         <div class="flex-child">
             <canvas id="cacheHitRadarChart" style="width: 70%; margin: 0 auto;"></canvas>
             <script type="text/javascript">
-              var bestValues = %best-values%;
-              var worstValues = %worst-values%;
-              var labels = %bw-labels%;
-
               var chart = new Chart("cacheHitRadarChart", {
                 type: "radar",
                 data: {
-                  labels: labels,
+                  labels: %bw-labels%,
                   datasets: [
                     {
                       label: %worst-module-name%,
@@ -97,7 +93,7 @@
                       borderColor: "#ff4040",
                       pointRadius: 3,
                       backgroundColor: "#f59191",
-                      data: worstValues
+                      data: %worst-values%
                     },
                     {
                       label: %best-module-name%,
@@ -105,7 +101,7 @@
                       borderColor: "#2e8b57",
                       pointRadius: 3,
                       backgroundColor: "#36c475",
-                      data: bestValues
+                      data: %best-values%
                     }
                   ]
                 },
@@ -129,6 +125,8 @@
               <span class="small-text">(Green is best)</span>
             </span>
         </div>
-
     </div>
+    <span class="gray-text"><strong>Hit</strong> represents the cache usage of module executed tasks.</span><br />
+    <span class="gray-text"><strong>Diff Rate</strong> represents the cache usage difference in the report period.</span><br />
+    <span class="gray-text"><strong>Best and Worst</strong> represents module uses more cache versus the module don't use.</span>
     <div class="space"></div>

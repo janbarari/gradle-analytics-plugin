@@ -1,5 +1,5 @@
     <h2>Build Status</h2>
-    <p class="gray-text pb16">Shows information about the overall builds in this time period.</p>
+    <p class="gray-text pb16">Short metrics about the requested task build processes in this period.</p>
     <div class="center-text">
 
       <div class="table-container basic-info-item">
@@ -33,9 +33,9 @@
       <div class="table-container basic-info-item">
         <table>
           <tr>
-            <th style="height: 32px;">
+            <th>
               <i class="bi bi-diagram-3-fill"></i><br>
-              Total <br> Modules <br> Count
+              Total<br>Modules<br>Count
             </th>
           </tr>
           <tr>
@@ -47,9 +47,9 @@
       <div class="table-container basic-info-item">
         <table>
           <tr>
-            <th style="height: 32px;">
+            <th>
               <i class="bi bi-shuffle"></i><br>
-              Cumulative <br> Parallel Exec <br> Duration
+              Cumulative<br>Parallel Exec<br>Duration
             </th>
           </tr>
           <tr>
@@ -61,13 +61,9 @@
       <div class="table-container basic-info-item">
         <table>
           <tr>
-            <th style="height: 32px;">
+            <th >
               <i class="bi bi-shuffle"></i><br>
-              Avg
-              <br>
-              Parallel Exec
-              <br>
-              Rate
+              Average<br>Parallel Exec<br>Rate
             </th>
           </tr>
           <tr>
@@ -79,13 +75,15 @@
       <div class="table-container basic-info-item">
         <table>
           <tr>
-            <th style="height: 32px;">
+            <th>
               <i class="bi bi-check-circle"></i><br>
-              Total <br> Succeed | Failed <br> Builds
+              Total<br>Succeed | Failed<br>Builds
             </th>
           </tr>
           <tr>
-            <th><span class="green">%total-succeed-build-count%</span> | <span class="red">%total-failed-build-count%</span></th>
+            <th>
+              <span class="green">%total-succeed-build-count%</span> | <span class="red">%total-failed-build-count%</span>
+            </th>
           </tr>
         </table>
       </div>
@@ -93,13 +91,9 @@
       <div class="table-container basic-info-item">
         <table>
           <tr>
-            <th style="height: 32px;">
+            <th>
               <i class="bi bi-speedometer2"></i><br>
-              Avg
-              <br>
-              Cache Hit
-              <br>
-              Rate
+              Average<br>Cache Hit<br>Rate
             </th>
           </tr>
           <tr>
@@ -113,7 +107,7 @@
           <tr>
             <th>
               <i class="bi bi-cloud-download"></i><br>
-              Cumulative <br> Dependency <br> Resolve
+              Cumulative<br>Dependency<br>Resolve
             </th>
           </tr>
           <tr>
@@ -177,6 +171,10 @@
           </tr>
         </table>
       </div>
-
     </div>
+    <span class="gray-text"><strong>Cumulative Parallel Exec Duration</strong> represents the total builds serial execution duration.</span>
+    <br />
+    <span class="gray-text"><strong>Average Parallel Exec Rate</strong> represents serial execution rate versus real-time elapsed.</span>
+    <br />
+    <span class="gray-text"><strong>Cumulative Dependency Resolve</strong> represents the total download(dependency resolve) process of the project's dependencies.</span>
     <div class="space"></div>

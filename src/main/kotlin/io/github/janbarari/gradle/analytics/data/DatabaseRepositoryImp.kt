@@ -61,6 +61,7 @@ class DatabaseRepositoryImp(
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()
             }
+            dropOutdatedMetrics()
             return@transaction queryResult[MetricTable.number]
         }
     }
@@ -155,6 +156,15 @@ class DatabaseRepositoryImp(
                 }
             }
             return@transaction true
+        }
+    }
+
+    override fun dropOutdatedMetrics() {
+        return db.transaction {
+            MetricTable.deleteWhere {
+                // Delete all metrics that are created more than 1 year ago.
+                MetricTable.createdAt less (System.currentTimeMillis() - 32_140_800_000L)
+            }
         }
     }
 

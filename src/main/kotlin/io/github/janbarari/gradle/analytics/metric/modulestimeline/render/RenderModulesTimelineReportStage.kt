@@ -26,6 +26,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesTimelineReportStage(
@@ -54,11 +55,13 @@ class RenderModulesTimelineReportStage(
 
         var beginning = 0L
         var ending = 0L
+        var createdAt = 0L
 
         val result = buildString {
             append("[")
             appendLine()
             report.modulesTimelineReport.whenNotNull {
+                createdAt = this.createdAt
                 beginning = start
                 ending = end
                 modules.forEachIndexed { index, module ->
@@ -96,6 +99,7 @@ class RenderModulesTimelineReportStage(
             .replace("%timelines%", result)
             .replace("%beginning%", beginning.toString())
             .replace("%ending%", ending.toString())
+            .replace("%datetime%", DateTimeUtils.formatToDateTime(createdAt))
         return renderedTemplate
     }
 

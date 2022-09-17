@@ -1,5 +1,5 @@
     <h2>Modules Execution Process</h2>
-    <p class="gray-text pb16">Shows the average duration of modules execution process.</p>
+    <p class="gray-text pb16">It represents each module tasks execution process duration(Median) during the report period.</p>
     <div class="chart-container">
         <canvas id="modulesMedianExecutionProcessChart" style="width:100%; height: 365px;"></canvas>
         <script type="text/javascript">
@@ -60,9 +60,13 @@
         </table>
     </div>
     <div class="space-small"></div>
-    <span class="gray-text"><b>Avg Parallel Duration</b> is the average parallel execution duration of the module.</span>
-    <br/>
+    <span class="gray-text"><b>Avg Duration</b> is the module median average execution duration.</span>
+    <br />
+    <span class="gray-text"><b>Avg Parallel Duration</b> is the module median average parallel execution duration.</span>
+    <br />
+    <span class="gray-text"><b>Avg Parallel Rate</b> is the module median average parallel execution rate versus <b>Avg Duration</b>.</span>
+    <br />
     <span class="gray-text"><b>Avg Coverage</b> is the average duration rate of the module against overall build.</span>
-    <br/>
-    <span class="gray-text"><b>Diff Ratio</b> is the module duration difference in the reports period.</span>
+    <br />
+    <span class="gray-text"><b>Duration Diff Rate</b> is the module duration rate difference during the report period.</span>
     <div class="space"></div>

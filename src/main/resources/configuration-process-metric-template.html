@@ -1,23 +1,25 @@
     <h2>Configuration Process</h2>
-    <p class="gray-text pb16">Shows the average duration of configuration process.</p>
+    <p class="gray-text pb16">
+        Constructs and configures the task graph for the build and then determines which tasks need to run and in which
+        order, based on the task the user wants to run. Be careful about the tasks you register to the project and try to
+        make them cacheable.
+        <br /><br />
+        It represents the Configuration Process average duration during the report period.
+    </p>
     <div class="chart-container">
-        <canvas id="configurationChart"></canvas>
+        <canvas id="configurationChart" style="width:100%; height: 100%;"></canvas>
         <script type="text/javascript">
-            var _meanValues = %chart-mean-values%;
-            var _medianValues = %chart-median-values%;
-            var _labels = %chart-labels%;
-
             new Chart("configurationChart", {
               type: "line",
               data: {
-                labels: _labels,
+                labels: %chart-labels%,
                 datasets: [
                   {
                     label: "Median",
                     fill: false,
                     backgroundColor: shadeColor(getColor(), 25),
                     borderColor: getColor(),
-                    data: _medianValues,
+                    data: %chart-median-values%,
                     cubicInterpolationMode: 'monotone',
                     tension: 0.4
                   },
@@ -26,7 +28,7 @@
                     fill: false,
                     backgroundColor: shadeColor(getColor(), 25),
                     borderColor: getColor(),
-                    data: _meanValues,
+                    data: %chart-mean-values%,
                     cubicInterpolationMode: 'monotone',
                     tension: 0.4
                   }
