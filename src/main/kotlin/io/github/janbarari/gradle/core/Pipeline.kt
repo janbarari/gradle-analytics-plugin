@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.core
 
+/**
+ * Pipeline design pattern main class.
+ */
 open class Pipeline<I, O>(firstStage: Stage<I, O>) {
 
     val currentStage: Stage<I, O> = firstStage

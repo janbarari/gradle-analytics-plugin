@@ -23,28 +23,28 @@
 package io.github.janbarari.gradle.extension
 
 /**
- * Returns True, If the object is null.
+ * Check if the object is null.
  */
 fun Any?.isNull(): Boolean {
     return this == null
 }
 
 /**
- * Returns True, If the object is not null.
+ * Check if the object is not null.
  */
 fun Any?.isNotNull(): Boolean {
     return this != null
 }
 
 /**
- * Invokes the lambda function if the object is NOT null.
+ * Invoke the lambda function if the object is NOT null.
  */
 fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
     if (this != null) block(this)
 }
 
 /**
- * Invokes the lambda function if the object is null.
+ * Invoke the lambda function if the object is null.
  */
 fun <T: Any> T?.whenNull(block: () -> Unit) {
     if(this == null) block()

@@ -27,9 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ParallelExecutio
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.mapToParallelExecutionRateTimespanPoints
-import io.github.janbarari.gradle.extension.minimize
+import io.github.janbarari.gradle.extension.mapToParallelExecutionRateMedianTimespanPoints
 import io.github.janbarari.gradle.extension.whenEmpty
 
 class CreateParallelExecutionRateReportStage(
@@ -39,7 +37,7 @@ class CreateParallelExecutionRateReportStage(
     override suspend fun process(input: Report): Report {
         val timespanPoints = metrics
             .filter { it.parallelExecutionRateMetric.isNotNull() }
-            .mapToParallelExecutionRateTimespanPoints()
+            .mapToParallelExecutionRateMedianTimespanPoints()
             .whenEmpty {
                 return input
             }

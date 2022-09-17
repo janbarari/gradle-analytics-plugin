@@ -26,7 +26,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 /**
- * Rounds the given float number.
+ * Round the given float number.
  *
  * @param decimalsCount The fraction numbers count, Default is Two.
  */

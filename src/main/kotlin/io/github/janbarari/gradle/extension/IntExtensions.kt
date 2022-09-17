@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.extension
 
 /**
- * Returns the current value difference as percentage from the target value.
+ * Calculate the current value difference as percentage from the target value.
  *
  * Example:
  *  val a = 10
@@ -37,7 +37,7 @@ fun Int.diffPercentageOf(target: Int): Float {
 }
 
 /**
- * Returns the current value difference as percentage from the target value.
+ * Calculate the current value difference as percentage from the target value.
  *
  * Example:
  *  val a = 10
@@ -51,7 +51,7 @@ fun Long.diffPercentageOf(target: Long): Float {
 }
 
 /**
- * Returns the current value coverage from the target value.
+ * Calculate the current value coverage from the target value.
  *
  * Example:
  *  val a = 10
@@ -64,7 +64,7 @@ fun Int.toPercentageOf(target: Int): Float {
 }
 
 /**
- * Returns the current value coverage from the target value.
+ * Calculate the current value coverage from the target value.
  *
  * Example:
  *  val a = 10

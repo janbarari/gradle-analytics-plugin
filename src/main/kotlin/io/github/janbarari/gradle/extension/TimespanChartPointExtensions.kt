@@ -69,16 +69,15 @@ fun List<TimespanPoint>.minimize(targetSize: Int): List<TimespanPoint> {
 }
 
 /**
- * Mao
+ * Map TimespanPoint collection to ChartPoint collection.
  */
 fun Collection<TimespanPoint>.mapToChartPoints(): List<ChartPoint> {
     return map {
-        val period = if (it.to.isNull()) {
+        val period = if (it.to.isNull())
             DateTimeUtils.format(it.from, "dd/MM")
-        } else {
+        else
             DateTimeUtils.format(it.from, "dd/MM") + "-" +
                     DateTimeUtils.format(it.to!!, "dd/MM")
-        }
         ChartPoint(it.value, period)
     }
 }

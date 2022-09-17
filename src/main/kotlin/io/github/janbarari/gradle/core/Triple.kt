@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.core
 
+/**
+ * Custom generic data class to hold 3 object together.
+ */
 open class Triple<A, B, C>(
     val first: A,
     val second: B,

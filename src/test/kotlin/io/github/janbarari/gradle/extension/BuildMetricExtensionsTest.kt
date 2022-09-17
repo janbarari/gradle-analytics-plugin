@@ -288,7 +288,7 @@ class BuildMetricExtensionsTest {
                 )
             )
         )
-        val result = buildMetrics.mapToParallelExecutionRateTimespanPoints()
+        val result = buildMetrics.mapToParallelExecutionRateMedianTimespanPoints()
         assertEquals(90L, result.first().value)
         assertEquals(1660318217387, result.first().from)
         assertEquals(null, result.first().to)

@@ -23,26 +23,29 @@
 package io.github.janbarari.gradle.extension
 
 /**
- * Checks is the given Long value is zero.
+ * Check is the given Long value is zero.
  */
 fun Long.isZero(): Boolean {
     return this == 0L
 }
 
 /**
- * Checks is the given long value is >= dedicated target value.
+ * Check is the given long value is >= dedicated target value.
  */
 fun Long.isBiggerEquals(target: Long): Boolean {
     return this >= target
 }
 
 /**
- * Checks is the given long value is > dedicated target value.
+ * Check is the given long value is > dedicated target value.
  */
 fun Long.isBigger(target: Long): Boolean {
     return this > target
 }
 
+/**
+ * Convert given milliseconds to seconds.
+ */
 fun Long.millisToSeconds(): Long {
     return this / 1000L
 }

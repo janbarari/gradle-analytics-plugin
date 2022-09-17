@@ -31,7 +31,7 @@ import org.gradle.api.invocation.Gradle
 import org.gradle.api.provider.Provider
 
 /**
- * Returns the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
+ * Get the Gradle requested tasks list. `requestedTasks` are the tasks that CLI
  * sent them to Gradle to start the build process.
  */
 @ExcludeJacocoGenerated
@@ -40,20 +40,23 @@ fun Gradle.getRequestedTasks(): List<String> {
 }
 
 /**
- * Returns the 'CI' value provider from the system environments.
+ * Get the 'CI' value provider from the system environments.
  */
 @ExcludeJacocoGenerated
 fun Project.envCI(): Provider<String> {
     return providers.environmentVariable("CI").forUseAtConfigurationTime()
 }
 
+/**
+ * Check is project dependency has dependency to ProjectDependency type.
+ */
 @ExcludeJacocoGenerated
 fun Project.isDependingOnOtherProject(): Boolean {
     return configurations.any { configuration -> configuration.dependencies.any { it is ProjectDependency } }
 }
 
 /**
- * Registers the given task.
+ * Register the given task.
  */
 @ExcludeJacocoGenerated
 inline fun <reified T : DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
@@ -62,10 +65,16 @@ inline fun <reified T : DefaultTask> Project.registerTask(name: String, crossinl
     }
 }
 
+/**
+ * Check if the given Task is cacheable.
+ */
 fun Task.isCacheable(): Boolean {
     return this.outputs.hasOutput && this.inputs.hasInputs
 }
 
+/**
+ * Get task dependencies.
+ */
 fun Task.getSafeTaskDependencies(): Set<Task> {
     return try {
         taskDependencies.getDependencies(this)
@@ -74,6 +83,9 @@ fun Task.getSafeTaskDependencies(): Set<Task> {
     }
 }
 
+/**
+ * Filter non-cacheable tasks from the given task collection.
+ */
 fun Collection<Task>.getNonCacheableTasks(): Set<String> {
     val nonCacheableTasks = mutableSetOf<String>()
     forEach { task ->
