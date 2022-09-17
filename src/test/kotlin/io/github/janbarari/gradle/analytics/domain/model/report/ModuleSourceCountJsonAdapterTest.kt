@@ -54,7 +54,7 @@ class ModuleSourceCountJsonAdapterTest {
             fromReader.value == 33
         }
         assertTrue {
-            fromReader.coverage == 19F
+            fromReader.coverageRate == 19F
         }
         assertTrue {
             fromReader.diffRate == 3F
