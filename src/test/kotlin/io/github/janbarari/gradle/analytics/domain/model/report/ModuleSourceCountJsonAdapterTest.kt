@@ -125,7 +125,7 @@ class ModuleSourceCountJsonAdapterTest {
         val validModel = ModuleSourceCount(
             path = ":app",
             value = 2,
-            coverage = 33F,
+            coverageRate = 33F,
             diffRate = 23F
         )
         assertDoesNotThrow {

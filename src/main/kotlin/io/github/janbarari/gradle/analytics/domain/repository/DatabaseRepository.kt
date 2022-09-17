@@ -45,5 +45,4 @@ interface DatabaseRepository {
     fun saveSingleMetric(key: String, branch: String, value: String): Boolean
     fun dropSingleMetric(key: String, branch: String): Boolean
     fun dropSingleMetrics(): Boolean
-
 }

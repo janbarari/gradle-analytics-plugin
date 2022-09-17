@@ -70,7 +70,7 @@ class CreateModulesSourceCountReportStage(
                 ModuleSourceCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(totalSourceCount),
+                    coverageRate = value.toPercentageOf(totalSourceCount),
                     diffRate = null // The ratio does not exist when there is only one item
                 )
             )
@@ -94,7 +94,7 @@ class CreateModulesSourceCountReportStage(
                 ModuleSourceCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(lastTotalSourceCount),
+                    coverageRate = value.toPercentageOf(lastTotalSourceCount),
                     diffRate = calculateModuleDiffRatio(metrics, path, value)
                 )
             )

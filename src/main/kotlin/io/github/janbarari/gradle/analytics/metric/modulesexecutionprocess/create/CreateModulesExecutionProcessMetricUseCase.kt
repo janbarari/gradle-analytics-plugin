@@ -39,20 +39,24 @@ class CreateModulesExecutionProcessMetricUseCase(
 
         modules.whenEach {
             val tasks = input.executedTasks.filter { it.path.startsWith(path) }
+
+            val moduleParallelExecInMillis = tasks.sumOf { it.getDurationInMillis() }
+
+            val moduleNonParallelExecInMillis = input.calculateNonParallelExecutionInMillis(tasks)
+
+            val moduleParallelRate = (moduleParallelExecInMillis - moduleNonParallelExecInMillis)
+                .toPercentageOf(moduleNonParallelExecInMillis)
+
             val overallDuration = input.getExecutionDuration().toMillis()
-            val moduleParallelDuration = tasks.sumOf { it.getDurationByMillis() }
-            val moduleNonParallelDuration = input.calculateNonParallelExecutionDuration(tasks)
-            val moduleParallelRate = (moduleParallelDuration - moduleNonParallelDuration)
-                .toPercentageOf(moduleNonParallelDuration)
-            val moduleCoverage = moduleNonParallelDuration.toPercentageOf(overallDuration)
+            val moduleCoverageRate = moduleNonParallelExecInMillis.toPercentageOf(overallDuration)
 
             moduleExecutionProcesses.add(
                 ModuleExecutionProcess(
                     path = path,
-                    median = moduleNonParallelDuration,
-                    medianParallel = moduleParallelDuration,
+                    medianExecInMillis = moduleNonParallelExecInMillis,
+                    medianParallelExecInMillis = moduleParallelExecInMillis,
                     parallelRate = moduleParallelRate,
-                    coverage = moduleCoverage
+                    coverageRate = moduleCoverageRate
                 )
             )
         }

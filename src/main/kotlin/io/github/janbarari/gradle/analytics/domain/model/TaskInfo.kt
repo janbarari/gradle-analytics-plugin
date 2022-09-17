@@ -60,7 +60,7 @@ data class TaskInfo(
     /**
      * Returns the task execution duration in milliseconds.
      */
-    fun getDurationByMillis(): Long {
+    fun getDurationInMillis(): Long {
         if (finishedAt < startedAt) return 0L
         return finishedAt - startedAt
     }

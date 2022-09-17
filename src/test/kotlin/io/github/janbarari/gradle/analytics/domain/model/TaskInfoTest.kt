@@ -22,7 +22,7 @@ class TaskInfoTest {
             false,
             null
         )
-        assertEquals(49, task.getDurationByMillis())
+        assertEquals(49, task.getDurationInMillis())
     }
 
     @Test
@@ -66,7 +66,7 @@ class TaskInfoTest {
             false,
             null
         )
-        assertEquals(0, task.getDurationByMillis())
+        assertEquals(0, task.getDurationInMillis())
     }
 
     @Test

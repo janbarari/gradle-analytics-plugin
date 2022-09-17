@@ -43,15 +43,15 @@ class CreateBuildStatusReportStage(
                 avgOverallBuildProcessBySeconds = getAvgOverallBuildProcessInSeconds(),
                 totalBuildProcessCount = metrics.size,
                 totalProjectModulesCount = modules.size,
-                cumulativeDependencyResolveBySeconds = getCumulativeDependencyResolveBySeconds(),
-                cumulativeParallelExecutionBySeconds = getCumulativeParallelExecutionBySeconds(),
+                cumulativeDependencyResolveBySeconds = getCumulativeDependencyResolveInSeconds(),
+                cumulativeParallelExecutionBySeconds = getCumulativeParallelExecutionInSeconds(),
                 avgParallelExecutionRate = getAvgParallelExecutionRate(),
                 totalFailedBuildCount = getTotalFailedBuildCount(),
                 totalSucceedBuildCount = getTotalSuccessBuildCount(),
                 avgCacheHitRate = getAvgCacheHitRate(),
-                avgInitializationProcessByMillis = getAvgInitializationProcessByMillis(),
-                avgConfigurationProcessByMillis = getAvgConfigurationProcessByMillis(),
-                avgExecutionProcessBySeconds = getAvgExecutionProcessBySeconds()
+                avgInitializationProcessByMillis = getAvgInitializationProcessInMillis(),
+                avgConfigurationProcessByMillis = getAvgConfigurationProcessInMillis(),
+                avgExecutionProcessBySeconds = getAvgExecutionProcessInSeconds()
             )
         }
     }
@@ -73,7 +73,7 @@ class CreateBuildStatusReportStage(
         )
     }
 
-    fun getCumulativeDependencyResolveBySeconds(): Long {
+    fun getCumulativeDependencyResolveInSeconds(): Long {
         return metrics
             .filter { it.dependencyResolveProcessMetric.isNotNull() }
             .sumOf { metric ->
@@ -81,7 +81,7 @@ class CreateBuildStatusReportStage(
             }
     }
 
-    fun getCumulativeParallelExecutionBySeconds(): Long {
+    fun getCumulativeParallelExecutionInSeconds(): Long {
         return metrics
             .filter { it.executionProcessMetric.isNotNull() && it.parallelExecutionRateMetric.isNotNull() }
             .sumOf { metric ->
@@ -121,7 +121,7 @@ class CreateBuildStatusReportStage(
         )
     }
 
-    fun getAvgInitializationProcessByMillis(): Long {
+    fun getAvgInitializationProcessInMillis(): Long {
         return MathUtils.longMedian(
             metrics.filter { it.initializationProcessMetric.isNotNull() }
                 .map { metric ->
@@ -130,7 +130,7 @@ class CreateBuildStatusReportStage(
         )
     }
 
-    fun getAvgConfigurationProcessByMillis(): Long {
+    fun getAvgConfigurationProcessInMillis(): Long {
         return MathUtils.longMedian(
             metrics.filter { it.configurationProcessMetric.isNotNull() }
                 .map { metric ->
@@ -139,7 +139,7 @@ class CreateBuildStatusReportStage(
         )
     }
 
-    fun getAvgExecutionProcessBySeconds(): Long {
+    fun getAvgExecutionProcessInSeconds(): Long {
         return MathUtils.longMedian(
             metrics.filter { it.executionProcessMetric.isNotNull() }
                 .map { metric ->

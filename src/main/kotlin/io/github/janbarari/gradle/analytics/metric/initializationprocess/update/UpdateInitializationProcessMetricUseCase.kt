@@ -40,8 +40,8 @@ class UpdateInitializationProcessMetricUseCase(
     }
 
     override suspend fun execute(): InitializationProcessMetric {
-        val medianValues = arrayListOf<Long>()
-        val meanValues = arrayListOf<Long>()
+        val medianValues = mutableListOf<Long>()
+        val meanValues = mutableListOf<Long>()
         repo.getTemporaryMetrics().whenEach {
             initializationProcessMetric.whenNotNull {
                 // In order to have accurate metric, don't add metric value in Median dataset if it's under 50 milliseconds.

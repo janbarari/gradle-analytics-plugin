@@ -38,7 +38,6 @@ class CreateExecutionProcessReportStage(
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
-
     }
 
     override suspend fun process(input: Report): Report {

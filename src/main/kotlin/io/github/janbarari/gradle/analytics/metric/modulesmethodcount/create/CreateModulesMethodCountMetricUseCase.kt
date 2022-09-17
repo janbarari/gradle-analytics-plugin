@@ -58,7 +58,8 @@ class CreateModulesMethodCountMetricUseCase(
                 defers.add(async {
                     modulesProperties.add(
                         ModuleMethodCount(
-                            path = path, value = getModuleMethodCount(absoluteDir)
+                            path = path,
+                            value = getModuleMethodCount(absoluteDir)
                         )
                     )
                 })

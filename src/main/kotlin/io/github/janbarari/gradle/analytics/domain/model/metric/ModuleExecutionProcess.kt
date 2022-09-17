@@ -32,11 +32,11 @@ data class ModuleExecutionProcess(
     @Json(name = "path")
     val path: String,
     @Json(name = "median")
-    val median: Long,
+    val medianExecInMillis: Long,
     @Json(name = "median_parallel")
-    val medianParallel: Long,
+    val medianParallelExecInMillis: Long,
     @Json(name = "parallel_rate")
     val parallelRate: Float,
     @Json(name = "coverage")
-    val coverage: Float
+    val coverageRate: Float
 ) : java.io.Serializable

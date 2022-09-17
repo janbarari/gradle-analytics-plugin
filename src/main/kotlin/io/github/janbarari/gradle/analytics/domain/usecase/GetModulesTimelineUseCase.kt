@@ -39,9 +39,8 @@ class GetModulesTimelineUseCase(
             key = "modulesExecTimeline",
             branch = branch
         )
-        if (result.isNotNull()) {
+        if (result.isNotNull())
             return ModulesTimelineMetricJsonAdapter(moshi).fromJson(result!!)
-        }
         return null
     }
 

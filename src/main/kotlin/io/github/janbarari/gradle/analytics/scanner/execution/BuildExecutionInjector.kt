@@ -101,9 +101,10 @@ fun BuildExecutionInjector.provideMoshi(): Moshi {
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
-        provideDatabase(),
-        branch!!,
-        requestedTasks!!.separateElementsWithSpace()
+        db = provideDatabase(),
+        branch = branch!!,
+        requestedTasks = requestedTasks!!.separateElementsWithSpace(),
+        moshi = provideMoshi()
     )
 }
 

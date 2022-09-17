@@ -34,7 +34,7 @@ data class ModuleSourceCount(
     @Json(name = "value")
     val value: Int,
     @Json(name = "coverage")
-    val coverage: Float,
+    val coverageRate: Float,
     @Json(name = "diff_rate")
     val diffRate: Float? = null
 ): java.io.Serializable

@@ -34,3 +34,17 @@ fun Float.round(decimalsCount: Int = 2): Float {
     val bd = BigDecimal(this.toDouble())
     return bd.setScale(decimalsCount, RoundingMode.FLOOR).toFloat()
 }
+
+/**
+ * Check is the given Long value is zero.
+ */
+fun Float.isZero(): Boolean {
+    return this == 0F
+}
+
+/**
+ * Check is the given Long value is > 0.
+ */
+fun Float.isBiggerThanZero(): Boolean {
+    return this > 0F
+}

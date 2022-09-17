@@ -63,52 +63,52 @@ class CreateModulesSourceSizeReportStage(
     fun generateSingleItemReport(metric: ModulesSourceSizeMetric): ModulesSourceSizeReport {
         val values = mutableListOf<ModulesSourceSizeReport.ModuleSourceSize>()
 
-        val totalSourceCount = metric.modules.sumOf { it.sizeByKb }
+        val totalSourceCount = metric.modules.sumOf { it.sizeInKb }
 
         metric.modules.whenEach {
             values.add(
                 ModulesSourceSizeReport.ModuleSourceSize(
                     path = path,
-                    sizeByKb = sizeByKb,
-                    coverage = sizeByKb.toPercentageOf(totalSourceCount),
+                    sizeInKb = sizeInKb,
+                    coverageRate = sizeInKb.toPercentageOf(totalSourceCount),
                     diffRate = null // The ratio does not exist when there is only one item
                 )
             )
         }
 
         return ModulesSourceSizeReport(
-            values = values.sortedByDescending { it.sizeByKb },
-            totalSourceSizeByKb = totalSourceCount,
+            values = values.sortedByDescending { it.sizeInKb },
+            totalSourceSizeInKb = totalSourceCount,
             totalDiffRate = null // The ratio does not exist when there is only one item
         )
     }
 
     fun generateMultipleItemsReport(metrics: List<ModulesSourceSizeMetric>): ModulesSourceSizeReport {
-        val firstTotalSourceCount = metrics.first().modules.sumOf { it.sizeByKb }
-        val lastTotalSourceCount = metrics.last().modules.sumOf { it.sizeByKb }
-        val totalDiffRatio = firstTotalSourceCount.diffPercentageOf(lastTotalSourceCount)
+        val firstTotalSourceSize = metrics.first().modules.sumOf { it.sizeInKb }
+        val lastTotalSourceSize = metrics.last().modules.sumOf { it.sizeInKb }
+        val totalDiffRate = firstTotalSourceSize.diffPercentageOf(lastTotalSourceSize)
 
         val values = mutableListOf<ModulesSourceSizeReport.ModuleSourceSize>()
         metrics.last().modules.whenEach {
             values.add(
                 ModulesSourceSizeReport.ModuleSourceSize(
                     path = path,
-                    sizeByKb = sizeByKb,
-                    coverage = sizeByKb.toPercentageOf(lastTotalSourceCount),
-                    diffRate = calculateModuleDiffRatio(metrics, path, sizeByKb)
+                    sizeInKb = sizeInKb,
+                    coverageRate = sizeInKb.toPercentageOf(lastTotalSourceSize),
+                    diffRate = calculateModuleDiffRate(metrics, path, sizeInKb)
                 )
             )
         }
 
         return ModulesSourceSizeReport(
-            values = values.sortedByDescending { it.sizeByKb },
-            totalSourceSizeByKb = lastTotalSourceCount,
-            totalDiffRate = totalDiffRatio
+            values = values.sortedByDescending { it.sizeInKb },
+            totalSourceSizeInKb = lastTotalSourceSize,
+            totalDiffRate = totalDiffRate
         )
     }
 
-    fun calculateModuleDiffRatio(metrics: List<ModulesSourceSizeMetric>, path: String, value: Long): Float? {
-        return metrics.first().modules.find { it.path == path }?.sizeByKb?.diffPercentageOf(value)
+    fun calculateModuleDiffRate(metrics: List<ModulesSourceSizeMetric>, path: String, value: Long): Float? {
+        return metrics.first().modules.find { it.path == path }?.sizeInKb?.diffPercentageOf(value)
     }
 
 }

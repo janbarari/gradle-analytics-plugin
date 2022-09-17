@@ -46,7 +46,7 @@ class CreateModulesSourceSizeMetricUseCase(
                     modulesProperties.add(
                         ModulesSourceSizeMetric.ModuleSourceSize(
                             path = path,
-                            sizeByKb = getModuleSourceSize(absoluteDir)
+                            sizeInKb = getModuleSourceSizeInKb(absoluteDir)
                         )
                     )
                 })
@@ -56,7 +56,7 @@ class CreateModulesSourceSizeMetricUseCase(
         return ModulesSourceSizeMetric(modules = modulesProperties)
     }
 
-    private fun getModuleSourceSize(directory: String): Long {
+    private fun getModuleSourceSizeInKb(directory: String): Long {
         return FileUtils
             .getModuleSources(directory)
             .sumOf { it.toFile().length() / 1024L }

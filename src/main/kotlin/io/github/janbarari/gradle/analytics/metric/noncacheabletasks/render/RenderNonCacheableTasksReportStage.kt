@@ -57,11 +57,11 @@ class RenderNonCacheableTasksReportStage(
             val colors = mutableListOf<String>()
             val dataset = mutableListOf<Long>()
 
-            tasks.sortedByDescending { it.avgExecutionDurationByMillis }
+            tasks.sortedByDescending { it.avgExecutionDurationInMillis }
                 .whenEach {
                     labels.add(path)
                     colors.add(getRandomColor())
-                    dataset.add(avgExecutionDurationByMillis)
+                    dataset.add(avgExecutionDurationInMillis)
                 }
 
             val chartHeight = dataset.size * 36

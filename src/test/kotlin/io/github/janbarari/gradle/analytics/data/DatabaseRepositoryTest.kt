@@ -1,5 +1,6 @@
 package io.github.janbarari.gradle.analytics.data
 
+import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
@@ -24,7 +25,12 @@ class DatabaseRepositoryTest {
             }
         }
         val db = Database(databaseConfig, false)
-        repo = DatabaseRepositoryImp(db, "develop", "assembleDebug")
+        repo = DatabaseRepositoryImp(
+            db = db,
+            branch = "develop",
+            requestedTasks = "assembleDebug",
+            moshi = Moshi.Builder().build()
+        )
     }
 
     @Test

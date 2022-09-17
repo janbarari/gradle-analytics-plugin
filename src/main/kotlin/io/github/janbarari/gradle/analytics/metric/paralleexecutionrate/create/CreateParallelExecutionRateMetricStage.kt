@@ -33,8 +33,9 @@ class CreateParallelExecutionRateMetricStage(
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
-            if (buildInfo.isSuccessful)
+            if (buildInfo.isSuccessful) {
                 parallelExecutionRateMetric = createParallelExecutionRateMetricUseCase.execute(buildInfo)
+            }
         }
     }
 

@@ -33,15 +33,15 @@ data class ModuleExecutionProcess(
     @Json(name = "path")
     val path: String,
     @Json(name = "avg_median_duration")
-    val avgMedianDuration: Long,
+    val avgMedianExecInMillis: Long,
     @Json(name = "avg_median_parallel_duration")
-    val avgMedianParallelDuration: Long,
+    val avgMedianParallelExecInMillis: Long,
     @Json(name = "avg_median_parallel_rate")
     val avgMedianParallelRate: Float,
     @Json(name = "avg_median_coverage")
-    val avgMedianCoverage: Float,
+    val avgMedianCoverageRate: Float,
     @Json(name = "avg_median_durations")
-    val avgMedianDurations: List<TimespanPoint>,
+    val avgMedianExecs: List<TimespanPoint>,
     @Json(name = "diff_rate")
     val diffRate: Float?
 ) : java.io.Serializable

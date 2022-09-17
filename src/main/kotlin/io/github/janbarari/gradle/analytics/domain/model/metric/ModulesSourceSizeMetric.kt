@@ -39,7 +39,7 @@ data class ModulesSourceSizeMetric(
         @Json(name = "path")
         val path: String,
         @Json(name = "size_by_kb")
-        val sizeByKb: Long
+        val sizeInKb: Long
     ): java.io.Serializable
 
 }

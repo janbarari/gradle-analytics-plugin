@@ -82,7 +82,7 @@ class RenderModulesSourceCountStage(
                         <td>${index + 1}</td>
                         <td>${it.path}</td>
                         <td>${it.value}</td>
-                        <td>${it.coverage}%</td>
+                        <td>${it.coverageRate}%</td>
                         $diffRatioRender
                     </tr>
                 """.trimIndent()

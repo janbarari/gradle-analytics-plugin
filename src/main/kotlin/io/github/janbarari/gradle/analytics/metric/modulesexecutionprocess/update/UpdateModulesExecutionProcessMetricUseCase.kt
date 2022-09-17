@@ -39,10 +39,7 @@ class UpdateModulesExecutionProcessMetricUseCase(
 
     override suspend fun execute(): ModulesExecutionProcessMetric {
         val modulesMedianExecutionProcess = modules.map {
-            calculateMedianModuleExecutionProcess(
-                modulePath = it.path,
-                metrics = repo.getTemporaryMetrics()
-            )
+            calculateMedianModuleExecutionProcess(modulePath = it.path, metrics = repo.getTemporaryMetrics())
         }
 
         return ModulesExecutionProcessMetric(
@@ -51,28 +48,28 @@ class UpdateModulesExecutionProcessMetricUseCase(
     }
 
     private fun calculateMedianModuleExecutionProcess(modulePath: String, metrics: List<BuildMetric>): ModuleExecutionProcess {
-        val medianDurations = mutableListOf<Long>()
-        val medianParallelDurations = mutableListOf<Long>()
+        val medianExecs = mutableListOf<Long>()
+        val medianParallelExecs = mutableListOf<Long>()
         val medianParallelRates = mutableListOf<Float>()
-        val medianCoverages = mutableListOf<Float>()
+        val medianCoverageRates = mutableListOf<Float>()
 
         metrics.whenEach {
             modulesExecutionProcessMetric.whenNotNull {
                 modules.find { it.path == modulePath }.whenNotNull {
-                    medianDurations.add(median)
-                    medianParallelDurations.add(medianParallel)
+                    medianExecs.add(medianExecInMillis)
+                    medianParallelExecs.add(medianParallelExecInMillis)
                     medianParallelRates.add(parallelRate)
-                    medianCoverages.add(coverage)
+                    medianCoverageRates.add(coverageRate)
                 }
             }
         }
 
         return ModuleExecutionProcess(
             path = modulePath,
-            median = MathUtils.longMedian(medianDurations),
-            medianParallel = MathUtils.longMedian(medianParallelDurations),
+            medianExecInMillis = MathUtils.longMedian(medianExecs),
+            medianParallelExecInMillis = MathUtils.longMedian(medianParallelExecs),
             parallelRate = MathUtils.floatMedian(medianParallelRates),
-            coverage = MathUtils.floatMedian(medianCoverages)
+            coverageRate = MathUtils.floatMedian(medianCoverageRates)
         )
     }
 

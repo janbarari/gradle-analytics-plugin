@@ -24,8 +24,11 @@ package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.repo
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.isBiggerThanZero
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.isZero
 import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.millisToSeconds
 import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
@@ -59,14 +62,14 @@ class RenderModulesExecutionProcessReportStage(
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME)
         report.modulesExecutionProcessReport.whenNotNull {
-            val min = (modules.minOfOrNull { it.avgMedianDuration } ?: 0L) / 1000L
-            val max = (modules.maxOfOrNull { it.avgMedianDuration } ?: 0L) / 1000L
+            val min = (modules.minOfOrNull { it.avgMedianExecInMillis } ?: 0L).millisToSeconds()
+            val max = (modules.maxOfOrNull { it.avgMedianExecInMillis } ?: 0L).millisToSeconds()
 
             val chartSuggestedMinValue = MathUtils.deductWithPercentage(min, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
             val chartSuggestedMaxValue = MathUtils.sumWithPercentage(max, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
             val chartLabels: String = modules.firstOrNull()
-                ?.avgMedianDurations
+                ?.avgMedianExecs
                 ?.minimize(CHART_MAX_COLUMNS)
                 ?.mapToChartPoints()
                 ?.map { it.description }
@@ -81,7 +84,7 @@ class RenderModulesExecutionProcessReportStage(
                     append("borderColor: getColor(),")
                     append("backgroundColor: shadeColor(getColor(), 25),")
                     append("pointRadius: 0,")
-                    append("data: ${avgMedianDurations.map { it.value / 1000L }.toIntList()},")
+                    append("data: ${avgMedianExecs.map { it.value.millisToSeconds() }.toIntList()},")
                     append("cubicInterpolationMode: 'monotone',")
                     append("tension: 0.4,")
                     append("hidden: false")
@@ -93,21 +96,22 @@ class RenderModulesExecutionProcessReportStage(
             val tableData = buildString {
                 modules.forEachIndexed { i, module ->
                     append("<tr>")
-                    append("<th>${i + 1}</th>")
+                    append("<th>${i+1}</th>")
                     append("<th>${module.path}</th>")
-                    append("<th>${module.avgMedianDuration / 1000L}s</th>")
-                    append("<th>${module.avgMedianParallelDuration / 1000L}s</th>")
+                    append("<th>${module.avgMedianExecInMillis.millisToSeconds()}s</th>")
+                    append("<th>${module.avgMedianParallelExecInMillis.millisToSeconds()}s</th>")
                     append("<th>${module.avgMedianParallelRate}%</th>")
-                    append("<th>${module.avgMedianCoverage}%</th>")
-                    if (module.diffRate.isNull()) {
+                    append("<th>${module.avgMedianCoverageRate}%</th>")
+
+                    if (module.diffRate.isNull())
                         append("<th>Unknown</th>")
-                    } else if (module.diffRate!! == 0F) {
+                    else if (module.diffRate!!.isZero())
                         append("<th>Equals</th>")
-                    } else if (module.diffRate > 0) {
+                    else if (module.diffRate.isBiggerThanZero())
                         append("<th class=\"red\">+${module.diffRate}%</th>")
-                    } else {
+                    else
                         append("<th class=\"green\">-${module.diffRate}%</th>")
-                    }
+
                     append("</tr>")
                 }
             }

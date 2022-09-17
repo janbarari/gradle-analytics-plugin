@@ -59,9 +59,10 @@ fun ReportAnalyticsInjector.provideMoshi(): Moshi {
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
-        provideDatabase(),
-        branch!!,
-        requestedTasks!!
+        db = provideDatabase(),
+        branch = branch!!,
+        requestedTasks = requestedTasks!!,
+        moshi = provideMoshi()
     )
 }
 

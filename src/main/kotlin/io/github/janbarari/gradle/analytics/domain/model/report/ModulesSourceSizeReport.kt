@@ -33,7 +33,7 @@ data class ModulesSourceSizeReport(
     @Json(name = "values")
     val values: List<ModuleSourceSize>,
     @Json(name = "total_source_size_by_kb")
-    val totalSourceSizeByKb: Long,
+    val totalSourceSizeInKb: Long,
     @Json(name = "total_diff_rate")
     val totalDiffRate: Float? = null
 ): Serializable {
@@ -44,9 +44,9 @@ data class ModulesSourceSizeReport(
         @Json(name = "path")
         val path: String,
         @Json(name = "size_by_kb")
-        val sizeByKb: Long,
+        val sizeInKb: Long,
         @Json(name = "coverage")
-        val coverage: Float,
+        val coverageRate: Float,
         @Json(name = "diff_rate")
         val diffRate: Float? = null
     ): Serializable

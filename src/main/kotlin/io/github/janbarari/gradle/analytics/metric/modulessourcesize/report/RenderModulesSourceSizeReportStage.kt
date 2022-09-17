@@ -49,7 +49,7 @@ class RenderModulesSourceSizeReportStage(
     }
 
     fun getMetricRender(): String {
-        val totalSourceSizeByKb = report.modulesSourceSizeReport?.totalSourceSizeByKb ?: 0
+        val totalSourceSizeByKb = report.modulesSourceSizeReport?.totalSourceSizeInKb ?: 0
 
         var totalDiffRatioRender = "<td>-</td>"
         report.modulesSourceSizeReport.whenNotNull {
@@ -81,8 +81,8 @@ class RenderModulesSourceSizeReportStage(
                     <tr>
                         <td>${index + 1}</td>
                         <td>${it.path}</td>
-                        <td>${it.sizeByKb}kb</td>
-                        <td>${it.coverage}%</td>
+                        <td>${it.sizeInKb}kb</td>
+                        <td>${it.coverageRate}%</td>
                         $diffRatioRender
                     </tr>
                 """.trimIndent()
@@ -91,7 +91,7 @@ class RenderModulesSourceSizeReportStage(
         }
 
         val moduleLabels = report.modulesSourceSizeReport?.values?.map { "\"${it.path}\"" }
-        val moduleValues = report.modulesSourceSizeReport?.values?.map { it.sizeByKb }
+        val moduleValues = report.modulesSourceSizeReport?.values?.map { it.sizeInKb }
 
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_METHOD_COUNT_METRIC_TEMPLATE_FILE_NAME)
         renderedTemplate = renderedTemplate

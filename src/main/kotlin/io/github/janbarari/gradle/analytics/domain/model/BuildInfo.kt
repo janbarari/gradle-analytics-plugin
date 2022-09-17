@@ -95,7 +95,7 @@ data class BuildInfo(
      * Calculates the cumulative parallel execution duration in milliseconds.
      */
     fun calculateParallelExecutionByMillis(): Long {
-        return executedTasks.sumOf { it.getDurationByMillis() }
+        return executedTasks.sumOf { it.getDurationInMillis() }
     }
 
     /**
@@ -105,23 +105,23 @@ data class BuildInfo(
      * duration(real-life duration) we need to ignore those tasks that are executed at
      * the same time or covered times by another task.
      */
-    fun calculateNonParallelExecutionDuration(executedTasks: List<TaskInfo> = this.executedTasks): Long {
+    fun calculateNonParallelExecutionInMillis(executedTasks: List<TaskInfo> = this.executedTasks): Long {
         fun checkIfCanMerge(
             parallelTask: TaskInfo,
             nonParallelTask: Map.Entry<Int, Pair<Long, Long>>,
             nonParallelTasks: HashMap<Int, Pair<Long, Long>>
         ) {
             if (parallelTask.startedAt <= nonParallelTask.value.second &&
-                parallelTask.finishedAt >= nonParallelTask.value.second
-            ) {
+                parallelTask.finishedAt >= nonParallelTask.value.second) {
+
                 var start = nonParallelTask.value.first
                 var end = nonParallelTask.value.second
-                if (parallelTask.startedAt < nonParallelTask.value.first) {
+
+                if (parallelTask.startedAt < nonParallelTask.value.first)
                     start = parallelTask.startedAt
-                }
-                if (parallelTask.finishedAt > nonParallelTask.value.second) {
+
+                if (parallelTask.finishedAt > nonParallelTask.value.second)
                     end = parallelTask.finishedAt
-                }
                 nonParallelTasks[nonParallelTask.key] = Pair(start, end)
             }
         }

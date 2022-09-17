@@ -38,12 +38,12 @@ class UpdateNonCacheableTasksMetricUseCase(
             .modify {
                 val medianValue = repo.getTemporaryMetrics()
                     .filter { it.nonCacheableTasksMetric.isNotNull() }
-                    .flatMap {
-                        it.nonCacheableTasksMetric!!.tasks
-                            .filter { it.path == path }
-                            .map { it.avgExecutionDurationByMillis }
+                    .flatMap { metric ->
+                        metric.nonCacheableTasksMetric!!.tasks
+                            .filter { task -> task.path == path }
+                            .map { task -> task.avgExecutionDurationInMillis }
                     }
-                avgExecutionDurationByMillis = MathUtils.longMedian(medianValue)
+                avgExecutionDurationInMillis = MathUtils.longMedian(medianValue)
             }
 
         return NonCacheableTasksMetric(

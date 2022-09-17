@@ -43,7 +43,7 @@ class CreateCacheHitMetricUseCase(
                 }
             }
         }
-        val overallCacheHitRatio = cachedTasksCount.toPercentageOf(input.executedTasks.filter { it.isSkipped.not() }.size)
+        val overallCacheHitRate = cachedTasksCount.toPercentageOf(input.executedTasks.filter { it.isSkipped.not() }.size)
 
         val modulesCacheHit = mutableListOf<ModuleCacheHit>()
         modules.whenEach {
@@ -58,15 +58,15 @@ class CreateCacheHitMetricUseCase(
                         }
                     }
                 }
-            val moduleCacheHitRatio = moduleCachedTasksCount.toPercentageOf(moduleTasksCount)
+            val moduleCacheHitRate = moduleCachedTasksCount.toPercentageOf(moduleTasksCount)
             modulesCacheHit.add(
                 ModuleCacheHit(
                     path = path,
-                    rate = moduleCacheHitRatio.toLong()
+                    rate = moduleCacheHitRate.toLong()
                 )
             )
         }
-        return CacheHitMetric(overallCacheHitRatio.toLong(), modulesCacheHit)
+        return CacheHitMetric(overallCacheHitRate.toLong(), modulesCacheHit)
     }
 
 }

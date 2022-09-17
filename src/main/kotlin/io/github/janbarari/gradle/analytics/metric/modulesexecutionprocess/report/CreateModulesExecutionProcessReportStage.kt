@@ -44,12 +44,13 @@ class CreateModulesExecutionProcessReportStage(
         val temp = modules.map { module ->
             var firstAvgMedianDuration: Long? = null
             var lastAvgMedianDuration: Long? = null
-            val avgMedianDurations = mutableListOf<TimespanPoint>()
-            val avgMedianDuration = mutableListOf<Long>()
-            val avgMedianParallelDuration = mutableListOf<Long>()
-            val avgMedianParallelRate = mutableListOf<Float>()
-            val avgMedianCoverage = mutableListOf<Float>()
             var diffRate: Float? = null
+
+            val avgMedianExecTimespanPoints = mutableListOf<TimespanPoint>()
+            val avgMedianExecs = mutableListOf<Long>()
+            val avgMedianParallelExecs = mutableListOf<Long>()
+            val avgMedianParallelRates = mutableListOf<Float>()
+            val avgMedianCoverageRates = mutableListOf<Float>()
 
             metrics.firstOrNull { metric ->
                 metric.modulesExecutionProcessMetric.isNotNull()
@@ -58,7 +59,7 @@ class CreateModulesExecutionProcessReportStage(
                     .modules
                     .find { it.path == module.path }
                     .whenNotNull {
-                        firstAvgMedianDuration = median
+                        firstAvgMedianDuration = medianExecInMillis
                     }
             }
 
@@ -69,7 +70,7 @@ class CreateModulesExecutionProcessReportStage(
                     .modules
                     .find { it.path == module.path }
                     .whenNotNull {
-                        lastAvgMedianDuration = median
+                        lastAvgMedianDuration = medianExecInMillis
                     }
             }
 
@@ -83,26 +84,26 @@ class CreateModulesExecutionProcessReportStage(
                     .modules
                     .find { it.path == module.path }
                     .whenNotNull {
-                        avgMedianDurations.add(
+                        avgMedianExecTimespanPoints.add(
                             TimespanPoint(
-                                value = median,
+                                value = medianExecInMillis,
                                 from = metric.createdAt
                             )
                         )
-                        avgMedianDuration.add(median)
-                        avgMedianParallelDuration.add(medianParallel)
-                        avgMedianParallelRate.add(parallelRate)
-                        avgMedianCoverage.add(coverage)
+                        avgMedianExecs.add(medianExecInMillis)
+                        avgMedianParallelExecs.add(medianParallelExecInMillis)
+                        avgMedianParallelRates.add(parallelRate)
+                        avgMedianCoverageRates.add(coverageRate)
                     }
             }
 
             ModuleExecutionProcess(
                 path = module.path,
-                avgMedianDuration = MathUtils.longMedian(avgMedianDuration),
-                avgMedianParallelDuration = MathUtils.longMedian(avgMedianParallelDuration),
-                avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRate).round(),
-                avgMedianCoverage = MathUtils.floatMedian(avgMedianCoverage).round(),
-                avgMedianDurations = avgMedianDurations,
+                avgMedianExecInMillis = MathUtils.longMedian(avgMedianExecs),
+                avgMedianParallelExecInMillis = MathUtils.longMedian(avgMedianParallelExecs),
+                avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRates).round(),
+                avgMedianCoverageRate = MathUtils.floatMedian(avgMedianCoverageRates).round(),
+                avgMedianExecs = avgMedianExecTimespanPoints,
                 diffRate = diffRate
             )
         }
