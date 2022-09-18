@@ -14,30 +14,33 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.os
+package io.github.janbarari.gradle.analytics.domain.model
 
-import oshi.SystemInfo
-import oshi.software.os.OperatingSystem
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import org.gradle.api.Project
 
-/**
- * Implementation of [io.github.janbarari.gradle.os.OperatingSystem].
- */
-class OperatingSystemImp : io.github.janbarari.gradle.os.OperatingSystem {
+@JsonClass(generateAdapter = true)
+data class Module(
+    @Json(name = "path")
+    val path: String,
+    @Json(name = "absoluteDir")
+    val absoluteDir: String
+): java.io.Serializable {
 
-    private val systemInfo: OperatingSystem = SystemInfo().operatingSystem
-
-    override fun getName(): String {
-        return systemInfo.family
-    }
-
-    override fun getManufacturer(): String {
-        return systemInfo.manufacturer
+    companion object {
+        fun Project.toModule(): Module {
+            return Module(
+                path = path,
+                absoluteDir = projectDir.absolutePath
+            )
+        }
     }
 
 }

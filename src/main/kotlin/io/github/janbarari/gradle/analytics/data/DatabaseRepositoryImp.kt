@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.data
 
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.data.database.ResetAutoIncremental
@@ -37,21 +36,21 @@ import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 
 class DatabaseRepositoryImp(
     private val db: Database,
     private val branch: String,
-    private val requestedTasks: String
+    private val requestedTasks: String,
+    private val moshi: Moshi
 ) : DatabaseRepository {
 
-    private var moshi: Moshi = Moshi.Builder().build()
-    private var jsonAdapter: JsonAdapter<BuildMetric> = BuildMetricJsonAdapter(moshi)
+    private var jsonAdapter: BuildMetricJsonAdapter = BuildMetricJsonAdapter(moshi)
 
     override fun saveNewMetric(metric: BuildMetric): Long {
         return db.transaction {
@@ -61,6 +60,7 @@ class DatabaseRepositoryImp(
                 it[branch] = metric.branch
                 it[requestedTasks] = metric.requestedTasks.separateElementsWithSpace()
             }
+            dropOutdatedMetrics()
             return@transaction queryResult[MetricTable.number]
         }
     }
@@ -103,13 +103,14 @@ class DatabaseRepositoryImp(
         }
     }
 
-    override fun getMetrics(period: Long): List<BuildMetric> {
+    override fun getMetrics(period: Pair<Long, Long>): List<BuildMetric> {
         return db.transaction {
             val result = arrayListOf<BuildMetric>()
             MetricTable.select {
-                MetricTable.createdAt greaterEq DateTimeUtils.calculateDayInPastMonthsMs(
-                    DateTimeUtils.getDayStartMs(), period
-                ) and (MetricTable.branch eq branch) and (MetricTable.requestedTasks eq requestedTasks)
+                (MetricTable.createdAt greaterEq period.first) and
+                        (MetricTable.createdAt lessEq period.second) and
+                        (MetricTable.branch eq branch) and
+                        (MetricTable.requestedTasks eq requestedTasks)
             }.orderBy(MetricTable.number, SortOrder.ASC).forEach {
                 result.add(
                     jsonAdapter.fromJson(it[MetricTable.value])!!
@@ -154,6 +155,15 @@ class DatabaseRepositoryImp(
                 }
             }
             return@transaction true
+        }
+    }
+
+    override fun dropOutdatedMetrics() {
+        return db.transaction {
+            MetricTable.deleteWhere {
+                // Delete all metrics that are created more than 1 year ago.
+                MetricTable.createdAt less (System.currentTimeMillis() - 32_140_800_000L)
+            }
         }
     }
 

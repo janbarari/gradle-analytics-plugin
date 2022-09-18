@@ -22,15 +22,21 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModuleCacheHit(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "rate")
     val rate: Long,
+    @Json(name = "diff_rate")
     val diffRate: Float? = null,
-    val meanValues: List<ChartPoint>
+    @Json(name = "mean_values")
+    val meanValues: List<TimespanPoint>
 ): java.io.Serializable

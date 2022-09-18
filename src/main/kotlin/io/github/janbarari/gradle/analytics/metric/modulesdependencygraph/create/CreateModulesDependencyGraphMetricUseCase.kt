@@ -24,11 +24,13 @@ package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.creat
 
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesDependencyGraphMetric
-import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.core.UseCaseNoInput
 
-class CreateModulesDependencyGraphMetricUseCase: UseCase<ModulesDependencyGraph, ModulesDependencyGraphMetric>() {
+class CreateModulesDependencyGraphMetricUseCase(
+    private val modulesDependencyGraph: ModulesDependencyGraph
+) : UseCaseNoInput<ModulesDependencyGraphMetric>() {
 
-    override suspend fun execute(modulesDependencyGraph: ModulesDependencyGraph): ModulesDependencyGraphMetric {
+    override suspend fun execute(): ModulesDependencyGraphMetric {
         return ModulesDependencyGraphMetric(
             dependencies = modulesDependencyGraph.dependencies
         )

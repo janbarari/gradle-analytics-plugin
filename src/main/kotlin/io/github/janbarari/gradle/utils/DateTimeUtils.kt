@@ -39,7 +39,7 @@ object DateTimeUtils {
     val DEFAULT_ZONE: ZoneId = ZoneId.of("UTC")
 
     /**
-     * Calculates the current day start time in milliseconds.
+     * Get the current day start time in milliseconds.
      *
      * Note: Timezone is UTC
      */
@@ -48,7 +48,7 @@ object DateTimeUtils {
     }
 
     /**
-     * Calculates the current day end time in milliseconds.
+     * Get the current day end time in milliseconds.
      *
      * Note: Timezone is UTC
      */
@@ -57,19 +57,7 @@ object DateTimeUtils {
     }
 
     /**
-     * Calculates the before month(s) time in milliseconds.
-     *
-     * Note: Timezone is UTC
-     */
-    fun calculateDayInPastMonthsMs(from: Long, months: Long): Long {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(from), DEFAULT_ZONE)
-            .minusMonths(months)
-            .atZone(DEFAULT_ZONE)
-            .toEpochSecond() * 1000
-    }
-
-    /**
-     * Converts time in milliseconds to dedicated datetime pattern.
+     * Convert time in milliseconds to defined datetime pattern.
      */
     fun format(timeInMs: Long, pattern: String): String {
         return ZonedDateTime.ofInstant(Instant.ofEpochMilli(timeInMs), DEFAULT_ZONE)
@@ -77,37 +65,45 @@ object DateTimeUtils {
     }
 
     /**
-     * Converts time in milliseconds to a formatted date string.
+     * Convert time in milliseconds to defined datetime pattern.
+     */
+    fun convertDateToEpochMilli(date: String): Long {
+        return ZonedDateTime.parse("$date 00:00:00 AM UTC", DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss a z"))
+            .toInstant()
+            .toEpochMilli()
+    }
+
+    /**
+     * Convert time in milliseconds to `yyyy/MM/dd`.
      */
     fun formatToDate(timeInMs: Long): String {
         return format(timeInMs ,"yyyy/MM/dd")
     }
 
     /**
-     * Converts time in milliseconds to a formatted date & time string.
+     * Convert time in milliseconds to `yyyy/MM/dd HH:mm a UTC`.
      */
     fun formatToDateTime(timeInMs: Long): String {
         return format(timeInMs, "yyyy/MM/dd HH:mm a 'UTC'")
     }
 
+    /**
+     * Convert time in seconds to the human-readable elapsed time.
+     */
     fun convertSecondsToHumanReadableTime(seconds: Long): String {
         val numYears = floor(seconds / 31536000F).toInt()
         val numDays = floor((seconds % 31536000) / 86400F).toInt()
         val numHours = floor(((seconds % 31536000F) % 86400F) / 3600F).toInt()
         val numMinutes = floor((((seconds % 31536000F) % 86400F) % 3600F) / 60F).toInt()
         val numSeconds = (((seconds % 31536000) % 86400) % 3600) % 60
-        if (numYears > 0) {
+        if (numYears > 0)
             return "${numYears}y ${numDays}d"
-        }
-        if (numDays > 0) {
+        if (numDays > 0)
             return "${numDays}d ${numHours}h"
-        }
-        if (numHours > 0) {
+        if (numHours > 0)
             return "${numHours}h ${numMinutes}m"
-        }
-        if (numMinutes > 0) {
+        if (numMinutes > 0)
             return "${numMinutes}m ${numSeconds}s"
-        }
         return "${numSeconds}s"
     }
 

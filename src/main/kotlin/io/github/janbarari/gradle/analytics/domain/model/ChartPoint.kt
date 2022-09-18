@@ -22,12 +22,15 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ChartPoint(
+    @Json(name = "value")
     val value: Long,
+    @Json(name = "description")
     val description: String
 ): java.io.Serializable

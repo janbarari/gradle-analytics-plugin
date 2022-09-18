@@ -29,13 +29,11 @@ import io.github.janbarari.gradle.analytics.data.database.Database
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
-import io.github.janbarari.gradle.extension.ensureNotNull
 
 /**
- * Dependency injection for [ReportAnalyticsTask].
+ * Dependency injection for [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask].
  */
 @ExcludeJacocoGenerated
 class ReportAnalyticsInjector(
@@ -45,12 +43,12 @@ class ReportAnalyticsInjector(
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
     var projectName: String? = null,
-    var modulesPath: List<ModulePath>? = null
+    var modules: List<Module>? = null
 )
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
-    return Database(ensureNotNull(databaseConfig), ensureNotNull(isCI))
+    return Database(databaseConfig!!, isCI!!)
 }
 
 @ExcludeJacocoGenerated
@@ -61,9 +59,10 @@ fun ReportAnalyticsInjector.provideMoshi(): Moshi {
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
-        provideDatabase(),
-        ensureNotNull(branch),
-        ensureNotNull(requestedTasks)
+        db = provideDatabase(),
+        branch = branch!!,
+        requestedTasks = requestedTasks!!,
+        moshi = provideMoshi()
     )
 }
 
@@ -85,9 +84,9 @@ fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic 
     return ReportAnalyticsLogicImp(
         provideGetMetricsUseCase(),
         provideGetModulesTimelineUseCase(),
-        ensureNotNull(isCI),
-        ensureNotNull(outputPath),
-        ensureNotNull(projectName),
-        ensureNotNull(modulesPath)
+        isCI!!,
+        outputPath!!,
+        projectName!!,
+        modules!!
     )
 }

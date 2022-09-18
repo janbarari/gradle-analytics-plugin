@@ -33,23 +33,13 @@ class CacheHitReportJsonAdapterTest {
                     {
                         "path": ":core",
                         "rate": 20,
-                        "diffRate": 32,
-                        "meanValues": [
-                            {
-                                "value": 12,
-                                "description": "11/08/2022"
-                            }
-                        ]
+                        "diff_rate": 32,
+                        "mean_values": []
                     }
                 ],
-                "overallDiffRate": 33,
-                "overallRate": 3,
-                "overallMeanValues": [
-                    {
-                        "value": 30,
-                        "description": "22/10/2022"
-                    }
-                ],
+                "overall_diff_rate": 33,
+                "overall_rate": 3,
+                "overall_mean_values": [],
                 
                 "test-skipping-un-valid-field": true
             }
@@ -64,7 +54,7 @@ class CacheHitReportJsonAdapterTest {
             fromReader.isNotNull()
         }
         assertTrue {
-            fromReader.overallMeanValues.isNotEmpty()
+            fromReader.overallMeanValues.isEmpty()
         }
         assertTrue {
             fromReader.modules.isNotEmpty()
@@ -94,7 +84,7 @@ class CacheHitReportJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "meanValues": null
+                    "mean_values": null
                 }
             """.trimIndent()
             adapter.fromJson(

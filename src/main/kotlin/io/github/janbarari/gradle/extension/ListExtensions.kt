@@ -34,21 +34,21 @@ fun <T: Any> Collection<T>.whenEach(block: T.() -> Unit) {
 }
 
 /**
- * Maps the Long list to Int list.
+ * Map the Long list to Int list.
  */
 fun List<Long>.toIntList(): List<Int> {
     return this.map { it.toInt() }
 }
 
 /**
- * Checks is the given list has more items than dedicated count.
+ * Check is the given list has more items than dedicated count.
  */
 fun <T> List<T>.isBiggerThan(count: Int): Boolean {
     return this.size > count
 }
 
 /**
- * Executes the function body if the given list has no items.
+ * Invoke the function body if the given list has no items.
  */
 inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
     if (isEmpty()) block(this)
@@ -56,7 +56,7 @@ inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
 }
 
 /**
- * Executes the function body if the given list is not empty.
+ * Invoke the function body if the given list is not empty.
  */
 inline fun <T> List<T>.whenNotEmpty(block: Collection<T>.() -> Unit): List<T> {
     if (isNotEmpty()) block(this)
@@ -64,7 +64,7 @@ inline fun <T> List<T>.whenNotEmpty(block: Collection<T>.() -> Unit): List<T> {
 }
 
 /**
- * Executes the function body if the given set is not empty.
+ * Invoke the function body if the given set is not empty.
  */
 inline fun <T> Set<T>.whenNotEmpty(block: Collection<T>.() -> Unit): Set<T> {
     if (isNotEmpty()) block(this)
@@ -72,25 +72,28 @@ inline fun <T> Set<T>.whenNotEmpty(block: Collection<T>.() -> Unit): Set<T> {
 }
 
 /**
- * Represents the first index value.
+ * Get the first index value.
  */
 val <T> List<T>.firstIndex: Int
     get() = 0
 
 /**
- * Checks is the given list has only a single item.
+ * Check is the given list has only a single item.
  */
 fun <T> List<T>.hasSingleItem(): Boolean {
     return this.size == 1
 }
 
 /**
- * Checks is the given list has multiple items.
+ * Check is the given list has multiple items.
  */
 fun <T> List<T>.hasMultipleItems(): Boolean {
     return this.size > 1
 }
 
+/**
+ * Convert list of string to comma separated string.
+ */
 fun List<String>.toArrayString(): String {
     val labels = StringBuilder()
     labels.append("[")
@@ -106,6 +109,20 @@ fun List<String>.toArrayString(): String {
     return labels.toString()
 }
 
+/**
+ * I was refactoring my Gradle plugin source code and I saw that I use
+ * "map{}" and "list duplication" to create the same list with some modifications,
+ * I find out this is a bug because it:
+ *
+ * 1- leaks the performance by "object recreation" and "memory duplication".
+ * 2- Decreases the readability by putting the modification operation outside of collection operators.
+ * 3- Decreases the extensibility because it is not a collection operator, so can't use a chain with other collection operators.
+ *
+ * Then I decided to create a modification operator for a list to manipulate items in place.
+ * Less code
+ * More extensibility
+ * Better performance
+ */
 public inline fun <T> Iterable<T>.modify(modification: T.() -> Unit): Iterable<T> {
     for (item in this)
         item.apply(modification)

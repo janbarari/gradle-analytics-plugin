@@ -22,14 +22,14 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ParallelExecutionRateReport(
-    val medianValues: List<ChartPoint>,
-    val suggestedMaxValue: Long,
-    val suggestedMinValue: Long
+    @Json(name = "median_values")
+    val medianValues: List<TimespanPoint>
 ): java.io.Serializable

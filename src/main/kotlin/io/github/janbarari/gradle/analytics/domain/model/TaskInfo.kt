@@ -22,22 +22,38 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import org.gradle.tooling.Failure
 import org.gradle.tooling.events.OperationDescriptor
 
+@JsonClass(generateAdapter = true)
 data class TaskInfo(
+    @Json(name = "started_at")
     val startedAt: Long,
+    @Json(name = "finished_at")
     val finishedAt: Long,
+    @Json(name = "path")
     val path: String,
+    @Json(name = "display_name")
     val displayName: String,
+    @Json(name = "name")
     val name: String,
+    @Json(name = "is_successful")
     val isSuccessful: Boolean,
+    @Json(name = "failures")
     val failures: List<Failure>?,
+    @Json(name = "dependencies")
     val dependencies: List<OperationDescriptor>?,
+    @Json(name = "is_incremental")
     val isIncremental: Boolean,
+    @Json(name = "is_from_cache")
     val isFromCache: Boolean,
+    @Json(name = "is_up_to_date")
     val isUpToDate: Boolean,
+    @Json(name = "is_skipped")
     val isSkipped: Boolean,
+    @Json(name = "execution_reasons")
     val executionReasons: List<String>?
 ) : java.io.Serializable {
 

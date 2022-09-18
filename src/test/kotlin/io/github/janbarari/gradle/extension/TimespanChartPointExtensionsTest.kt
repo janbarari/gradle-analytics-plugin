@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -32,9 +32,9 @@ class TimespanChartPointExtensionsTest {
     @Test
     fun `Check mapToChartPoints mapper returns correct result`() {
         val timespanPoints = listOf(
-            TimespanChartPoint(value = 1, from = 1640321493224),
-            TimespanChartPoint(value = 2, from = 1650321493224),
-            TimespanChartPoint(value = 3, from = 1660321493224, to = 1660421493224)
+            TimespanPoint(value = 1, from = 1640321493224),
+            TimespanPoint(value = 2, from = 1650321493224),
+            TimespanPoint(value = 3, from = 1660321493224, to = 1660421493224)
         )
         val result = timespanPoints.mapToChartPoints()
 
@@ -49,18 +49,18 @@ class TimespanChartPointExtensionsTest {
     @Test
     fun `When minimize proceeds with data, expect the timespan inputs minimized`() {
         val timespanPoints = listOf(
-            TimespanChartPoint(value = 1, from = 1640321493224),
-            TimespanChartPoint(value = 2, from = 1650321493224),
-            TimespanChartPoint(value = 3, from = 1660321493224),
-            TimespanChartPoint(value = 1, from = 1640321493224),
-            TimespanChartPoint(value = 2, from = 1650321493224),
-            TimespanChartPoint(value = 3, from = 1660321493224),
-            TimespanChartPoint(value = 1, from = 1640321493224),
-            TimespanChartPoint(value = 2, from = 1650321493224),
-            TimespanChartPoint(value = 3, from = 1660321493224),
-            TimespanChartPoint(value = 1, from = 1640321493224),
-            TimespanChartPoint(value = 2, from = 1650321493224),
-            TimespanChartPoint(value = 3, from = 1660321493224),
+            TimespanPoint(value = 1, from = 1640321493224),
+            TimespanPoint(value = 2, from = 1650321493224),
+            TimespanPoint(value = 3, from = 1660321493224),
+            TimespanPoint(value = 1, from = 1640321493224),
+            TimespanPoint(value = 2, from = 1650321493224),
+            TimespanPoint(value = 3, from = 1660321493224),
+            TimespanPoint(value = 1, from = 1640321493224),
+            TimespanPoint(value = 2, from = 1650321493224),
+            TimespanPoint(value = 3, from = 1660321493224),
+            TimespanPoint(value = 1, from = 1640321493224),
+            TimespanPoint(value = 2, from = 1650321493224),
+            TimespanPoint(value = 3, from = 1660321493224),
         )
         val result = timespanPoints.minimize(5)
         assertTrue {
@@ -70,7 +70,7 @@ class TimespanChartPointExtensionsTest {
 
     @Test
     fun `When minimize proceeds with empty data, expect the original timespan data`() {
-        val timespanPoints = emptyList<TimespanChartPoint>()
+        val timespanPoints = emptyList<TimespanPoint>()
         val result = timespanPoints.minimize(5)
         assertTrue {
             result.isEmpty()

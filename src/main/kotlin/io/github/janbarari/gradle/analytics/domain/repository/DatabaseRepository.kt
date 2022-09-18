@@ -31,18 +31,18 @@ interface DatabaseRepository {
     fun isDayMetricExists(): Boolean
 
     fun getDayMetric(): Pair<BuildMetric, Long>
-    fun getMetrics(period: Long): List<BuildMetric>
+    fun getMetrics(period: Pair<Long, Long>): List<BuildMetric>
     fun getTemporaryMetrics(): List<BuildMetric>
 
     fun updateDayMetric(number: Long, metric: BuildMetric): Boolean
 
     fun dropOutdatedTemporaryMetrics(): Boolean
     fun dropMetrics(): Boolean
+    fun dropOutdatedMetrics()
 
     fun getSingleMetric(key: String, branch: String): String?
     fun updateSingleMetric(key: String, branch: String, value: String): Boolean
     fun saveSingleMetric(key: String, branch: String, value: String): Boolean
     fun dropSingleMetric(key: String, branch: String): Boolean
     fun dropSingleMetrics(): Boolean
-
 }

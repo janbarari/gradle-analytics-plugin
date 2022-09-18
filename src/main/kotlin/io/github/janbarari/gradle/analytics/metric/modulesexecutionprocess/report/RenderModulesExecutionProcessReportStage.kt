@@ -24,8 +24,12 @@ package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.repo
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
+import io.github.janbarari.gradle.extension.isBiggerThanZero
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.isZero
+import io.github.janbarari.gradle.extension.mapToChartPoints
+import io.github.janbarari.gradle.extension.millisToSeconds
+import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayString
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
@@ -34,13 +38,14 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 /**
- * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport].
+ * Generates html render for [io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport].
  */
 class RenderModulesExecutionProcessReportStage(
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
+        private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID = "%modules-execution-process-metric%"
         private const val MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME = "modules-execution-process-metric-template"
@@ -54,26 +59,19 @@ class RenderModulesExecutionProcessReportStage(
         return input.replace(MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
-    @Suppress("LongMethod")
     fun getMetricRender(): String {
         var renderedTemplate = HtmlUtils.getTemplate(MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME)
         report.modulesExecutionProcessReport.whenNotNull {
+            val min = (modules.minOfOrNull { it.avgMedianExecInMillis } ?: 0L).millisToSeconds()
+            val max = (modules.maxOfOrNull { it.avgMedianExecInMillis } ?: 0L).millisToSeconds()
 
-            val min = ensureNotNull(report.modulesExecutionProcessReport).modules.minOfOrNull { it.avgMedianDuration } ?: 0L
-            val max = ensureNotNull(report.modulesExecutionProcessReport).modules.maxOfOrNull { it.avgMedianDuration } ?: 0L
+            val chartSuggestedMinValue = MathUtils.deductWithPercentage(min, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
+            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(max, CHART_SUGGESTED_MIN_MAX_PERCENTAGE)
 
-            val chartSuggestedMinValue = MathUtils.deductWithPercentage(
-                min / 1000L,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-            val chartSuggestedMaxValue = MathUtils.sumWithPercentage(
-                max / 1000L,
-                CHART_SUGGESTED_MIN_MAX_PERCENTAGE
-            )
-
-            val chartLabels: String = modules
-                .firstOrNull()
-                ?.avgMedianDurations
+            val chartLabels: String = modules.firstOrNull()
+                ?.avgMedianExecs
+                ?.minimize(CHART_MAX_COLUMNS)
+                ?.mapToChartPoints()
                 ?.map { it.description }
                 ?.toArrayString()
                 ?: "[]"
@@ -86,7 +84,7 @@ class RenderModulesExecutionProcessReportStage(
                     append("borderColor: getColor(),")
                     append("backgroundColor: shadeColor(getColor(), 25),")
                     append("pointRadius: 0,")
-                    append("data: ${avgMedianDurations.map { it.value / 1000L }.toIntList()},")
+                    append("data: ${avgMedianExecs.map { it.value.millisToSeconds() }.toIntList()},")
                     append("cubicInterpolationMode: 'monotone',")
                     append("tension: 0.4,")
                     append("hidden: false")
@@ -100,17 +98,20 @@ class RenderModulesExecutionProcessReportStage(
                     append("<tr>")
                     append("<th>${i+1}</th>")
                     append("<th>${module.path}</th>")
-                    append("<th>${module.avgMedianDuration / 1000L}s</th>")
-                    append("<th>${module.avgMedianParallelDuration / 1000L}s</th>")
+                    append("<th>${module.avgMedianExecInMillis.millisToSeconds()}s</th>")
+                    append("<th>${module.avgMedianParallelExecInMillis.millisToSeconds()}s</th>")
                     append("<th>${module.avgMedianParallelRate}%</th>")
-                    append("<th>${module.avgMedianCoverage}%</th>")
-                    if (module.diffRate.isNull()) {
+                    append("<th>${module.avgMedianCoverageRate}%</th>")
+
+                    if (module.diffRate.isNull())
                         append("<th>Unknown</th>")
-                    } else if(module.diffRate!! > 0) {
-                        append("<th class=\"red\">${module.diffRate}%</th>")
-                    } else {
-                        append("<th class=\"green\">${module.diffRate}%</th>")
-                    }
+                    else if (module.diffRate!!.isZero())
+                        append("<th>Equals</th>")
+                    else if (module.diffRate.isBiggerThanZero())
+                        append("<th class=\"red\">+${module.diffRate}%</th>")
+                    else
+                        append("<th class=\"green\">-${module.diffRate}%</th>")
+
                     append("</tr>")
                 }
             }

@@ -23,15 +23,11 @@
 package io.github.janbarari.gradle.analytics.metric.modulessourcesize.report
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCount
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceSizeMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceSizeReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -42,26 +38,26 @@ class CreateModulesSourceSizeReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
             it.modulesSourceSizeMetric.isNotNull()
         }.map {
-            ensureNotNull(it.modulesSourceSizeMetric)
+            it.modulesSourceSizeMetric!!
         }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceSizeReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceSizeReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     fun generateSingleItemReport(metric: ModulesSourceSizeMetric): ModulesSourceSizeReport {
@@ -74,7 +70,7 @@ class CreateModulesSourceSizeReportStage(
                 ModulesSourceSizeReport.ModuleSourceSize(
                     path = path,
                     sizeInKb = sizeInKb,
-                    coverage = sizeInKb.toPercentageOf(totalSourceCount),
+                    coverageRate = sizeInKb.toPercentageOf(totalSourceCount),
                     diffRate = null // The ratio does not exist when there is only one item
                 )
             )
@@ -88,9 +84,9 @@ class CreateModulesSourceSizeReportStage(
     }
 
     fun generateMultipleItemsReport(metrics: List<ModulesSourceSizeMetric>): ModulesSourceSizeReport {
-        val firstTotalSourceCount = metrics.first().modules.sumOf { it.sizeInKb }
-        val lastTotalSourceCount = metrics.last().modules.sumOf { it.sizeInKb }
-        val totalDiffRatio = firstTotalSourceCount.diffPercentageOf(lastTotalSourceCount)
+        val firstTotalSourceSize = metrics.first().modules.sumOf { it.sizeInKb }
+        val lastTotalSourceSize = metrics.last().modules.sumOf { it.sizeInKb }
+        val totalDiffRate = firstTotalSourceSize.diffPercentageOf(lastTotalSourceSize)
 
         val values = mutableListOf<ModulesSourceSizeReport.ModuleSourceSize>()
         metrics.last().modules.whenEach {
@@ -98,20 +94,20 @@ class CreateModulesSourceSizeReportStage(
                 ModulesSourceSizeReport.ModuleSourceSize(
                     path = path,
                     sizeInKb = sizeInKb,
-                    coverage = sizeInKb.toPercentageOf(lastTotalSourceCount),
-                    diffRate = calculateModuleDiffRatio(metrics, path, sizeInKb)
+                    coverageRate = sizeInKb.toPercentageOf(lastTotalSourceSize),
+                    diffRate = calculateModuleDiffRate(metrics, path, sizeInKb)
                 )
             )
         }
 
         return ModulesSourceSizeReport(
             values = values.sortedByDescending { it.sizeInKb },
-            totalSourceSizeInKb = lastTotalSourceCount,
-            totalDiffRate = totalDiffRatio
+            totalSourceSizeInKb = lastTotalSourceSize,
+            totalDiffRate = totalDiffRate
         )
     }
 
-    fun calculateModuleDiffRatio(metrics: List<ModulesSourceSizeMetric>, path: String, value: Long): Float? {
+    fun calculateModuleDiffRate(metrics: List<ModulesSourceSizeMetric>, path: String, value: Long): Float? {
         return metrics.first().modules.find { it.path == path }?.sizeInKb?.diffPercentageOf(value)
     }
 

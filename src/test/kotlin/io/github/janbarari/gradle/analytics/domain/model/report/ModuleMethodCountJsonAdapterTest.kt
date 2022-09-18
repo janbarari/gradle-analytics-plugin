@@ -33,7 +33,7 @@ class ModuleMethodCountJsonAdapterTest {
                 "path": ":app",
                 "value": 33,
                 "coverage": 19,
-                "diffRate": 3,
+                "diff_rate": 3,
                 
                 "test-skipping-un-valid-field": true
             }
@@ -54,7 +54,7 @@ class ModuleMethodCountJsonAdapterTest {
             fromReader.value == 33
         }
         assertTrue {
-            fromReader.coverage == 19F
+            fromReader.coverageRate == 19F
         }
         assertTrue {
             fromReader.diffRate == 3F
@@ -125,7 +125,7 @@ class ModuleMethodCountJsonAdapterTest {
         val validModel = ModuleMethodCount(
             path = ":app",
             value = 2,
-            coverage = 33F,
+            coverageRate = 33F,
             diffRate = 23F
         )
         assertDoesNotThrow {

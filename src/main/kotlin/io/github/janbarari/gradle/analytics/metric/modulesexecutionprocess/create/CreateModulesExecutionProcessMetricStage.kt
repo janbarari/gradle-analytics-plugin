@@ -23,21 +23,18 @@
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.core.Stage
 
 class CreateModulesExecutionProcessMetricStage(
     private val buildInfo: BuildInfo,
-    private val modulesPath: List<ModulePath>,
     private val createModulesExecutionProcessMetricUseCase: CreateModulesExecutionProcessMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             if (buildInfo.isSuccessful) {
-                modulesExecutionProcessMetric =
-                    createModulesExecutionProcessMetricUseCase.execute(modulesPath to buildInfo)
+                modulesExecutionProcessMetric = createModulesExecutionProcessMetricUseCase.execute(buildInfo)
             }
         }
     }

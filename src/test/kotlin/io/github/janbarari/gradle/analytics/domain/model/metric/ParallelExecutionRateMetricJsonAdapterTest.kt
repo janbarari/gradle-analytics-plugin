@@ -30,7 +30,7 @@ class ParallelExecutionRateMetricJsonAdapterTest {
     fun `Check fromJson() returns valid data model with valid json`() {
         val json = """
             {
-                "rate": 100
+                "median_rate": 100
             }
         """.trimIndent()
 
@@ -43,7 +43,7 @@ class ParallelExecutionRateMetricJsonAdapterTest {
             fromReader.isNotNull()
         }
         assertTrue {
-            fromReader.rate == 100L
+            fromReader.medianRate == 100L
         }
     }
 
@@ -76,7 +76,7 @@ class ParallelExecutionRateMetricJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "rate": null
+                    "median_rate": null
                 }
             """.trimIndent()
             adapter.fromJson(
@@ -103,7 +103,7 @@ class ParallelExecutionRateMetricJsonAdapterTest {
     @Test
     fun `Check toJson() return valid Json with valid data model`() {
         val validModel = ParallelExecutionRateMetric(
-            rate = 100
+            medianRate = 100
         )
         assertDoesNotThrow {
             JsonParser.parseString(adapter.toJson(validModel))

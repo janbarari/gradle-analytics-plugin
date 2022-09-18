@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulescrashcount.render
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesCrashCountReport
@@ -32,14 +32,14 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
 
 class CreateModulesCrashCountReportStage(
-    private val modulesPath: List<ModulePath>,
+    private val modules: List<Module>,
     private val metrics: List<BuildMetric>
 ): Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
-        modulesPath.whenEach {
+        this.modules.whenEach {
             val crashes = metrics
                 .filter { it.modulesCrashCountMetric.isNotNull() }
                 .sumOf { metric ->

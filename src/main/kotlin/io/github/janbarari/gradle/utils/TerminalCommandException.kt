@@ -22,6 +22,6 @@
  */
 package io.github.janbarari.gradle.utils
 
-class TerminalException(cmd: String, e: Throwable): java.lang.RuntimeException() {
+class TerminalCommandException(cmd: String, e: Throwable): java.lang.RuntimeException() {
     override val message: String = "Error executing $cmd with message $e"
 }

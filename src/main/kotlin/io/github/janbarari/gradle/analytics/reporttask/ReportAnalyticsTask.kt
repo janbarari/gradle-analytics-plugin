@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
+import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.utils.ConsolePrinter
-import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
@@ -70,11 +70,11 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     var branchArgument: String = ""
 
-    @set:Option(option = "task", description = "Tracking task name")
+    @set:Option(option = "task", description = "Tracking task path")
     @get:Input
     var requestedTasksArgument: String = ""
 
-    @set:Option(option = "period", description = "Number of months")
+    @set:Option(option = "period", description = "Report period")
     @get:Input
     var periodArgument: String = ""
 
@@ -101,13 +101,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
      */
     @TaskAction
     fun execute() = runBlocking {
-
-        val modulesPath = mutableListOf<ModulePath>()
-        project.subprojects.forEach {
-            if (FileUtils.isModulePath(it.projectDir.absolutePath)) {
-                modulesPath.add(ModulePath(it.path, it.projectDir.absolutePath))
-            }
-        }
+        val modules = project.subprojects
+            .filter { it.isDependingOnOtherProject() }
+            .map { it.toModule() }
 
         val injector = ReportAnalyticsInjector(
             requestedTasks = requestedTasksArgument,
@@ -116,7 +112,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
-            modulesPath = modulesPath
+            modules = modules
         )
 
         with(injector.provideReportAnalyticsLogic()) {
@@ -124,41 +120,40 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             ensurePeriodArgumentValid(periodArgument)
             ensureTaskArgumentValid(requestedTasksArgument)
             try {
-                val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument.toLong()))
+                val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument))
                 printSuccessfulResult(reportPath)
             } catch (e: EmptyMetricsException) {
-                printEmptyResult()
+                printNoData()
             }
         }
-
     }
 
     private fun printSuccessfulResult(reportPath: String) {
-        ConsolePrinter(reportPath.length).run {
+        ConsolePrinter(blockCharWidth = reportPath.length).run {
             printFirstLine()
-            printLine("Gradle Analytics Plugin", "")
-            printBreakLine('-')
-            printLine("Report generated successfully", "")
-            printLine(reportPath, "")
-            printBreakLine('-')
-            printLine("Made with ❤ for developers", "")
-            printLine("https://github.com/janbarari/gradle-analytics-plugin", "")
-            printLine("", " ↖ Tap the ☆ button to support this plugin")
+            printLine(left = "Gradle Analytics Plugin")
+            printBreakLine(char = '-')
+            printLine(left = "Report generated successfully")
+            printLine(left = reportPath)
+            printBreakLine(char = '-')
+            printLine(left = "Made with ❤ for everyone")
+            printLine(left = "https://github.com/janbarari/gradle-analytics-plugin")
+            printLine(right = " ↖ Tap the ☆ button to support us")
             printLastLine()
         }
     }
 
-    private fun printEmptyResult() {
+    private fun printNoData() {
         val message = listOf(
-            "There is no data to process. Please check the plugin configuration ",
-            "and wait until the first desired task information is saved"
+            "There is no data to process. Please check the plugin configuration",
+            "and wait until the first desired task information is saved."
         )
-        ConsolePrinter(message[0].length).run {
+        ConsolePrinter(blockCharWidth = message[0].length).run {
             printFirstLine()
-            printLine("Gradle Analytics Plugin", "")
-            printBreakLine('-')
-            printLine(message[0], "")
-            printLine(message[1], "")
+            printLine(left = "Gradle Analytics Plugin")
+            printBreakLine(char = '-')
+            printLine(left = message[0])
+            printLine(left = message[1])
             printLastLine()
         }
     }

@@ -27,16 +27,28 @@ import java.nio.file.Path
 import kotlin.io.path.extension
 import kotlin.io.path.pathString
 
+/**
+ * Check is given path is Kotlin/Java source file.
+ */
 fun Path.isSourcePath(): Boolean {
     return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
             && (extension == "kt" || extension == "java")
             && Files.isRegularFile(this)
 }
 
+/**
+ * Check is the given path is Kotlin file.
+ */
 fun Path.isKotlinFile(): Boolean = extension == "kt"
 
+/**
+ * Check is the given path is Java file.
+ */
 fun Path.isJavaFile(): Boolean = extension == "java"
 
+/**
+ * Get given path file content as string.
+ */
 fun Path.readText(): String {
     return toFile()
         .inputStream()

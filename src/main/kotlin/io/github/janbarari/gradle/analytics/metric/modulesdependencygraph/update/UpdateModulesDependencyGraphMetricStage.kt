@@ -29,8 +29,8 @@ class UpdateModulesDependencyGraphMetricStage(
     private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             modulesDependencyGraphMetric = updateModulesDependencyGraphMetricUseCase.execute()
         }
     }

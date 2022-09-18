@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.extension.getTextResourceContent
 object HtmlUtils {
 
     /**
-     * Returns the empty message HTML tag.
+     * Return the empty message as HTML render.
      */
     fun renderMessage(message: String): String {
         return "<p>$message</p>" +
@@ -38,7 +38,7 @@ object HtmlUtils {
     }
 
     /**
-     * Returns the text resource content as String.
+     * Return the text resource file content as String.
      */
     fun getTemplate(fileName: String): String {
         return getTextResourceContent("$fileName.html")

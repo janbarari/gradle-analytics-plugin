@@ -16,6 +16,12 @@ complexity:
   NestedBlockDepth:
     active: true
     threshold: 6
+  LongMethod:
+    active: true
+    threshold: 75
+  ComplexMethod:
+    active: true
+    threshold: 25
 
 exceptions:
   active: true

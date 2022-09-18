@@ -28,7 +28,6 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCou
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -40,26 +39,26 @@ class CreateModulesSourceCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
                 it.modulesSourceCountMetric.isNotNull()
             }.map {
-                ensureNotNull(it.modulesSourceCountMetric)
+                it.modulesSourceCountMetric!!
             }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
-                modulesSourceCountReport = generateSingleItemReport(ensureNotNull(metrics.single()))
+            return input.apply {
+                modulesSourceCountReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 modulesSourceCountReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     fun generateSingleItemReport(metric: ModulesSourceCountMetric): ModulesSourceCountReport {
@@ -71,7 +70,7 @@ class CreateModulesSourceCountReportStage(
                 ModuleSourceCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(totalSourceCount),
+                    coverageRate = value.toPercentageOf(totalSourceCount),
                     diffRate = null // The ratio does not exist when there is only one item
                 )
             )
@@ -95,7 +94,7 @@ class CreateModulesSourceCountReportStage(
                 ModuleSourceCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(lastTotalSourceCount),
+                    coverageRate = value.toPercentageOf(lastTotalSourceCount),
                     diffRate = calculateModuleDiffRatio(metrics, path, value)
                 )
             )

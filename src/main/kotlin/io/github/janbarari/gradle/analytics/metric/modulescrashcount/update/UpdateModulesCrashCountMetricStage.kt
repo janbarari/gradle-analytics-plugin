@@ -29,8 +29,8 @@ class UpdateModulesCrashCountMetricStage(
     private val updateModulesCrashCountMetricUseCase: UpdateModulesCrashCountMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             modulesCrashCountMetric = updateModulesCrashCountMetricUseCase.execute()
         }
     }

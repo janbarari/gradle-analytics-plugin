@@ -23,57 +23,75 @@
 package io.github.janbarari.gradle.extension
 
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
-import io.github.janbarari.gradle.analytics.domain.model.TimespanChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
-fun List<TimespanChartPoint>.minimize(targetSize: Int): List<TimespanChartPoint> {
+/**
+ * Minimize TimespanPoint collection.
+ */
+fun List<TimespanPoint>.minimize(targetSize: Int): List<TimespanPoint> {
+
+    fun calculatePointsMean(values: List<TimespanPoint>): List<TimespanPoint> {
+        if (values.isEmpty()) return values
+
+        val mean = arrayListOf<TimespanPoint>()
+        val size = values.size
+        var nextIndex = 0
+
+        for (i in values.indices) {
+            if (i < nextIndex) continue
+
+            if (i + 1 >= size) {
+                mean.add(values[i])
+            } else {
+                var finishedAt = values[i + 1].to
+                if (finishedAt.isNull()) finishedAt = values[i + 1].from
+
+                mean.add(
+                    TimespanPoint(
+                        value = MathUtils.longMean(values[i].value, values[i + 1].value),
+                        from = values[i].from,
+                        to = finishedAt
+                    )
+                )
+
+                nextIndex = i + 2
+            }
+        }
+
+        return mean
+    }
+
     return if (size > targetSize)
         calculatePointsMean(this).minimize(targetSize)
     else this
 }
 
-fun calculatePointsMean(values: List<TimespanChartPoint>): List<TimespanChartPoint> {
-
-    if (values.isEmpty()) return values
-
-    val mean = arrayListOf<TimespanChartPoint>()
-    val size = values.size
-    var nextIndex = 0
-
-    for (i in values.indices) {
-        if (i < nextIndex) continue
-
-        if (i + 1 >= size) {
-            mean.add(values[i])
-        } else {
-
-            var finishedAt = values[i + 1].to
-            if (finishedAt.isNull()) finishedAt = values[i + 1].from
-
-            mean.add(
-                TimespanChartPoint(
-                    value = MathUtils.longMean(values[i].value, values[i + 1].value),
-                    from = values[i].from,
-                    to = finishedAt
-                )
-            )
-
-            nextIndex = i + 2
-        }
-    }
-
-    return mean
-}
-
-fun Collection<TimespanChartPoint>.mapToChartPoints(): List<ChartPoint> {
+/**
+ * Map TimespanPoint collection to ChartPoint collection.
+ */
+fun Collection<TimespanPoint>.mapToChartPoints(): List<ChartPoint> {
     return map {
-        val period = if (it.to.isNull()) {
+        val period = if (it.to.isNull())
             DateTimeUtils.format(it.from, "dd/MM")
-        } else {
+        else
             DateTimeUtils.format(it.from, "dd/MM") + "-" +
-                    DateTimeUtils.format(ensureNotNull(it.to), "dd/MM")
-        }
+                    DateTimeUtils.format(it.to!!, "dd/MM")
         ChartPoint(it.value, period)
     }
+}
+
+/**
+ * Get the maximum value of TimespanPoint collection.
+ */
+fun List<TimespanPoint>.maxValue(): Long {
+    return this.maxOf { it.value }
+}
+
+/**
+ * Get the minimum value of TimespanPoint collection.
+ */
+fun List<TimespanPoint>.minValue(): Long {
+    return this.minOf { it.value }
 }

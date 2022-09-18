@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
@@ -30,5 +31,6 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class NonCacheableTasksReport(
+    @Json(name = "tasks")
     val tasks: List<NonCacheableTasksMetric.NonCacheableTask>
 ): Serializable

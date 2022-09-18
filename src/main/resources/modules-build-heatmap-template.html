@@ -1,43 +1,52 @@
-<h2>Modules Build Heatmap</h2>
-<p class="gray-text pb16">This is a description.</p>
-<div class="chart-container" style="margin-right: 20px; height: %chart-height%;">
-  <canvas id="modulesBuildHeatmapChart" style="width:100%; height: 100%;"></canvas>
-  <script type="text/javascript">
-    var chart = new Chart("modulesBuildHeatmapChart", {
-      type: "bar",
-      data: {
-        labels: %labels%,
-        datasets: [
-          {
-            backgroundColor: %colors%,
-            data: %data%
-          }
-        ]
-      },
-      options: {
-        indexAxis: 'y',
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
+    <h2>Modules Build Heatmap</h2>
+    <p class="gray-text pb16">
+        This plugin uses `Modules Cache Usage` and `Modules Dependency Graph` to generate this metric that shows how many
+        times a module was built during the report period.
+        <br /><br />
+        Each bar has the name of the module and the number of dependent modules, smaller warm bars lead to faster builds
+        as those modules with warm colors have more dependent modules.
+        <br /><br />
+        In addition, it helps to modify the modular structure by tracing the graph and finding the cause to avoid
+        rebuilding the modules that are most shared with others.
+    </p>
+    <div class="chart-container" style="height: %chart-height%;">
+      <canvas id="modulesBuildHeatmapChart" style="width:100%; height: 100%;"></canvas>
+      <script type="text/javascript">
+        var chart = new Chart("modulesBuildHeatmapChart", {
+          type: "bar",
+          data: {
+            labels: %labels%,
+            datasets: [
+              {
+                backgroundColor: %colors%,
+                data: %data%
+              }
+            ]
           },
-          tooltip: {
-            mode: 'index',
-            axis: 'y',
-            intersect: false,
-            callbacks: {
-              label: function (context) {
-                let label = context.dataset.label || '';
-                return " " + context.parsed.x;
+          options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: 'index',
+                axis: 'y',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    return " " + context.parsed.x;
+                  }
+                }
               }
             }
           }
-        }
-      }
-    });
-  </script>
-</div>
-<span class="gray-text center-text">
-  <span>Smaller Heat Bars Are Better</span>
-</span>
-<div class="space"></div>
+        });
+      </script>
+    </div>
+    <span class="gray-text center-text">
+      <span>Smaller Heat Bars Are Better</span>
+    </span>
+    <div class="space"></div>

@@ -31,13 +31,11 @@ import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricT
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTable
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.extension.whenNotNull
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
@@ -65,29 +63,29 @@ class Database(
             databaseConfig = config.ci
         }
 
-        if (databaseConfig.isNull()) {
-            return
-        }
+        databaseConfig.whenNotNull {
 
-        when (databaseConfig) {
-            is MySqlDatabaseConnection -> {
-                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
-                connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
-                ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
+            when (databaseConfig) {
+                is MySqlDatabaseConnection -> {
+                    LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
+                    connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
+                    ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
+                }
+                is SqliteDatabaseConnection -> {
+                    LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
+                    connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
+                    ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
+                }
             }
-            is SqliteDatabaseConnection -> {
-                LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
-                connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
-                ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
-            }
-        }
 
-        createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
+            createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
+
+        }
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {
         _database = Database.connect(
-            url = "jdbc:mysql://${config.hostIp}:${config.port}/${config.name}",
+            url = "jdbc:mysql://${config.host}:${config.port}/${config.name}",
             driver = "com.mysql.cj.jdbc.Driver",
             user = config.user,
             password = config.password
@@ -107,9 +105,8 @@ class Database(
      * Creates the database tables if not exist.
      */
     private fun createTables(vararg entities: Table) {
-        transaction {
-            addLogger(StdOutSqlLogger)
-            SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = true)
+        transaction  {
+            SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = false)
         }
     }
 

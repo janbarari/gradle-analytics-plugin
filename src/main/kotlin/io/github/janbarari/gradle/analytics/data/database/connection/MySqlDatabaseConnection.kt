@@ -36,9 +36,9 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
     }
 
     /**
-     * Host IP.
+     * Host.
      */
-    lateinit var hostIp: String
+    lateinit var host: String
 
     /**
      * Database name

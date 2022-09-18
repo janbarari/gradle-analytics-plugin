@@ -29,8 +29,8 @@ class UpdateDependencyDetailsMetricStage(
     private val updateDependencyDetailsMetricUseCase: UpdateDependencyDetailsMetricUseCase
 ): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(buildMetric: BuildMetric): BuildMetric {
-        return buildMetric.apply {
+    override suspend fun process(input: BuildMetric): BuildMetric {
+        return input.apply {
             dependencyDetailsMetric = updateDependencyDetailsMetricUseCase.execute()
         }
     }

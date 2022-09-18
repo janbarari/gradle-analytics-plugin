@@ -22,7 +22,27 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-data class ModulePath(
-    val path: String,
-    val absoluteDir: String
-): java.io.Serializable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.utils.DateTimeUtils
+
+@JsonClass(generateAdapter = true)
+data class TimespanPoint(
+    @Json(name = "value")
+    val value: Long,
+    @Json(name = "from")
+    val from: Long,
+    @Json(name = "to")
+    val to: Long? = null
+): io.github.janbarari.gradle.core.Triple<Long, Long, Long?>(value, from, to) {
+
+    fun getTimespanString(): String {
+        return if (to.isNull()) {
+            DateTimeUtils.format(from, "dd/MM")
+        } else {
+            DateTimeUtils.format(from, "dd/MM") + "-" + DateTimeUtils.format(to!!, "dd/MM")
+        }
+    }
+
+}

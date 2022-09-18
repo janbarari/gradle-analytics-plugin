@@ -28,10 +28,10 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationPr
 
 class CreateInitializationProcessMetricUseCase: UseCase<BuildInfo, InitializationProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): InitializationProcessMetric {
+    override suspend fun execute(input: BuildInfo): InitializationProcessMetric {
         return InitializationProcessMetric(
-            median = buildInfo.getInitializationDuration().toMillis(),
-            mean = buildInfo.getInitializationDuration().toMillis()
+            median = input.getInitializationDuration().toMillis(),
+            mean = input.getInitializationDuration().toMillis()
         )
     }
 

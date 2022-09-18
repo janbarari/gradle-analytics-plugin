@@ -284,11 +284,11 @@ class BuildMetricExtensionsTest {
                 createdAt = 1660318217387,
                 gitHeadCommitHash = "unknown",
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(
-                    rate = 90L
+                    medianRate = 90L
                 )
             )
         )
-        val result = buildMetrics.mapToParallelRatioTimespanChartPoints()
+        val result = buildMetrics.mapToParallelExecutionRateMedianTimespanPoints()
         assertEquals(90L, result.first().value)
         assertEquals(1660318217387, result.first().from)
         assertEquals(null, result.first().to)

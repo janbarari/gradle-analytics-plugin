@@ -31,7 +31,7 @@ interface ReportAnalyticsLogic {
     @kotlin.jvm.Throws(IOException::class)
     suspend fun saveReport(renderedHTML: String): String
 
-    suspend fun generateReport(branch: String, requestedTasks: String, period: Long): String
+    suspend fun generateReport(branch: String, requestedTasks: String, period: String): String
 
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     fun ensureBranchArgumentValid(branchArgument: String)
@@ -41,5 +41,8 @@ interface ReportAnalyticsLogic {
 
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     fun ensureTaskArgumentValid(requestedTasksArgument: String)
+
+    @kotlin.jvm.Throws(InvalidPropertyException::class)
+    fun convertQueryToPeriod(query: String): Pair<Long, Long>
 
 }

@@ -24,10 +24,16 @@ package io.github.janbarari.gradle.extension
 
 import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 
+/**
+ * Get maximum value of ChartPoint collection.
+ */
 fun List<ChartPoint>.maxValue(): Long {
     return this.maxOf { it.value }
 }
 
+/**
+ * Get minimum value of ChartPoint collection.
+ */
 fun List<ChartPoint>.minValue(): Long {
     return this.minOf { it.value }
 }

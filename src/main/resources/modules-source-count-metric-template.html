@@ -1,69 +1,69 @@
-<h2>Modules Source Count</h2>
-<p class="gray-text pb16">Represents the project and modules source (kt, java) files count.</p>
-<div class="flex-container">
-    <div class="flex-child pr16">
-        <div class="table-container">
-            <table>
-                <tr style="background-color: #B4B4B4;">
-                    <th>#</th>
-                    <th>Module</th>
-                    <th>Count</th>
-                    <th>Coverage</th>
-                    <th>Diff Rate</th>
-                </tr>
-                %table-data%
-                <tr>
-                    <td colspan="2">Total</td>
-                    <td>%total-source-count%</td>
-                    <td>Σ</td>
-                    %total-diff-rate%
-                </tr>
-            </table>
+    <h2>Modules Source Count</h2>
+    <p class="gray-text pb16">
+        It represents the project and its modules source file count. (files with extension of <i>kt</i>, <i>java</i>).
+    </p>
+    <div class="flex-container">
+        <div class="flex-child pr16">
+            <div class="table-container">
+                <table>
+                    <tr style="background-color: #B4B4B4;">
+                        <th>#</th>
+                        <th>Module</th>
+                        <th>Count</th>
+                        <th>Coverage</th>
+                        <th>Diff Rate</th>
+                    </tr>
+                    %table-data%
+                    <tr>
+                        <td colspan="2">Total</td>
+                        <td>%total-source-count%</td>
+                        <td>Σ</td>
+                        %total-diff-rate%
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="flex-child" style="padding-left: 12px;">
-        <canvas id="modulesSourceCountChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
-        <script type="text/javascript">
-          var _labels = %module-labels%;
-          var _data = %module-values%;
-          var _colors = Array.from({length: _data.length}, () => getRandomColor());
+        <div class="flex-child" style="padding-left: 12px;">
+            <canvas id="modulesSourceCountChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
+            <script type="text/javascript">
+              var _data = %module-values%;
 
-          new Chart("modulesSourceCountChart", {
-            type: "pie",
-            data: {
-              labels: _labels,
-              datasets: [{
-                data: _data,
-                backgroundColor: _colors
-              }]
-            },
-            options: {
-              responsive: false,
-              maintainAspectRatio: false,
-              plugins: {
-                tooltip: {
-                  bodyFont: {
-                    size: 16
-                  },
-                  callbacks: {
-                    label: function (context) {
-                      let label = context.label || '';
-                      let value = context.formattedValue;
-                      return label + "=" + value;
+              new Chart("modulesSourceCountChart", {
+                type: "pie",
+                data: {
+                  labels: %module-labels%,
+                  datasets: [{
+                    data: _data,
+                    backgroundColor: Array.from({length: _data.length}, () => getRandomColor())
+                  }]
+                },
+                options: {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    tooltip: {
+                      bodyFont: {
+                        size: 16
+                      },
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.label || '';
+                          let value = context.formattedValue;
+                          return label + "=" + value;
+                        }
+                      }
+                    },
+                    legend: {
+                      display: false
                     }
                   }
-                },
-                legend: {
-                  display: false
                 }
-              }
-            }
-          });
+              });
 
-        </script>
+            </script>
+        </div>
     </div>
-</div>
-<div class="space-small"></div>
-<span class="gray-text"><strong>Coverage</strong> represents the percentage of the project source filled by the module.</span><br>
-<span class="gray-text"><strong>Diff Rate</strong> represents the change percentage of the period.</span>
-<div class="space"></div>
+    <div class="space-small"></div>
+    <span class="gray-text"><strong>Coverage</strong> represents the ratio of the project source occupied with the module source.</span><br>
+    <span class="gray-text"><strong>Diff Rate</strong> represents the change rate of source count during the report period.</span>
+    <div class="space"></div>

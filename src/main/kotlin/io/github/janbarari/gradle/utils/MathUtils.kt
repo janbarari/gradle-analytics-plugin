@@ -28,14 +28,14 @@ package io.github.janbarari.gradle.utils
 object MathUtils {
 
     /**
-     * Calculates the mean of a long dataset.
+     * Calculate the Mean average of a long dataset.
      */
     fun longMean(vararg dataset: Long): Long {
         return longMean(dataset.toList())
     }
 
     /**
-     * Calculates the mean of a long dataset.
+     * Calculate the Mean average of a long dataset.
      */
     fun longMean(dataset: List<Long>): Long {
         if (dataset.isEmpty()) return 0
@@ -43,7 +43,7 @@ object MathUtils {
     }
 
     /**
-     * Calculates the median of a long dataset.
+     * Calculate the Median average of a long dataset.
      */
     fun longMedian(dataset: List<Long>): Long {
         if (dataset.isEmpty()) return 0
@@ -54,7 +54,7 @@ object MathUtils {
     }
 
     /**
-     * Calculates the median of a float dataset.
+     * Calculates the Median average of a float dataset.
      */
     fun floatMedian(dataset: List<Float>): Float {
         if (dataset.isEmpty()) return 0F
@@ -65,24 +65,24 @@ object MathUtils {
     }
 
     /**
-     * Calculates the median of a long dataset.
+     * Calculate the Median average of a long dataset.
      */
     fun longMedian(vararg values: Long): Long {
         return longMedian(values.toList())
     }
 
     /**
-     * Sums the value by a dedicated percentage.
+     * Add to the value by defined percentage.
      */
     fun sumWithPercentage(value: Long, percentage: Int): Long {
-        return value + ((value * percentage) / 100)
+        return value + ((value * percentage) / 100L)
     }
 
     /**
-     * Deducts the value by a dedicated percentage.
+     * Deduct the value by defined percentage.
      */
     fun deductWithPercentage(value: Long, percentage: Int): Long {
-        return value - ((value * percentage) / 100)
+        return value - ((value * percentage) / 100L)
     }
 
 }

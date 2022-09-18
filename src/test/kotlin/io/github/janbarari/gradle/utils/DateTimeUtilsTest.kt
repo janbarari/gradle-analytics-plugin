@@ -8,13 +8,6 @@ import kotlin.test.assertEquals
 class DateTimeUtilsTest {
 
     @Test
-    fun `check calculating the day in past 3 months`() {
-        val currentDay = 1653696000000
-        val result = DateTimeUtils.calculateDayInPastMonthsMs(currentDay, 3)
-        assertEquals(1646006400000, result)
-    }
-
-    @Test
     fun `check getDayStartMs() returns day starting time`() {
         val todayStartMs = DateTimeUtils.getDayStartMs()
         println(todayStartMs)

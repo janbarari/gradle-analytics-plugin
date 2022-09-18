@@ -1,23 +1,26 @@
-<h2>Modules Execution Timeline</h2>
-<p class="gray-text pb16">Shows the project module's latest execution process timeline graph.</p>
-<div id="modules-timeline-graph"></div>
-<script type="text/javascript">
-    var data = %timelines%;
+    <h2>Modules Execution Timeline</h2>
+    <p class="gray-text pb16">It represents the latest modules execution process timeline graph on %datetime%.</p>
+    <div id="modules-timeline-graph"></div>
+    <script type="text/javascript">
+        var data = %timelines%;
 
-    var chart = d3.timeline()
-      .beginning(%beginning%)
-      .ending(%ending%)
-      .stack()
-      .margin({left:128, right:0, top:0, bottom:0})
+        var chart = d3.timeline()
+          .beginning(%beginning%)
+          .ending(%ending%)
+          .stack()
+          .margin({left:128, right:0, top:0, bottom:0})
 
-      function load() {
-        d3.select("#modules-timeline-graph")
-          .append("svg")
-          .attr("width", document.getElementById("container").offsetWidth)
-          .datum(data)
-          .call(chart);
-      }
+          function load() {
+            d3.select("#modules-timeline-graph")
+              .append("svg")
+              .attr("width", document.getElementById("container").offsetWidth)
+              .datum(data)
+              .call(chart);
+          }
 
-      load();
-</script>
-<div class="space"></div>
+          load();
+    </script>
+    <span class="gray-text center-text">
+      <span>Gray color shows the cached tasks</span>
+    </span>
+    <div class="space"></div>

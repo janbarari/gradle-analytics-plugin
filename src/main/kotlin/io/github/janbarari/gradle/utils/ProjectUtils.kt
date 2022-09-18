@@ -33,6 +33,7 @@ object ProjectUtils {
      * List of official Gradle versions.
      */
     enum class GradleVersions(val versionNumber: String) {
+        V7_5_1("7.5.1"),
         V7_5("7.5"),
         V7_4_2("7.4.2"),
         V7_4_1("7.4.1"),
@@ -71,9 +72,7 @@ object ProjectUtils {
     }
 
     /**
-     * Checks the project Gradle version is above the entered gradle version.
-     *
-     * @return True, if Gradle version is compatible.
+     * Check the project Gradle version is compatible(above the entered gradle version).
      */
     fun isCompatibleWith(version: GradleVersions): Boolean {
         val projectGradleVersion = GradleVersion.current()

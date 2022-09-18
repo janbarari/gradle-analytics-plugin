@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.Dependency
@@ -30,6 +31,8 @@ import java.io.Serializable
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class DependencyDetailsReport(
+    @Json(name = "dependencies")
     val dependencies: List<Dependency>,
-    val cumulativeDependenciesSizeInKb: Long
+    @Json(name = "cumulative_dependencies_size_by_kb")
+    val cumulativeDependenciesSizeByKb: Long
 ): Serializable

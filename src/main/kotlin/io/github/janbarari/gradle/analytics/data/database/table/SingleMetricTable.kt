@@ -30,6 +30,11 @@ import org.jetbrains.exposed.sql.Table
 
 object SingleMetricTable : Table("single_metric") {
 
+    /**
+     * The unique auto-generated id.
+     *
+     * It also is the primary-key of the table.
+     */
     val id = long("id").autoIncrement().uniqueIndex()
 
     val key = varchar("key", Database.DEFAULT_VARCHAR_LENGTH)

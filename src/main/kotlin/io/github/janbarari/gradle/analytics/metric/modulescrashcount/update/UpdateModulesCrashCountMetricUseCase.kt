@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulescrashcount.update
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
@@ -30,14 +30,14 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
 
 class UpdateModulesCrashCountMetricUseCase(
-    private val modulesPath: List<ModulePath>,
-    private val repo: DatabaseRepository
+    private val repo: DatabaseRepository,
+    private val modules: List<Module>
 ): UseCaseNoInput<ModulesCrashCountMetric>() {
 
     override suspend fun execute(): ModulesCrashCountMetric {
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
-        modulesPath.whenEach {
+        this.modules.whenEach {
             val crashes = repo.getTemporaryMetrics()
                 .filter { it.modulesCrashCountMetric.isNotNull() }
                 .sumOf { metric ->

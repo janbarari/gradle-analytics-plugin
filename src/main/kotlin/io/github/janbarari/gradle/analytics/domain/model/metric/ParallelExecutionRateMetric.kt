@@ -29,6 +29,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ParallelExecutionRateMetric(
-    @Json(name = "rate")
-    var rate: Long = 0L
+    @Json(name = "median_rate")
+    var medianRate: Long = 0L
 ): java.io.Serializable

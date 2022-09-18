@@ -29,7 +29,6 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCou
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.diffPercentageOf
-import io.github.janbarari.gradle.extension.ensureNotNull
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
@@ -40,26 +39,26 @@ class CreateModulesMethodCountReportStage(
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
-    override suspend fun process(report: Report): Report {
+    override suspend fun process(input: Report): Report {
         val metrics = metrics.filter {
             it.modulesMethodCountMetric.isNotNull()
         }.map {
-            ensureNotNull(it.modulesMethodCountMetric)
+            it.modulesMethodCountMetric!!
         }
 
         if (metrics.hasSingleItem()) {
-            return report.apply {
+            return input.apply {
                 modulesMethodCountReport = generateSingleItemReport(metrics.single())
             }
         }
 
         if (metrics.hasMultipleItems()) {
-            return report.apply {
+            return input.apply {
                 modulesMethodCountReport = generateMultipleItemsReport(metrics)
             }
         }
 
-        return report
+        return input
     }
 
     fun generateSingleItemReport(metric: ModulesMethodCountMetric): ModulesMethodCountReport {
@@ -72,7 +71,7 @@ class CreateModulesMethodCountReportStage(
                 ModuleMethodCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(totalSourceCount),
+                    coverageRate = value.toPercentageOf(totalSourceCount),
                     diffRate = null // The ratio does not exist when there is only one item
                 )
             )
@@ -96,7 +95,7 @@ class CreateModulesMethodCountReportStage(
                 ModuleMethodCount(
                     path = path,
                     value = value,
-                    coverage = value.toPercentageOf(lastTotalSourceCount),
+                    coverageRate = value.toPercentageOf(lastTotalSourceCount),
                     diffRate = calculateModuleDiffRatio(metrics, path, value)
                 )
             )

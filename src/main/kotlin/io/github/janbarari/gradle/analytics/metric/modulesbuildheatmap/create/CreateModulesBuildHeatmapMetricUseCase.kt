@@ -22,22 +22,22 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create
 
-import io.github.janbarari.gradle.analytics.domain.model.ModulePath
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleBuildHeatmap
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesBuildHeatmapMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.core.UseCaseNoInput
 
-class CreateModulesBuildHeatmapMetricUseCase:
-    UseCase<Pair<List<ModulePath>, ModulesDependencyGraph>, ModulesBuildHeatmapMetric>() {
+class CreateModulesBuildHeatmapMetricUseCase(
+    private val modules: List<Module>,
+    private val modulesDependencyGraph: ModulesDependencyGraph
+): UseCaseNoInput<ModulesBuildHeatmapMetric>() {
 
-    override suspend fun execute(input: Pair<List<ModulePath>, ModulesDependencyGraph>): ModulesBuildHeatmapMetric {
-        val modulesPath = input.first
-        val modulesDependencyGraph = input.second
-
+    override suspend fun execute(): ModulesBuildHeatmapMetric {
         val result = mutableListOf<ModuleBuildHeatmap>()
 
-        modulesPath.forEach { module ->
+        modules.forEach { module ->
             val dependantModulesCount = modulesDependencyGraph.dependencies.filter { it.dependency == module.path }.size
             result.add(
                 ModuleBuildHeatmap(

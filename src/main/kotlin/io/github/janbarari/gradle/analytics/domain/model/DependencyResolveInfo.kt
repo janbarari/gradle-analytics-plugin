@@ -22,9 +22,16 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class DependencyResolveInfo(
+    @Json(name = "path")
     val path: String,
+    @Json(name = "started_at")
     val startedAt: Long,
+    @Json(name = "finished_at")
     var finishedAt: Long = 0L
 ) : java.io.Serializable {
 

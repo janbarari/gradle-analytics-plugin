@@ -27,28 +27,14 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 import kotlin.io.path.Path
-import kotlin.io.path.name
 
 /**
- * A collection of datetime functions.
+ * A collection of I/O functions.
  */
 object FileUtils {
 
     /**
-     * Checks the given directory is a module directory.
-     */
-    fun isModulePath(directory: String): Boolean {
-        val isBuildscriptsExists = Files.list(Path(directory)).anyMatch { path ->
-            path.fileName.name == "build.gradle.kts" || path.fileName.name == "build.gradle"
-        }
-        val isSrcDirExists = Files.list(Path(directory)).anyMatch { path ->
-            path.fileName.name == "src"
-        }
-        return isBuildscriptsExists && isSrcDirExists
-    }
-
-    /**
-     * Returns list of source files in the module path.
+     * Get all source files in the module path.
      */
     fun getModuleSources(directory: String): List<Path> {
         var sourcePaths: List<Path>

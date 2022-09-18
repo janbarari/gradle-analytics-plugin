@@ -28,10 +28,10 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateDependencyResolveProcessMetricUseCase: UseCase<BuildInfo, DependencyResolveProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): DependencyResolveProcessMetric {
+    override suspend fun execute(input: BuildInfo): DependencyResolveProcessMetric {
         return DependencyResolveProcessMetric(
-            median = buildInfo.getTotalDependenciesResolveDuration().toMillis(),
-            mean = buildInfo.getTotalDependenciesResolveDuration().toMillis()
+            median = input.getTotalDependenciesResolveDuration().toMillis(),
+            mean = input.getTotalDependenciesResolveDuration().toMillis()
         )
     }
 

@@ -29,27 +29,23 @@ import io.github.janbarari.gradle.extension.whenEach
 
 class CreateNonCacheableTasksMetricUseCase(
     private val nonCacheableTasks: List<String>
-): UseCase<BuildInfo, NonCacheableTasksMetric>() {
+) : UseCase<BuildInfo, NonCacheableTasksMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): NonCacheableTasksMetric {
-        val executedTasks = buildInfo.executedTasks
+    override suspend fun execute(input: BuildInfo): NonCacheableTasksMetric {
         val temp = mutableListOf<NonCacheableTasksMetric.NonCacheableTask>()
 
         nonCacheableTasks.whenEach {
-            executedTasks.filter { it.path == this }
-                .forEach { task ->
-                    temp.add(
-                        NonCacheableTasksMetric.NonCacheableTask(
-                            path = task.path,
-                            avgExecutionDurationInMillis = task.getDurationInMillis()
-                        )
+            input.executedTasks.filter { it.path == this }.forEach { task ->
+                temp.add(
+                    NonCacheableTasksMetric.NonCacheableTask(
+                        path = task.path,
+                        avgExecutionDurationInMillis = task.getDurationInMillis()
                     )
-                }
+                )
+            }
         }
 
-        return NonCacheableTasksMetric(
-            tasks = temp
-        )
+        return NonCacheableTasksMetric(tasks = temp)
     }
 
 }

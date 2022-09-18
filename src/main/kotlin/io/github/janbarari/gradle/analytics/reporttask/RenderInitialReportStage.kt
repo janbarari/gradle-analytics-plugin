@@ -33,7 +33,6 @@ class RenderInitialReportStage private constructor(
     private val requestedTasks: String,
     private val branch: String,
     private val gitHeadCommitHash: String,
-    private val period: Long,
     private val isCI: Boolean
 ) : Stage<String, String> {
 
@@ -44,7 +43,6 @@ class RenderInitialReportStage private constructor(
         private var requestedTasks: String? = null
         private var branch: String? = null
         private var gitHeadCommitHash: String? = null
-        private var period: Long? = null
         private var isCI: Boolean? = null
 
         fun data(value: List<BuildMetric>) = apply {
@@ -67,10 +65,6 @@ class RenderInitialReportStage private constructor(
             gitHeadCommitHash = value
         }
 
-        fun period(value: Long) = apply {
-            period = value
-        }
-
         fun isCI(value: Boolean) = apply {
             isCI = value
         }
@@ -82,7 +76,6 @@ class RenderInitialReportStage private constructor(
                 requestedTasks!!,
                 branch!!,
                 gitHeadCommitHash!!,
-                period!!,
                 isCI!!
             )
         }
@@ -94,7 +87,6 @@ class RenderInitialReportStage private constructor(
             .replace("%task-path%", requestedTasks)
             .replace("%branch%", branch)
             .replace("%git-head-commit-hash%", gitHeadCommitHash)
-            .replace("%time-period-title%", "$period Months")
             .replace("%reported-at%", DateTimeUtils.formatToDateTime(System.currentTimeMillis()))
             .replace("%is-ci%", if (isCI) "Yes" else "No")
             .replace("%plugin-version%", GradleAnalyticsPlugin.PLUGIN_VERSION)

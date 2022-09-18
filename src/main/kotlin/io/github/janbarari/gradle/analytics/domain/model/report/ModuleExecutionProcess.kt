@@ -22,18 +22,26 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model.report
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class ModuleExecutionProcess(
+    @Json(name = "path")
     val path: String,
-    val avgMedianDuration: Long,
-    val avgMedianParallelDuration: Long,
+    @Json(name = "avg_median_duration")
+    val avgMedianExecInMillis: Long,
+    @Json(name = "avg_median_parallel_duration")
+    val avgMedianParallelExecInMillis: Long,
+    @Json(name = "avg_median_parallel_rate")
     val avgMedianParallelRate: Float,
-    val avgMedianCoverage: Float,
-    val avgMedianDurations: List<ChartPoint>,
+    @Json(name = "avg_median_coverage")
+    val avgMedianCoverageRate: Float,
+    @Json(name = "avg_median_durations")
+    val avgMedianExecs: List<TimespanPoint>,
+    @Json(name = "diff_rate")
     val diffRate: Float?
-): java.io.Serializable
+) : java.io.Serializable

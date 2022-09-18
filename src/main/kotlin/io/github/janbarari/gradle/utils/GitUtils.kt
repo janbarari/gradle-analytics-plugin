@@ -28,7 +28,7 @@ package io.github.janbarari.gradle.utils
 object GitUtils {
 
     /**
-     * Returns the git current branch name.
+     * Get the git current branch name.
      *
      * @throws io.github.janbarari.gradle.utils.GitException if the command execution failed.
      */
@@ -44,13 +44,16 @@ object GitUtils {
     }
 
     /**
-     * Returns the git HEAD commit hash.
+     * Get the git HEAD commit hash.
+     *
      * @throws io.github.janbarari.gradle.utils.GitException if the command execution failed.
      */
     @kotlin.jvm.Throws(GitException::class)
     fun getHeadCommitHash(): String {
         try {
-            return TerminalUtils.execCommand("git log --format=\"%H\" -n 1")
+            return TerminalUtils
+                .execCommand("git log --format=\"%H\" -n 1")
+                .replace("\"","")
         } catch (e: IllegalStateException) {
             throw GitException("Git command execution failed with message of ${e.message}")
         } catch (e: RuntimeException) {

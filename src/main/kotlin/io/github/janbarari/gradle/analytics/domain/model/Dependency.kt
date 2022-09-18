@@ -25,18 +25,46 @@ package io.github.janbarari.gradle.analytics.domain.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import org.gradle.api.Project
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
 data class Dependency(
     @Json(name = "name")
     val name: String,
-    @Json(name = "moduleName")
+    @Json(name = "module_name")
     val moduleName: String,
-    @Json(name = "moduleGroup")
+    @Json(name = "module_group")
     val moduleGroup: String,
-    @Json(name = "moduleVersion")
+    @Json(name = "module_version")
     val moduleVersion: String,
-    @Json(name = "size")
-    val sizeInKb: Long
-): java.io.Serializable
+    @Json(name = "size_by_kb")
+    val sizeByKb: Long
+): java.io.Serializable {
+
+    companion object {
+
+        fun Project.getThirdPartyDependencies(): List<Dependency> {
+            return subprojects.flatMap { project ->
+                project.configurations.filter {
+                    it.isCanBeResolved && it.name.contains("compileClassPath", ignoreCase = true)
+                }.flatMap { configuration ->
+                    configuration.resolvedConfiguration.firstLevelModuleDependencies.filter { resolvedDependency ->
+                        !resolvedDependency.moduleVersion.equals("unspecified", true)
+                    }.map { it }
+                }
+            }.toSet()
+                .map {
+                    Dependency(
+                        name = it.name,
+                        moduleName = it.moduleName,
+                        moduleGroup = it.moduleGroup,
+                        moduleVersion = it.moduleVersion,
+                        sizeByKb = it.moduleArtifacts.sumOf { artifact -> artifact.file.length() / 1024L }
+                    )
+                }
+        }
+
+    }
+
+}

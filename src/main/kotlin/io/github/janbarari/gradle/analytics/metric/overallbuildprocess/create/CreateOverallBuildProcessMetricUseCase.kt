@@ -28,10 +28,10 @@ import io.github.janbarari.gradle.core.UseCase
 
 class CreateOverallBuildProcessMetricUseCase: UseCase<BuildInfo, OverallBuildProcessMetric>() {
 
-    override suspend fun execute(buildInfo: BuildInfo): OverallBuildProcessMetric {
+    override suspend fun execute(input: BuildInfo): OverallBuildProcessMetric {
         return OverallBuildProcessMetric(
-            median = buildInfo.getTotalDuration().toMillis(),
-            mean = buildInfo.getTotalDuration().toMillis()
+            median = input.getTotalDuration().toMillis(),
+            mean = input.getTotalDuration().toMillis()
         )
     }
 

@@ -31,13 +31,8 @@ class ModuleCacheHitJsonAdapterTest {
             {
                 "path": ":app",
                 "rate": 33,
-                "diffRate": 3,
-                "meanValues": [
-                    {
-                        "value": 30,
-                        "description": "22/10/2022"
-                    }
-                ],
+                "diff_rate": 3,
+                "mean_values": [],
                 
                 "test-skipping-un-valid-field": true
             }
@@ -61,7 +56,7 @@ class ModuleCacheHitJsonAdapterTest {
             fromReader.diffRate == 3F
         }
         assertTrue {
-            fromReader.meanValues.isNotEmpty()
+            fromReader.meanValues.isEmpty()
         }
     }
 
@@ -82,7 +77,7 @@ class ModuleCacheHitJsonAdapterTest {
         assertThrows<JsonDataException> {
             val json = """
                 {
-                    "meanValues": null
+                    "mean_values": null
                 }
             """.trimIndent()
             adapter.fromJson(

@@ -25,14 +25,13 @@ package io.github.janbarari.gradle.analytics.metric.modulessourcesize.update
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceSizeMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
-import io.github.janbarari.gradle.extension.ensureNotNull
 
 class UpdateModulesSourceSizeMetricUseCase(
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ModulesSourceSizeMetric>() {
 
     override suspend fun execute(): ModulesSourceSizeMetric {
-        return ensureNotNull(repo.getTemporaryMetrics().last().modulesSourceSizeMetric)
+        return repo.getTemporaryMetrics().last().modulesSourceSizeMetric!!
     }
 
 }

@@ -22,43 +22,30 @@
  */
 package io.github.janbarari.gradle.extension
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-
 /**
- * Returns True, If the object is null.
+ * Check if the object is null.
  */
 fun Any?.isNull(): Boolean {
     return this == null
 }
 
 /**
- * Returns True, If the object is not null.
+ * Check if the object is not null.
  */
 fun Any?.isNotNull(): Boolean {
     return this != null
 }
 
 /**
- * Invokes the lambda function if the object is NOT null.
+ * Invoke the lambda function if the object is NOT null.
  */
 fun <T: Any> T?.whenNotNull(block: T.() -> Unit) {
     if (this != null) block(this)
 }
 
 /**
- * Invokes the lambda function if the object is null.
+ * Invoke the lambda function if the object is null.
  */
 fun <T: Any> T?.whenNull(block: () -> Unit) {
     if(this == null) block()
-}
-
-/**
- * Converts nullable object to non-null object.
- *
- * @throws java.lang.NullPointerException if the given value is null.
- */
-@ExcludeJacocoGenerated
-inline fun <reified T: Any> ensureNotNull(value: T?): T {
-    if (value.isNull()) throw java.lang.NullPointerException("${T::class} can not be null")
-    return value as T
 }

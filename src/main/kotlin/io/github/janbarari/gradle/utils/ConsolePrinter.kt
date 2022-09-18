@@ -22,20 +22,22 @@
  */
 package io.github.janbarari.gradle.utils
 
-class ConsolePrinter(private var width: Int) {
+/**
+ * Prints the messages in the terminal console in a visual format.
+ */
+class ConsolePrinter(private var blockCharWidth: Int) {
 
     init {
-        width += 5
+        blockCharWidth += 1
     }
 
     fun printFirstLine(firstSpace: Boolean = true) {
         val output = StringBuilder()
-        if (firstSpace) {
+        if (firstSpace)
             output.append("\n")
-        }
         output.append(" ")
         output.append("┌")
-        (0..width).forEach {
+        (0..blockCharWidth).forEach {
             output.append("─")
         }
         output.append("┐")
@@ -46,24 +48,24 @@ class ConsolePrinter(private var width: Int) {
         val output = StringBuilder()
         output.append(" ")
         output.append("└")
-        (0..width).forEach {
+        (0..blockCharWidth).forEach { _ ->
             output.append("─")
         }
         output.append("┘")
         println(output.toString())
     }
 
-    fun printLine(title: String, value: String) {
+    fun printLine(left: String = "", right: String = "") {
         val output = StringBuilder()
         output.append(" ")
         output.append("│")
         output.append(" ")
-        output.append(title)
-        val remainingEmptyCharactersCount = width - title.length - value.length - 1
-        (0 until remainingEmptyCharactersCount).forEach {
+        output.append(left)
+        val remainingEmptyCharactersCount = blockCharWidth - left.length - right.length - 1
+        (0 until remainingEmptyCharactersCount).forEach { _ ->
             output.append(" ")
         }
-        output.append(value)
+        output.append(right)
         output.append(" ")
         output.append("│")
         println(output.toString())
@@ -73,7 +75,7 @@ class ConsolePrinter(private var width: Int) {
         val output = StringBuilder()
         output.append(" ")
         output.append("│")
-        (0..width).forEach {
+        (0..blockCharWidth).forEach { _ ->
             output.append(char)
         }
         output.append("│")

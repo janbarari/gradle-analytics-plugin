@@ -93,8 +93,10 @@ data class BuildMetric(
     @Json(name = "modules_crash_count_metric")
     var modulesCrashCountMetric: ModulesCrashCountMetric? = null,
 
-    ): java.io.Serializable {
+): java.io.Serializable {
 
+    // Exclude from build metric json to avoid save in metric table. Regarding the metric
+    // size and usability, this metric should be saved in `single_metric` table.
     @Transient
     var modulesTimelineMetric: ModulesTimelineMetric? = null
 
