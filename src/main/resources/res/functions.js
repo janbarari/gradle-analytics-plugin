@@ -15,8 +15,8 @@ function shadeColor(color, amount) {
   .substr(-2));
 }
 
-var resetFlag = 0
-var randomColor = getRandomColor()
+let resetFlag = 0
+let randomColor = getRandomColor()
 
 function getColor(single = false) {
   if(single) {

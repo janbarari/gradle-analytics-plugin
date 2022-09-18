@@ -31,41 +31,40 @@ import io.github.janbarari.gradle.utils.MathUtils
  * Minimize TimespanPoint collection.
  */
 fun List<TimespanPoint>.minimize(targetSize: Int): List<TimespanPoint> {
-
-    fun calculatePointsMean(values: List<TimespanPoint>): List<TimespanPoint> {
-        if (values.isEmpty()) return values
-
-        val mean = arrayListOf<TimespanPoint>()
-        val size = values.size
-        var nextIndex = 0
-
-        for (i in values.indices) {
-            if (i < nextIndex) continue
-
-            if (i + 1 >= size) {
-                mean.add(values[i])
-            } else {
-                var finishedAt = values[i + 1].to
-                if (finishedAt.isNull()) finishedAt = values[i + 1].from
-
-                mean.add(
-                    TimespanPoint(
-                        value = MathUtils.longMean(values[i].value, values[i + 1].value),
-                        from = values[i].from,
-                        to = finishedAt
-                    )
-                )
-
-                nextIndex = i + 2
-            }
-        }
-
-        return mean
-    }
-
     return if (size > targetSize)
         calculatePointsMean(this).minimize(targetSize)
     else this
+}
+
+private fun calculatePointsMean(values: List<TimespanPoint>): List<TimespanPoint> {
+    if (values.isEmpty()) return values
+
+    val mean = arrayListOf<TimespanPoint>()
+    val size = values.size
+    var nextIndex = 0
+
+    for (i in values.indices) {
+        if (i < nextIndex) continue
+
+        if (i + 1 >= size) {
+            mean.add(values[i])
+        } else {
+            var finishedAt = values[i + 1].to
+            if (finishedAt.isNull()) finishedAt = values[i + 1].from
+
+            mean.add(
+                TimespanPoint(
+                    value = MathUtils.longMean(values[i].value, values[i + 1].value),
+                    from = values[i].from,
+                    to = finishedAt
+                )
+            )
+
+            nextIndex = i + 2
+        }
+    }
+
+    return mean
 }
 
 /**

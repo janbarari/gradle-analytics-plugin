@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.core.Stage
 
 class CreateCacheHitMetricStage(

@@ -25,9 +25,7 @@ package io.github.janbarari.gradle.analytics.domain.model.report
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
-import java.sql.Time
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)

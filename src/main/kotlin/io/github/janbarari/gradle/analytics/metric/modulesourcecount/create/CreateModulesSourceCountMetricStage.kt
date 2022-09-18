@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.core.Stage
 
 class CreateModulesSourceCountMetricStage(
