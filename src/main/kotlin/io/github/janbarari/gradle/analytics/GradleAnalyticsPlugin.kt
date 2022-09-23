@@ -24,8 +24,10 @@ package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.IncompatibleVersionException
+import io.github.janbarari.gradle.NotAccessibleGitTerminalException
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
+import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -43,7 +45,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.0-beta01"
+        const val PLUGIN_VERSION = "1.0.0-beta04"
     }
 
     /**
@@ -51,6 +53,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      */
     override fun apply(project: Project) {
         ensureProjectGradleCompatible()
+        ensureGitTerminalAccessible()
         val config = setupPluginConfig(project)
         registerTasks(config)
         ScannerUtils.setupScannerServices(config, registry)
@@ -67,6 +70,18 @@ class GradleAnalyticsPlugin @Inject constructor(
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
             throw IncompatibleVersionException(PLUGIN_NAME, requiredGradleVersion.versionNumber)
+        }
+    }
+
+    /**
+     * The plugin only works on projects which use Git. This function ensures the Git terminal accessible in project directory.
+     */
+    @kotlin.jvm.Throws(NotAccessibleGitTerminalException::class)
+    private fun ensureGitTerminalAccessible() {
+        try {
+            GitUtils.currentBranch()
+        } catch (e: Throwable) {
+            throw NotAccessibleGitTerminalException(PLUGIN_NAME)
         }
     }
 

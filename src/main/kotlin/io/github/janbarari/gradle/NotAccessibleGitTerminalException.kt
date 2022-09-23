@@ -20,37 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics
+package io.github.janbarari.gradle
 
-import groovy.lang.Closure
-import io.github.janbarari.gradle.analytics.database.DatabaseConnection
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.Project
-
-/**
- * Configuration options for the [io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin].
- */
 @ExcludeJacocoGenerated
-open class GradleAnalyticsPluginConfig(val project: Project) {
-
-    private var databaseConfig: DatabaseConfig = DatabaseConfig()
-
-    var trackingTasks: List<String> = listOf()
-
-    var trackingBranches: List<String> = listOf()
-
-    var outputPath: String = project.rootProject.buildDir.absolutePath
-
-    fun database(closure: Closure<*>) {
-        closure.delegate = databaseConfig
-        closure.call()
-    }
-
-    fun database(block: DatabaseConfig.() -> Unit) {
-        databaseConfig = DatabaseConfig().also(block)
-    }
-
-    fun getDatabaseConfig(): DatabaseConfig = databaseConfig
-
-}
+class NotAccessibleGitTerminalException(title: String): Throwable(
+    message = "$title works only on projects which use Git."
+)

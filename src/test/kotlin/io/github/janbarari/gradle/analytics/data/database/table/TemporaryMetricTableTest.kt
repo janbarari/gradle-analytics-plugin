@@ -1,5 +1,6 @@
 package io.github.janbarari.gradle.analytics.data.database.table
 
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable
 import org.jetbrains.exposed.sql.autoIncColumnType
 import org.jetbrains.exposed.sql.isAutoInc
 import org.junit.jupiter.api.Test

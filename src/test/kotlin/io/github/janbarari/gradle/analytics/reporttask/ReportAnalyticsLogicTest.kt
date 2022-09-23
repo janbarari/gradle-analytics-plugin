@@ -1,6 +1,8 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
+import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
@@ -27,8 +29,8 @@ class ReportAnalyticsLogicTest {
         injector = ReportAnalyticsInjector(
             requestedTasks = "assembleDebug",
             isCI = false,
-            databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-                local = sqlite {
+            databaseConfig = DatabaseConfig().apply {
+                local = SqliteDatabaseConnection {
                     path = "./build"
                     name = "testdb"
                 }

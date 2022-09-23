@@ -1,6 +1,8 @@
 package io.github.janbarari.gradle.analytics.scanner
 
+import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
+import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
@@ -16,8 +18,8 @@ class BuildExecutionLogicTest {
 
     private var injector = BuildExecutionInjector(
         trackingBranches = listOf("master"),
-        databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            local = sqlite {
+        databaseConfig = DatabaseConfig().apply {
+            local = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }
@@ -53,8 +55,8 @@ class BuildExecutionLogicTest {
 
     @Test
     fun `check isDatabaseConfigurationValid() returns true when ran on Local`() {
-        injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            local = sqlite {
+        injector.databaseConfig = DatabaseConfig().apply {
+            local = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }
@@ -65,8 +67,8 @@ class BuildExecutionLogicTest {
     @Test
     fun `check isDatabaseConfigurationValid() returns true when ran on CI`() {
         injector.isCI = true
-        injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            ci = sqlite {
+        injector.databaseConfig = DatabaseConfig().apply {
+            ci = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }
@@ -77,8 +79,8 @@ class BuildExecutionLogicTest {
     @Test
     fun `check isDatabaseConfigurationValid() returns false when ran on CI`() {
         injector.isCI = false
-        injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            ci = sqlite {
+        injector.databaseConfig = DatabaseConfig().apply {
+            ci = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }
@@ -89,8 +91,8 @@ class BuildExecutionLogicTest {
     @Test
     fun `check isDatabaseConfigurationValid() returns false when ran on Local`() {
         injector.isCI = true
-        injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            local = sqlite {
+        injector.databaseConfig = DatabaseConfig().apply {
+            local = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }
@@ -128,7 +130,7 @@ class BuildExecutionLogicTest {
 
     @Test
     fun `check onExecutionFinished() returns false when database is not set`() = runBlocking {
-        injector.databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig()
+        injector.databaseConfig = DatabaseConfig()
 
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)

@@ -14,35 +14,31 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.table
+package io.github.janbarari.gradle.analytics.database
 
-import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
-import org.jetbrains.exposed.sql.Table
+/**
+ * Since tables uses auto incremental number to generate unique id, the auto-incremental
+ * won't reset after table cleared, This class helps to reset auto-incremental numbers
+ * of a table. also it will do it for both MySql and Sqlite database.
+ */
+object ResetAutoIncremental {
+    lateinit var dbType: Class<out DatabaseConnection>
 
-object MetricTable : Table("metric") {
-
-    /**
-     * The unique auto-generated number which represents the build-number.
-     *
-     * It also is the primary-key of the table.
-     */
-    val number = long("number").autoIncrement().uniqueIndex()
-
-    val createdAt = long("created_at")
-
-    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
-
-    val requestedTasks = varchar("requested_tasks", Database.DEFAULT_VARCHAR_LENGTH)
-
-    val value = registerColumn<String>("value", LongTextColumnType())
-
-    override val primaryKey = PrimaryKey(number)
-
+    fun getQuery(tableName: String): String? {
+        if (this::dbType.isInitialized) {
+            if (dbType == MySqlDatabaseConnection::class.java) {
+                return "ALTER TABLE $tableName AUTO_INCREMENT = 0;"
+            }
+            if (dbType == SqliteDatabaseConnection::class.java) {
+                return "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='$tableName';"
+            }
+        }
+        return null
+    }
 }

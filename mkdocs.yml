@@ -8,7 +8,6 @@ site_author: Mehdi Janbarari
 nav:
   - Overview: index.md
   - Setup: setup.md
-  - Configuration: configuration.md
   - Get to Know Metrics: get-to-know-metrics.md
   - Getting Report: getting-report.md
   - Changelog: changelog.md
@@ -36,6 +35,7 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.tabbed:
+      alternate_style: true
 
 copyright: Made with 🧡 for everyone | Copyright &copy; 2022
 

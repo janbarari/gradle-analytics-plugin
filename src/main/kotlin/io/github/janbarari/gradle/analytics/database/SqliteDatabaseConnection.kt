@@ -20,34 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.connection
+package io.github.janbarari.gradle.analytics.database
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
-
-    companion object {
-        private const val DEFAULT_MYSQL_PORT = 3306
-    }
+class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): DatabaseConnection() {
 
     init {
         also(block)
     }
 
-    /**
-     * Host.
-     */
-    lateinit var host: String
+    var path: String? = null
 
-    /**
-     * Database name
-     */
-    lateinit var name: String
+    var name: String? = null
 
-    /**
-     * Connection port, Default port is `3306`.
-     */
-    var port: Int = DEFAULT_MYSQL_PORT
+    var user: String = "root"
+
+    var password: String = ""
 
 }

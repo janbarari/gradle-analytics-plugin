@@ -23,12 +23,12 @@
 package io.github.janbarari.gradle.analytics.data
 
 import com.squareup.moshi.Moshi
-import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.data.database.ResetAutoIncremental
-import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
-import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTable
-import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
-import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.value
+import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.ResetAutoIncremental
+import io.github.janbarari.gradle.analytics.database.table.MetricTable
+import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable.value
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository

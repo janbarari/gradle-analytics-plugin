@@ -20,16 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database
+package io.github.janbarari.gradle.analytics.database
 
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.data.database.connection.DatabaseConnection
-import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDatabaseConnection
-import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
-import io.github.janbarari.gradle.analytics.data.database.table.MetricTable
-import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable
+import io.github.janbarari.gradle.analytics.database.table.MetricTable
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.data.database.table.SingleMetricTable
+import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -41,7 +38,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
 
 class Database(
-    config: GradleAnalyticsPluginConfig.DatabaseConfig,
+    config: DatabaseConfig,
     private var isCI: Boolean
 ) {
 
@@ -56,7 +53,7 @@ class Database(
         connect(config)
     }
 
-    private fun connect(config: GradleAnalyticsPluginConfig.DatabaseConfig) {
+    private fun connect(config: DatabaseConfig) {
         databaseConfig = config.local
 
         if (isCI && config.ci.isNotNull()) {
@@ -94,7 +91,7 @@ class Database(
 
     private fun connectSqliteDatabase(config: SqliteDatabaseConnection) {
         _database = Database.connect(
-            url = "jdbc:sqlite:${config.path.toRealPath()}/${config.name}.db",
+            url = "jdbc:sqlite:${config.path!!.toRealPath()}/${config.name}.db",
             driver = "org.sqlite.JDBC",
             user = config.user,
             password = config.password

@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.Dependency
 import io.github.janbarari.gradle.analytics.domain.model.Module
@@ -54,7 +55,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
     interface Params : BuildServiceParameters {
-        val databaseConfig: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
+        val databaseConfig: Property<DatabaseConfig>
         val envCI: Property<Boolean>
         val requestedTasks: ListProperty<String>
         val trackingTasks: ListProperty<String>

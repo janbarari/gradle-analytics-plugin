@@ -20,31 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.table
+package io.github.janbarari.gradle.analytics.database.table
 
-import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
-import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.autoIncrement
-import io.github.janbarari.gradle.analytics.data.database.table.TemporaryMetricTable.uniqueIndex
+import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.LongTextColumnType
 import org.jetbrains.exposed.sql.Table
 
-object SingleMetricTable : Table("single_metric") {
+object MetricTable : Table("metric") {
 
     /**
-     * The unique auto-generated id.
+     * The unique auto-generated number which represents the build-number.
      *
      * It also is the primary-key of the table.
      */
-    val id = long("id").autoIncrement().uniqueIndex()
-
-    val key = varchar("key", Database.DEFAULT_VARCHAR_LENGTH)
+    val number = long("number").autoIncrement().uniqueIndex()
 
     val createdAt = long("created_at")
 
     val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
 
+    val requestedTasks = varchar("requested_tasks", Database.DEFAULT_VARCHAR_LENGTH)
+
     val value = registerColumn<String>("value", LongTextColumnType())
 
-    override val primaryKey = PrimaryKey(id)
+    override val primaryKey = PrimaryKey(number)
 
 }

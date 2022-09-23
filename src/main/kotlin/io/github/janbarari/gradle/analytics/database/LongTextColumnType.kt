@@ -20,29 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database
+package io.github.janbarari.gradle.analytics.database
 
-import io.github.janbarari.gradle.analytics.data.database.connection.DatabaseConnection
-import io.github.janbarari.gradle.analytics.data.database.connection.MySqlDatabaseConnection
-import io.github.janbarari.gradle.analytics.data.database.connection.SqliteDatabaseConnection
+import org.jetbrains.exposed.sql.IColumnType
+import org.jetbrains.exposed.sql.TextColumnType
 
 /**
- * Since tables uses auto incremental number to generate unique id, the auto-incremental
- * won't reset after table cleared, This class helps to reset auto-incremental numbers
- * of a table. also it will do it for both MySql and Sqlite database.
+ * Since the MySql database `text` column can only save a text with a maximum
+ * 65kb size. this is an extension structure to hold big text values for it.
  */
-object ResetAutoIncremental {
-    lateinit var dbType: Class<out DatabaseConnection>
+class LongTextColumnType : IColumnType by TextColumnType() {
 
-    fun getQuery(tableName: String): String? {
-        if (this::dbType.isInitialized) {
-            if (dbType == MySqlDatabaseConnection::class.java) {
-                return "ALTER TABLE $tableName AUTO_INCREMENT = 0;"
-            }
-            if (dbType == SqliteDatabaseConnection::class.java) {
-                return "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='$tableName';"
-            }
+    companion object {
+        var longTextType: LongTextType = LongTextType.TEXT
+
+        enum class LongTextType(val value: String) {
+            TEXT("TEXT"),
+            MEDIUMTEXT("MEDIUMTEXT")
         }
-        return null
     }
+
+    override fun sqlType(): String {
+        return longTextType.value
+    }
+
 }

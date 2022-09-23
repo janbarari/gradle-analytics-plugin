@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -94,7 +95,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     abstract val trackingBranchesProperty: ListProperty<String>
 
     @get:Input
-    abstract val databaseConfigProperty: Property<GradleAnalyticsPluginConfig.DatabaseConfig>
+    abstract val databaseConfigProperty: Property<DatabaseConfig>
 
     /**
      * Invokes when the task execution process started.

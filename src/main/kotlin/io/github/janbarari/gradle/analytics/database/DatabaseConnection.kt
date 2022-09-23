@@ -14,34 +14,15 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database
+package io.github.janbarari.gradle.analytics.database
 
-import org.jetbrains.exposed.sql.IColumnType
-import org.jetbrains.exposed.sql.TextColumnType
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-/**
- * Since the MySql database `text` column can only save a text with a maximum
- * 65kb size. this is an extension structure to hold big text values for it.
- */
-class LongTextColumnType : IColumnType by TextColumnType() {
-
-    companion object {
-        var longTextType: LongTextType = LongTextType.TEXT
-
-        enum class LongTextType(val value: String) {
-            TEXT("TEXT"),
-            MEDIUMTEXT("MEDIUMTEXT")
-        }
-    }
-
-    override fun sqlType(): String {
-        return longTextType.value
-    }
-
-}
+@ExcludeJacocoGenerated
+open class DatabaseConnection : java.io.Serializable

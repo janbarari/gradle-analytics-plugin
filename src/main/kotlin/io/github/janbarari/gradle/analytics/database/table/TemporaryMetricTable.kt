@@ -20,21 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.connection
+package io.github.janbarari.gradle.analytics.database.table
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.LongTextColumnType
+import org.jetbrains.exposed.sql.Table
 
-@ExcludeJacocoGenerated
-open class DatabaseConnection : java.io.Serializable {
-
-    /**
-     * Database user, Default is `root`.
-     */
-    var user: String = "root"
+object TemporaryMetricTable : Table("temporary_metric") {
 
     /**
-     * Database password, Default is empty.
+     * The unique auto-generated number which represents the build-number.
+     *
+     * It also is the primary-key of the table.
      */
-    var password: String = ""
+    val number = long("number").autoIncrement().uniqueIndex()
+
+    val createdAt = long("created_at")
+
+    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val requestedTasks = varchar("requested_tasks", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val value = registerColumn<String>("value", LongTextColumnType())
+
+    override val primaryKey = PrimaryKey(number)
 
 }

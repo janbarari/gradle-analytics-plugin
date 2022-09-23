@@ -20,27 +20,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.connection
+package io.github.janbarari.gradle.analytics.database.table
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.LongTextColumnType
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable.autoIncrement
+import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable.uniqueIndex
+import org.jetbrains.exposed.sql.Table
 
-@ExcludeJacocoGenerated
-class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): DatabaseConnection() {
-
-    init {
-        also(block)
-    }
+object SingleMetricTable : Table("single_metric") {
 
     /**
-     * Database file path.
+     * The unique auto-generated id.
      *
-     * Note: The plugin will create the database if needed.
+     * It also is the primary-key of the table.
      */
-    lateinit var path: String
+    val id = long("id").autoIncrement().uniqueIndex()
 
-    /**
-     * Database name.
-     */
-    lateinit var name: String
+    val key = varchar("key", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val createdAt = long("created_at")
+
+    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
+
+    val value = registerColumn<String>("value", LongTextColumnType())
+
+    override val primaryKey = PrimaryKey(id)
 
 }

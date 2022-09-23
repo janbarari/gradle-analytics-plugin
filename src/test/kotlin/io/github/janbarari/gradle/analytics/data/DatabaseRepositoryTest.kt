@@ -1,8 +1,10 @@
 package io.github.janbarari.gradle.analytics.data
 
 import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.data.database.Database
+import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import org.junit.jupiter.api.BeforeAll
@@ -18,8 +20,8 @@ class DatabaseRepositoryTest {
 
     @BeforeAll
     fun setup() {
-        val databaseConfig = GradleAnalyticsPluginConfig.DatabaseConfig().apply {
-            local = sqlite {
+        val databaseConfig = DatabaseConfig().apply {
+            local = SqliteDatabaseConnection {
                 path = "./build"
                 name = "testdb"
             }

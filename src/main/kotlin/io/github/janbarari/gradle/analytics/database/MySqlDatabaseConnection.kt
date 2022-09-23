@@ -20,29 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.data.database.table
+package io.github.janbarari.gradle.analytics.database
 
-import io.github.janbarari.gradle.analytics.data.database.Database
-import io.github.janbarari.gradle.analytics.data.database.LongTextColumnType
-import org.jetbrains.exposed.sql.Table
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
-object TemporaryMetricTable : Table("temporary_metric") {
+@ExcludeJacocoGenerated
+class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
 
-    /**
-     * The unique auto-generated number which represents the build-number.
-     *
-     * It also is the primary-key of the table.
-     */
-    val number = long("number").autoIncrement().uniqueIndex()
+    companion object {
+        const val DEFAULT_MYSQL_PORT = 3306
+    }
 
-    val createdAt = long("created_at")
+    init {
+        also(block)
+    }
 
-    val branch = varchar("branch", Database.DEFAULT_VARCHAR_LENGTH)
+    lateinit var host: String
 
-    val requestedTasks = varchar("requested_tasks", Database.DEFAULT_VARCHAR_LENGTH)
+    lateinit var name: String
 
-    val value = registerColumn<String>("value", LongTextColumnType())
+    var port: Int = DEFAULT_MYSQL_PORT
 
-    override val primaryKey = PrimaryKey(number)
+    var user: String = "root"
+
+    var password: String = ""
 
 }
