@@ -1,2 +1,5 @@
 # Changelog
-Not officially released yet :)
+
+## 1.0.0-beta1
+* Hello World :)
+

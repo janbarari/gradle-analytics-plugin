@@ -8,10 +8,8 @@ site_author: Mehdi Janbarari
 nav:
   - Overview: index.md
   - Setup: setup.md
-  - Get to Know Metrics: get-to-know-metrics.md
   - Getting Report: getting-report.md
   - Changelog: changelog.md
-  - Release: release.md
   - Support: support.md
   - Contribution: contribution.md
   - Privacy & Policy: privacy-policy.md
