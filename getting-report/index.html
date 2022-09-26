@@ -71,6 +71,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#getting-report" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -236,36 +241,6 @@
 
   
   
-  
-    <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
-        Configuration
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../get-to-know-metrics/" class="md-nav__link">
-        Get to Know Metrics
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
     
   
   
@@ -273,6 +248,8 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+      
+        
       
       
       <a href="./" class="md-nav__link md-nav__link--active">
@@ -293,21 +270,6 @@
     <li class="md-nav__item">
       <a href="../changelog/" class="md-nav__link">
         Changelog
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../release/" class="md-nav__link">
-        Release
       </a>
     </li>
   
@@ -435,6 +397,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -454,9 +418,28 @@
   </a>
 
 
-  <h1>Getting Report</h1>
-
-
+<h1 id="getting-report">Getting Report</h1>
+<p>Gradle Analytics Plugin uses daily basis data to generate reports. So you could use the below instructions to generate your build analysis.</p>
+<p><strong>Execute Gradle Task</strong><br/>
+<div class="highlight"><pre><span></span><code>./gradlew reportAnalytics --task=&quot;REQUESTED_TASK&quot; --branch=&quot;BRANCH_NAME&quot; --period=&quot;can be like today, s:yyyy/MM/dd,e:yyyy/MM/dd, 1y, 4m, 38d, 3m 06d&quot;
+</code></pre></div></p>
+<p><br/></p>
+<div class="admonition note">
+<p><strong>--period Examples</strong><br/></p>
+<ul>
+<li><strong>today</strong> - Generates report only for the current day.</li>
+<li><strong>1d</strong> - Generates report from 1 day ago till now.</li>
+<li><strong>1m 3d</strong> - Generates report from 1 month and 3 days ago till now.</li>
+<li><strong>1y</strong> - Generates report from 1 year ago till now.</li>
+<li><strong>s:2022/03/24,e:2022/04/25</strong> - Generates report from <code>2022/03/24</code> till <code>2022/04/25</code>.</li>
+</ul>
+<p>Plugin only holds the metrics results in the caching database up to one year.</p>
+</div>
+<p><br/></p>
+<p>To understand the metrics and report that plugin provides, It is required to understand Gradle basics and how this build
+system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
+<br/></p>
+<p><br/></p>
 
 
 
@@ -477,7 +460,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../get-to-know-metrics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Get to Know Metrics" rel="prev">
+        <a href="../setup/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Setup" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -486,7 +469,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Get to Know Metrics
+              Setup
             </div>
           </div>
         </a>

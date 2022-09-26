@@ -71,6 +71,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#setup" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -229,41 +234,58 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Setup
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         Setup
       </a>
       
-    </li>
-  
+        
 
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
     
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
+        <li class="md-nav__item">
+  <a href="#step-1" class="md-nav__link">
+    Step 1
+  </a>
+  
+</li>
       
+        <li class="md-nav__item">
+  <a href="#step-2" class="md-nav__link">
+    Step 2
+  </a>
+  
+</li>
       
-
+        <li class="md-nav__item">
+  <a href="#step-3" class="md-nav__link">
+    Step 3
+  </a>
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
-        Configuration
-      </a>
-    </li>
-  
-
-    
+</li>
       
+    </ul>
+  
+</nav>
       
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../get-to-know-metrics/" class="md-nav__link">
-        Get to Know Metrics
-      </a>
     </li>
   
 
@@ -293,21 +315,6 @@
     <li class="md-nav__item">
       <a href="../changelog/" class="md-nav__link">
         Changelog
-      </a>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../release/" class="md-nav__link">
-        Release
       </a>
     </li>
   
@@ -435,6 +442,37 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#step-1" class="md-nav__link">
+    Step 1
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2" class="md-nav__link">
+    Step 2
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3" class="md-nav__link">
+    Step 3
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -454,9 +492,116 @@
   </a>
 
 
-  <h1>Setup</h1>
+<h1 id="setup">Setup</h1>
+<p>To set up the plugin in your project, follow the below instructions:</p>
+<h3 id="step-1"><strong>Step 1</strong></h3>
+<p>Make sure your project uses Git VCS.</p>
+<div class="admonition note">
+<p>Gradle Analytics Plugin uses Git terminal to get the branch names and latest HEAD commit hash. 
+so It is required for your project to use Git VCS.</p>
+</div>
+<p><br/><br/></p>
+<h3 id="step-2"><strong>Step 2</strong></h3>
+<p>Apply the Gradle Plugin to the root of your project.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Kotlin</label><label for="__tabbed_1_2">Groovy</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta1&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s2">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s2">&quot;1.0.0-beta1&quot;</span><span class="w"></span>
+<span class="o">}</span><span class="w"></span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><a href="https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin">For legacy plugin application, see the Gradle Plugin Portal.</a>
+<br/><br/></p>
+<h3 id="step-3"><strong>Step 3</strong></h3>
+<p>Add plugin configuration in the root of your project.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Kotlin</label><label for="__tabbed_2_2">Groovy</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_PATH&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_NAME&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_USER&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_PASSWORD&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_HOST&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_NAME&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_USER&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_PASSWORD&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Default is 3306</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
+<span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;:app:assembleDebug&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
 
+<span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// requested tasks only analyzed in the branches you add here, Example:</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;master&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;develop&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_PATH&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_NAME&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_USER&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_PASSWORD&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="o">}</span><span class="w"></span>
+<span class="w">        </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_HOST&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_NAME&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_USER&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_PASSWORD&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Default is 3306</span><span class="w"></span>
+<span class="w">        </span><span class="o">}</span><span class="w"></span>
+<span class="w">    </span><span class="o">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;:app:assembleDebug&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="o">]</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// requested tasks only analyzed in the branches you add here, Example:</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;master&quot;</span><span class="o">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">&quot;develop&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="o">]</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"></span>
+<span class="o">}</span><span class="w"></span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p><br/>
+<strong>Important Notes</strong><br/></p>
+<ul>
+<li>If you don't have a sqlite database, the plugin will create one automatically. You only need to the <code>name</code> and <code>path</code> for it.</li>
+<li>You can choose both <code>sqlite / mysql</code> for <code>local</code> or <code>ci</code>.</li>
+<li>You can skip <code>local</code> or <code>ci</code> database if you don't need analytics on each of them.</li>
+<li>If you use <code>ci</code> make sure the <code>CI=true</code> environment variable exists in your CI system environments.</li>
+</ul>
+<p><br/></p>
 
 
 
@@ -493,13 +638,13 @@
       
       
         
-        <a href="../configuration/" class="md-footer__link md-footer__link--next" aria-label="Next: Configuration" rel="next">
+        <a href="../getting-report/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting Report" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Configuration
+              Getting Report
             </div>
           </div>
           <div class="md-footer__button md-icon">
