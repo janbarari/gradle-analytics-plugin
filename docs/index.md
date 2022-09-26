@@ -121,7 +121,7 @@ Modules have colors that warm colors have represents more dependent modules, and
 
 <br/>
 ## Modules Execution Timeline
-It represents the latest modules execution process timeline graph on 15/01/2022.
+It represents the latest modules execution process timeline graph.
 
 ![](img/modules-execution-timeline.png)
 
