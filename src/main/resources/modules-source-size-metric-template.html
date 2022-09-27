@@ -1,0 +1,67 @@
+    <h2>Modules Source Size</h2>
+    <p class="gray-text pb16">It represents the project and its modules source file size.</p>
+    <div class="flex-container">
+        <div class="flex-child pr16">
+            <div class="table-container">
+                <table>
+                    <tr style="background-color: #B4B4B4;">
+                        <th>#</th>
+                        <th>Module</th>
+                        <th>Size</th>
+                        <th>Coverage</th>
+                        <th>Diff Rate</th>
+                    </tr>
+                    %table-data%
+                    <tr>
+                        <td colspan="2">Total</td>
+                        <td>%total-source-size%kb</td>
+                        <td>Σ</td>
+                        %total-diff-rate%
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="flex-child" style="padding-left: 12px;">
+            <canvas id="modulesSourceSizeChart" style="width: 250px; height: 250px; margin: 0 auto;"></canvas>
+            <script type="text/javascript">
+              var _data = %module-values%;
+
+              new Chart("modulesSourceSizeChart", {
+                type: "pie",
+                data: {
+                  labels: %module-labels%,
+                  datasets: [{
+                    data: _data,
+                    backgroundColor: Array.from({length: _data.length}, () => getRandomColor())
+                  }]
+                },
+                options: {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    tooltip: {
+                      bodyFont: {
+                        size: 16
+                      },
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.label || '';
+                          let value = context.formattedValue;
+                          return label + "=" + value +"kb";
+                        }
+                      }
+                    },
+                    legend: {
+                      display: false
+                    }
+                  }
+                }
+              });
+
+            </script>
+        </div>
+    </div>
+    <div class="space-small"></div>
+    <span class="gray-text"><strong>Coverage</strong> represents the ratio of the project source files size occupied with the module source files size.</span><br>
+    <span class="gray-text"><strong>Diff Rate</strong> represents the change rate of source files size during the report period.</span>
+    <div class="space"></div>

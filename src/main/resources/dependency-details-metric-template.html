@@ -1,0 +1,60 @@
+    <h2>Dependency Details</h2>
+    <p class="gray-text pb16">It represents the project(including all modules) dependencies with their sizes.</p>
+    <div class="flex-container">
+        <div class="flex-child pr16">
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>Dependency</th>
+                        <th>Size</th>
+                    </tr>
+                    %table-dataset%
+                    <tr>
+                        <td colspan="2">Total</td>
+                        <td>%cumulative-dependencies-size%</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <div class="flex-child">
+            <canvas id="dependencyDetailsChart" style="width: 300px; height: 300px; margin: 0 auto;"></canvas>
+            <script type="text/javascript">
+              var _data = %chart-dataset%;
+              new Chart("dependencyDetailsChart", {
+                type: "pie",
+                data: {
+                  labels: %chart-labels%,
+                  datasets: [{
+                    data: _data,
+                    backgroundColor: Array.from({ length: _data.length }, () => getRandomColor())
+                  }]
+                },
+                options: {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    tooltip: {
+                      position: "nearest",
+                      bodyFont: {
+                        size: 12
+                      },
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.label || '';
+                          let value = context.formattedValue;
+                          return label + "=" + value +"kb";
+                        }
+                      }
+                    },
+                    legend: {
+                      display: false
+                    }
+                  }
+                }
+              });
+            </script>
+        </div>
+    </div>
+    <div class="space"></div>

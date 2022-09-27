@@ -3,17 +3,17 @@ orbs:
   codecov: codecov/codecov@3.2.2
 executor: machine
 jobs:
-  test:
+  build:
     machine:
       image: ubuntu-2004:202201-02
     steps:
       - checkout
       - run:
           name: build
-          command: ./gradlew test
+          command: ./gradlew detekt assemble test --info --stacktrace
       - codecov/upload:
           file: build/reports/jacoco/test/*.xml
 workflows:
   build-workflow:
     jobs:
-      - test
+      - build

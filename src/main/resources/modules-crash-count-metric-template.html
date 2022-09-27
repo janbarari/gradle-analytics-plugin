@@ -1,0 +1,46 @@
+    <h2>Modules Crash Count</h2>
+    <p class="gray-text pb16">
+        It represents how many build failures happened during the `requested task` execution
+        caused by project modules during the report period.
+    </p>
+    <div class="chart-container" style="height: %chart-height%;">
+      <canvas id="modulesCrashRateChart" style="width:100%; height: 100%;"></canvas>
+      <script type="text/javascript">
+        var chart = new Chart("modulesCrashRateChart", {
+          type: "bar",
+          data: {
+            labels: %labels%,
+            datasets: [
+              {
+                backgroundColor: %colors%,
+                data: %dataset%
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              },
+              tooltip: {
+                mode: 'index',
+                axis: 'y',
+                intersect: false,
+                callbacks: {
+                  label: function (context) {
+                    let label = context.dataset.label || '';
+                    return " " + context.parsed.x;
+                  }
+                }
+              }
+            }
+          }
+        });
+      </script>
+    </div>
+    <span class="gray-text center-text">
+      <span>Smaller Bars Are Better</span>
+    </span>
+    <div class="space"></div>

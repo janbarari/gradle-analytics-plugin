@@ -1,0 +1,72 @@
+    <h2>Modules Execution Process</h2>
+    <p class="gray-text pb16">It represents the (Median) process execution time of each module over the report period.</p>
+    <div class="chart-container">
+        <canvas id="modulesMedianExecutionProcessChart" style="width:100%; height: 365px;"></canvas>
+        <script type="text/javascript">
+            var chart = new Chart("modulesMedianExecutionProcessChart", {
+              type: "line",
+              data: {
+                labels: %chart-labels%,
+                datasets: [
+                  %chart-datasets%
+                ]
+              },
+              options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    display: true
+                  },
+                  tooltip: {
+                    mode: 'index',
+                    axis: 'x',
+                    intersect: false,
+                    callbacks: {
+                      label: function (context) {
+                        let label = context.dataset.label || '';
+                        return label + ": " + context.parsed.y + "s";
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    display: true,
+                    suggestedMin: %suggested-min-value%,
+                    suggestedMax: %suggested-max-value%
+                  }
+                }
+              }
+            });
+          </script>
+    </div>
+    <span class="gray-text center-text">
+          Lower is better
+    </span>
+    <div class="space-small"></div>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Module</th>
+                <th>Avg Duration</th>
+                <th>Avg Parallel Duration</th>
+                <th>Avg Parallel Rate</th>
+                <th>Avg Coverage</th>
+                <th>Duration Diff Rate</th>
+            </tr>
+            %table-data%
+        </table>
+    </div>
+    <div class="space-small"></div>
+    <span class="gray-text"><b>Avg Duration</b> is the module's median average execution time.</span>
+    <br />
+    <span class="gray-text"><b>Avg Parallel Duration</b> is the module's median average parallel execution time.</span>
+    <br />
+    <span class="gray-text"><b>Avg Parallel Rate</b> is the module's median average parallel execution rate over the report period.</span>
+    <br />
+    <span class="gray-text"><b>Avg Coverage</b> is the average duration rate of the module against overall build.</span>
+    <br />
+    <span class="gray-text"><b>Duration Diff Rate</b> shows improvement percentage of the module's execution time between first and last execution over the report period.</span>
+    <div class="space"></div>

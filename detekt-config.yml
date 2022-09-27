@@ -1,0 +1,45 @@
+complexity:
+  active: true
+  TooManyFunctions:
+    active: true
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
+    thresholdInFiles: 50
+    thresholdInClasses: 50
+    thresholdInInterfaces: 50
+    thresholdInObjects: 50
+    thresholdInEnums: 50
+    ignoreDeprecated: false
+    ignorePrivate: false
+    ignoreOverridden: false
+  LongParameterList:
+    active: false
+  NestedBlockDepth:
+    active: true
+    threshold: 6
+  LongMethod:
+    active: true
+    threshold: 75
+  ComplexMethod:
+    active: true
+    threshold: 25
+
+exceptions:
+  active: true
+  SwallowedException:
+    active: false
+  TooGenericExceptionCaught:
+    active: false
+
+style:
+  active: true
+  SerialVersionUIDInSerializableClass:
+    active: false
+  MagicNumber:
+    active: false
+  ReturnCount:
+    active: false
+  FunctionOnlyReturningConstant:
+    active: false
+  MaxLineLength:
+    active: true
+    maxLineLength: 128

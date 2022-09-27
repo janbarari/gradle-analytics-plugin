@@ -1,0 +1,25 @@
+[versions]
+kotlin = "1.6.20"
+detekt = "1.20.0-RC2"
+sqlite_driver = "3.36.0.3"
+mysql_driver = "8.0.29"
+jetbrains_exposed = "0.38.1"
+moshi = "1.13.0"
+commons-io = "2.11.0"
+mockk = "1.12.4"
+coroutines = "1.6.3"
+
+[libraries]
+sqlite_driver = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite_driver" }
+mysql_driver = { module = "mysql:mysql-connector-java", version.ref = "mysql_driver" }
+jetbrains_exposed_core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "jetbrains_exposed" }
+jetbrains_exposed_jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "jetbrains_exposed" }
+moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
+moshi-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
+commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

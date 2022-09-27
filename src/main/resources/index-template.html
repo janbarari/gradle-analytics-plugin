@@ -1,0 +1,148 @@
+<!--
+   MIT License
+   Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>%root-project-name% Build Analytics Report</title>
+    <script src="res/chart.js" type="text/javascript"></script>
+    <script src="res/d3.js" type="text/javascript"></script>
+    <script src="res/timeline.js" type="text/javascript"></script>
+    <script src="res/mermaid.js" type="text/javascript"></script>
+    <link href="res/styles.css" rel="stylesheet">
+    <link href="res/plugin-logo.png" rel="icon">
+    <script src="res/functions.js" type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+<body>
+<div id="container">
+    <img alt="logo" class="logo-dimensions" src="res/plugin-logo.png"/>
+    <h1>%root-project-name% Build Analytics Report</h1>
+    <h3>
+        Analyze task
+        <span class="tag-style-1">%task-path%</span>
+        on branch
+        <span class="tag-style-2">%branch%</span>
+    </h3>
+    <h4><span class="gray-text">Head commit hash: </span> %git-head-commit-hash%</h4>
+    <h4><span class="gray-text">Time period: </span> %time-period-start% - %time-period-end%</h4>
+    <h4><span class="gray-text">Reported at: </span> %reported-at%</h4>
+    <h4><span class="gray-text">Is on CI/CD: </span> %is-ci%</h4>
+    <h4><span class="gray-text">Plugin version: </span> %plugin-version%</h4>
+    <div class="space"></div>
+
+    <h4><i class="bi bi-exclamation-diamond-fill orange"></i> ATTENTION</h4>
+    <span class="gray-text">
+      To understand the metrics that plugin provides, It is required to understand Gradle basics and how this build
+      system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html"
+                            target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
+    </span>
+    <div class="space"></div>
+
+    <h4 class="green"><i class="bi bi-exclamation-circle-fill green"></i> Things you should know</h4>
+    <div class="gray-text">
+        <p>
+            1. Every process in the Gradle build system starts with a task, the `requested task` means the task you defined
+            to be analyzed.
+            <br />
+            2. Metrics are getting saved on daily basis and if build process executes in CI/CD, metrics will be saved in its caching database.
+            <br />
+            3. Plugin only holds the metrics results in the caching database up to one year.
+            <br />
+            4. It is recommended to keep track of the reports after important stages of your CI/CD or Local build in order to see the actual result.
+            <br />
+            5. You need to understand median/mean to be able to read the chart of metrics results.
+            <br />
+            6. Plugin runs the metrics process when `requested task` executed on branch you configured.
+        </p>
+    </div>
+    <div class="space"></div>
+
+%build-status-metric%
+
+%initialization-process-metric%
+
+%configuration-process-metric%
+
+%dependency-resolve-process-metric%
+
+%execution-process-metric%
+
+%modules-execution-process-metric%
+
+%overall-build-process-metric%
+
+%modules-source-count-metric%
+
+%modules-source-size-metric%
+
+%modules-method-count-metric%
+
+%cache-hit-metric%
+
+%success-build-rate-metric%
+
+%modules-crash-count-metric%
+
+%parallel-execution-rate-metric%
+
+%modules-dependency-graph-metric%
+
+%modules-execution-timeline-metric%
+
+%modules-build-heatmap-metric%
+
+%dependency-details-metric%
+
+%non-cacheable-tasks-metric%
+
+    <div class="space"></div>
+    <div class="disclaimer-container">
+        <h4><i class="bi bi-exclamation-diamond-fill orange"></i>  DISCLAIMER</h4>
+        <span class="gray-text">
+        The report is provided "as is", without warranty of any kind, express or
+        implied, including but not limited to the warranties of merchantability,
+        fitness for a particular purpose and noninfringement. In no event shall the
+        authors or copyright holders be liable for any claim, damages or other
+        liability, whether in an action of contract, tort or otherwise, arising from,
+        out of or in connection with the report or the use or other dealings in the
+        report.
+      </span>
+    </div>
+    <div class="space"></div>
+
+    <div class="space"></div>
+    <img alt="logo" class="footer-logo" src="res/plugin-logo.png"/>
+    <span class="footer-text">
+        <b><a href="https://github.com/janbarari/gradle-analytics-plugin" target="_blank">Gradle Analytics Plugin</a></b>
+    </span>
+    <span class="supportus-text">
+        <b>Made with 🧡 for everyone, don't forget to support us ☝🏻</b>
+    </span>
+    <span class="copyright-text">
+        <b>MIT License | Copyright ©️ 2022</b>
+    </span>
+
+</div>
+</body>
+</html>

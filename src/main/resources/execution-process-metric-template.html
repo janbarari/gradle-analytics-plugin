@@ -1,0 +1,68 @@
+    <h2>Execution Process</h2>
+    <p class="gray-text pb16">
+        Runs the selected tasks based on `requested tasks` task tree. Gradle executes `requested task` according to the
+        dependency order.
+        <br /><br />
+        It represents the Execution Process average duration during the report period.
+    </p>
+    <div class="chart-container">
+        <canvas id="executionChart" style="width:100%; height: 100%;"></canvas>
+        <script type="text/javascript">
+            new Chart("executionChart", {
+              type: "line",
+              data: {
+                labels: %chart-labels%,
+                datasets: [
+                  {
+                    label: "Median",
+                    fill: false,
+                    backgroundColor: shadeColor(getColor(), 25),
+                    borderColor: getColor(),
+                    data: %chart-median-values%,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.4
+                  },
+                  {
+                    label: "Mean",
+                    fill: false,
+                    backgroundColor: shadeColor(getColor(), 25),
+                    borderColor: getColor(),
+                    data: %chart-mean-values%,
+                    cubicInterpolationMode: 'monotone',
+                    tension: 0.4
+                  }
+                ]
+              },
+              options: {
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    display: true
+                  },
+                  tooltip: {
+                    mode: 'index',
+                    axis: 'x',
+                    intersect: false,
+                    callbacks: {
+                      label: function (context) {
+                        let label = context.dataset.label || '';
+                        return label + ": " + context.parsed.y + "s";
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    display: true,
+                    suggestedMin: %suggested-min-value%,
+                    suggestedMax: %suggested-max-value%
+                  }
+                }
+              }
+            });
+            </script>
+    </div>
+    <span class="gray-text center-text">
+        <span>Lower is better</span>
+    </span>
+    <div class="space"></div>
