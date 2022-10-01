@@ -21,7 +21,7 @@ Apply the Gradle Plugin to the root of your project.
 === "Groovy"
     ``` groovy
     plugins {
-        id "io.github.janbarari.gradle-analytics-plugin" version "1.0.0-beta1"
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta1'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
@@ -68,32 +68,32 @@ Add plugin configuration in the root of your project.
     gradleAnalyticsPlugin {
         database {
             local = sqlite {
-                path = "DATABASE_PATH"
-                name = "DATABASE_NAME"
-                user = "DATABASE_USER" // Remove `user` if you want the plugin to create the DB.
-                password = "DATABASE_PASSWORD" // Remove `password` if you want the plugin to create the DB.
+                path = 'DATABASE_PATH'
+                name = 'DATABASE_NAME'
+                user = 'DATABASE_USER' // Remove `user` if you want the plugin to create the DB.
+                password = 'DATABASE_PASSWORD' // Remove `password` if you want the plugin to create the DB.
             }
             ci = mysql {
-                host = "MYSQL_DATABASE_HOST"
-                name = "MYSQL_DATABASE_NAME"
-                user = "MYSQL_DATABASE_USER"
-                password = "MYSQL_DATABASE_PASSWORD"
+                host = 'MYSQL_DATABASE_HOST'
+                name = 'MYSQL_DATABASE_NAME'
+                user = 'MYSQL_DATABASE_USER'
+                password = 'MYSQL_DATABASE_PASSWORD'
                 port = MYSQL_DATABASE_PORT // Default is 3306
             }
         }
     
         trackingTasks = [
             // Add your requested tasks to be analyzed, Example:
-            ":app:assembleDebug"
+            ':app:assembleDebug'
         ]
     
         trackingBranches = [
             // requested tasks only analyzed in the branches you add here, Example:
-            "master",
-            "develop"
+            'master',
+            'develop'
         ]
     
-        outputPath = "OUTPUT_REPORT_PATH"
+        outputPath = 'OUTPUT_REPORT_PATH'
     }
     ```
 <br/>
