@@ -37,13 +37,13 @@ Add plugin configuration in the root of your project.
             local = sqlite {
                 path = "DATABASE_PATH"
                 name = "DATABASE_NAME"
-                user = "DATABASE_USER"
-                password = "DATABASE_PASSWORD"
+                user = "DATABASE_USER" // Remove `user` if you want the plugin to create the DB.
+                password = "DATABASE_PASSWORD" // Remove `password` if you want the plugin to create the DB.
             }
             ci = mysql {
-                host = "MYSQL_DATABASE_HOST",
-                name = "MYSQL_DATABASE_NAME",
-                user = "MYSQL_DATABASE_USER",
+                host = "MYSQL_DATABASE_HOST"
+                name = "MYSQL_DATABASE_NAME"
+                user = "MYSQL_DATABASE_USER"
                 password = "MYSQL_DATABASE_PASSWORD"
                 port = MYSQL_DATABASE_PORT // Default is 3306
             }
@@ -70,13 +70,13 @@ Add plugin configuration in the root of your project.
             local = sqlite {
                 path = "DATABASE_PATH"
                 name = "DATABASE_NAME"
-                user = "DATABASE_USER"
-                password = "DATABASE_PASSWORD"
+                user = "DATABASE_USER" // Remove `user` if you want the plugin to create the DB.
+                password = "DATABASE_PASSWORD" // Remove `password` if you want the plugin to create the DB.
             }
             ci = mysql {
-                host = "MYSQL_DATABASE_HOST",
-                name = "MYSQL_DATABASE_NAME",
-                user = "MYSQL_DATABASE_USER",
+                host = "MYSQL_DATABASE_HOST"
+                name = "MYSQL_DATABASE_NAME"
+                user = "MYSQL_DATABASE_USER"
                 password = "MYSQL_DATABASE_PASSWORD"
                 port = MYSQL_DATABASE_PORT // Default is 3306
             }
