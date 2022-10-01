@@ -513,7 +513,7 @@ so It is required for your project to use Git VCS.</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s2">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s2">&quot;1.0.0-beta1&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta1&#39;</span><span class="w"></span>
 <span class="o">}</span><span class="w"></span>
 </code></pre></div>
 </div>
@@ -562,32 +562,32 @@ so It is required for your project to use Git VCS.</p>
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_PATH&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_NAME&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_USER&quot;</span><span class="w"> </span><span class="c1">// Remove `user` if you want the plugin to create the DB.</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;DATABASE_PASSWORD&quot;</span><span class="w"> </span><span class="c1">// Remove `password` if you want the plugin to create the DB.</span><span class="w"></span>
+<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_PATH&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_NAME&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_USER&#39;</span><span class="w"> </span><span class="c1">// Remove `user` if you want the plugin to create the DB.</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_PASSWORD&#39;</span><span class="w"> </span><span class="c1">// Remove `password` if you want the plugin to create the DB.</span><span class="w"></span>
 <span class="w">        </span><span class="o">}</span><span class="w"></span>
 <span class="w">        </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_HOST&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_NAME&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_USER&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;MYSQL_DATABASE_PASSWORD&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_HOST&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_NAME&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_USER&#39;</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_PASSWORD&#39;</span><span class="w"></span>
 <span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Default is 3306</span><span class="w"></span>
 <span class="w">        </span><span class="o">}</span><span class="w"></span>
 <span class="w">    </span><span class="o">}</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
 <span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s2">&quot;:app:assembleDebug&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="s1">&#39;:app:assembleDebug&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="o">]</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
 <span class="w">        </span><span class="c1">// requested tasks only analyzed in the branches you add here, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s2">&quot;master&quot;</span><span class="o">,</span><span class="w"></span>
-<span class="w">        </span><span class="s2">&quot;develop&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="s1">&#39;master&#39;</span><span class="o">,</span><span class="w"></span>
+<span class="w">        </span><span class="s1">&#39;develop&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="o">]</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OUTPUT_REPORT_PATH&#39;</span><span class="w"></span>
 <span class="o">}</span><span class="w"></span>
 </code></pre></div>
 </div>
