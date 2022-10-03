@@ -1,4 +1,4 @@
-package io.github.janbarari.gradle.analytics.data.database.table
+package io.github.janbarari.gradle.analytics.database.table
 
 import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable
 import org.jetbrains.exposed.sql.autoIncColumnType
