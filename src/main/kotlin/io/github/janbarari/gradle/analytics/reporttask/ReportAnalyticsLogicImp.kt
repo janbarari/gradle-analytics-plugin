@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -90,6 +91,7 @@ class ReportAnalyticsLogicImp(
     private val modules: List<Module>
 ) : ReportAnalyticsLogic {
 
+    @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(EmptyMetricsException::class)
     override suspend fun generateReport(branch: String, requestedTasks: String, period: String): String {
         val convertedPeriod = convertQueryToPeriod(period)
@@ -111,6 +113,7 @@ class ReportAnalyticsLogicImp(
         )
     }
 
+    @ExcludeJacocoGenerated
     private suspend fun generateReport(data: List<BuildMetric>, branch: String, requestedTasks: String): Report {
         return CreateReportPipeline(CreateInitializationProcessReportStage(data)).addStage(
                 CreateConfigurationProcessReportStage(
@@ -133,6 +136,7 @@ class ReportAnalyticsLogicImp(
             )
     }
 
+    @ExcludeJacocoGenerated
     private suspend fun generateRender(
         data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String
     ): String {
@@ -170,6 +174,7 @@ class ReportAnalyticsLogicImp(
             .execute(rawHTML)
     }
 
+    @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
         val resources = listOf(

@@ -10,14 +10,19 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.analytics.reporttask.exception.InvalidPropertyException
 import io.github.janbarari.gradle.analytics.reporttask.exception.MissingPropertyException
+import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReportAnalyticsLogicTest {
@@ -32,10 +37,10 @@ class ReportAnalyticsLogicTest {
             databaseConfig = DatabaseConfig().apply {
                 local = SqliteDatabaseConnection {
                     path = "./build"
-                    name = "testdb"
+                    name = "test"
                 }
             },
-            branch = "develop",
+            branch = "master",
             outputPath = "./build/test/result/",
             projectName = "gradle-analytics-plugin",
             modules = emptyList()
@@ -104,5 +109,39 @@ class ReportAnalyticsLogicTest {
         assertDoesNotThrow {
             logic.ensureTaskArgumentValid("assembleDebug")
         }
+    }
+
+    @Test
+    fun `check convertQueryToPeriod() throws exception when query is invalid`() {
+        val logic = injector.provideReportAnalyticsLogic()
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("3dm")
+        }
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("3d 1m")
+        }
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("3y")
+        }
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("1d 3d")
+        }
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("1m 3m")
+        }
+        assertThrows<InvalidPropertyException> {
+            logic.convertQueryToPeriod("1y 3y")
+        }
+    }
+
+    @Test
+    fun `check convertQueryToPeriod() return today period`() {
+        mockkObject(DateTimeUtils)
+        every { DateTimeUtils.getDayStartMs() } returns 0
+        every { DateTimeUtils.getDayEndMs() } returns 24
+        val logic = injector.provideReportAnalyticsLogic()
+        assertEquals(0, logic.convertQueryToPeriod("today").first)
+        assertEquals(24, logic.convertQueryToPeriod("today").second)
+        unmockkObject(DateTimeUtils)
     }
 }
