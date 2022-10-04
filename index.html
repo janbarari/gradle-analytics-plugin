@@ -366,6 +366,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dependency-details" class="md-nav__link">
+    Dependency Details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#non-cacheable-tasks" class="md-nav__link">
     Non-cacheable Tasks
   </a>
@@ -676,6 +683,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dependency-details" class="md-nav__link">
+    Dependency Details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#non-cacheable-tasks" class="md-nav__link">
     Non-cacheable Tasks
   </a>
@@ -791,6 +805,10 @@ system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gr
 <p>Each bar has the name of the module and the number of dependent modules, smaller warm bars lead to faster builds as those modules with warm colors have more dependent modules.</p>
 <p>In addition, it helps to modify the modular structure by tracing the graph and finding the cause to avoid rebuilding the modules that are most shared with others.</p>
 <p><img alt="" src="img/modules-build-heatmap.png" /></p>
+<p><br/></p>
+<h2 id="dependency-details">Dependency Details</h2>
+<p>It represents the project(including all modules) dependencies with their sizes.</p>
+<p><img alt="" src="img/dependency-details.png" /></p>
 <p><br/></p>
 <h2 id="non-cacheable-tasks">Non-cacheable Tasks</h2>
 <p>These tasks are executed in the <code>requested task</code> tree without being cached. Try to avoid creating tasks that are not cacheable. Track this chart and detect tasks that are time-consuming.</p>
