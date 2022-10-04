@@ -136,12 +136,6 @@ In addition, it helps to modify the modular structure by tracing the graph and f
 ![](img/modules-build-heatmap.png)
 
 <br/>
-## Dependency Details
-It represents the project(including all modules) dependencies with their sizes.
-
-![](img/dependency-details.png)
-
-<br/>
 ## Non-cacheable Tasks
 These tasks are executed in the `requested task` tree without being cached. Try to avoid creating tasks that are not cacheable. Track this chart and detect tasks that are time-consuming.
 

@@ -15,13 +15,13 @@ Apply the Gradle Plugin to the root of your project.
 === "Kotlin"
     ``` kotlin
     plugins {
-        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta1"
+        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta2"
     }
     ```
 === "Groovy"
     ``` groovy
     plugins {
-        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta1'
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta2'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
@@ -36,7 +36,7 @@ Add plugin configuration in the root of your project.
         database {
             local = sqlite {
                 path = "DATABASE_PATH"
-                name = "DATABASE_NAME"
+                name = "DATABASE_NAME" // Don't add `.db` in the database name.
                 user = "DATABASE_USER" // Remove `user` if you want the plugin to create the DB.
                 password = "DATABASE_PASSWORD" // Remove `password` if you want the plugin to create the DB.
             }
@@ -69,7 +69,7 @@ Add plugin configuration in the root of your project.
         database {
             local = sqlite {
                 path = 'DATABASE_PATH'
-                name = 'DATABASE_NAME'
+                name = 'DATABASE_NAME' // Don't add `.db` in the database name.
                 user = 'DATABASE_USER' // Remove `user` if you want the plugin to create the DB.
                 password = 'DATABASE_PASSWORD' // Remove `password` if you want the plugin to create the DB.
             }
