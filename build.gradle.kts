@@ -66,6 +66,17 @@ tasks.test {
 }
 
 tasks.jacocoTestReport {
+
+    val kotlinTree = fileTree(baseDir = "${project.buildDir}/classes") {
+        excludes.add("**/*JsonAdapter.*")
+    }
+
+    classDirectories.setFrom(kotlinTree)
+    executionData.setFrom(files("${project.buildDir}/jacoco/test.exec"))
+
+    sourceDirectories.setFrom(files("src/main/kotlin"))
+    additionalSourceDirs.setFrom(files("src/main/kotlin"))
+
     reports {
         xml.required.set(true)
         csv.required.set(true)
