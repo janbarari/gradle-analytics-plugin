@@ -87,14 +87,19 @@ fun Task.getSafeTaskDependencies(): Set<Task> {
 /**
  * Filter non-cacheable tasks from the given task collection.
  */
-fun Collection<Task>.getNonCacheableTasks(): Set<String> {
-    val nonCacheableTasks = Collections.synchronizedSet(mutableSetOf<String>())
-    forEach { task ->
-        task.getSafeTaskDependencies()
-            .filter { !it.isCacheable() }
-            .whenNotEmpty {
-                nonCacheableTasks.addAll(this.map { it.path })
-            }
+fun List<Task>.getNonCacheableTasks(): Set<String> {
+    return try {
+        val nonCacheableTasks = Collections.synchronizedSet(mutableSetOf<String>())
+        forEach { task ->
+            task.getSafeTaskDependencies()
+                .filter { !it.isCacheable() }
+                .whenNotEmpty {
+                    nonCacheableTasks.addAll(this.map { it.path })
+                }
+        }
+        return nonCacheableTasks
+    } catch (e: Throwable) {
+        // H-46: return emptySet() when there is unexpected issue.
+        emptySet()
     }
-    return nonCacheableTasks
 }

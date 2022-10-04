@@ -35,6 +35,7 @@ import io.github.janbarari.gradle.extension.getNonCacheableTasks
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
 import java.util.*
@@ -60,7 +61,9 @@ object ScannerUtils {
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
             project.allprojects.whenEach {
-                nonCacheableTasks.addAll(tasks.getNonCacheableTasks())
+                tasks.toList().getNonCacheableTasks().whenNotNull {
+                    nonCacheableTasks.addAll(this)
+                }
             }
 
             val modules = project.subprojects
