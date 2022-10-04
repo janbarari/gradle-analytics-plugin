@@ -36,7 +36,7 @@ Add plugin configuration in the root of your project.
         database {
             local = sqlite {
                 path = "DATABASE_PATH"
-                name = "DATABASE_NAME"
+                name = "DATABASE_NAME" // Don't add `.db` in the database name.
                 user = "DATABASE_USER" // Remove `user` if you want the plugin to create the DB.
                 password = "DATABASE_PASSWORD" // Remove `password` if you want the plugin to create the DB.
             }
@@ -69,7 +69,7 @@ Add plugin configuration in the root of your project.
         database {
             local = sqlite {
                 path = 'DATABASE_PATH'
-                name = 'DATABASE_NAME'
+                name = 'DATABASE_NAME' // Don't add `.db` in the database name.
                 user = 'DATABASE_USER' // Remove `user` if you want the plugin to create the DB.
                 password = 'DATABASE_PASSWORD' // Remove `password` if you want the plugin to create the DB.
             }
