@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.Dependency.Companion.getThirdPartyDependencies
 import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
@@ -84,8 +83,7 @@ object ScannerUtils {
                     trackingBranches.set(configuration.trackingBranches)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
-                    this.dependencies.set(project.getThirdPartyDependencies())
-                    this.nonCachableTasks.set(nonCacheableTasks)
+                    this.nonCacheableTasks.set(nonCacheableTasks)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

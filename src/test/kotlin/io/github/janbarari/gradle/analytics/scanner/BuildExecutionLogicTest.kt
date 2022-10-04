@@ -1,7 +1,6 @@
 package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.DatabaseConfig
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -30,8 +29,7 @@ class BuildExecutionLogicTest {
         trackingTasks = listOf("assembleDebug"),
         modules = emptyList(),
         modulesDependencyGraph = ModulesDependencyGraph(dependencies = emptyList()),
-        thirdPartyDependencies = emptyList(),
-        nonCachableTasks = emptyList()
+        nonCacheableTasks = emptyList()
     )
 
     @Test

@@ -34,8 +34,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.CreateConfigurationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.RenderConfigurationProcessReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.CreateDependencyDetailsReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.RenderDependencyDetailsReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.CreateDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.RenderDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.CreateExecutionProcessReportStage
@@ -119,16 +117,21 @@ class ReportAnalyticsLogicImp(
                 CreateConfigurationProcessReportStage(
                     data
                 )
-            ).addStage(CreateExecutionProcessReportStage(data)).addStage(CreateOverallBuildProcessReportStage(data))
-            .addStage(CreateModulesSourceCountReportStage(data)).addStage(CreateModulesMethodCountReportStage(data))
+            ).addStage(CreateExecutionProcessReportStage(data))
+            .addStage(CreateOverallBuildProcessReportStage(data))
+            .addStage(CreateModulesSourceCountReportStage(data))
+            .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
-            .addStage(CreateDependencyResolveProcessReportStage(data)).addStage(CreateParallelExecutionRateReportStage(data))
+            .addStage(CreateDependencyResolveProcessReportStage(data))
+            .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modules, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modules, data)).addStage(CreateModulesBuildHeatmapReportStage(data))
-            .addStage(CreateDependencyDetailsReportStage(data)).addStage(CreateNonCacheableTasksReportStage(data))
-            .addStage(CreateModulesSourceSizeReportStage(data)).addStage(CreateModulesCrashCountReportStage(modules, data))
+            .addStage(CreateBuildStatusReportStage(modules, data))
+            .addStage(CreateModulesBuildHeatmapReportStage(data))
+            .addStage(CreateNonCacheableTasksReportStage(data))
+            .addStage(CreateModulesSourceSizeReportStage(data))
+            .addStage(CreateModulesCrashCountReportStage(modules, data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -167,7 +170,6 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderModulesTimelineReportStage(report))
             .addStage(RenderBuildStatusReportStage(report))
             .addStage(RenderModulesBuildHeatmapReportStage(report))
-            .addStage(RenderDependencyDetailsReportStage(report))
             .addStage(RenderNonCacheableTasksReportStage(report))
             .addStage(RenderModulesSourceSizeReportStage(report))
             .addStage(RenderModulesCrashCountReportStage(report))

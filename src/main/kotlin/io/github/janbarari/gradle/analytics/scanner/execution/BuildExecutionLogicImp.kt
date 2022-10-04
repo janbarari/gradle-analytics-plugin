@@ -34,8 +34,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.create.CreateDependencyDetailsMetricStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.create.CreateDependencyDetailsMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricStage
@@ -104,7 +102,6 @@ class BuildExecutionLogicImp(
     private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase,
     private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase,
     private val createModulesBuildHeatmapMetricUseCase: CreateModulesBuildHeatmapMetricUseCase,
-    private val createDependencyDetailsMetricUseCase: CreateDependencyDetailsMetricUseCase,
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
     private val createModulesSourceSizeMetricUseCase: CreateModulesSourceSizeMetricUseCase,
     private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
@@ -154,7 +151,6 @@ class BuildExecutionLogicImp(
                 .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
                 .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
                 .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
-                .addStage(CreateDependencyDetailsMetricStage(createDependencyDetailsMetricUseCase))
                 .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
                 .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
                 .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase))

@@ -31,7 +31,6 @@ import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUs
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
-import io.github.janbarari.gradle.analytics.domain.model.Dependency
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
@@ -41,8 +40,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.create.CreateDependencyDetailsMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.update.UpdateDependencyDetailsMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
@@ -84,8 +81,7 @@ data class BuildExecutionInjector(
     var trackingTasks: List<String>? = null,
     var modules: List<Module>? = null,
     var modulesDependencyGraph: ModulesDependencyGraph? = null,
-    var thirdPartyDependencies: List<Dependency>? = null,
-    var nonCachableTasks: List<String>? = null
+    var nonCacheableTasks: List<String>? = null
 )
 
 @ExcludeJacocoGenerated
@@ -174,11 +170,6 @@ fun BuildExecutionInjector.provideUpdateModulesBuildHeatmapMetricUseCase(): Upda
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideUpdateDependencyDetailsMetricUseCase(): UpdateDependencyDetailsMetricUseCase {
-    return UpdateDependencyDetailsMetricUseCase(provideDatabaseRepository())
-}
-
-@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateNonCacheableTasksMetricUseCase(): UpdateNonCacheableTasksMetricUseCase {
     return UpdateNonCacheableTasksMetricUseCase(provideDatabaseRepository())
 }
@@ -210,7 +201,6 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
         provideUpdateModulesExecutionProcessMetricUseCase(),
         provideUpdateModulesDependencyGraphMetricUseCase(),
         provideUpdateModulesBuildHeatmapMetricUseCase(),
-        provideUpdateDependencyDetailsMetricUseCase(),
         provideUpdateNonCacheableTasksMetricUseCase(),
         provideUpdateModulesSourceSizeMetricUseCase(),
         provideUpdateModulesCrashCountMetricUseCase()
@@ -301,13 +291,8 @@ fun BuildExecutionInjector.provideCreateModulesBuildHeatmapMetricUseCase(): Crea
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideCreateDependencyDetailsMetricUseCase(): CreateDependencyDetailsMetricUseCase {
-    return CreateDependencyDetailsMetricUseCase(thirdPartyDependencies!!)
-}
-
-@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateNonCacheableTasksMetricUseCase(): CreateNonCacheableTasksMetricUseCase {
-    return CreateNonCacheableTasksMetricUseCase(nonCachableTasks!!)
+    return CreateNonCacheableTasksMetricUseCase(nonCacheableTasks!!)
 }
 
 @ExcludeJacocoGenerated
@@ -345,7 +330,6 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         provideCreateModulesDependencyGraphMetricUseCase(),
         provideCreateModulesTimelineMetricUseCase(),
         provideCreateModulesBuildHeatmapMetricUseCase(),
-        provideCreateDependencyDetailsMetricUseCase(),
         provideCreateNonCacheableTasksMetricUseCase(),
         provideCreateModulesSourceSizeMetricUseCase(),
         provideCreateModulesCrashCountMetricUseCase(),

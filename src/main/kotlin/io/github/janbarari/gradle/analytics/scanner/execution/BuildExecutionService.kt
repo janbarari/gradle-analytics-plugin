@@ -24,8 +24,6 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.Dependency
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -62,8 +60,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val trackingBranches: ListProperty<String>
         val modules: ListProperty<Module>
         val modulesDependencyGraph: Property<ModulesDependencyGraph>
-        val dependencies: ListProperty<Dependency>
-        val nonCachableTasks: ListProperty<String>
+        val nonCacheableTasks: ListProperty<String>
     }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
@@ -184,8 +181,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
             trackingTasks = parameters.trackingTasks.get(),
             modules = parameters.modules.get(),
             modulesDependencyGraph = parameters.modulesDependencyGraph.get(),
-            thirdPartyDependencies = parameters.dependencies.get(),
-            nonCachableTasks = parameters.nonCachableTasks.get()
+            nonCacheableTasks = parameters.nonCacheableTasks.get()
         ).apply {
             provideBuildExecutionLogic().onExecutionFinished(executedTasks)
         }.also {
