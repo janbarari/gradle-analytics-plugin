@@ -40,7 +40,5 @@ copyright: Made with 🧡 for everyone | Copyright &copy; 2022
 extra:
   generator: false
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/medicodroid
     - icon: fontawesome/brands/github
       link: https://github.com/janbarari
