@@ -57,7 +57,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         fun register(config: GradleAnalyticsPluginConfig) {
             config.project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
                 projectNameProperty.set(project.rootProject.name)
-                envCIProperty.set(project.envCI().isPresent)
+                envCIProperty.set(project.envCI())
                 outputPathProperty.set(config.outputPath)
                 trackingTasksProperty.set(config.trackingTasks)
                 trackingBranchesProperty.set(config.trackingBranches)

@@ -23,12 +23,22 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.PluginConfigNotValidException
 import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
+import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
+import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.extension.whenTypeIs
+import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -172,6 +182,17 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
      */
     @ExcludeJacocoGenerated
     override fun close() {
+        if (isForbiddenTasksRequested()) return
+
+        if (!isTaskTrackable()) return
+
+        if (!isBranchTrackable()) return
+
+        ensureDatabaseConfigurationValid()
+        if (!isDatabaseConfigurationValid()) return
+
+        printConfigurationNotices()
+
         BuildExecutionInjector(
             databaseConfig = parameters.databaseConfig.get(),
             isCI = parameters.envCI.get(),
@@ -186,6 +207,145 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
             provideBuildExecutionLogic().onExecutionFinished(executedTasks)
         }.also {
             executedTasks.clear()
+        }
+    }
+
+    private fun isForbiddenTasksRequested(): Boolean {
+        return parameters.requestedTasks.get().contains(ReportAnalyticsTask.TASK_NAME)
+    }
+
+    private fun isTaskTrackable(): Boolean {
+        val requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace()
+        return parameters.trackingTasks.get().contains(requestedTasks)
+    }
+
+    private fun isBranchTrackable(): Boolean {
+        return parameters.trackingBranches.get().contains(GitUtils.currentBranch())
+    }
+
+    private fun isDatabaseConfigurationValid(): Boolean {
+        //return false if local machine executed and the config is not set.
+        if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
+            return false
+        }
+        if(parameters.databaseConfig.get().local.isNotNull()) {
+            when(parameters.databaseConfig.get().local) {
+                is SqliteDatabaseConnection -> {
+                    val sqliteConfig = parameters.databaseConfig.get().local!! as SqliteDatabaseConnection
+                    if (sqliteConfig.path.isNull()) {
+                        return false
+                    }
+                    if (sqliteConfig.name.isNull()) {
+                        return false
+                    }
+                }
+                is MySqlDatabaseConnection -> {
+                    val mySqlConfig = parameters.databaseConfig.get().local!! as MySqlDatabaseConnection
+                    if (mySqlConfig.host.isNull()) {
+                        return false
+                    }
+                    if (mySqlConfig.name.isNull()) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        //return false if CI machine executed and the config is not set.
+        if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
+            return false
+        }
+        if(parameters.databaseConfig.get().ci.isNotNull()) {
+            when(parameters.databaseConfig.get().ci) {
+                is SqliteDatabaseConnection -> {
+                    val sqliteConfig = parameters.databaseConfig.get().ci!! as SqliteDatabaseConnection
+                    if (sqliteConfig.path.isNull()) {
+                        return false
+                    }
+                    if (sqliteConfig.name.isNull()) {
+                        return false
+                    }
+                }
+                is MySqlDatabaseConnection -> {
+                    val mySqlConfig = parameters.databaseConfig.get().ci!! as MySqlDatabaseConnection
+                    if (mySqlConfig.host.isNull()) {
+                        return false
+                    }
+                    if (mySqlConfig.name.isNull()) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return true
+    }
+
+    @kotlin.jvm.Throws(PluginConfigNotValidException::class)
+    @Suppress("ThrowsCount")
+    private fun ensureDatabaseConfigurationValid() {
+        parameters.databaseConfig.get().local.whenNotNull {
+            whenTypeIs<SqliteDatabaseConnection> {
+                if (path.isNull()) {
+                    throw PluginConfigNotValidException("`path` is missing in Local Sqlite database configuration")
+                }
+                if (name.isNull()) {
+                    throw PluginConfigNotValidException("`name` is missing in Local Sqlite database configuration.")
+                }
+            }
+            whenTypeIs<MySqlDatabaseConnection> {
+                if (host.isNull()) {
+                    throw PluginConfigNotValidException("`host` is missing in Local MySql database configuration")
+                }
+                if (name.isNull()) {
+                    throw PluginConfigNotValidException("`name` is missing in Local MySql database configuration.")
+                }
+            }
+        }
+
+        parameters.databaseConfig.get().ci.whenNotNull {
+            whenTypeIs<SqliteDatabaseConnection> {
+                if (path.isNull()) {
+                    throw PluginConfigNotValidException("`path` is missing in Local Sqlite database configuration")
+                }
+                if (name.isNull()) {
+                    throw PluginConfigNotValidException("`name` is missing in Local Sqlite database configuration.")
+                }
+            }
+            whenTypeIs<MySqlDatabaseConnection> {
+                if (host.isNull()) {
+                    throw PluginConfigNotValidException("`host` is missing in Local MySql database configuration")
+                }
+                if (name.isNull()) {
+                    throw PluginConfigNotValidException("`name` is missing in Local MySql database configuration.")
+                }
+            }
+        }
+    }
+
+    private fun printConfigurationNotices() {
+        if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
+            ConsolePrinter(74).apply {
+                printFirstLine()
+                printLine("Gradle Analytics Plugin")
+                printBreakLine('-')
+                printLine("Notice:")
+                printLine("Build ran on CI machine, Plugin database config for CI machine is not set.")
+                printLine("It means the plugin won't save the build report in the database.")
+                printLastLine()
+            }
+        }
+
+        if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
+            ConsolePrinter(80).apply {
+                printFirstLine()
+                printLine("Gradle Analytics Plugin")
+                printBreakLine('-')
+                printLine("Notice:")
+                printLine("Build ran on Local machine, Plugin database config for Local machine is not set.")
+                printLine("It means the plugin won't save the build report in the database.")
+                printLastLine()
+            }
         }
     }
 

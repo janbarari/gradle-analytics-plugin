@@ -77,7 +77,7 @@ object ScannerUtils {
             ) { spec ->
                 with(spec.parameters) {
                     databaseConfig.set(configuration.getDatabaseConfig())
-                    envCI.set(project.envCI().isPresent)
+                    envCI.set(project.envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)

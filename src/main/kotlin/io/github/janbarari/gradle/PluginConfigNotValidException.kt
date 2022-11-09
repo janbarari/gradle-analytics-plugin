@@ -20,27 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.scanner.execution
+package io.github.janbarari.gradle
 
-import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
-
-/**
- * Logics for [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
- */
-interface BuildExecutionLogic {
-
-    /**
-     * Since the build initialization, configuration, and execution process are separated
-     * and based on various situations they have their own lifecycle this method resets
-     * their static variables in heap memory.
-     */
-    fun resetDependentServices()
-
-    /**
-     * Once the build is finished, this method should be
-     * invoked by [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService] to start
-     * storing the build metrics.
-     */
-    fun onExecutionFinished(executedTasks: Collection<TaskInfo>)
-
-}
+@ExcludeJacocoGenerated
+class PluginConfigNotValidException(msg: String): Throwable(
+    message = msg
+)
