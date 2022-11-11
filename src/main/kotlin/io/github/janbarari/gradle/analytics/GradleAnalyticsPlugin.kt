@@ -25,6 +25,9 @@ package io.github.janbarari.gradle.analytics
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
+import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
+import io.github.janbarari.gradle.analytics.exception.NotAccessibleGitTerminalException
+import io.github.janbarari.gradle.analytics.exception.PluginConfigNotValidException
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.extension.isNull
@@ -67,7 +70,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      * The plugin is compatible with Gradle version 6.1 and above, This function ensures
      * the plugin Gradle version is compatible with the user project version.
      *
-     * @throws io.github.janbarari.gradle.analytics.IncompatibleVersionException when the Gradle version is not compatible.
+     * @throws io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException when the Gradle version is not compatible.
      */
     @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureProjectGradleCompatible() {
@@ -111,7 +114,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     /**
      * Ensure the plugin config inputs are valid.
-     * @throws PluginConfigNotValidException when something is missing or wrong.
+     * @throws io.github.janbarari.gradle.analytics.exception.PluginConfigNotValidException when something is missing or wrong.
      */
     @kotlin.jvm.Throws(PluginConfigNotValidException::class)
     @Suppress("ThrowsCount")
