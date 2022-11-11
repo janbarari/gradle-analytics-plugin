@@ -28,7 +28,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.invocation.Gradle
-import org.gradle.api.provider.Provider
 import java.util.*
 
 /**

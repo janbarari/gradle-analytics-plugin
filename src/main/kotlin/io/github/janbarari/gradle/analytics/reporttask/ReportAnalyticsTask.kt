@@ -44,7 +44,9 @@ import org.gradle.work.DisableCachingByDefault
  * A Gradle task that generates the report based on `git branch`, `time period` and `task`.
  *
  * A quick instruction about how to invoke the task:
- * `./gradlew reportAnalytics --branch="{your-branch}" --task="{your-task}" --period="{a-number-between-1-to-12}"`
+ * `./gradlew reportAnalytics --branch="{your-branch}"
+ *                            --task="{your-task}"
+ *                            --period can be like "today", "s:yyyy/MM/dd,e:yyyy/MM/dd", "1y", "4m", "38d", "3m 06d"`
  */
 @ExcludeJacocoGenerated
 @DisableCachingByDefault

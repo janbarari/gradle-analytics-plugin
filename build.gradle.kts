@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
+import kotlin.Throwable
 
 val pluginId: String by project
 val pluginDisplayName: String by project
@@ -118,12 +120,25 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
+                "validateSourceHeaderLicense",
                 "detekt",
                 "build",
                 "test",
                 "publishToMavenLocal"
             ).args("--info")
         }
+    }
+}
+
+tasks.register("validateSourceHeaderLicense") {
+    outputs.cacheIf { false }
+    doLast {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            executable("./scripts/sourceLicenseValidator.sh")
+            standardOutput = stdout
+        }
+        println(stdout.toString())
     }
 }
 

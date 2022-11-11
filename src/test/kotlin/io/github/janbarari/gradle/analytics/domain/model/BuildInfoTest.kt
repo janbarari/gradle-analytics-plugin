@@ -1,7 +1,5 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
