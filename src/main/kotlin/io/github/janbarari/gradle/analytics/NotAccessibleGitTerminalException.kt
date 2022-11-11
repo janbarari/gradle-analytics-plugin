@@ -20,15 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle
+package io.github.janbarari.gradle.analytics
+
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-class IncompatibleVersionException(
-    private val title: String,
-    private val minimumRequiredVersion: String
-) : Throwable() {
-
-    override val message: String
-        get() = "$title is compatible with Gradle version $minimumRequiredVersion and above."
-
-}
+class NotAccessibleGitTerminalException: Throwable(
+    message = "${GradleAnalyticsPlugin.PLUGIN_NAME} works only on projects that use Git."
+)

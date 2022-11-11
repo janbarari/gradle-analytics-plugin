@@ -20,9 +20,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle
+package io.github.janbarari.gradle.analytics
+
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-class PluginConfigNotValidException(msg: String): Throwable(
-    message = msg
-)
+class IncompatibleVersionException(
+    private val minimumRequiredVersion: String
+) : Throwable() {
+
+    override val message: String
+        get() = "${GradleAnalyticsPlugin.PLUGIN_NAME} is compatible with Gradle version $minimumRequiredVersion and above."
+
+}

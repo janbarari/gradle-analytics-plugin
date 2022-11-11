@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.PluginConfigNotValidException
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
@@ -36,8 +35,6 @@ import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitiali
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
-import io.github.janbarari.gradle.extension.whenNotNull
-import io.github.janbarari.gradle.extension.whenTypeIs
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
@@ -188,10 +185,9 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         if (!isBranchTrackable()) return
 
-        ensureDatabaseConfigurationValid()
-        if (!isDatabaseConfigurationValid()) return
-
         printConfigurationNotices()
+
+        if (!isDatabaseConfigurationValid()) return
 
         BuildExecutionInjector(
             databaseConfig = parameters.databaseConfig.get(),
@@ -281,62 +277,27 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         return true
     }
 
-    @kotlin.jvm.Throws(PluginConfigNotValidException::class)
-    @Suppress("ThrowsCount")
-    private fun ensureDatabaseConfigurationValid() {
-        parameters.databaseConfig.get().local.whenNotNull {
-            whenTypeIs<SqliteDatabaseConnection> {
-                if (path.isNull()) {
-                    throw PluginConfigNotValidException("`path` is missing in Local Sqlite database configuration")
-                }
-                if (name.isNull()) {
-                    throw PluginConfigNotValidException("`name` is missing in Local Sqlite database configuration.")
-                }
-            }
-            whenTypeIs<MySqlDatabaseConnection> {
-                if (host.isNull()) {
-                    throw PluginConfigNotValidException("`host` is missing in Local MySql database configuration")
-                }
-                if (name.isNull()) {
-                    throw PluginConfigNotValidException("`name` is missing in Local MySql database configuration.")
-                }
-            }
-        }
-
-        parameters.databaseConfig.get().ci.whenNotNull {
-            whenTypeIs<SqliteDatabaseConnection> {
-                if (path.isNull()) {
-                    throw PluginConfigNotValidException("`path` is missing in Local Sqlite database configuration")
-                }
-                if (name.isNull()) {
-                    throw PluginConfigNotValidException("`name` is missing in Local Sqlite database configuration.")
-                }
-            }
-            whenTypeIs<MySqlDatabaseConnection> {
-                if (host.isNull()) {
-                    throw PluginConfigNotValidException("`host` is missing in Local MySql database configuration")
-                }
-                if (name.isNull()) {
-                    throw PluginConfigNotValidException("`name` is missing in Local MySql database configuration.")
-                }
-            }
-        }
-    }
-
     private fun printConfigurationNotices() {
-        if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
+        if (parameters.databaseConfig.get().local.isNull() && parameters.databaseConfig.get().ci.isNull()) {
+            ConsolePrinter(36).apply {
+                printFirstLine()
+                printLine("Gradle Analytics Plugin")
+                printBreakLine('-')
+                printLine("Notice:")
+                printLine("Database configuration is missing.")
+                printLastLine()
+            }
+        } else if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
             ConsolePrinter(74).apply {
                 printFirstLine()
                 printLine("Gradle Analytics Plugin")
                 printBreakLine('-')
                 printLine("Notice:")
-                printLine("Build ran on CI machine, Plugin database config for CI machine is not set.")
+                printLine("Build ran on ci machine, Plugin database config for ci machine is not set.")
                 printLine("It means the plugin won't save the build report in the database.")
                 printLastLine()
             }
-        }
-
-        if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
+        } else if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
             ConsolePrinter(80).apply {
                 printFirstLine()
                 printLine("Gradle Analytics Plugin")

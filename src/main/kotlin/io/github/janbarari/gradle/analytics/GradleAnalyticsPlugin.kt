@@ -23,10 +23,13 @@
 package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.IncompatibleVersionException
-import io.github.janbarari.gradle.NotAccessibleGitTerminalException
+import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.extension.whenTypeIs
 import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
@@ -55,6 +58,7 @@ class GradleAnalyticsPlugin @Inject constructor(
         ensureProjectGradleCompatible()
         ensureGitTerminalAccessible()
         val config = setupPluginConfig(project)
+        ensureConfigValid(config)
         registerTasks(config)
         ScannerUtils.setupScannerServices(config, registry)
     }
@@ -63,13 +67,13 @@ class GradleAnalyticsPlugin @Inject constructor(
      * The plugin is compatible with Gradle version 6.1 and above, This function ensures
      * the plugin Gradle version is compatible with the user project version.
      *
-     * @throws io.github.janbarari.gradle.IncompatibleVersionException when the Gradle version is not compatible.
+     * @throws io.github.janbarari.gradle.analytics.IncompatibleVersionException when the Gradle version is not compatible.
      */
     @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
-            throw IncompatibleVersionException(PLUGIN_NAME, requiredGradleVersion.versionNumber)
+            throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
         }
     }
 
@@ -81,7 +85,7 @@ class GradleAnalyticsPlugin @Inject constructor(
         try {
             GitUtils.currentBranch()
         } catch (e: Throwable) {
-            throw NotAccessibleGitTerminalException(PLUGIN_NAME)
+            throw NotAccessibleGitTerminalException()
         }
     }
 
@@ -103,6 +107,77 @@ class GradleAnalyticsPlugin @Inject constructor(
      */
     private fun registerTasks(config: GradleAnalyticsPluginConfig) {
         ReportAnalyticsTask.register(config)
+    }
+
+    /**
+     * Ensure the plugin config inputs are valid.
+     * @throws PluginConfigNotValidException when something is missing or wrong.
+     */
+    @kotlin.jvm.Throws(PluginConfigNotValidException::class)
+    @Suppress("ThrowsCount")
+    private fun ensureConfigValid(config: GradleAnalyticsPluginConfig) {
+        config.project.gradle.projectsEvaluated {
+            config.getDatabaseConfig().local.whenNotNull {
+                whenTypeIs<SqliteDatabaseConnection> {
+                    if (path.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`path` is missing in local Sqlite database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`name` is missing in local Sqlite database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+                whenTypeIs<MySqlDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`host` is missing in local MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`name` is missing in local MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+            }
+            config.getDatabaseConfig().ci.whenNotNull {
+                whenTypeIs<SqliteDatabaseConnection> {
+                    if (path.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`path` is missing in ci Sqlite database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`name` is missing in ci Sqlite database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+                whenTypeIs<MySqlDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`host` is missing in ci MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigNotValidException(
+                            "`name` is missing in ci MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+            }
+        }
     }
 
 }

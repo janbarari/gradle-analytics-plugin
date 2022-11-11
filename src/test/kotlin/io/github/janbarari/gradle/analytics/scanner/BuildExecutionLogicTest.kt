@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class BuildExecutionLogicTest {
 
@@ -55,14 +54,6 @@ class BuildExecutionLogicTest {
         mockkObject(GitUtils)
         every { GitUtils.currentBranch() } returns "master"
         injector.requestedTasks = listOf("clean")
-
-        val executedTasks = listOf<TaskInfo>()
-        injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
-    }
-
-    @Test
-    fun `check onExecutionFinished() returns false when database is not set`() = runBlocking {
-        injector.databaseConfig = DatabaseConfig()
 
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)

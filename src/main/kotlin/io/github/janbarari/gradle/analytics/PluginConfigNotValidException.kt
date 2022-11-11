@@ -20,9 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle
+package io.github.janbarari.gradle.analytics
+
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import java.io.File
 
 @ExcludeJacocoGenerated
-class NotAccessibleGitTerminalException(title: String): Throwable(
-    message = "$title works only on projects which use Git."
+class PluginConfigNotValidException(msg: String, buildScript: File): Throwable(
+    message = "${GradleAnalyticsPlugin.PLUGIN_NAME}: $msg\n${buildScript.absolutePath}"
 )
