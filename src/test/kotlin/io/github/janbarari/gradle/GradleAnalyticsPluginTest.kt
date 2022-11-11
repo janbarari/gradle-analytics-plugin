@@ -59,61 +59,6 @@ class GradleAnalyticsPluginTest {
     }
 
     @Test
-    fun `When plugin on sample project with gradle 6_0, Expect thrown incompatibility exception`() {
-        val testProjectDir = TemporaryFolder()
-        testProjectDir.create()
-        val buildFile = testProjectDir.newFile("build.gradle")
-        buildFile.appendText(
-            """
-                   plugins {
-                      id 'java'
-                      id 'io.github.janbarari.gradle-analytics-plugin'
-                   }
-                   
-                   gradleAnalyticsPlugin {
-                        database {
-                            local = sqlite {
-                                path = '${testProjectDir.root}'
-                                name = 'test-database'
-                            }
-                        }
-                            
-                        trackingBranches = ['main', 'develop']
-                        
-                        trackingTasks = ['assemble']
-                        
-                        outputPath = '${testProjectDir.root}'
-                   }
-                    """
-        )
-
-        var result: BuildResult? = null
-        val exception = assertThrows<Throwable> {
-            result = GradleRunner.create()
-                .withProjectDir(testProjectDir.root)
-                .withGradleVersion("6.0")
-                .withArguments("--stacktrace")
-                .withPluginClasspath()
-                .build()
-        }
-        println(exception.message)
-
-        result.whenNotNull {
-            println("\n==== BEGIN TEST OUTPUT ====")
-            println(output)
-            println("==== END TEST OUTPUT ====\n")
-        }
-
-        assertTrue {
-            exception
-                .message!!
-                .contains("gradleAnalyticsPlugin is compatible with Gradle version 6.1 and above.")
-        }
-
-        testProjectDir.delete()
-    }
-
-    @Test
     fun `When 'reportAnalytics' task configured in trackingTasks, Expect thrown exception with detailed message`() {
         val testProjectDir = TemporaryFolder()
         testProjectDir.create()
