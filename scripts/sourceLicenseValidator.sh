@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 find ./src/main/ -name '*.kt' -print0 |
 while IFS= read -r -d '' sourceFile; do
     fileContent=$(cat "$sourceFile")
