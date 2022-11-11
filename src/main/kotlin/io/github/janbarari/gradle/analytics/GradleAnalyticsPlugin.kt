@@ -71,7 +71,8 @@ class GradleAnalyticsPlugin @Inject constructor(
      * The plugin is compatible with Gradle version 6.1 and above, This function ensures
      * the plugin Gradle version is compatible with the user project version.
      *
-     * @throws io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException when the Gradle version is not compatible.
+     * @throws io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
+     * when the Gradle version is not compatible.
      */
     @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureProjectGradleCompatible() {
