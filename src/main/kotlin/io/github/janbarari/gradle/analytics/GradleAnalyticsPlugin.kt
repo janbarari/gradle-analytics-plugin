@@ -32,6 +32,7 @@ import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.extension.whenTypeIs
 import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
@@ -179,6 +180,13 @@ class GradleAnalyticsPlugin @Inject constructor(
                         )
                     }
                 }
+            }
+
+            config.trackingTasks.contains("reportAnalytics").whenTrue {
+                throw PluginConfigNotValidException(
+                    "`reportAnalytics` task is forbidden from being tracked.",
+                    config.project.buildFile
+                )
             }
         }
     }
