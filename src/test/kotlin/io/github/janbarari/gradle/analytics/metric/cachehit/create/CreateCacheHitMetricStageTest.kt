@@ -23,11 +23,8 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.mockk.coEvery

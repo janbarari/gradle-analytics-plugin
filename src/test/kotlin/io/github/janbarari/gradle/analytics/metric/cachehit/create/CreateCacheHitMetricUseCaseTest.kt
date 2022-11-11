@@ -25,8 +25,6 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test

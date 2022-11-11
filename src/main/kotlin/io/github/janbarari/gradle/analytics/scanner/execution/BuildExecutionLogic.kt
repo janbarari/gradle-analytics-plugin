@@ -30,28 +30,6 @@ import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 interface BuildExecutionLogic {
 
     /**
-     * Checks the current git branch exists in the project trackable branches.
-     */
-    fun isBranchTrackable(): Boolean
-
-    /**
-     * Checks the 'requested tasks' is exists on the project trackable tasks.
-     *
-     * Note: Every Gradle process started with a task(s). It is called 'requestedTasks'.
-     */
-    fun isTaskTrackable(): Boolean
-
-    /**
-     * Checks the 'requested tasks' is not the plugin custom tasks.
-     */
-    fun isForbiddenTasksRequested(): Boolean
-
-    /**
-     * Checks the database configuration is valid.
-     */
-    fun isDatabaseConfigurationValid(): Boolean
-
-    /**
      * Since the build initialization, configuration, and execution process are separated
      * and based on various situations they have their own lifecycle this method resets
      * their static variables in heap memory.

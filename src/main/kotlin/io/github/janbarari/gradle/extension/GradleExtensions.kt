@@ -28,7 +28,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.invocation.Gradle
-import org.gradle.api.provider.Provider
 import java.util.*
 
 /**
@@ -44,8 +43,10 @@ fun Gradle.getRequestedTasks(): List<String> {
  * Get the 'CI' value provider from the system environments.
  */
 @ExcludeJacocoGenerated
-fun Project.envCI(): Provider<String> {
-    return providers.environmentVariable("CI").forUseAtConfigurationTime()
+fun Project.envCI(): Boolean {
+    if(providers.environmentVariable("CI").forUseAtConfigurationTime().isPresent.not())
+        return false
+    return providers.environmentVariable("CI").forUseAtConfigurationTime().get().toBoolean()
 }
 
 /**

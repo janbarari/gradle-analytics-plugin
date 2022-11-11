@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: build
-          command: ./gradlew detekt assemble test --info --stacktrace
+          command: ./gradlew validateSourceHeaderLicense detekt assemble test --info --stacktrace
       - codecov/upload:
           file: build/reports/jacoco/test/*.xml
 workflows:

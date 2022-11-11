@@ -20,12 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.os
+package io.github.janbarari.gradle.analytics.exception
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 
 @ExcludeJacocoGenerated
-data class HardwareInfo(
-    val availableMemory: Long,
-    val maximumMemoryCapacity: Long
-) : java.io.Serializable
+class IncompatibleVersionException(
+    private val minimumRequiredVersion: String
+) : Throwable() {
+
+    override val message: String
+        get() = "${GradleAnalyticsPlugin.PLUGIN_NAME} is compatible with Gradle version $minimumRequiredVersion and above."
+
+}

@@ -11,7 +11,6 @@ import io.mockk.every
 import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class BuildExecutionLogicTest {
 
@@ -31,72 +30,6 @@ class BuildExecutionLogicTest {
         modulesDependencyGraph = ModulesDependencyGraph(dependencies = emptyList()),
         nonCacheableTasks = emptyList()
     )
-
-    @Test
-    fun `check isBranchTrackable() returns correct result`() {
-        mockkObject(GitUtils)
-        every { GitUtils.currentBranch() } returns "master"
-
-        assertEquals(true, injector.provideBuildExecutionLogic().isBranchTrackable())
-    }
-
-    @Test
-    fun `check isTaskTrackable() returns correct result`() {
-        assertEquals(true, injector.provideBuildExecutionLogic().isTaskTrackable())
-    }
-
-    @Test
-    fun `check isForbiddenTasksRequested() returns correct result`() {
-        injector.requestedTasks = listOf("reportAnalytics")
-        assertEquals(true, injector.provideBuildExecutionLogic().isForbiddenTasksRequested())
-    }
-
-    @Test
-    fun `check isDatabaseConfigurationValid() returns true when ran on Local`() {
-        injector.databaseConfig = DatabaseConfig().apply {
-            local = SqliteDatabaseConnection {
-                path = "./build"
-                name = "testdb"
-            }
-        }
-        assertEquals(true, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
-    }
-
-    @Test
-    fun `check isDatabaseConfigurationValid() returns true when ran on CI`() {
-        injector.isCI = true
-        injector.databaseConfig = DatabaseConfig().apply {
-            ci = SqliteDatabaseConnection {
-                path = "./build"
-                name = "testdb"
-            }
-        }
-        assertEquals(true, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
-    }
-
-    @Test
-    fun `check isDatabaseConfigurationValid() returns false when ran on CI`() {
-        injector.isCI = false
-        injector.databaseConfig = DatabaseConfig().apply {
-            ci = SqliteDatabaseConnection {
-                path = "./build"
-                name = "testdb"
-            }
-        }
-        assertEquals(false, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
-    }
-
-    @Test
-    fun `check isDatabaseConfigurationValid() returns false when ran on Local`() {
-        injector.isCI = true
-        injector.databaseConfig = DatabaseConfig().apply {
-            local = SqliteDatabaseConnection {
-                path = "./build"
-                name = "testdb"
-            }
-        }
-        assertEquals(false, injector.provideBuildExecutionLogic().isDatabaseConfigurationValid())
-    }
 
     @Test
     fun `check onExecutionFinished() returns true`() = runBlocking {
@@ -121,14 +54,6 @@ class BuildExecutionLogicTest {
         mockkObject(GitUtils)
         every { GitUtils.currentBranch() } returns "master"
         injector.requestedTasks = listOf("clean")
-
-        val executedTasks = listOf<TaskInfo>()
-        injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
-    }
-
-    @Test
-    fun `check onExecutionFinished() returns false when database is not set`() = runBlocking {
-        injector.databaseConfig = DatabaseConfig()
 
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)

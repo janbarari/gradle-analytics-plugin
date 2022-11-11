@@ -308,10 +308,6 @@ fun BuildExecutionInjector.provideCreateModulesCrashCountMetricUseCase(): Create
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
-        databaseConfig = databaseConfig!!,
-        envCI = isCI!!,
-        trackingBranches = trackingBranches!!,
-        trackingTasks = trackingTasks!!,
         requestedTasks = requestedTasks!!,
         saveMetricUseCase = provideSaveMetricUseCase(),
         saveTemporaryMetricUseCase = provideSaveTemporaryMetricUseCase(),

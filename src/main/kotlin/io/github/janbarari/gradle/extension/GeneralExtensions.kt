@@ -41,3 +41,15 @@ fun Boolean.whenTrue(block: Boolean.() -> Unit) {
 fun Boolean.whenFalse(block: Boolean.() -> Unit) {
     if (!this) block(false)
 }
+
+/**
+ * Invoke function body when the value type is dedicated T.
+ *
+ * This function helps to reduce the code complexity and increase the development speed by removing the
+ * boilerplate if condition for check type checking and casting.
+ */
+inline fun <reified T> Any.whenTypeIs(block: T.() -> Unit) {
+    if (this is T) {
+        block(this as T)
+    }
+}

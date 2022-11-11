@@ -23,9 +23,7 @@
 package io.github.janbarari.gradle.analytics
 
 import groovy.lang.Closure
-import io.github.janbarari.gradle.analytics.database.DatabaseConnection
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 
 /**

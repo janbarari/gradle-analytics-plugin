@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
+import kotlin.Throwable
 
 val pluginId: String by project
 val pluginDisplayName: String by project
@@ -32,6 +34,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
+    testImplementation(libs.coroutines.test)
 
     compileOnly(gradleApi())
 
@@ -44,7 +47,6 @@ dependencies {
     kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
-    testImplementation(libs.coroutines.test)
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -118,12 +120,25 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
+                "validateSourceHeaderLicense",
                 "detekt",
                 "build",
                 "test",
                 "publishToMavenLocal"
             ).args("--info")
         }
+    }
+}
+
+tasks.register("validateSourceHeaderLicense") {
+    outputs.cacheIf { false }
+    doLast {
+        val stdout = ByteArrayOutputStream()
+        exec {
+            executable("./scripts/sourceLicenseValidator.sh")
+            standardOutput = stdout
+        }
+        println(stdout.toString())
     }
 }
 

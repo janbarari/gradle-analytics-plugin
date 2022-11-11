@@ -26,7 +26,6 @@ import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleBuildHeatmap
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesBuildHeatmapMetric
-import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.core.UseCaseNoInput
 
 class CreateModulesBuildHeatmapMetricUseCase(

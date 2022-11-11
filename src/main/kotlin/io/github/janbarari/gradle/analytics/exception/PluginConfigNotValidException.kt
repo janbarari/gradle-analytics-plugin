@@ -20,11 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.os
+package io.github.janbarari.gradle.analytics.exception
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
+import java.io.File
 
 @ExcludeJacocoGenerated
-data class OsInfo(
-    val name: String
-) : java.io.Serializable
+class PluginConfigNotValidException(msg: String, buildScript: File): Throwable(
+    message = "${GradleAnalyticsPlugin.PLUGIN_NAME}: $msg\n${buildScript.absolutePath}"
+)
