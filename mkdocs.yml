@@ -25,13 +25,13 @@ theme:
     - scheme: default
       primary: white
       toggle:
-        icon: material/weather-sunny
+        icon: material/weather-night
         name: Switch to dark mode
 
     - scheme: slate
       primary: blue grey
       toggle:
-        icon: material/weather-night
+        icon: material/weather-sunny
         name: Switch to light mode
 
   logo: img/plugin-logo.png
