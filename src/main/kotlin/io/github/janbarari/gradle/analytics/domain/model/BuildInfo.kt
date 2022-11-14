@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.MathUtils
 import org.gradle.tooling.Failure
 import java.time.Duration
 
@@ -31,7 +31,7 @@ data class BuildInfo(
     val startedAt: Long,
     val initializedAt: Long,
     val configuredAt: Long,
-    var dependenciesResolveInfo: Collection<DependencyResolveInfo>,
+    var dependenciesResolveInfo: List<DependencyResolveInfo>,
     val executedTasks: List<TaskInfo>,
     val finishedAt: Long,
     val branch: String,
@@ -50,8 +50,21 @@ data class BuildInfo(
      * Returns the total build duration.
      */
     fun getTotalDuration(): Duration {
-        if (finishedAt < startedAt) return Duration.ofMillis(0)
-        return Duration.ofMillis(finishedAt - startedAt)
+        val mergeDependencyResolvesAndExecutionProcessTimeSlots: List<TimeSlot> = dependenciesResolveInfo.filter {
+                it.finishedAt < configuredAt
+            }.map {
+                if (it.startedAt < configuredAt) {
+                    TimeSlot(startedAt = configuredAt, finishedAt = it.finishedAt)
+                } else {
+                    TimeSlot(startedAt = it.startedAt, finishedAt = it.finishedAt)
+                }
+            } + executedTasks.map { TimeSlot(startedAt = it.startedAt, finishedAt = it.finishedAt) }
+
+        return getInitializationDuration() + getConfigurationDuration() + Duration.ofMillis(
+            MathUtils.calculateTimeSlotNonParallelDurationInMillis(
+                mergeDependencyResolvesAndExecutionProcessTimeSlots
+            )
+        )
     }
 
     /**
@@ -74,21 +87,14 @@ data class BuildInfo(
      * Returns the build execution process duration.
      */
     fun getExecutionDuration(): Duration {
-        if (finishedAt < configuredAt) return Duration.ofMillis(0)
-        return Duration.ofMillis(finishedAt - configuredAt)
+        return Duration.ofMillis(calculateNonParallelExecutionInMillis(executedTasks))
     }
 
     /**
      * Returns the total dependencies resolve duration.
      */
     fun getTotalDependenciesResolveDuration(): Duration {
-        var result = 0L
-        val iterator = dependenciesResolveInfo.iterator()
-        while (iterator.hasNext()) {
-            val info = iterator.next()
-            result += info.getDuration()
-        }
-        return Duration.ofMillis(result)
+        return Duration.ofMillis(calculateNonParallelDependencyResolveInMillis(dependenciesResolveInfo))
     }
 
     /**
@@ -99,86 +105,33 @@ data class BuildInfo(
     }
 
     /**
-     * Gradle executes the project tasks in parallel to use maximum performance of
+     * Gradle executes the project tasks in parallel to use the maximum performance of
      * the system resources, Which means by adding the task's duration together,
-     * We calculated the serial duration. to calculate the non-parallel
+     * We calculated the serial(parallel) duration. To calculate the non-parallel
      * duration(real-life duration) we need to ignore those tasks that are executed at
      * the same time or covered times by another task.
      */
-    fun calculateNonParallelExecutionInMillis(executedTasks: List<TaskInfo> = this.executedTasks): Long {
-        fun checkIfCanMerge(
-            parallelTask: TaskInfo,
-            nonParallelTask: Map.Entry<Int, Pair<Long, Long>>,
-            nonParallelTasks: HashMap<Int, Pair<Long, Long>>
-        ) {
-            if (parallelTask.startedAt <= nonParallelTask.value.second &&
-                parallelTask.finishedAt >= nonParallelTask.value.second) {
+    fun calculateNonParallelExecutionInMillis(
+        executedTasks: List<TaskInfo> = this.executedTasks
+    ): Long {
+        return MathUtils.calculateTimeSlotNonParallelDurationInMillis(
+            executedTasks.map { TimeSlot(startedAt = it.startedAt, finishedAt = it.finishedAt) }
+        )
+    }
 
-                var start = nonParallelTask.value.first
-                var end = nonParallelTask.value.second
-
-                if (parallelTask.startedAt < nonParallelTask.value.first)
-                    start = parallelTask.startedAt
-
-                if (parallelTask.finishedAt > nonParallelTask.value.second)
-                    end = parallelTask.finishedAt
-                nonParallelTasks[nonParallelTask.key] = Pair(start, end)
-            }
-        }
-
-        val nonParallelDurations = hashMapOf<Int, Pair<Long, Long>>()
-
-        val executedTaskIterator = executedTasks
-            .sortedBy { task -> task.startedAt }
-            .iterator()
-
-        while (executedTaskIterator.hasNext()) {
-            val executedTask = executedTaskIterator.next()
-            if (nonParallelDurations.isEmpty()) {
-                nonParallelDurations[nonParallelDurations.size] = Pair(executedTask.startedAt, executedTask.finishedAt)
-                continue
-            }
-
-            var tempTask: Pair<Long, Long>? = null
-            val nonParallelTasksIterator = nonParallelDurations.iterator()
-            while (nonParallelTasksIterator.hasNext()) {
-                val nonParallelTask = nonParallelTasksIterator.next()
-
-                checkIfCanMerge(executedTask, nonParallelTask, nonParallelDurations)
-
-                if (executedTask.startedAt > nonParallelTask.value.first &&
-                    executedTask.finishedAt > nonParallelTask.value.second &&
-                    executedTask.finishedAt > executedTask.startedAt
-                ) {
-                    tempTask = Pair(executedTask.startedAt, executedTask.finishedAt)
-                }
-            }
-
-            tempTask.whenNotNull {
-                val iterator = nonParallelDurations.iterator()
-                while (iterator.hasNext()) {
-                    val nonParallelTask = iterator.next()
-                    if (nonParallelTask.value.second in first..second) {
-                        var start = nonParallelTask.value.first
-                        var end = nonParallelTask.value.second
-                        if (first < nonParallelTask.value.first) {
-                            start = first
-                        }
-                        if (second > nonParallelTask.value.second) {
-                            end = second
-                        }
-                        nonParallelDurations[nonParallelTask.key] = Pair(start, end)
-                    }
-                }
-
-                val biggestNonParallelTaskEnd = nonParallelDurations.toList().maxByOrNull { it.second.second }!!.second.second
-                if (first > biggestNonParallelTaskEnd) {
-                    nonParallelDurations[nonParallelDurations.size] = this
-                }
-            }
-        }
-
-        return nonParallelDurations.toList().sumOf { (it.second.second - it.second.first) }
+    /**
+     * Gradle downloads the project dependencies in parallel to use the maximum performance of
+     * the system resource, Which means by adding the dependencies duration together,
+     * We calculated the serial(parallel) duration. To calculate the non-parallel
+     * duration(real-life duration) we need to ignore those tasks that are executed at
+     * the same time or covered times by another time slot.
+     */
+    fun calculateNonParallelDependencyResolveInMillis(
+        dependencyResolves: List<DependencyResolveInfo> = this.dependenciesResolveInfo
+    ): Long {
+        return MathUtils.calculateTimeSlotNonParallelDurationInMillis(
+            dependencyResolves.map { TimeSlot(startedAt = it.startedAt, finishedAt = it.finishedAt) }
+        )
     }
 
 }

@@ -29,3 +29,24 @@ function getColor(single = false) {
   resetFlag++;
   return randomColor;
 }
+
+var isDarkMode = false
+
+function toggleTheme() {
+  var element = document.body;
+  element.classList.toggle("dark-mode");
+
+  if(!isDarkMode) {
+    isDarkMode = true
+    document.getElementById("toggleThemeButton").classList.remove('dark');
+    document.getElementById("toggleThemeButton").classList.add('white');
+    document.getElementById("toggleThemeButton").classList.remove('bi-moon-stars-fill');
+    document.getElementById("toggleThemeButton").classList.add('bi-brightness-high-fill');
+  } else {
+    isDarkMode = false
+    document.getElementById("toggleThemeButton").classList.remove('white');
+    document.getElementById("toggleThemeButton").classList.add('dark');
+    document.getElementById("toggleThemeButton").classList.remove('bi-brightness-high-fill');
+    document.getElementById("toggleThemeButton").classList.add('bi-moon-stars-fill');
+  }
+}

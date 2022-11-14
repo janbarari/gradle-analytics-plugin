@@ -31,6 +31,7 @@ import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.utils.ConsolePrinter
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
@@ -64,6 +65,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 trackingTasksProperty.set(config.trackingTasks)
                 trackingBranchesProperty.set(config.trackingBranches)
                 databaseConfigProperty.set(config.getDatabaseConfig())
+                modules.set(config.project.subprojects
+                    .filter { it.isDependingOnOtherProject() }
+                    .map { it.toModule() })
                 outputs.cacheIf { false }
             }
         }
@@ -99,15 +103,14 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     abstract val databaseConfigProperty: Property<DatabaseConfig>
 
+    @get:Input
+    abstract val modules: ListProperty<Module>
+
     /**
      * Invokes when the task execution process started.
      */
     @TaskAction
     fun execute() = runBlocking {
-        val modules = project.subprojects
-            .filter { it.isDependingOnOtherProject() }
-            .map { it.toModule() }
-
         val injector = ReportAnalyticsInjector(
             requestedTasks = requestedTasksArgument,
             isCI = envCIProperty.get(),
@@ -115,7 +118,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
-            modules = modules
+            modules = modules.get()
         )
 
         with(injector.provideReportAnalyticsLogic()) {
