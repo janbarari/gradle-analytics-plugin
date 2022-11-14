@@ -30,8 +30,6 @@ import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
-import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
-import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
@@ -71,45 +69,6 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     }
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
-
-    init {
-        assignStartTimestampIfProcessSkipped()
-        assignInitializationTimestampIfProcessSkipped()
-        assignConfigurationTimestampIfProcessSkipped()
-    }
-
-    /**
-     * If the build initialization is reused by configuration-cache, then the
-     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
-     * register to the project and the start time won't assign.
-     */
-    private fun assignStartTimestampIfProcessSkipped() {
-        if (BuildInitializationService.STARTED_AT == 0L) {
-            BuildInitializationService.STARTED_AT = System.currentTimeMillis()
-        }
-    }
-
-    /**
-     * If the build initialization is reused by configuration-cache, then the
-     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
-     * register to the project and the initialization time won't assign.
-     */
-    private fun assignInitializationTimestampIfProcessSkipped() {
-        if (BuildInitializationService.INITIALIZED_AT == 0L) {
-            BuildInitializationService.INITIALIZED_AT = System.currentTimeMillis()
-        }
-    }
-
-    /**
-     * If the build configuration is reused by configuration-cache, then the
-     * [io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService] won't
-     * register to the project and the configuration time won't assign.
-     */
-    private fun assignConfigurationTimestampIfProcessSkipped() {
-        if (BuildConfigurationService.CONFIGURED_AT == 0L) {
-            BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
-        }
-    }
 
     /**
      * Called when each task execution is finished.

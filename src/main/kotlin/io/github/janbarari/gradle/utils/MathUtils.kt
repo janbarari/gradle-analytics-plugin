@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.utils
 
+import io.github.janbarari.gradle.analytics.domain.model.TimeSlot
+import io.github.janbarari.gradle.extension.whenNotNull
+
 /**
  * A collection of mathematics functions.
  */
@@ -83,6 +86,89 @@ object MathUtils {
      */
     fun deductWithPercentage(value: Long, percentage: Int): Long {
         return value - ((value * percentage) / 100L)
+    }
+
+    /**
+     * Calculate non parallel duration of given time slot in milliseconds.
+     */
+    fun calculateTimeSlotNonParallelDurationInMillis(
+        timeSlot: List<TimeSlot>
+    ): Long {
+        fun checkIfCanMerge(
+            parallelTimeSlot: TimeSlot,
+            nonParallelTimeSlot: Map.Entry<Int, Pair<Long, Long>>,
+            durations: HashMap<Int, Pair<Long, Long>>
+        ) {
+            if (parallelTimeSlot.startedAt <= nonParallelTimeSlot.value.second &&
+                parallelTimeSlot.finishedAt >= nonParallelTimeSlot.value.second) {
+
+                var start = nonParallelTimeSlot.value.first
+                var end = nonParallelTimeSlot.value.second
+
+                if (parallelTimeSlot.startedAt < nonParallelTimeSlot.value.first)
+                    start = parallelTimeSlot.startedAt
+
+                if (parallelTimeSlot.finishedAt > nonParallelTimeSlot.value.second)
+                    end = parallelTimeSlot.finishedAt
+                durations[nonParallelTimeSlot.key] = Pair(start, end)
+            }
+        }
+
+        val durations = hashMapOf<Int, Pair<Long, Long>>()
+
+        val timeSlotIterator = timeSlot
+            .sortedBy { task -> task.startedAt }
+            .iterator()
+
+        while (timeSlotIterator.hasNext()) {
+            val item = timeSlotIterator.next()
+
+            if (durations.isEmpty()) {
+                durations[durations.size] = Pair(item.startedAt, item.finishedAt)
+                continue
+            }
+
+            var tempTimeSlot: Pair<Long, Long>? = null
+            val nonParallelTimeSlotIterator = durations.iterator()
+            while (nonParallelTimeSlotIterator.hasNext()) {
+                val nonParallelItem = nonParallelTimeSlotIterator.next()
+
+                checkIfCanMerge(item, nonParallelItem, durations)
+
+                if (item.startedAt > nonParallelItem.value.first &&
+                    item.finishedAt > nonParallelItem.value.second &&
+                    item.finishedAt > item.startedAt
+                ) {
+                    tempTimeSlot = Pair(item.startedAt, item.finishedAt)
+                }
+            }
+
+            tempTimeSlot.whenNotNull {
+                val iterator = durations.iterator()
+                while (iterator.hasNext()) {
+                    val nonParallelItem = iterator.next()
+
+                    if (nonParallelItem.value.second in first..second) {
+                        var start = nonParallelItem.value.first
+                        var end = nonParallelItem.value.second
+                        if (first < nonParallelItem.value.first) {
+                            start = first
+                        }
+                        if (second > nonParallelItem.value.second) {
+                            end = second
+                        }
+                        durations[nonParallelItem.key] = Pair(start, end)
+                    }
+                }
+
+                val biggestNonParallelTimeSlotEnd = durations.toList().maxByOrNull { it.second.second }!!.second.second
+                if (first > biggestNonParallelTimeSlotEnd) {
+                    durations[durations.size] = this
+                }
+            }
+        }
+
+        return durations.toList().sumOf { (it.second.second - it.second.first) }
     }
 
 }
