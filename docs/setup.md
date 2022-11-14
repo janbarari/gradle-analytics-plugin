@@ -2,7 +2,7 @@
 To set up the plugin in your project, follow the below instructions:
 
 ### <strong>Step 1</strong>
-Make sure your project uses Git VCS.
+Make sure your project uses Git VCS and Gradle version `6.1+`.
 !!! Note ""
 
     Gradle Analytics Plugin uses Git terminal to get the branch names and latest HEAD commit hash. 
@@ -99,9 +99,10 @@ Add plugin configuration in the root of your project.
 <br/>
 <strong>Important Notes</strong><br/>
 
-- If you don't have a sqlite database, the plugin will create one automatically. You only need to the `name` and `path` for it.
-- You can choose both `sqlite / mysql` for `local` or `ci`.
-- You can skip `local` or `ci` database if you don't need analytics on each of them.
-- If you use `ci` make sure the `CI=true` environment variable exists in your CI system environments.
+- The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the `name` and `path`.
+- Both `sqlite / mysql` can be used to config `local` or `ci` databases.
+- The `local` or `ci` database can be skipped if don't need analytics on each of them.
+- If using the plugin in your CI/CD make sure the `CI=true` environment variable exists in your CI system environments and the `ci` database is configured.
+- The `outputPath` can be skipped, it will generate the report inside the project build directory.
 
 <br/>
