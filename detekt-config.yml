@@ -47,3 +47,7 @@ style:
     active: true
   NewLineAtEndOfFile:
     active: true
+  WildcardImport:
+    active: true
+    excludeImports:
+      - 'java.util.*'
