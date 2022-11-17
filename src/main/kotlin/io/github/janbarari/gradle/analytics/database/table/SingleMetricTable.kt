@@ -24,8 +24,6 @@ package io.github.janbarari.gradle.analytics.database.table
 
 import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.LongTextColumnType
-import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable.autoIncrement
-import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable.uniqueIndex
 import org.jetbrains.exposed.sql.Table
 
 object SingleMetricTable : Table("single_metric") {

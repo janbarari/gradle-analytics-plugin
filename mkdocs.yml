@@ -10,22 +10,36 @@ nav:
   - Setup: setup.md
   - Getting Report: getting-report.md
   - Changelog: changelog.md
-  - Support: support.md
+  - Donation 🧡: donation.md
   - Contribution: contribution.md
   - Privacy & Policy: privacy-policy.md
   - Request Feature: request-feature.md
   - Report Bug: report-bug.md
   - Special Thanks: special-thanks.md
+  - Third party: third-party.md
   - License: license.md
 
 theme:
   name: material
   palette:
-    primary: white
+    - scheme: default
+      primary: white
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    - scheme: slate
+      primary: blue grey
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
   logo: img/plugin-logo.png
   favicon: img/plugin-logo.png
   features:
     - header.autohide
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - codehilite
@@ -40,7 +54,5 @@ copyright: Made with 🧡 for everyone | Copyright &copy; 2022
 extra:
   generator: false
   social:
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/medicodroid
     - icon: fontawesome/brands/github
       link: https://github.com/janbarari

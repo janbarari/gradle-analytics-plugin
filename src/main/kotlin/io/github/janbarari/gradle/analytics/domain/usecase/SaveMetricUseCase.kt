@@ -28,8 +28,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.update.UpdateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.update.UpdateDependencyDetailsMetricStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.update.UpdateDependencyDetailsMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.update.UpdateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricStage
@@ -78,7 +76,6 @@ class SaveMetricUseCase(
     private val updateModulesExecutionProcessMetricUseCase: UpdateModulesExecutionProcessMetricUseCase,
     private val updateModulesDependencyGraphMetricUseCase: UpdateModulesDependencyGraphMetricUseCase,
     private val updateModulesBuildHeatmapMetricUseCase: UpdateModulesBuildHeatmapMetricUseCase,
-    private val updateDependencyDetailsMetricUseCase: UpdateDependencyDetailsMetricUseCase,
     private val updateNonCacheableTasksMetricUseCase: UpdateNonCacheableTasksMetricUseCase,
     private val updateModulesSourceSizeMetricUseCase: UpdateModulesSourceSizeMetricUseCase,
     private val updateModulesCrashCountMetricUseCase: UpdateModulesCrashCountMetricUseCase,
@@ -105,7 +102,6 @@ class SaveMetricUseCase(
                 .addStage(UpdateModulesExecutionProcessMetricStage(updateModulesExecutionProcessMetricUseCase))
                 .addStage(UpdateModulesDependencyGraphMetricStage(updateModulesDependencyGraphMetricUseCase))
                 .addStage(UpdateModulesBuildHeatmapMetricStage(updateModulesBuildHeatmapMetricUseCase))
-                .addStage(UpdateDependencyDetailsMetricStage(updateDependencyDetailsMetricUseCase))
                 .addStage(UpdateNonCacheableTasksMetricStage(updateNonCacheableTasksMetricUseCase))
                 .addStage(UpdateModulesSourceSizeMetricStage(updateModulesSourceSizeMetricUseCase))
                 .addStage(UpdateModulesCrashCountMetricStage(updateModulesCrashCountMetricUseCase))

@@ -24,7 +24,6 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.Dependency.Companion.getThirdPartyDependencies
 import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
@@ -34,8 +33,11 @@ import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getNonCacheableTasks
 import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isDependingOnOtherProject
+import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
+import java.util.*
 
 @ExcludeJacocoGenerated
 object ScannerUtils {
@@ -56,8 +58,12 @@ object ScannerUtils {
         configuration: GradleAnalyticsPluginConfig
     ) {
         project.gradle.projectsEvaluated {
-            val nonCacheableTasks = project.allprojects
-                .flatMap { it.tasks.getNonCacheableTasks() }
+            val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
+            project.allprojects.whenEach {
+                tasks.toList().getNonCacheableTasks().whenNotNull {
+                    nonCacheableTasks.addAll(this)
+                }
+            }
 
             val modules = project.subprojects
                 .filter { it.isDependingOnOtherProject() }
@@ -71,14 +77,13 @@ object ScannerUtils {
             ) { spec ->
                 with(spec.parameters) {
                     databaseConfig.set(configuration.getDatabaseConfig())
-                    envCI.set(project.envCI().isPresent)
+                    envCI.set(envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
-                    this.dependencies.set(project.getThirdPartyDependencies())
-                    this.nonCachableTasks.set(nonCacheableTasks)
+                    this.nonCacheableTasks.set(nonCacheableTasks)
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

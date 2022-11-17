@@ -1,6 +1,6 @@
     <h2>Modules Execution Timeline</h2>
     <p class="gray-text pb16">It represents the latest modules execution process timeline graph on %datetime%.</p>
-    <div id="modules-timeline-graph"></div>
+    <div id="modules-timeline-graph" class="modules-timeline-graph"></div>
     <script type="text/javascript">
         var data = %timelines%;
 
@@ -13,7 +13,7 @@
           function load() {
             d3.select("#modules-timeline-graph")
               .append("svg")
-              .attr("width", document.getElementById("container").offsetWidth)
+              .attr("width", (document.getElementById("container").offsetWidth - 32))
               .datum(data)
               .call(chart);
           }

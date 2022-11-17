@@ -43,3 +43,11 @@ style:
   MaxLineLength:
     active: true
     maxLineLength: 128
+  UnusedImports:
+    active: true
+  NewLineAtEndOfFile:
+    active: true
+  WildcardImport:
+    active: true
+    excludeImports:
+      - 'java.util.*'

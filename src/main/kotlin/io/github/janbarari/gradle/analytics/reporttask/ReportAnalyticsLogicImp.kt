@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -33,8 +34,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.CreateConfigurationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.RenderConfigurationProcessReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.CreateDependencyDetailsReportStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.render.RenderDependencyDetailsReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.CreateDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report.RenderDependencyResolveProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.CreateExecutionProcessReportStage
@@ -90,6 +89,7 @@ class ReportAnalyticsLogicImp(
     private val modules: List<Module>
 ) : ReportAnalyticsLogic {
 
+    @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(EmptyMetricsException::class)
     override suspend fun generateReport(branch: String, requestedTasks: String, period: String): String {
         val convertedPeriod = convertQueryToPeriod(period)
@@ -111,21 +111,27 @@ class ReportAnalyticsLogicImp(
         )
     }
 
+    @ExcludeJacocoGenerated
     private suspend fun generateReport(data: List<BuildMetric>, branch: String, requestedTasks: String): Report {
         return CreateReportPipeline(CreateInitializationProcessReportStage(data)).addStage(
                 CreateConfigurationProcessReportStage(
                     data
                 )
-            ).addStage(CreateExecutionProcessReportStage(data)).addStage(CreateOverallBuildProcessReportStage(data))
-            .addStage(CreateModulesSourceCountReportStage(data)).addStage(CreateModulesMethodCountReportStage(data))
+            ).addStage(CreateExecutionProcessReportStage(data))
+            .addStage(CreateOverallBuildProcessReportStage(data))
+            .addStage(CreateModulesSourceCountReportStage(data))
+            .addStage(CreateModulesMethodCountReportStage(data))
             .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
-            .addStage(CreateDependencyResolveProcessReportStage(data)).addStage(CreateParallelExecutionRateReportStage(data))
+            .addStage(CreateDependencyResolveProcessReportStage(data))
+            .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(modules, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modules, data)).addStage(CreateModulesBuildHeatmapReportStage(data))
-            .addStage(CreateDependencyDetailsReportStage(data)).addStage(CreateNonCacheableTasksReportStage(data))
-            .addStage(CreateModulesSourceSizeReportStage(data)).addStage(CreateModulesCrashCountReportStage(modules, data))
+            .addStage(CreateBuildStatusReportStage(modules, data))
+            .addStage(CreateModulesBuildHeatmapReportStage(data))
+            .addStage(CreateNonCacheableTasksReportStage(data))
+            .addStage(CreateModulesSourceSizeReportStage(data))
+            .addStage(CreateModulesCrashCountReportStage(modules, data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -133,6 +139,7 @@ class ReportAnalyticsLogicImp(
             )
     }
 
+    @ExcludeJacocoGenerated
     private suspend fun generateRender(
         data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String
     ): String {
@@ -163,13 +170,13 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderModulesTimelineReportStage(report))
             .addStage(RenderBuildStatusReportStage(report))
             .addStage(RenderModulesBuildHeatmapReportStage(report))
-            .addStage(RenderDependencyDetailsReportStage(report))
             .addStage(RenderNonCacheableTasksReportStage(report))
             .addStage(RenderModulesSourceSizeReportStage(report))
             .addStage(RenderModulesCrashCountReportStage(report))
             .execute(rawHTML)
     }
 
+    @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
         val resources = listOf(

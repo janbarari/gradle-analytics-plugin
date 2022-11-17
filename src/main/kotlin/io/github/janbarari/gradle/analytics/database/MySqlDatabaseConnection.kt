@@ -35,9 +35,9 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
         also(block)
     }
 
-    lateinit var host: String
+    var host: String? = null
 
-    lateinit var name: String
+    var name: String? = null
 
     var port: Int = DEFAULT_MYSQL_PORT
 

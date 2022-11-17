@@ -49,7 +49,7 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
 
     /**
      * Factory method for create a new instance
-     * of [io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig].
+     * of [io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection].
      */
     fun mysql(block: MySqlDatabaseConnection.() -> Unit): MySqlDatabaseConnection {
         return MySqlDatabaseConnection {
@@ -59,7 +59,7 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
 
     /**
      * Factory method for create a new instance
-     * of [io.github.janbarari.gradle.analytics.data.database.config.MySqlDatabaseConfig].
+     * of [io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection].
      */
     fun mysql(closure: Closure<*>): MySqlDatabaseConnection {
         val temp = MySqlDatabaseConnection { }
@@ -70,7 +70,7 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
 
     /**
      * Factory method for create a new instance
-     * of [io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig].
+     * of [io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection].
      */
     fun sqlite(block: SqliteDatabaseConnection.() -> Unit): SqliteDatabaseConnection {
         return SqliteDatabaseConnection {
@@ -80,7 +80,7 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
 
     /**
      * Factory method for create a new instance
-     * of [io.github.janbarari.gradle.analytics.data.database.config.SqliteDatabaseConfig].
+     * of [io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection].
      */
     fun sqlite(closure: Closure<*>): SqliteDatabaseConnection {
         val temp = SqliteDatabaseConnection { }

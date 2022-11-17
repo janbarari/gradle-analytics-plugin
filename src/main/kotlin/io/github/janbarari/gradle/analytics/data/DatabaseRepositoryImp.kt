@@ -47,7 +47,7 @@ class DatabaseRepositoryImp(
     private val db: Database,
     private val branch: String,
     private val requestedTasks: String,
-    private val moshi: Moshi
+    moshi: Moshi
 ) : DatabaseRepository {
 
     private var jsonAdapter: BuildMetricJsonAdapter = BuildMetricJsonAdapter(moshi)

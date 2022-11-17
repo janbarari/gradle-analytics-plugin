@@ -229,3 +229,82 @@ hr {
     text-align: justify;
     text-justify: inter-word;
 }
+
+.toggle-theme-button {
+    font-size: 21px;
+    border:0px solid black;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.dark-mode {
+    background-color: #2E383E;
+}
+
+.dark-mode h1 {
+    color: white;
+}
+
+.dark-mode h2 {
+    color: white;
+}
+
+.dark-mode h3 {
+    color: white;
+}
+
+.dark-mode h4 {
+    color: white;
+}
+
+.dark-mode span {
+    color: #b8b8b8;
+}
+
+.dark-mode p {
+    color: #b8b8b8;
+}
+
+.dark-mode .mermaid {
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.modules-timeline-graph {
+    padding: 16px;
+}
+
+.dark-mode .modules-timeline-graph {
+    background-color: #F5F5F5;
+    border-radius: 10px;
+    padding: 16px;
+
+}
+
+.dark-mode .tag-style-1 {
+    color: #FFFFFF;
+    background: #472f79;
+    border-radius: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.dark-mode .tag-style-2 {
+    color: #FFFFFF;
+    background: #7f4e3d;
+    border-radius: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.dark-mode a {
+    color: #3C88B7;
+}
+
+.dark {
+    color: #2E383E;
+}
+
+.white {
+    color: white;
+}

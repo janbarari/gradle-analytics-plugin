@@ -22,6 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask.exception
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+
+@ExcludeJacocoGenerated
 class EmptyMetricsException: Throwable() {
     override val message: String = "No metrics are available for generating reports!"
 }

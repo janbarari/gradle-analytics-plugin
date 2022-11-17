@@ -22,6 +22,8 @@
  */
 package io.github.janbarari.gradle.extension
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+
 /**
  * Iterates across the list items, but this function allows each iteration to
  * add and remove items from the list.
@@ -36,6 +38,7 @@ fun <T: Any> Collection<T>.whenEach(block: T.() -> Unit) {
 /**
  * Map the Long list to Int list.
  */
+@ExcludeJacocoGenerated
 fun List<Long>.toIntList(): List<Int> {
     return this.map { it.toInt() }
 }
@@ -50,6 +53,7 @@ fun <T> List<T>.isBiggerThan(count: Int): Boolean {
 /**
  * Invoke the function body if the given list has no items.
  */
+@ExcludeJacocoGenerated
 inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
     if (isEmpty()) block(this)
     return this
@@ -58,6 +62,7 @@ inline fun <T> List<T>.whenEmpty(block: Collection<T>.() -> Unit): List<T> {
 /**
  * Invoke the function body if the given list is not empty.
  */
+@ExcludeJacocoGenerated
 inline fun <T> List<T>.whenNotEmpty(block: Collection<T>.() -> Unit): List<T> {
     if (isNotEmpty()) block(this)
     return this
@@ -66,6 +71,7 @@ inline fun <T> List<T>.whenNotEmpty(block: Collection<T>.() -> Unit): List<T> {
 /**
  * Invoke the function body if the given set is not empty.
  */
+@ExcludeJacocoGenerated
 inline fun <T> Set<T>.whenNotEmpty(block: Collection<T>.() -> Unit): Set<T> {
     if (isNotEmpty()) block(this)
     return this
@@ -123,19 +129,22 @@ fun List<String>.toArrayString(): String {
  * More extensibility
  * Better performance
  */
-public inline fun <T> Iterable<T>.modify(modification: T.() -> Unit): Iterable<T> {
+@ExcludeJacocoGenerated
+inline fun <T> Iterable<T>.modify(modification: T.() -> Unit): Iterable<T> {
     for (item in this)
         item.apply(modification)
     return this
 }
 
-public inline fun <T> Collection<T>.modify(modification: T.() -> Unit): Collection<T> {
+@ExcludeJacocoGenerated
+inline fun <T> Collection<T>.modify(modification: T.() -> Unit): Collection<T> {
     for (item in this)
         item.apply(modification)
     return this
 }
 
-public inline fun <T> List<T>.modify(modification: T.() -> Unit): List<T> {
+@ExcludeJacocoGenerated
+inline fun <T> List<T>.modify(modification: T.() -> Unit): List<T> {
     for (item in this)
         item.apply(modification)
     return this

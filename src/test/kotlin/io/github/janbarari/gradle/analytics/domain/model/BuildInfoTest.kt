@@ -1,7 +1,5 @@
 package io.github.janbarari.gradle.analytics.domain.model
 
-import io.github.janbarari.gradle.analytics.domain.model.os.HardwareInfo
-import io.github.janbarari.gradle.analytics.domain.model.os.OsInfo
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -39,7 +37,7 @@ class BuildInfoTest {
             createdAt = 0,
             startedAt = 50,
             initializedAt = 150,
-            configuredAt = 100,
+            configuredAt = 250,
             dependenciesResolveInfo = listOf(),
             executedTasks = listOf(),
             finishedAt = 800,
@@ -48,25 +46,7 @@ class BuildInfoTest {
             requestedTasks = listOf(),
             isSuccessful = true
         )
-        assertEquals(750, info.getTotalDuration().toMillis())
-    }
-
-    @Test
-    fun `check getTotalDuration() returns zero when finishedAt not set`() {
-        val info = BuildInfo(
-            createdAt = 0,
-            startedAt = 2,
-            initializedAt = 50,
-            configuredAt = 150,
-            dependenciesResolveInfo = listOf(),
-            executedTasks = listOf(),
-            finishedAt = 800,
-            branch = "master",
-            gitHeadCommitHash = "unknown",
-            requestedTasks = listOf(),
-            isSuccessful = true
-        )
-        assertEquals(798, info.getTotalDuration().toMillis())
+        assertEquals(200, info.getTotalDuration().toMillis())
     }
 
     @Test
@@ -149,33 +129,33 @@ class BuildInfoTest {
             initializedAt = 50,
             configuredAt = 150,
             dependenciesResolveInfo = listOf(),
-            executedTasks = listOf(),
+            executedTasks = listOf(
+                TaskInfo(
+                    startedAt = 100,
+                    finishedAt = 200,
+                    path = "assemble",
+                    displayName = "Assemble",
+                    name = "assemble",
+                    isSuccessful = true,
+                    failures = null,
+                    dependencies = null,
+                    isIncremental = false,
+                    isFromCache = false,
+                    isUpToDate = false,
+                    isSkipped = false,
+                    executionReasons = null
+                )
+            ),
             finishedAt = 800,
             branch = "master",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf(),
             isSuccessful = true
         )
-        assertEquals(650, info.getExecutionDuration().toMillis())
+        assertEquals(100, info.getExecutionDuration().toMillis())
     }
 
-    @Test
-    fun `check getExecutionDuration() returns zero when finishedAt not set`() {
-        val info = BuildInfo(
-            createdAt = 0,
-            startedAt = 400,
-            initializedAt = 0,
-            configuredAt = 500,
-            dependenciesResolveInfo = listOf(),
-            executedTasks = listOf(),
-            finishedAt = 800,
-            branch = "master",
-            gitHeadCommitHash = "unknown",
-            requestedTasks = listOf(),
-            isSuccessful = true
-        )
-        assertEquals(300, info.getExecutionDuration().toMillis())
-    }
+
 
     @Test
     fun `check getTotalDependenciesResolveDuration() returns correct result`() {

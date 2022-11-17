@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
@@ -34,8 +33,6 @@ import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHi
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.create.CreateDependencyDetailsMetricStage
-import io.github.janbarari.gradle.analytics.metric.dependencydetails.create.CreateDependencyDetailsMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricStage
 import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.create.CreateDependencyResolveProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricStage
@@ -66,12 +63,10 @@ import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.C
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
-import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService
 import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDependencyResolutionService
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.DateTimeUtils
@@ -82,10 +77,6 @@ import kotlinx.coroutines.runBlocking
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
 class BuildExecutionLogicImp(
-    private val databaseConfig: DatabaseConfig,
-    private val envCI: Boolean,
-    private val trackingBranches: List<String>,
-    private val trackingTasks: List<String>,
     private val requestedTasks: List<String>,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
@@ -104,21 +95,18 @@ class BuildExecutionLogicImp(
     private val createModulesDependencyGraphMetricUseCase: CreateModulesDependencyGraphMetricUseCase,
     private val createModulesTimelineMetricUseCase: CreateModulesTimelineMetricUseCase,
     private val createModulesBuildHeatmapMetricUseCase: CreateModulesBuildHeatmapMetricUseCase,
-    private val createDependencyDetailsMetricUseCase: CreateDependencyDetailsMetricUseCase,
     private val createNonCacheableTasksMetricUseCase: CreateNonCacheableTasksMetricUseCase,
     private val createModulesSourceSizeMetricUseCase: CreateModulesSourceSizeMetricUseCase,
     private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
 ) : BuildExecutionLogic {
 
+    init {
+        assignStartTimestampIfProcessSkipped()
+        assignInitializationTimestampIfProcessSkipped()
+        assignConfigurationTimestampIfProcessSkipped()
+    }
+
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) = runBlocking {
-        if (isForbiddenTasksRequested()) return@runBlocking
-
-        if (!isDatabaseConfigurationValid()) return@runBlocking
-
-        if (!isTaskTrackable()) return@runBlocking
-
-        if (!isBranchTrackable()) return@runBlocking
-
         val isSuccessful = executedTasks.all { it.isSuccessful }
         val failure = executedTasks.find { !it.isSuccessful && it.failures.isNotNull() }?.failures
 
@@ -128,7 +116,7 @@ class BuildExecutionLogicImp(
             initializedAt = BuildInitializationService.INITIALIZED_AT,
             configuredAt = BuildConfigurationService.CONFIGURED_AT,
             finishedAt = System.currentTimeMillis(),
-            dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values,
+            dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values.toList(),
             executedTasks = executedTasks.toList(),
             branch = GitUtils.currentBranch(),
             gitHeadCommitHash = GitUtils.getHeadCommitHash(),
@@ -139,33 +127,34 @@ class BuildExecutionLogicImp(
 
         resetDependentServices()
 
-        val buildMetric =
-            CreateMetricPipeline(CreateInitializationProcessMetricStage(buildInfo, createInitializationProcessMetricUseCase))
-                .addStage(CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase))
-                .addStage(CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase))
-                .addStage(CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase))
-                .addStage(CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase))
-                .addStage(CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase))
-                .addStage(CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase))
-                .addStage(CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase))
-                .addStage(CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase))
-                .addStage(CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase))
-                .addStage(CreateModulesExecutionProcessMetricStage(buildInfo, createModulesExecutionProcessMetricUseCase))
-                .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
-                .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
-                .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
-                .addStage(CreateDependencyDetailsMetricStage(createDependencyDetailsMetricUseCase))
-                .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
-                .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
-                .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase))
-                .execute(
-                    BuildMetric(
-                        buildInfo.branch,
-                        buildInfo.requestedTasks,
-                        buildInfo.createdAt,
-                        buildInfo.gitHeadCommitHash
-                    )
+        val buildMetric = CreateMetricPipeline(
+            CreateInitializationProcessMetricStage(
+                buildInfo,
+                createInitializationProcessMetricUseCase
+            )
+        ).addStage(CreateConfigurationProcessMetricStage(buildInfo, createConfigurationProcessMetricUseCase))
+            .addStage(CreateExecutionProcessMetricStage(buildInfo, createExecutionProcessMetricUseCase))
+            .addStage(CreateOverallBuildProcessMetricStage(buildInfo, createOverallBuildProcessMetricUseCase))
+            .addStage(CreateModulesSourceCountMetricStage(createModulesSourceCountMetricUseCase))
+            .addStage(CreateModulesMethodCountMetricStage(createModulesMethodCountMetricUseCase))
+            .addStage(CreateCacheHitMetricStage(buildInfo, createCacheHitMetricUseCase))
+            .addStage(CreateSuccessBuildRateMetricStage(buildInfo, createSuccessBuildRateMetricUseCase))
+            .addStage(CreateDependencyResolveProcessMetricStage(buildInfo, createDependencyResolveProcessMetricUseCase))
+            .addStage(CreateParallelExecutionRateMetricStage(buildInfo, createParallelExecutionRateMetricUseCase))
+            .addStage(CreateModulesExecutionProcessMetricStage(buildInfo, createModulesExecutionProcessMetricUseCase))
+            .addStage(CreateModulesDependencyGraphMetricStage(createModulesDependencyGraphMetricUseCase))
+            .addStage(CreateModulesTimelineMetricStage(buildInfo, createModulesTimelineMetricUseCase))
+            .addStage(CreateModulesBuildHeatmapMetricStage(createModulesBuildHeatmapMetricUseCase))
+            .addStage(CreateNonCacheableTasksMetricStage(buildInfo, createNonCacheableTasksMetricUseCase))
+            .addStage(CreateModulesSourceSizeMetricStage(createModulesSourceSizeMetricUseCase))
+            .addStage(CreateModulesCrashCountMetricStage(buildInfo, createModulesCrashCountMetricUseCase)).execute(
+                BuildMetric(
+                    buildInfo.branch,
+                    buildInfo.requestedTasks,
+                    buildInfo.createdAt,
+                    buildInfo.gitHeadCommitHash
                 )
+            )
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
@@ -206,7 +195,6 @@ class BuildExecutionLogicImp(
             printLine(right = "↖ Tap the ☆ button to support us")
             printLastLine()
         }
-
     }
 
     @ExcludeJacocoGenerated
@@ -216,31 +204,37 @@ class BuildExecutionLogicImp(
         BuildDependencyResolutionService.reset()
     }
 
-    override fun isDatabaseConfigurationValid(): Boolean {
-        //return false if local machine executed and the config is not set.
-        if (databaseConfig.local.isNull() && !envCI) {
-            return false
+    /**
+     * If the build initialization is reused by configuration-cache, then the
+     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
+     * register to the project and the start time won't assign.
+     */
+    private fun assignStartTimestampIfProcessSkipped() {
+        if (BuildInitializationService.STARTED_AT == 0L) {
+            BuildInitializationService.STARTED_AT = System.currentTimeMillis()
         }
+    }
 
-        //return false if CI machine executed and the config is not set.
-        if (databaseConfig.ci.isNull() && envCI) {
-            return false
+    /**
+     * If the build initialization is reused by configuration-cache, then the
+     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
+     * register to the project and the initialization time won't assign.
+     */
+    private fun assignInitializationTimestampIfProcessSkipped() {
+        if (BuildInitializationService.INITIALIZED_AT == 0L) {
+            BuildInitializationService.INITIALIZED_AT = System.currentTimeMillis()
         }
-
-        return true
     }
 
-    override fun isForbiddenTasksRequested(): Boolean {
-        return requestedTasks.contains(ReportAnalyticsTask.TASK_NAME)
-    }
-
-    override fun isTaskTrackable(): Boolean {
-        val requestedTasks = requestedTasks.separateElementsWithSpace()
-        return trackingTasks.contains(requestedTasks)
-    }
-
-    override fun isBranchTrackable(): Boolean {
-        return trackingBranches.contains(GitUtils.currentBranch())
+    /**
+     * If the build configuration is reused by configuration-cache, then the
+     * [io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService] won't
+     * register to the project and the configuration time won't assign.
+     */
+    private fun assignConfigurationTimestampIfProcessSkipped() {
+        if (BuildConfigurationService.CONFIGURED_AT == 0L) {
+            BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
+        }
     }
 
 }

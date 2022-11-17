@@ -24,8 +24,6 @@ package io.github.janbarari.gradle.analytics.domain.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.utils.DateTimeUtils
 
 @JsonClass(generateAdapter = true)
 data class TimespanPoint(
@@ -35,14 +33,4 @@ data class TimespanPoint(
     val from: Long,
     @Json(name = "to")
     val to: Long? = null
-): io.github.janbarari.gradle.core.Triple<Long, Long, Long?>(value, from, to) {
-
-    fun getTimespanString(): String {
-        return if (to.isNull()) {
-            DateTimeUtils.format(from, "dd/MM")
-        } else {
-            DateTimeUtils.format(from, "dd/MM") + "-" + DateTimeUtils.format(to!!, "dd/MM")
-        }
-    }
-
-}
+): io.github.janbarari.gradle.core.Triple<Long, Long, Long?>(value, from, to)
