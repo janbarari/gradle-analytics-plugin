@@ -43,10 +43,11 @@ fun Gradle.getRequestedTasks(): List<String> {
  * Get the 'CI' value provider from the system environments.
  */
 @ExcludeJacocoGenerated
-fun Project.envCI(): Boolean {
-    if(providers.environmentVariable("CI").forUseAtConfigurationTime().isPresent.not())
+fun envCI(): Boolean {
+    if(System.getenv("CI").isNull()) {
         return false
-    return providers.environmentVariable("CI").forUseAtConfigurationTime().get().toBoolean()
+    }
+    return System.getenv("CI").toBoolean()
 }
 
 /**
