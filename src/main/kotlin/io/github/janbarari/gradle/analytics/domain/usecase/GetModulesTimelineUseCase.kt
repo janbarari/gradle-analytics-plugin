@@ -34,10 +34,10 @@ class GetModulesTimelineUseCase(
     val repo: DatabaseRepository
 ): UseCase<String, ModulesTimelineMetric?>() {
 
-    override suspend fun execute(branch: String): ModulesTimelineMetric? {
+    override suspend fun execute(input: String): ModulesTimelineMetric? {
         val result = repo.getSingleMetric(
             key = "modulesExecTimeline",
-            branch = branch
+            branch = input
         )
         if (result.isNotNull())
             return ModulesTimelineMetricJsonAdapter(moshi).fromJson(result!!)
