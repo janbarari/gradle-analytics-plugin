@@ -26,9 +26,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.whenEach
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -52,7 +50,12 @@ class UpdateCacheHitMetricUseCaseTest {
     @Test
     fun `When usecase executes, expect cacheHitMetric to be returned`() = runBlocking {
         val buildMetrics = listOf(
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",),
+            BuildMetric(
+                branch = "develop",
+                requestedTasks = listOf("assemble"),
+                createdAt = 1660202190213,
+                gitHeadCommitHash = "unknown",
+            ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
             fakeBuildMetric(33, 89, 45, 37),
@@ -76,12 +79,22 @@ class UpdateCacheHitMetricUseCaseTest {
     @Test
     fun `When usecase executes with empty modules, expect null to be returned`() = runBlocking {
         val buildMetrics = listOf(
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",),
+            BuildMetric(
+                branch = "develop",
+                requestedTasks = listOf("assemble"),
+                createdAt = 1660202190213,
+                gitHeadCommitHash = "unknown",
+            ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
             fakeBuildMetric(33, 89, 45, 37),
             fakeBuildMetric(99, 32, 122, 65),
-            BuildMetric(branch = "develop", requestedTasks = listOf("assemble"), createdAt = 1660202190213, gitHeadCommitHash = "unknown",)
+            BuildMetric(
+                branch = "develop",
+                requestedTasks = listOf("assemble"),
+                createdAt = 1660202190213,
+                gitHeadCommitHash = "unknown",
+            )
         )
 
         every {
