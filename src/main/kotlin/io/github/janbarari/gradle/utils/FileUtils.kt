@@ -23,10 +23,12 @@
 package io.github.janbarari.gradle.utils
 
 import io.github.janbarari.gradle.extension.isSourcePath
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors
 import kotlin.io.path.Path
+import kotlin.jvm.Throws
 
 /**
  * A collection of I/O functions.
@@ -35,7 +37,11 @@ object FileUtils {
 
     /**
      * Get all source files in the module path.
+     *
+     * @throws IOException if directory is not valid
+     * @throws SecurityException if permission denied
      */
+    @Throws(IOException::class, SecurityException::class)
     fun getModuleSources(directory: String): List<Path> {
         var sourcePaths: List<Path>
         Files.walk(Path(directory)).use { stream ->
