@@ -29,4 +29,14 @@ data class TimeSlot(
     val startedAt: Long,
     val finishedAt: Long,
     val attributes: HashMap<String, Any>? = null
-): Serializable
+): Serializable {
+
+    companion object {
+
+        fun create(startedAt: Long, finishedAt: Long): TimeSlot {
+            return TimeSlot(startedAt = startedAt, finishedAt = finishedAt)
+        }
+
+    }
+
+}
