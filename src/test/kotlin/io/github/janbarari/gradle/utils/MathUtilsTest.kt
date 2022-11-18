@@ -22,39 +22,115 @@
  */
 package io.github.janbarari.gradle.utils
 
+import io.github.janbarari.gradle.analytics.domain.model.TimeSlot
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class MathUtilsTest {
 
     @Test
-    fun `check the longMean() with positive dataset`() {
+    fun `when longMean() invoked with a positive dataset, validate the result`() {
         assertEquals(2L, MathUtils.longMean(1, 2, 3, 4))
     }
 
     @Test
-    fun `check the longMean() with negative dataset`() {
+    fun `when longMean() invoked with a negative dataset, validate the result`() {
         assertEquals(1L, MathUtils.longMean(-1, -2, 3, 4))
     }
 
     @Test
-    fun `check the longMean() with empty dataset`() {
+    fun `when longMean() invoked with empty dataset, validate the result`() {
         assertEquals(0L, MathUtils.longMean())
     }
 
+
     @Test
-    fun `check the longMedian() with empty dataset`() {
+    fun `when longMedian() invoked with empty dataset, validate the result`() {
         assertEquals(0L, MathUtils.longMedian())
     }
 
     @Test
-    fun `check the longMedian() with odd unsorted dataset`() {
+    fun `when longMedian() invoked with odd unsorted dataset, validate the result`() {
         assertEquals(3L, MathUtils.longMedian(1000, 3, 1, 4, 2))
     }
 
     @Test
-    fun `check the longMedian() with even unsorted dataset`() {
+    fun `when longMedian() invoked with even unsorted dataset, validate the result`() {
         assertEquals(3L, MathUtils.longMedian(1000, 3, 4, 2))
+    }
+
+
+    @Test
+    fun `when floatMedian() invoked with empty dataset, validate the result`() {
+        assertEquals(0F, MathUtils.floatMedian())
+    }
+
+    @Test
+    fun `when floatMedian() invoked with odd unsorted dataset, validate the result`() {
+        assertEquals(3F, MathUtils.floatMedian(1000F, 3F, 1F, 4F, 2F))
+    }
+
+    @Test
+    fun `when floatMedian() invoked with even unsorted dataset, validate the result`() {
+        assertEquals(3.5F, MathUtils.floatMedian(1000F, 3F, 4F, 2F))
+    }
+
+
+    @Test
+    fun `when sumWithPercentage() invoked with positive percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.sumWithPercentage(defaultValue, 25)
+        assertEquals(125L, newValue)
+    }
+
+    @Test
+    fun `when sumWithPercentage() invoked with zero percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.sumWithPercentage(defaultValue, 0)
+        assertEquals(100L, newValue)
+    }
+
+    @Test
+    fun `when sumWithPercentage() invoked with negative percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.sumWithPercentage(defaultValue, -25)
+        assertEquals(75L, newValue)
+    }
+
+
+    @Test
+    fun `when deductWithPercentage() invoked with positive percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.deductWithPercentage(defaultValue, 25)
+        assertEquals(75L, newValue)
+    }
+
+    @Test
+    fun `when deductWithPercentage() invoked with zero percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.deductWithPercentage(defaultValue, 0)
+        assertEquals(100L, newValue)
+    }
+
+    @Test
+    fun `when deductWithPercentage() invoked with negative percentage, validate the result`() {
+        val defaultValue = 100L
+        val newValue = MathUtils.deductWithPercentage(defaultValue, -25)
+        assertEquals(125L, newValue)
+    }
+
+    @Test
+    fun `when calculateTimeSlotNonParallelDurationInMillis() invoked, validate the result`() {
+        val sampleTimeSlots = arrayListOf<TimeSlot>(
+            TimeSlot.create(10, 100),
+            TimeSlot.create(25, 80),
+            TimeSlot.create(90, 110),
+            TimeSlot.create(120, 130),
+            TimeSlot.create(150, 250),
+            TimeSlot.create(0, 25),
+            TimeSlot.create(0, 9),
+        )
+        assertEquals(220L, MathUtils.calculateTimeSlotNonParallelDurationInMillis(sampleTimeSlots))
     }
 
 }

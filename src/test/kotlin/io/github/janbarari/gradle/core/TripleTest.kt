@@ -22,6 +22,21 @@
  */
 package io.github.janbarari.gradle.core
 
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+
 class TripleTest {
+
+    @Test
+    fun `When a Triple object exists, expect the getter functions works properly`() {
+        val obj = Triple<Int, String, Double>(
+            first = 1987,
+            second = "Josef",
+            third = 44.5
+        )
+        assertEquals(1987, obj.first)
+        assertEquals("Josef", obj.second)
+        assertEquals(44.5, obj.third)
+    }
 
 }
