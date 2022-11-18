@@ -1,9 +1,17 @@
+comment: false
+
 codecov:
   require_ci_to_pass: yes
   notify:
     wait_for_ci: yes
 
 coverage:
-  precision: 2
+  range: 60...90
   round: down
-  range: 39...100
+  precision: 2
+
+  status:
+    project:
+      default:
+        target: 60%
+        threshold: 0%
