@@ -14,7 +14,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -22,9 +22,30 @@
  */
 package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.extension.isSourcePath
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.io.IOException
 
-@ExcludeJacocoGenerated
-class TerminalCommandException(cmd: String, e: Throwable): java.lang.RuntimeException() {
-    override val message: String = "Error executing $cmd with message $e"
+class FileUtilsTest {
+
+    @Test
+    fun `when getModuleSources() invoked, expect list of source paths`() {
+        val sourceDir = "./"
+        val sourcePaths = FileUtils.getModuleSources(sourceDir)
+        if (sourcePaths.any { !it.isSourcePath() }) {
+            assert(false)
+        } else {
+            assert(true)
+        }
+    }
+
+    @Test
+    fun `when getModuleSources() invoked, expect thrown IOException`() {
+        val sourceDir = "../src/main"
+        assertThrows<IOException> {
+            FileUtils.getModuleSources(sourceDir)
+        }
+    }
+
 }
