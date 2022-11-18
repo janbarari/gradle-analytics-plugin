@@ -28,18 +28,59 @@ import kotlin.test.assertEquals
 class IntExtensionsTest {
 
     @Test
-    fun `check diffPercentageOf() returns positive percentage`() {
+    fun `when (Int) diffPercentageOf() invoked, validate the result`() {
         val first = 400
         val last = 589
         assertEquals(47.25f, first.diffPercentageOf(last))
     }
 
     @Test
-    fun `check toPercentageOf() returns correct result`() {
+    fun `when (Int) 0#diffPercentageOf() invoked, expect zero as result`() {
+        assertEquals(0f, 0.diffPercentageOf(10))
+    }
+
+    @Test
+    fun `when (Long) diffPercentageOf() invoked, validate the result`() {
+        val first = 400L
+        val last = 589L
+        assertEquals(47.25f, first.diffPercentageOf(last))
+    }
+
+    @Test
+    fun `when (Long) 0#diffPercentageOf() invoked, expect zero as result`() {
+        assertEquals(0f, 0L.diffPercentageOf(10))
+    }
+
+    @Test
+    fun `when (Int) toPercentageOf() invoked, validate the result`() {
         val first = 5
         val target = 62
         println(first.toPercentageOf(target))
         assertEquals(8.06f, first.toPercentageOf(target))
+    }
+
+    @Test
+    fun `when (Int) toPercentageOf() invoked with target zero, expect zero as result`() {
+        val first = 5
+        val target = 0
+        println(first.toPercentageOf(target))
+        assertEquals(0f, first.toPercentageOf(target))
+    }
+
+    @Test
+    fun `when (Long) toPercentageOf() invoked, validate the result`() {
+        val first = 5L
+        val target = 62L
+        println(first.toPercentageOf(target))
+        assertEquals(8.06f, first.toPercentageOf(target))
+    }
+
+    @Test
+    fun `when (Long) toPercentageOf() invoked with target zero, expect zero as result`() {
+        val first = 5L
+        val target = 0L
+        println(first.toPercentageOf(target))
+        assertEquals(0f, first.toPercentageOf(target))
     }
 
 }
