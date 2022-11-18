@@ -62,15 +62,14 @@ fun Project.isDependingOnOtherProject(): Boolean {
  * Register the given task.
  */
 @ExcludeJacocoGenerated
-inline fun <reified T : DefaultTask> Project.registerTask(name: String, crossinline block: T.() -> Unit) {
-    project.tasks.register(name, T::class.java) {
-        it.also(block)
-    }
+inline fun <reified T : DefaultTask> Project.registerTask(name: String, noinline block: T.() -> Unit) {
+    project.tasks.register(name, T::class.java, block::invoke)
 }
 
 /**
  * Check if the given Task is cacheable.
  */
+@ExcludeJacocoGenerated
 fun Task.isCacheable(): Boolean {
     return this.outputs.hasOutput && this.inputs.hasInputs
 }
@@ -78,6 +77,7 @@ fun Task.isCacheable(): Boolean {
 /**
  * Get task dependencies.
  */
+@ExcludeJacocoGenerated
 fun Task.getSafeTaskDependencies(): Set<Task> {
     return try {
         taskDependencies.getDependencies(this)
@@ -89,6 +89,7 @@ fun Task.getSafeTaskDependencies(): Set<Task> {
 /**
  * Filter non-cacheable tasks from the given task collection.
  */
+@ExcludeJacocoGenerated
 fun List<Task>.getNonCacheableTasks(): Set<String> {
     return try {
         val nonCacheableTasks = Collections.synchronizedSet(mutableSetOf<String>())
