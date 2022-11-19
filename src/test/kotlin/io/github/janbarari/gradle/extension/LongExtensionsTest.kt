@@ -22,36 +22,48 @@
  */
 package io.github.janbarari.gradle.extension
 
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.io.path.extension
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-/**
- * Check is given path is Kotlin/Java source file.
- */
-fun Path.isSourcePath(): Boolean {
-    return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
-            && (isKotlinFile() || isJavaFile())
-            && Files.isRegularFile(this)
-}
+class LongExtensionsTest {
 
-/**
- * Check is the given path is Kotlin file.
- */
-fun Path.isKotlinFile(): Boolean = extension == "kt"
+    @Test
+    fun `when Long#isZero() invoked, validate the result`() {
+        assertEquals(true, 0L.isZero())
+        assertEquals(false, 1L.isZero())
+    }
 
-/**
- * Check is the given path is Java file.
- */
-fun Path.isJavaFile(): Boolean = extension == "java"
 
-/**
- * Get given path file content as string.
- */
-fun Path.readText(): String {
-    return toFile()
-        .inputStream()
-        .bufferedReader()
-        .use { it.readText() }
+    @Test
+    fun `when Long#isBiggerEquals() invoked with bigger input, expect true result`() {
+        assertEquals(true, 10L.isBiggerEquals(9))
+    }
+
+    @Test
+    fun `when Long#isBiggerEquals() invoked with same input, expect true result`() {
+        assertEquals(true, 10L.isBiggerEquals(10))
+    }
+
+    @Test
+    fun `when Long#isBiggerEquals() invoked with smaller input, expect false result`() {
+        assertEquals(false, 0L.isBiggerEquals(10))
+    }
+
+
+    @Test
+    fun `when Long#isBigger() invoked with bigger input, expect true result`() {
+        assertEquals(true, 10L.isBigger(8))
+    }
+
+    @Test
+    fun `when Long#isBigger() invoked with smaller input, expect false result`() {
+        assertEquals(false, 0L.isBigger(10))
+    }
+
+
+    @Test
+    fun `when Long#millisToSeconds() invoked, validate the result`() {
+        assertEquals(1L, 1000L.millisToSeconds())
+    }
+
 }

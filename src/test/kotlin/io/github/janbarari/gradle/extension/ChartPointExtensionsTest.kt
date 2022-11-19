@@ -22,36 +22,30 @@
  */
 package io.github.janbarari.gradle.extension
 
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.io.path.extension
-import kotlin.io.path.pathString
+import io.github.janbarari.gradle.analytics.domain.model.ChartPoint
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
-/**
- * Check is given path is Kotlin/Java source file.
- */
-fun Path.isSourcePath(): Boolean {
-    return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
-            && (isKotlinFile() || isJavaFile())
-            && Files.isRegularFile(this)
-}
+class ChartPointExtensionsTest {
 
-/**
- * Check is the given path is Kotlin file.
- */
-fun Path.isKotlinFile(): Boolean = extension == "kt"
+    @Test
+    fun `when List#maxValue() invoked, expect maximum value of the list`() {
+        val sampleData = listOf(
+            ChartPoint(1, "woman"),
+            ChartPoint(10, "life"),
+            ChartPoint(100, "freedom")
+        )
+        assertEquals(100, sampleData.maxValue())
+    }
 
-/**
- * Check is the given path is Java file.
- */
-fun Path.isJavaFile(): Boolean = extension == "java"
+    @Test
+    fun `when List#minValue() invoked, expect minimum value of the list`() {
+        val sampleData = listOf(
+            ChartPoint(1, "woman"),
+            ChartPoint(10, "life"),
+            ChartPoint(100, "freedom")
+        )
+        assertEquals(1, sampleData.minValue())
+    }
 
-/**
- * Get given path file content as string.
- */
-fun Path.readText(): String {
-    return toFile()
-        .inputStream()
-        .bufferedReader()
-        .use { it.readText() }
 }

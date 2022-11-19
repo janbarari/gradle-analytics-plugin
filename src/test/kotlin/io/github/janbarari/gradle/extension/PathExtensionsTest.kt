@@ -22,36 +22,35 @@
  */
 package io.github.janbarari.gradle.extension
 
+import org.junit.jupiter.api.Test
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.stream.Collectors
+import kotlin.io.path.Path
 import kotlin.io.path.extension
-import kotlin.io.path.pathString
+import kotlin.test.assertEquals
 
-/**
- * Check is given path is Kotlin/Java source file.
- */
-fun Path.isSourcePath(): Boolean {
-    return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
-            && (isKotlinFile() || isJavaFile())
-            && Files.isRegularFile(this)
-}
+class PathExtensionsTest {
 
-/**
- * Check is the given path is Kotlin file.
- */
-fun Path.isKotlinFile(): Boolean = extension == "kt"
+    @Test
+    fun `when Path#isSourcePath() invoked, validate the result`() {
+        var sourcePaths: List<Path>
+        Files.walk(Path("./")).use { stream ->
+            sourcePaths = stream.map { obj: Path -> obj.normalize() }
+                .filter { it.isSourcePath() }
+                .collect(Collectors.toList())
+        }
+        assertEquals(true, sourcePaths.any {
+            it.extension != "kt" || it.extension != "java"
+        })
+    }
 
-/**
- * Check is the given path is Java file.
- */
-fun Path.isJavaFile(): Boolean = extension == "java"
+    @Test
+    fun `when Path#readText() invoked, expect to get the file content as string`() {
+        File("build/path-extensions-test-template.txt").writeText("Zan Zendegi Azadi")
+        val content = Path("build/path-extensions-test-template.txt").readText()
+        assertEquals("Zan Zendegi Azadi", content)
+    }
 
-/**
- * Get given path file content as string.
- */
-fun Path.readText(): String {
-    return toFile()
-        .inputStream()
-        .bufferedReader()
-        .use { it.readText() }
 }
