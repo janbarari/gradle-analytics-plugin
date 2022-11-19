@@ -25,7 +25,7 @@ package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
@@ -67,9 +67,9 @@ class RenderModulesBuildHeatmapReportStage(
             val chartHeight = modules.size * 36
 
             renderedTemplate = renderedTemplate
-                .replace("%labels%", labels.toArrayString())
+                .replace("%labels%", labels.toArrayRender())
                 .replace("%data%", data.toString())
-                .replace("%colors%", colors.toArrayString())
+                .replace("%colors%", colors.toArrayRender())
                 .replace("%chart-height%", "${chartHeight}px")
         }
         return renderedTemplate

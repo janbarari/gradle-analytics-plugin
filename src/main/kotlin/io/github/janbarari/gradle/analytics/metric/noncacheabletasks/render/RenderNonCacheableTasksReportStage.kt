@@ -25,7 +25,7 @@ package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
@@ -67,8 +67,8 @@ class RenderNonCacheableTasksReportStage(
             val chartHeight = dataset.size * 36
 
             renderedTemplate = renderedTemplate
-                .replace("%labels%", labels.toArrayString())
-                .replace("%colors%", colors.toArrayString())
+                .replace("%labels%", labels.toArrayRender())
+                .replace("%colors%", colors.toArrayRender())
                 .replace("%dataset%", dataset.toString())
                 .replace("%chart-height%", "${chartHeight}px")
         }

@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
@@ -111,12 +111,12 @@ class RenderCacheHitReportStage(
                     .meanValues
                     .mapToChartPoints()
                     .map { it.description }
-                    .toArrayString()
+                    .toArrayRender()
             }
 
             renderedTemplate = renderedTemplate
                 .replace("%chart-values%", getOverallChartValues().toString())
-                .replace("%chart-labels%", getOverallChartLabels().toArrayString())
+                .replace("%chart-labels%", getOverallChartLabels().toArrayRender())
                 .replace("%table-data%", tableData)
                 .replace("%overall-cache-hit%", overallCacheHit)
                 .replace("%overall-diff-rate%", overallDiffRatioRender)
