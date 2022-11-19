@@ -28,6 +28,34 @@ import kotlin.test.assertEquals
 class ListExtensionsTest {
 
     @Test
+    fun `when Collection#whenEach() invokes, validate iteration`() {
+        val sampleData = listOf(
+            "Woman",
+            "Life",
+            "Freedom"
+        )
+        var iterates = 0
+        sampleData.whenEach {
+            iterates++
+        }
+        assertEquals(3, iterates)
+    }
+
+    @Test
+    fun `when toIntList() invoked, expect long list mapped to int list`() {
+        val sampleData = listOf(0L, 1L, 10L, 100L)
+        val convertedToInt = sampleData.toIntList()
+        assertEquals(true, (convertedToInt[0] is Int))
+    }
+
+    @Test
+    fun `when List#isBiggerThan() invoked, expect boolean result`() {
+        val sampleData = listOf(0, 1, 2, 3, 4, 5)
+        assertEquals(true, sampleData.isBiggerThan(3))
+        assertEquals(false, sampleData.isBiggerThan(10))
+    }
+
+    @Test
     fun `when the 'modify' operator invoke, expect the changes in final result`() {
         data class TestModel(val name: String, var age: Int)
         val data = listOf(
@@ -44,13 +72,95 @@ class ListExtensionsTest {
     }
 
     @Test
-    fun `when 'firstIndex' invoked, expect to get the first item index`() {
+    fun `when 'firstIndex' is invoked, expect to get the first item index`() {
         val data = listOf(
             "Mehdi",
             "Shahram",
             "Shabnam"
         )
         assertEquals(data[data.firstIndex], "Mehdi")
+    }
+
+    @Test
+    fun `when whenEmpty() is invoked, expect the lambda function called`() {
+        val sampleData = listOf<String>()
+        sampleData.whenEmpty {
+            assert(true)
+            return
+        }
+        assert(false)
+    }
+
+    @Test
+    fun `when whenNotEmpty() is invoked, expect the lambda function called`() {
+        val data = listOf<String>(
+            "Woman",
+            "Life",
+            "Freedom"
+        )
+        data.whenNotEmpty {
+            assert(true)
+            return
+        }
+        assert(false)
+    }
+
+    @Test
+    fun `when hasSingleItem() is invoked on a list with one item, expect true returned`() {
+        val data = listOf<String>(
+            "Mahsa Amini"
+        )
+        assertEquals(true, data.hasSingleItem())
+    }
+
+    @Test
+    fun `when hasSingleItem() is invoked on a list with multiple items, expect false returned`() {
+        val data = listOf<String>(
+            "Woman",
+            "Life",
+            "Freedom"
+        )
+        assertEquals(false, data.hasSingleItem())
+    }
+
+    @Test
+    fun `when hasMultipleItem() is invoked on a list with multiple items, expect true returned`() {
+        val data = listOf<String>(
+            "Woman",
+            "Life",
+            "Freedom"
+        )
+        assertEquals(true, data.hasMultipleItems())
+    }
+
+    @Test
+    fun `when hasMultipleItem() is invoked on a list with one item, expect false returned`() {
+        val data = listOf<String>(
+            "Iran"
+        )
+        assertEquals(false, data.hasMultipleItems())
+    }
+
+    @Test
+    fun `when List#toArrayRender() is invoked on a list with multiple items, validate the result`() {
+        val data = listOf<String>(
+            "Woman",
+            "Life",
+            "Freedom"
+        )
+        assertEquals(
+            "[\"Woman\",\"Life\",\"Freedom\"]",
+            data.toArrayRender()
+        )
+    }
+
+    @Test
+    fun `when List#toArrayRender() is invoked on an empty list, validate the result`() {
+        val data = listOf<String>()
+        assertEquals(
+            "[]",
+            data.toArrayRender()
+        )
     }
 
 }

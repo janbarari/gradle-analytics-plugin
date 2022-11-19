@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minValue
 import io.github.janbarari.gradle.extension.minimize
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
@@ -78,7 +78,7 @@ class RenderExecutionProcessReportStage(
                 .minimize(CHART_MAX_COLUMNS)
                 .mapToChartPoints()
                 .map { it.description }
-                .toArrayString()
+                .toArrayRender()
 
             val maximumValue = Math.max(medianValues.maxValue(), meanValues.maxValue())
             val minimumValue = Math.min(medianValues.minValue(), meanValues.minValue())
