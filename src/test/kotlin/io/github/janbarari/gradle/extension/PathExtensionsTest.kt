@@ -48,9 +48,9 @@ class PathExtensionsTest {
 
     @Test
     fun `when Path#readText() invoked, expect to get the file content as string`() {
-        File("build/path-extensions-test-template.txt").writeText("Zan Zendegi Azadi")
+        File("build/path-extensions-test-template.txt").writeText("Woman Life Freedom")
         val content = Path("build/path-extensions-test-template.txt").readText()
-        assertEquals("Zan Zendegi Azadi", content)
+        assertEquals("Woman Life Freedom", content)
     }
 
 }
