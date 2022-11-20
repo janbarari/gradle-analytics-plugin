@@ -62,7 +62,7 @@ class RenderCacheHitReportStage(
                         diffRatioRender = if (this > 0)
                             "<td class=\"green\">+${this}%</td>"
                         else if (this < 0)
-                            "<td class=\"red\">-${this}%</td>"
+                            "<td class=\"red\">${this}%</td>"
                         else
                             "<td>Equals</td>"
                     }
@@ -83,7 +83,7 @@ class RenderCacheHitReportStage(
                 overallDiffRatioRender = if (this > 0)
                     "<td class=\"green\">+${this}%</td>"
                 else if (this < 0)
-                    "<td class=\"red\">-${this}%</td>"
+                    "<td class=\"red\">${this}%</td>"
                 else
                     "<td>Equals</td>"
             }

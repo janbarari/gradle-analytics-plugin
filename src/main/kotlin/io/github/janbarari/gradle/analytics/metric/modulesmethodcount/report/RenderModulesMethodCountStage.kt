@@ -57,7 +57,7 @@ class RenderModulesMethodCountStage(
                 totalDiffRatioRender = if (this > 0) {
                     "<td>+${this}%</td>"
                 } else if (this < 0) {
-                    "<td>-${this}%</td>"
+                    "<td>${this}%</td>"
                 } else {
                     "<td>Equals</td>"
                 }
@@ -71,7 +71,7 @@ class RenderModulesMethodCountStage(
                     diffRatioRender = if (this > 0) {
                         "<td>+${this}%</td>"
                     } else if (this < 0) {
-                        "<td>-${this}%</td>"
+                        "<td>${this}%</td>"
                     } else {
                         "<td>Equals</td>"
                     }
