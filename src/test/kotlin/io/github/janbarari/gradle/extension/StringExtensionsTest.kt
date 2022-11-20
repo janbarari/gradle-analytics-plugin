@@ -68,35 +68,4 @@ class StringExtensionsTest {
         assertEquals(false, "HelloWorld".hasSpace())
     }
 
-    @Test
-    fun `when removeLastChar() invoked, expect remove last character`() {
-        val temp = java.lang.StringBuilder()
-        temp.append("Hello World!")
-        temp.removeLastChar()
-        assertEquals("Hello World", temp.toString())
-    }
-
-    @Test
-    fun `when removeLastChar() invoked on empty string, expect remove last character`() {
-        val temp = java.lang.StringBuilder()
-        temp.removeLastChar()
-        assertEquals("", temp.toString())
-    }
-
-    @Test
-    fun `when separateElementsWithSpace() invoked, expect a string with separated items`() {
-        val sampleData = listOf(
-            "woman",
-            "life",
-            "freedom"
-        )
-        assertEquals("woman life freedom", sampleData.separateElementsWithSpace())
-    }
-
-    @Test
-    fun `check string has space`() {
-        assertEquals(true, "Hello World".hasSpace())
-        assertEquals(false, "HelloWorld".hasSpace())
-    }
-
 }

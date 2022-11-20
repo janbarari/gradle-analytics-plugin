@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 
-class RenderModulesMethodCountStage(
+class RenderModulesMethodCountReportStage(
     private val report: Report
 ) : Stage<String, String> {
 

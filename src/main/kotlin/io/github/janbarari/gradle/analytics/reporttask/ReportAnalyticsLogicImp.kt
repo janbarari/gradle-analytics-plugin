@@ -49,9 +49,9 @@ import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.RenderModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.CreateModulesSourceSizeReportStage
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.RenderModulesSourceSizeReportStage
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
@@ -159,8 +159,8 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderConfigurationProcessReportStage(report))
             .addStage(RenderExecutionProcessReportStage(report))
             .addStage(RenderOverallBuildProcessReportStage(report))
-            .addStage(RenderModulesSourceCountStage(report))
-            .addStage(RenderModulesMethodCountStage(report))
+            .addStage(RenderModulesSourceCountReportStage(report))
+            .addStage(RenderModulesMethodCountReportStage(report))
             .addStage(RenderCacheHitReportStage(report))
             .addStage(RenderSuccessBuildRateReportStage(report))
             .addStage(RenderDependencyResolveProcessReportStage(report))
