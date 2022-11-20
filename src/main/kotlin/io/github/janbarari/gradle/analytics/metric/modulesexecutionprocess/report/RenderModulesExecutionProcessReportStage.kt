@@ -110,7 +110,7 @@ class RenderModulesExecutionProcessReportStage(
                     else if (module.diffRate.isBiggerThanZero())
                         append("<th class=\"red\">+${module.diffRate}%</th>")
                     else
-                        append("<th class=\"green\">-${module.diffRate}%</th>")
+                        append("<th class=\"green\">${module.diffRate}%</th>")
 
                     append("</tr>")
                 }
