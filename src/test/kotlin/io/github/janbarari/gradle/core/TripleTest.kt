@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.core
 
-<<<<<<< HEAD
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -40,8 +39,4 @@ class TripleTest {
         assertEquals(44.5, obj.third)
     }
 
-=======
-class TripleTest {
-
->>>>>>> b4b958a (Add test classes license header)
 }
