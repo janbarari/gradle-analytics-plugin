@@ -28,8 +28,8 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.metric.buildstatus.render.CreateBuildStatusReportStage
-import io.github.janbarari.gradle.analytics.metric.buildstatus.render.RenderBuildStatusReportStage
+import io.github.janbarari.gradle.analytics.metric.buildstatus.report.CreateBuildStatusReportStage
+import io.github.janbarari.gradle.analytics.metric.buildstatus.report.RenderBuildStatusReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.CreateConfigurationProcessReportStage

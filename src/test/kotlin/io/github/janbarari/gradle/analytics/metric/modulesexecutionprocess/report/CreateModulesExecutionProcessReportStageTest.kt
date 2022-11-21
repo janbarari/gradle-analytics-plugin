@@ -22,16 +22,14 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
-import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesExecutionProcessMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.util.*
 import kotlin.test.assertEquals
 
 class CreateModulesExecutionProcessReportStageTest {
@@ -118,12 +116,18 @@ class CreateModulesExecutionProcessReportStageTest {
         //Assert avg median parallel rate
         assertEquals(54.5F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":woman" }!!.avgMedianParallelRate)
         assertEquals(48.5F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":life" }!!.avgMedianParallelRate)
-        assertEquals(64.0F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":freedom" }!!.avgMedianParallelRate)
+        assertEquals(
+            64.0F,
+            report.modulesExecutionProcessReport!!.modules.find { it.path == ":freedom" }!!.avgMedianParallelRate
+        )
 
         //Assert avg median coverage
         assertEquals(17.5F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":woman" }!!.avgMedianCoverageRate)
         assertEquals(21.5F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":life" }!!.avgMedianCoverageRate)
-        assertEquals(32.0F, report.modulesExecutionProcessReport!!.modules.find { it.path == ":freedom" }!!.avgMedianCoverageRate)
+        assertEquals(
+            32.0F,
+            report.modulesExecutionProcessReport!!.modules.find { it.path == ":freedom" }!!.avgMedianCoverageRate
+        )
 
     }
 
