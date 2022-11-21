@@ -14,50 +14,45 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.modulescrashcount.render
+package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModulesCrashCountReport
+import io.github.janbarari.gradle.analytics.domain.model.report.NonCacheableTasksReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.isBigger
 import io.github.janbarari.gradle.extension.isNotNull
-import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.extension.modify
+import io.github.janbarari.gradle.utils.MathUtils
 
-class CreateModulesCrashCountReportStage(
-    private val modules: List<Module>,
+class CreateNonCacheableTasksReportStage(
     private val metrics: List<BuildMetric>
 ): Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
-        val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
-
-        this.modules.whenEach {
-            val crashes = metrics
-                .filter { it.modulesCrashCountMetric.isNotNull() }
-                .sumOf { metric ->
-                    metric.modulesCrashCountMetric!!.modules
-                        .filter { it.path == path }
-                        .sumOf { it.totalCrashes }
-                }
-            modules.add(
-                ModulesCrashCountMetric.ModuleCrash(
-                    path = path,
-                    totalCrashes = crashes
-                )
-            )
-        }
-
         return input.apply {
-            modulesCrashCountReport = ModulesCrashCountReport(
-                modules = modules
+            val tasks = metrics.last().nonCacheableTasksMetric?.tasks
+                ?.modify {
+                    val medianValue = metrics
+                        .filter { it.nonCacheableTasksMetric.isNotNull() }
+                        .flatMap { metric ->
+                            metric.nonCacheableTasksMetric!!.tasks
+                                .filter { it.path == path }
+                                .map { it.avgExecutionDurationInMillis }
+                        }
+                    avgExecutionDurationInMillis = MathUtils.longMedian(medianValue)
+                }
+                ?.filter { it.avgExecutionDurationInMillis.isBigger(0) }
+                ?: emptyList()
+
+            nonCacheableTasksReport = NonCacheableTasksReport(
+                tasks = tasks
             )
         }
     }

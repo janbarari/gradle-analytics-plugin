@@ -14,85 +14,73 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render
+package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
+import io.github.janbarari.gradle.utils.MathUtils
 
-class RenderNonCacheableTasksReportStage(
+class RenderModulesBuildHeatmapReportStage(
     private val report: Report
-): Stage<String, String> {
+) : Stage<String, String> {
 
     companion object {
-        private const val NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID = "%non-cacheable-tasks-metric%"
-        private const val NON_CACHEABLE_TASKS_METRIC_TEMPLATE_FILENAME = "non-cacheable-tasks-metric-template"
+        private const val MODULES_BUILD_HEATMAP_TEMPLATE_ID = "%modules-build-heatmap-metric%"
+        private const val MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME = "modules-build-heatmap-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.nonCacheableTasksReport.isNull())
-            return input.replace(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID, getEmptyRender())
+        if (report.modulesBuildHeatmapReport.isNull())
+            return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID, getMetricRender())
+        return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getMetricRender())
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Non-cacheable Tasks is not available!")
+        return HtmlUtils.renderMessage("Modules Build Heatmap is not available!")
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_FILENAME)
-        report.nonCacheableTasksReport.whenNotNull {
+        var renderedTemplate = HtmlUtils.getTemplate(MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME)
+        report.modulesBuildHeatmapReport.whenNotNull {
+
             val labels = mutableListOf<String>()
+            val data = mutableListOf<Long>()
             val colors = mutableListOf<String>()
-            val dataset = mutableListOf<Long>()
 
-            tasks.sortedByDescending { it.avgExecutionDurationInMillis }
-                .whenEach {
-                    labels.add(path)
-                    colors.add(getRandomColor())
-                    dataset.add(avgExecutionDurationInMillis)
-                }
+            modules.sortedByDescending { it.dependantModulesCount }.forEach { module ->
+                labels.add("${module.path} | ${module.dependantModulesCount}D")
+                colors.add(getColor(module.dependantModulesCount))
+                data.add(MathUtils.deductWithPercentage(module.totalBuildCount.toLong(), module.avgMedianCacheHit.toInt()))
+            }
 
-            val chartHeight = dataset.size * 36
+            val chartHeight = modules.size * 36
 
             renderedTemplate = renderedTemplate
                 .replace("%labels%", labels.toArrayRender())
+                .replace("%data%", data.toString())
                 .replace("%colors%", colors.toArrayRender())
-                .replace("%dataset%", dataset.toString())
                 .replace("%chart-height%", "${chartHeight}px")
         }
         return renderedTemplate
     }
 
-    fun getRandomColor(): String {
-        val colors = listOf(
-            "#3b76af",
-            "#b3c6e5",
-            "#ef8536",
-            "#f5bd82",
-            "#519d3e",
-            "#a8dc93",
-            "#c53a32",
-            "#f19d99",
-            "#8d6ab8",
-            "#c2b1d2",
-            "#84584e",
-            "#be9e96",
-            "#d57ebe",
-            "#c2cd30"
-        )
-        return colors[colors.indices.random() % colors.size]
+    fun getColor(dependantModulesCount: Int): String {
+        return if (dependantModulesCount > 6) "#d73027"
+        else if (dependantModulesCount in 5..6) "#fdae61"
+        else if (dependantModulesCount in 3..4) "#ffffbf"
+        else if (dependantModulesCount in 1..2) "#abd9e9"
+        else "#4575b4"
     }
 
 }

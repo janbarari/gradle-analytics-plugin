@@ -14,13 +14,13 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.modulescrashcount.render
+package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
@@ -30,38 +30,38 @@ import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
 
-class RenderModulesCrashCountReportStage(
+class RenderNonCacheableTasksReportStage(
     private val report: Report
 ): Stage<String, String> {
 
     companion object {
-        private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID = "%modules-crash-count-metric%"
-        private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_FILENAME = "modules-crash-count-metric-template"
+        private const val NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID = "%non-cacheable-tasks-metric%"
+        private const val NON_CACHEABLE_TASKS_METRIC_TEMPLATE_FILENAME = "non-cacheable-tasks-metric-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.modulesCrashCountReport.isNull())
-            return input.replace(MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
+        if (report.nonCacheableTasksReport.isNull())
+            return input.replace(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID, getMetricRender())
+        return input.replace(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Modules Crash Count is not available!")
+        return HtmlUtils.renderMessage("Non-cacheable Tasks is not available!")
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(MODULES_CRASH_COUNT_METRIC_TEMPLATE_FILENAME)
-        report.modulesCrashCountReport.whenNotNull {
+        var renderedTemplate = HtmlUtils.getTemplate(NON_CACHEABLE_TASKS_METRIC_TEMPLATE_FILENAME)
+        report.nonCacheableTasksReport.whenNotNull {
             val labels = mutableListOf<String>()
             val colors = mutableListOf<String>()
             val dataset = mutableListOf<Long>()
 
-            modules.sortedByDescending { it.totalCrashes }
+            tasks.sortedByDescending { it.avgExecutionDurationInMillis }
                 .whenEach {
                     labels.add(path)
                     colors.add(getRandomColor())
-                    dataset.add(totalCrashes)
+                    dataset.add(avgExecutionDurationInMillis)
                 }
 
             val chartHeight = dataset.size * 36

@@ -20,67 +20,79 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render
+package io.github.janbarari.gradle.analytics.metric.modulescrashcount.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
+import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
-import io.github.janbarari.gradle.utils.MathUtils
 
-class RenderModulesBuildHeatmapReportStage(
+class RenderModulesCrashCountReportStage(
     private val report: Report
-) : Stage<String, String> {
+): Stage<String, String> {
 
     companion object {
-        private const val MODULES_BUILD_HEATMAP_TEMPLATE_ID = "%modules-build-heatmap-metric%"
-        private const val MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME = "modules-build-heatmap-template"
+        private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID = "%modules-crash-count-metric%"
+        private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_FILENAME = "modules-crash-count-metric-template"
     }
 
     override suspend fun process(input: String): String {
-        if (report.modulesBuildHeatmapReport.isNull())
-            return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getEmptyRender())
+        if (report.modulesCrashCountReport.isNull())
+            return input.replace(MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
 
-        return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getMetricRender())
+        return input.replace(MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID, getMetricRender())
     }
 
     fun getEmptyRender(): String {
-        return HtmlUtils.renderMessage("Modules Build Heatmap is not available!")
+        return HtmlUtils.renderMessage("Modules Crash Count is not available!")
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME)
-        report.modulesBuildHeatmapReport.whenNotNull {
-
+        var renderedTemplate = HtmlUtils.getTemplate(MODULES_CRASH_COUNT_METRIC_TEMPLATE_FILENAME)
+        report.modulesCrashCountReport.whenNotNull {
             val labels = mutableListOf<String>()
-            val data = mutableListOf<Long>()
             val colors = mutableListOf<String>()
+            val dataset = mutableListOf<Long>()
 
-            modules.sortedByDescending { it.dependantModulesCount }.forEach { module ->
-                labels.add("${module.path} | ${module.dependantModulesCount}D")
-                colors.add(getColor(module.dependantModulesCount))
-                data.add(MathUtils.deductWithPercentage(module.totalBuildCount.toLong(), module.avgMedianCacheHit.toInt()))
-            }
+            modules.sortedByDescending { it.totalCrashes }
+                .whenEach {
+                    labels.add(path)
+                    colors.add(getRandomColor())
+                    dataset.add(totalCrashes)
+                }
 
-            val chartHeight = modules.size * 36
+            val chartHeight = dataset.size * 36
 
             renderedTemplate = renderedTemplate
                 .replace("%labels%", labels.toArrayRender())
-                .replace("%data%", data.toString())
                 .replace("%colors%", colors.toArrayRender())
+                .replace("%dataset%", dataset.toString())
                 .replace("%chart-height%", "${chartHeight}px")
         }
         return renderedTemplate
     }
 
-    fun getColor(dependantModulesCount: Int): String {
-        return if (dependantModulesCount > 6) "#d73027"
-        else if (dependantModulesCount in 5..6) "#fdae61"
-        else if (dependantModulesCount in 3..4) "#ffffbf"
-        else if (dependantModulesCount in 1..2) "#abd9e9"
-        else "#4575b4"
+    fun getRandomColor(): String {
+        val colors = listOf(
+            "#3b76af",
+            "#b3c6e5",
+            "#ef8536",
+            "#f5bd82",
+            "#519d3e",
+            "#a8dc93",
+            "#c53a32",
+            "#f19d99",
+            "#8d6ab8",
+            "#c2b1d2",
+            "#84584e",
+            "#be9e96",
+            "#d57ebe",
+            "#c2cd30"
+        )
+        return colors[colors.indices.random() % colors.size]
     }
 
 }
