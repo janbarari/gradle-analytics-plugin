@@ -34,7 +34,7 @@ import kotlin.test.assertEquals
 class CreateModulesCrashCountReportStageTest {
 
     @Test
-    fun `check process() generates report when report is not available`() = runBlocking {
+    fun `check process() generates report when metric is not available`() = runBlocking {
         val modules = listOf<Module>()
         val metrics = listOf<BuildMetric>()
         val stage = CreateModulesCrashCountReportStage(modules, metrics)
@@ -44,7 +44,7 @@ class CreateModulesCrashCountReportStageTest {
     }
 
     @Test
-    fun `check process() generates report when report is available`() = runBlocking {
+    fun `check process() generates report when metric is available`() = runBlocking {
         val modules = listOf<Module>(
             Module(":woman", "woman/fake/directory"),
             Module(":life", "life/fake/directory"),

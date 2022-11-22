@@ -34,7 +34,7 @@ import kotlin.test.assertTrue
 class CreateDependencyResolveProcessReportStageTest {
 
     @Test
-    fun `check process() generates report when report is not available`() = runBlocking {
+    fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
         val stage = CreateDependencyResolveProcessReportStage(metrics)
         var report = Report("main", "assemble")
@@ -45,7 +45,7 @@ class CreateDependencyResolveProcessReportStageTest {
     }
 
     @Test
-    fun `check process() generates report when report is available`() = runBlocking {
+    fun `check process() generates report when metric is available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
 
         metrics.add(

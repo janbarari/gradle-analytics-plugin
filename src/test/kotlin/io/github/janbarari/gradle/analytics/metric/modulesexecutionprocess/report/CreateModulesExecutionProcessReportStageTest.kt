@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 class CreateModulesExecutionProcessReportStageTest {
 
     @Test
-    fun `when process() executes with no modules, expect empty report`() = runBlocking {
+    fun `when process() executes without metric, expect empty report`() = runBlocking {
         val modules = listOf<Module>()
         val metrics = listOf<BuildMetric>()
         val stage = CreateModulesExecutionProcessReportStage(modules, metrics)

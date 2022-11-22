@@ -42,7 +42,7 @@ import kotlin.test.assertEquals
 class CreateBuildStatusReportStageTest {
 
     @Test
-    fun `check process() generates report when report is not available`() = runBlocking {
+    fun `check process() generates report when metric is not available`() = runBlocking {
         val modules = listOf<Module>()
         val metrics = mutableListOf<BuildMetric>()
 
@@ -66,7 +66,7 @@ class CreateBuildStatusReportStageTest {
     }
 
     @Test
-    fun `check process() generates report when report is available`() = runBlocking {
+    fun `check process() generates report when metric is available`() = runBlocking {
         val modules = mutableListOf<Module>()
         val metrics = mutableListOf<BuildMetric>()
 

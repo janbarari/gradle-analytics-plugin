@@ -35,7 +35,7 @@ import kotlin.test.assertEquals
 class CreateModulesTimelineReportStageTest {
 
     @Test
-    fun `check process() generates report when report is not available`() = runBlocking {
+    fun `check process() generates report when metric is not available`() = runBlocking {
         val getModulesTimelineUseCase: GetModulesTimelineUseCase = mockk()
         coEvery {
             getModulesTimelineUseCase.execute(any())
@@ -49,7 +49,7 @@ class CreateModulesTimelineReportStageTest {
     }
 
     @Test
-    fun `check process() generates report when report is available`() = runBlocking {
+    fun `check process() generates report when metric is available`() = runBlocking {
         val getModulesTimelineUseCase: GetModulesTimelineUseCase = mockk()
         coEvery {
             getModulesTimelineUseCase.execute(any())
