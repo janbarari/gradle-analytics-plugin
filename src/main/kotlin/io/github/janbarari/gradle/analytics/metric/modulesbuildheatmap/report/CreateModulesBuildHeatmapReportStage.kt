@@ -39,7 +39,7 @@ class CreateModulesBuildHeatmapReportStage(
     override suspend fun process(input: Report): Report {
         val temp = mutableListOf<ModuleBuildHeatmap>()
 
-        metrics.last().modulesBuildHeatmap.whenNotNull {
+        metrics.lastOrNull()?.modulesBuildHeatmap.whenNotNull {
             modules.forEach { module ->
                 temp.add(
                     ModuleBuildHeatmap(
