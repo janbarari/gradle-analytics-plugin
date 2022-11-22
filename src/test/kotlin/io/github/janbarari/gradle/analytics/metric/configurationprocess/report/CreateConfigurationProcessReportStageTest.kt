@@ -41,7 +41,6 @@ class CreateConfigurationProcessReportStageTest {
         report = stage.process(report)
 
         assertEquals(null, report.configurationProcessReport)
-        assertEquals(null, report.configurationProcessReport)
     }
 
     @Test

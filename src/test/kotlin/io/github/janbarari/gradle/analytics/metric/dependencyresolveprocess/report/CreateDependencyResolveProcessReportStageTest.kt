@@ -41,7 +41,6 @@ class CreateDependencyResolveProcessReportStageTest {
         report = stage.process(report)
 
         assertEquals(null, report.dependencyResolveProcessReport)
-        assertEquals(null, report.dependencyResolveProcessReport)
     }
 
     @Test

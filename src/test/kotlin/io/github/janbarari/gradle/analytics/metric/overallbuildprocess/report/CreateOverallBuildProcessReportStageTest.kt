@@ -41,7 +41,6 @@ class CreateOverallBuildProcessReportStageTest {
         report = stage.process(report)
 
         assertEquals(null, report.overallBuildProcessReport)
-        assertEquals(null, report.overallBuildProcessReport)
     }
 
     @Test

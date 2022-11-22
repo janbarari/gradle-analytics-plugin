@@ -41,7 +41,6 @@ class CreateInitializationProcessReportStageTest {
         report = stage.process(report)
 
         assertEquals(null, report.initializationProcessReport)
-        assertEquals(null, report.initializationProcessReport)
     }
 
     @Test
