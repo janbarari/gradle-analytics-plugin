@@ -68,6 +68,13 @@ object MathUtils {
     }
 
     /**
+     * Calculates the Median average of a float dataset.
+     */
+    fun floatMedian(vararg values: Float): Float {
+        return floatMedian(values.toList())
+    }
+
+    /**
      * Calculate the Median average of a long dataset.
      */
     fun longMedian(vararg values: Long): Long {

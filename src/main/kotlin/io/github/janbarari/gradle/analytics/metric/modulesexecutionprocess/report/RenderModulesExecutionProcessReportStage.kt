@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.extension.isZero
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.millisToSeconds
 import io.github.janbarari.gradle.extension.minimize
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -73,7 +73,7 @@ class RenderModulesExecutionProcessReportStage(
                 ?.minimize(CHART_MAX_COLUMNS)
                 ?.mapToChartPoints()
                 ?.map { it.description }
-                ?.toArrayString()
+                ?.toArrayRender()
                 ?: "[]"
 
             val chartDatasets = buildString {
@@ -110,7 +110,7 @@ class RenderModulesExecutionProcessReportStage(
                     else if (module.diffRate.isBiggerThanZero())
                         append("<th class=\"red\">+${module.diffRate}%</th>")
                     else
-                        append("<th class=\"green\">-${module.diffRate}%</th>")
+                        append("<th class=\"green\">${module.diffRate}%</th>")
 
                     append("</tr>")
                 }

@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 class TimespanChartPointExtensionsTest {
 
     @Test
-    fun `Check mapToChartPoints mapper returns correct result`() {
+    fun `check mapToChartPoints mapper returns correct result`() {
         val timespanPoints = listOf(
             TimespanPoint(value = 1, from = 1640321493224),
             TimespanPoint(value = 2, from = 1650321493224),
@@ -47,7 +47,7 @@ class TimespanChartPointExtensionsTest {
     }
 
     @Test
-    fun `When minimize proceeds with data, expect the timespan inputs minimized`() {
+    fun `when minimize proceeds with data, expect the timespan inputs minimized`() {
         val timespanPoints = listOf(
             TimespanPoint(value = 1, from = 1640321493224),
             TimespanPoint(value = 2, from = 1650321493224),
@@ -69,12 +69,30 @@ class TimespanChartPointExtensionsTest {
     }
 
     @Test
-    fun `When minimize proceeds with empty data, expect the original timespan data`() {
+    fun `when minimize proceeds with empty data, expect the original timespan data`() {
         val timespanPoints = emptyList<TimespanPoint>()
         val result = timespanPoints.minimize(5)
         assertTrue {
             result.isEmpty()
         }
+    }
+
+    @Test
+    fun `when maxValue() invoked, expect the biggest timespan point`() {
+        val samplePoints = listOf(
+            TimespanPoint(1L, 0),
+            TimespanPoint(100L, 0)
+        )
+        assertEquals(100L, samplePoints.maxValue())
+    }
+
+    @Test
+    fun `when minValue() invoked, expect the biggest timespan point`() {
+        val samplePoints = listOf(
+            TimespanPoint(1L, 0),
+            TimespanPoint(100L, 0)
+        )
+        assertEquals(1L, samplePoints.minValue())
     }
 
 }

@@ -32,7 +32,7 @@ import kotlin.io.path.pathString
  */
 fun Path.isSourcePath(): Boolean {
     return (pathString.contains("src/main/java") || pathString.contains("src/main/kotlin"))
-            && (extension == "kt" || extension == "java")
+            && (isKotlinFile() || isJavaFile())
             && Files.isRegularFile(this)
 }
 

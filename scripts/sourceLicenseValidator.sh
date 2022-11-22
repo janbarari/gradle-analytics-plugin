@@ -19,7 +19,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-find ./src/main/ -name '*.kt' -print0 |
+find ./src/ -name '*.kt' -print0 |
 while IFS= read -r -d '' sourceFile; do
     fileContent=$(cat "$sourceFile")
     if ! [[ "$fileContent" =~ (MIT License) ]]; then

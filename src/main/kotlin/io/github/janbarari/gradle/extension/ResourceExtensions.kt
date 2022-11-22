@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.extension
 
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import java.io.InputStream
 import java.net.URL
 
@@ -36,6 +37,7 @@ fun URL.openSafeStream(): InputStream {
     return openConnection().apply { useCaches = false }.getInputStream()
 }
 
+@ExcludeJacocoGenerated
 fun <T> Class<T>.getSafeResourceAsStream(name: String): InputStream? {
     return getResource(name)?.openSafeStream()
 }

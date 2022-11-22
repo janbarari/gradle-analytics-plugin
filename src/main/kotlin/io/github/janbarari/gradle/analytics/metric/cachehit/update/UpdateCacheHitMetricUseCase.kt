@@ -40,7 +40,7 @@ class UpdateCacheHitMetricUseCase(
         val hitRates = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }
             .map { it.cacheHitMetric!!.rate }
 
-        val modules = temporaryMetrics.last().cacheHitMetric?.modules?.modify {
+        val modules = temporaryMetrics.lastOrNull()?.cacheHitMetric?.modules?.modify {
             rate = getModuleMeanCacheHit(path, temporaryMetrics)
         } ?: return null
 
