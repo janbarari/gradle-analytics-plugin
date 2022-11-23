@@ -21,15 +21,6 @@
  SOFTWARE.
 -->
 
-<img src="plugin-logo.png" alt="plugin logo" width="128"/>
+# Community 
+Gradle Analytics Plugin has an active discord channel for everyone, feel free to join our community via <a href="https://discord.gg/CJSeE9y8D3">discord.gg/CJSeE9y8D3</a>.
 
-## Gradle Analytics Plugin
-[![CircleCI](https://circleci.com/gh/janbarari/gradle-analytics-plugin/tree/develop.svg?style=svg)](https://circleci.com/gh/janbarari/gradle-analytics-plugin/tree/develop)
-[![codecov](https://codecov.io/gh/janbarari/gradle-analytics-plugin/branch/develop/graph/badge.svg)](https://codecov.io/gh/janbarari/gradle-analytics-plugin)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=janbarari_gradle-analytics-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=janbarari_gradle-analytics-plugin)
-
-A free Gradle plugin to analyze your project builds. It provides unique visual and text metrics in HTML format.
-
-### Documentation is at <a href="https://janbarari.github.io/gradle-analytics-plugin">janbarari.github.io/gradle-analytics-plugin</a>
-
-### Join the community on Discord via <a href="https://discord.gg/CJSeE9y8D3">discord.gg/CJSeE9y8D3<a/>
