@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.minimize
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
@@ -74,7 +74,7 @@ class RenderSuccessBuildRateReportStage(
                 .minimize(CHART_MAX_COLUMNS)
                 .mapToChartPoints()
                 .map { it.description }
-                .toArrayString()
+                .toArrayRender()
 
             renderedTemplate = renderedTemplate
                 .replace("%chart-median-values%", medianChartValues)

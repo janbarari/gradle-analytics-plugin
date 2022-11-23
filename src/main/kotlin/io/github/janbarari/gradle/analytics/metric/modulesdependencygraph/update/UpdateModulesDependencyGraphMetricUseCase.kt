@@ -32,7 +32,7 @@ class UpdateModulesDependencyGraphMetricUseCase(
 
     override suspend fun execute(): ModulesDependencyGraphMetric {
         return ModulesDependencyGraphMetric(
-            dependencies = repo.getTemporaryMetrics().last().modulesDependencyGraphMetric?.dependencies ?: emptyList()
+            dependencies = repo.getTemporaryMetrics().lastOrNull()?.modulesDependencyGraphMetric?.dependencies ?: emptyList()
         )
     }
 

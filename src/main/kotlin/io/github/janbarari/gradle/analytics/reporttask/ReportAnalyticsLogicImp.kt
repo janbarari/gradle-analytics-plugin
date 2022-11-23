@@ -28,8 +28,8 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.metric.buildstatus.render.CreateBuildStatusReportStage
-import io.github.janbarari.gradle.analytics.metric.buildstatus.render.RenderBuildStatusReportStage
+import io.github.janbarari.gradle.analytics.metric.buildstatus.report.CreateBuildStatusReportStage
+import io.github.janbarari.gradle.analytics.metric.buildstatus.report.RenderBuildStatusReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.CreateCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.cachehit.report.RenderCacheHitReportStage
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.report.CreateConfigurationProcessReportStage
@@ -40,24 +40,24 @@ import io.github.janbarari.gradle.analytics.metric.executionprocess.report.Creat
 import io.github.janbarari.gradle.analytics.metric.executionprocess.report.RenderExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.CreateInitializationProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.report.RenderInitializationProcessReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.CreateModulesBuildHeatmapReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.render.RenderModulesBuildHeatmapReportStage
-import io.github.janbarari.gradle.analytics.metric.modulescrashcount.render.CreateModulesCrashCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulescrashcount.render.RenderModulesCrashCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report.CreateModulesBuildHeatmapReportStage
+import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report.RenderModulesBuildHeatmapReportStage
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.report.CreateModulesCrashCountReportStage
+import io.github.janbarari.gradle.analytics.metric.modulescrashcount.report.RenderModulesCrashCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.CreateModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report.RenderModulesDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.CreateModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report.RenderModulesExecutionProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.CreateModulesMethodCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountStage
+import io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report.RenderModulesMethodCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.CreateModulesSourceCountReportStage
-import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountStage
+import io.github.janbarari.gradle.analytics.metric.modulesourcecount.report.RenderModulesSourceCountReportStage
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.CreateModulesSourceSizeReportStage
 import io.github.janbarari.gradle.analytics.metric.modulessourcesize.report.RenderModulesSourceSizeReportStage
-import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.CreateModulesTimelineReportStage
-import io.github.janbarari.gradle.analytics.metric.modulestimeline.render.RenderModulesTimelineReportStage
-import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.CreateNonCacheableTasksReportStage
-import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.render.RenderNonCacheableTasksReportStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.report.CreateModulesTimelineReportStage
+import io.github.janbarari.gradle.analytics.metric.modulestimeline.report.RenderModulesTimelineReportStage
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report.CreateNonCacheableTasksReportStage
+import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report.RenderNonCacheableTasksReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.CreateOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
@@ -159,8 +159,8 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderConfigurationProcessReportStage(report))
             .addStage(RenderExecutionProcessReportStage(report))
             .addStage(RenderOverallBuildProcessReportStage(report))
-            .addStage(RenderModulesSourceCountStage(report))
-            .addStage(RenderModulesMethodCountStage(report))
+            .addStage(RenderModulesSourceCountReportStage(report))
+            .addStage(RenderModulesMethodCountReportStage(report))
             .addStage(RenderCacheHitReportStage(report))
             .addStage(RenderSuccessBuildRateReportStage(report))
             .addStage(RenderDependencyResolveProcessReportStage(report))

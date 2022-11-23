@@ -28,7 +28,7 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.maxValue
 import io.github.janbarari.gradle.extension.minimize
-import io.github.janbarari.gradle.extension.toArrayString
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
@@ -67,7 +67,7 @@ class RenderParallelExecutionRateReportStage(
                 .toString()
 
             val chartLabels = chartPoints.map { it.description }
-                .toArrayString()
+                .toArrayRender()
 
             val chartSuggestedMaxValue = MathUtils.sumWithPercentage(chartPoints.maxValue(), CHART_SUGGESTED_MAX_PERCENTAGE)
             val chartSuggestedMinValue = 0

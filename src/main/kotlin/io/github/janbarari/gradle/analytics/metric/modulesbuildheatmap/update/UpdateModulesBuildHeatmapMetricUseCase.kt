@@ -32,7 +32,7 @@ class UpdateModulesBuildHeatmapMetricUseCase(
 
     override suspend fun execute(): ModulesBuildHeatmapMetric {
         return ModulesBuildHeatmapMetric(
-            modules = repo.getTemporaryMetrics().last().modulesBuildHeatmap?.modules ?: emptyList()
+            modules = repo.getTemporaryMetrics().lastOrNull()?.modulesBuildHeatmap?.modules ?: emptyList()
         )
     }
 
