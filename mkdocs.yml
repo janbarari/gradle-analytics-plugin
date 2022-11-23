@@ -38,6 +38,7 @@ nav:
   - Special Thanks: special-thanks.md
   - Third party: third-party.md
   - License: license.md
+  - Community: community.md
 
 theme:
   name: material
@@ -76,3 +77,5 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/janbarari
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/CJSeE9y8D3
