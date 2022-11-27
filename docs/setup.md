@@ -56,6 +56,8 @@ Add plugin configuration in the root of your project.
 === "Kotlin"
     ``` kotlin
     gradleAnalyticsPlugin {
+        isEnabled = true // By default it's True.
+
         database {
             local = sqlite {
                 path = "DATABASE_PATH"
@@ -89,6 +91,8 @@ Add plugin configuration in the root of your project.
 === "Groovy"
     ``` groovy
     gradleAnalyticsPlugin {
+        isEnabled = true // By default it's True.
+
         database {
             local = sqlite {
                 path = 'DATABASE_PATH'

@@ -52,7 +52,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.0-beta2"
+        const val PLUGIN_VERSION = "1.0.0-beta3"
     }
 
     /**
