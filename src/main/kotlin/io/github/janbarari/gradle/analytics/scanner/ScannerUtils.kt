@@ -76,6 +76,7 @@ object ScannerUtils {
                 BuildExecutionService::class.java
             ) { spec ->
                 with(spec.parameters) {
+                    enabled.set(configuration.isEnabled)
                     databaseConfig.set(configuration.getDatabaseConfig())
                     envCI.set(envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())

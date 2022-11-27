@@ -58,6 +58,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
     interface Params : BuildServiceParameters {
+        val enabled: Property<Boolean>
         val databaseConfig: Property<DatabaseConfig>
         val envCI: Property<Boolean>
         val requestedTasks: ListProperty<String>
@@ -138,6 +139,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
      */
     @ExcludeJacocoGenerated
     override fun close() {
+        if (isPluginDisabled()) return
+
         if (isForbiddenTasksRequested()) return
 
         if (!isTaskTrackable()) return
@@ -167,6 +170,10 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     private fun isForbiddenTasksRequested(): Boolean {
         return parameters.requestedTasks.get().contains(ReportAnalyticsTask.TASK_NAME)
+    }
+
+    private fun isPluginDisabled(): Boolean {
+        return parameters.enabled.get() == false
     }
 
     private fun isTaskTrackable(): Boolean {
