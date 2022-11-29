@@ -42,6 +42,9 @@ data class BuildMetric(
     @Json(name = "git_head_commit_hash")
     var gitHeadCommitHash: String,
 
+    @Json(name = "modules")
+    var modules: List<String> = emptyList(),
+
     @Json(name = "initialization_process_metric")
     var initializationProcessMetric: InitializationProcessMetric? = null,
 
@@ -90,7 +93,7 @@ data class BuildMetric(
     @Json(name = "modules_crash_count_metric")
     var modulesCrashCountMetric: ModulesCrashCountMetric? = null,
 
-): java.io.Serializable {
+    ): java.io.Serializable {
 
     // Exclude from build metric json to avoid save in metric table. Regarding the metric
     // size and usability, this metric should be saved in `single_metric` table.
