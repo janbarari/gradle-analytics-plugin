@@ -37,7 +37,7 @@ class RenderModulesDependencyGraphReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-dependency-graph-metric%"
-        val stage = RenderModulesDependencyGraphReportStage(report)
+        val stage = RenderModulesDependencyGraphReportStage(report, "OUTPUT_PATH", "PROJECT_NAME")
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Dependency Graph is not available!</p><div class=\"space\"></div>"
@@ -64,11 +64,12 @@ class RenderModulesDependencyGraphReportStageTest {
                     configuration = "implementation",
                     dependency = ""
                 )
-            )
+            ),
+            listOf(":woman", ":life", ":freedom")
         )
 
         val renderTemplate = "%modules-dependency-graph-metric%"
-        val stage = RenderModulesDependencyGraphReportStage(report)
+        val stage = RenderModulesDependencyGraphReportStage(report, "OUTPUT_PATH", "PROJECT_NAME")
         val result = stage.process(renderTemplate)
 
         assertTrue {

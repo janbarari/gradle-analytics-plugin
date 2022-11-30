@@ -166,7 +166,7 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderDependencyResolveProcessReportStage(report))
             .addStage(RenderParallelExecutionRateReportStage(report))
             .addStage(RenderModulesExecutionProcessReportStage(report))
-            .addStage(RenderModulesDependencyGraphReportStage(report))
+            .addStage(RenderModulesDependencyGraphReportStage(report, outputPath, projectName))
             .addStage(RenderModulesTimelineReportStage(report))
             .addStage(RenderBuildStatusReportStage(report))
             .addStage(RenderModulesBuildHeatmapReportStage(report))
@@ -180,7 +180,16 @@ class ReportAnalyticsLogicImp(
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
         val resources = listOf(
-            "nunito.ttf", "plugin-logo.png", "styles.css", "functions.js", "chart.js", "mermaid.js", "d3.js", "timeline.js"
+            "nunito.ttf",
+            "plugin-logo.png",
+            "styles.css",
+            "functions.js",
+            "chart.js",
+            "mermaid.js",
+            "d3.js",
+            "timeline.js",
+            "jquery.js",
+            "panzoom.js"
         )
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 

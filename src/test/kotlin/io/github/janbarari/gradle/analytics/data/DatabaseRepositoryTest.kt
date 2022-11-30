@@ -28,6 +28,8 @@ import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -89,7 +91,7 @@ class DatabaseRepositoryTest {
     }
 
     @Test
-    fun `check isDayMetricExists() returns true when data is exists`() {
+    fun `check isDayMetricExists() returns true when data is exists`() = runBlocking {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
@@ -97,6 +99,7 @@ class DatabaseRepositoryTest {
             gitHeadCommitHash = "unknown",
         )
         repo.saveNewMetric(metric)
+        delay(300)
         assertEquals(true, repo.isDayMetricExists())
     }
 

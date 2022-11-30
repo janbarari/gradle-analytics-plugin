@@ -22,20 +22,31 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report
 
+import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
+import java.io.File
+
 
 class RenderModulesDependencyGraphReportStage(
-    private val report: Report
+    private val report: Report,
+    private val outputPath: String,
+    private val projectName: String
 ): Stage<String, String> {
 
     companion object {
         private const val MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID = "%modules-dependency-graph-metric%"
-        private const val MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_FILE_NAME = "modules-dependency-graph-metric-template"
+        private const val MODULES_DEPENDENCY_GRAPH_METRIC_INTERNAL_TEMPLATE_FILE_NAME =
+            "modules-dependency-graph-metric-internal-template"
+        private const val MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME =
+            "modules-dependency-graph-metric-external-template"
+        private const val MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME = "modules-dependency-graph-template"
+        private const val MAXIMUM_ALLOWED_MODULES_TO_RENDER_INTERNALLY = 16
     }
 
     override suspend fun process(input: String): String {
@@ -51,37 +62,55 @@ class RenderModulesDependencyGraphReportStage(
     }
 
     fun getMetricRender(): String {
-        var renderedTemplate = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_FILE_NAME)
+        var result = ""
         report.modulesDependencyGraphReport.whenNotNull {
-            val mermaidCommands = buildString {
-                appendLine()
-                dependencies.whenEach {
-                    val type = when(configuration) {
-                        "api" -> "api"
-                        "implementation" -> "impl"
-                        else -> configuration
-                    }
+            if (modules.size <= MAXIMUM_ALLOWED_MODULES_TO_RENDER_INTERNALLY) {
+                result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_INTERNAL_TEMPLATE_FILE_NAME)
+                result = result.replace("%mermaid-commands%", generateMermaidCommands(dependencies))
+            } else {
+                result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME)
 
-                    val pathColor = dependencies.filter { it.dependency == dependency }.size
-                    var heatmapColor = ":::blue"
-                    if (pathColor in 3 .. 4) {
-                       heatmapColor = ":::yellow"
-                    } else if (pathColor in 5 .. 6) {
-                        heatmapColor = ":::orange"
-                    } else if (pathColor > 6) {
-                        heatmapColor = ":::red"
-                    }
+                var externalGraphRender = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME)
+                externalGraphRender = externalGraphRender
+                    .replace("%root-project-name%", projectName)
+                    .replace("%max-text-size%", "200000")
+                    .replace("%mermaid-commands%", generateMermaidCommands(dependencies))
 
-                    append("\t$path ---> |$type| $dependency$heatmapColor")
-                    appendLine()
+                val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
+                val directory = File(savePath)
+                if (!directory.exists()) {
+                    directory.mkdirs()
+                }
+                File("$savePath/modules-dependency-graph.html").writeText(externalGraphRender)
+            }
+        }
+        return result
+    }
+
+    fun generateMermaidCommands(dependencies: List<ModuleDependency>): String {
+        return buildString {
+            appendLine()
+            dependencies.whenEach {
+                val type = when(configuration) {
+                    "api" -> "api"
+                    "implementation" -> "impl"
+                    else -> configuration
                 }
 
-            }
+                val pathColor = dependencies.filter { it.dependency == dependency }.size
+                var heatmapColor = ":::blue"
+                if (pathColor in 3 .. 4) {
+                    heatmapColor = ":::yellow"
+                } else if (pathColor in 5 .. 6) {
+                    heatmapColor = ":::orange"
+                } else if (pathColor > 6) {
+                    heatmapColor = ":::red"
+                }
 
-            renderedTemplate = renderedTemplate
-                .replace("%mermaid-commands%", mermaidCommands)
+                append("\t$path ---> |$type| $dependency$heatmapColor")
+                appendLine()
+            }
         }
-        return renderedTemplate
     }
 
 }

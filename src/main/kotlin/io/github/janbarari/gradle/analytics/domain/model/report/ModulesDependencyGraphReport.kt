@@ -32,5 +32,7 @@ import java.io.Serializable
 @JsonClass(generateAdapter = true)
 data class ModulesDependencyGraphReport(
     @Json(name = "dependencies")
-    var dependencies: List<ModuleDependency>
+    var dependencies: List<ModuleDependency>,
+    @Json(name = "modules")
+    var modules: List<String>
 ) : Serializable
