@@ -124,7 +124,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
-            .addStage(CreateModulesExecutionProcessReportStage(modules, data))
+            .addStage(CreateModulesExecutionProcessReportStage(data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
             .addStage(CreateBuildStatusReportStage(data))

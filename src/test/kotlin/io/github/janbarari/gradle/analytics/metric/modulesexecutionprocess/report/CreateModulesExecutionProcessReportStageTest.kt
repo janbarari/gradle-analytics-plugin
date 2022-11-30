@@ -36,9 +36,8 @@ class CreateModulesExecutionProcessReportStageTest {
 
     @Test
     fun `when process() executes without metric, expect empty report`() = runBlocking {
-        val modules = listOf<Module>()
         val metrics = listOf<BuildMetric>()
-        val stage = CreateModulesExecutionProcessReportStage(modules, metrics)
+        val stage = CreateModulesExecutionProcessReportStage(metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -100,7 +99,7 @@ class CreateModulesExecutionProcessReportStageTest {
         )
 
 
-        val stage = CreateModulesExecutionProcessReportStage(modules, metrics)
+        val stage = CreateModulesExecutionProcessReportStage(metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

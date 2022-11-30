@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleExecutionProcess
@@ -36,12 +35,11 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateModulesExecutionProcessReportStage(
-    private val modules: List<Module>,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
     override suspend fun process(input: Report): Report {
-        val temp = modules.map { module ->
+        val temp = metrics.lastOrNull()?.modules?.map { path ->
             var firstAvgMedianDuration: Long? = null
             var lastAvgMedianDuration: Long? = null
             var diffRate: Float? = null
@@ -57,7 +55,7 @@ class CreateModulesExecutionProcessReportStage(
             }.whenNotNull {
                 modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == module.path }
+                    .find { it.path == path }
                     .whenNotNull {
                         firstAvgMedianDuration = medianExecInMillis
                     }
@@ -68,7 +66,7 @@ class CreateModulesExecutionProcessReportStage(
             }.whenNotNull {
                 modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == module.path }
+                    .find { it.path == path }
                     .whenNotNull {
                         lastAvgMedianDuration = medianExecInMillis
                     }
@@ -82,7 +80,7 @@ class CreateModulesExecutionProcessReportStage(
             }.forEach { metric ->
                 metric.modulesExecutionProcessMetric!!
                     .modules
-                    .find { it.path == module.path }
+                    .find { it.path == path }
                     .whenNotNull {
                         avgMedianExecTimespanPoints.add(
                             TimespanPoint(
@@ -98,7 +96,7 @@ class CreateModulesExecutionProcessReportStage(
             }
 
             ModuleExecutionProcess(
-                path = module.path,
+                path = path,
                 avgMedianExecInMillis = MathUtils.longMedian(avgMedianExecs),
                 avgMedianParallelExecInMillis = MathUtils.longMedian(avgMedianParallelExecs),
                 avgMedianParallelRate = MathUtils.floatMedian(avgMedianParallelRates).round(),
@@ -106,7 +104,7 @@ class CreateModulesExecutionProcessReportStage(
                 avgMedianExecs = avgMedianExecTimespanPoints,
                 diffRate = diffRate
             )
-        }
+        } ?: emptyList()
 
         return input.apply {
             modulesExecutionProcessReport = ModulesExecutionProcessReport(modules = temp)

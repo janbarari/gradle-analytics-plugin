@@ -116,12 +116,22 @@ class RenderModulesExecutionProcessReportStage(
                 }
             }
 
+            var chartHeight = 400
+            // 16 px per each module
+            if (modules.size * 16 > 400) {
+                chartHeight = modules.size * 16
+            }
+            if(chartHeight > 1200) {
+                chartHeight = 1200
+            }
+
             renderedTemplate = renderedTemplate
                 .replace("%suggested-min-value%", chartSuggestedMinValue.toString())
                 .replace("%suggested-max-value%", chartSuggestedMaxValue.toString())
                 .replace("%chart-labels%", chartLabels)
                 .replace("%chart-datasets%", chartDatasets)
                 .replace("%table-data%", tableData)
+                .replace("%chart-height%", "$chartHeight")
         }
         return renderedTemplate
     }
