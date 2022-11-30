@@ -25,10 +25,8 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
-import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
-import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.analytics.domain.model.Module
@@ -65,9 +63,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 trackingTasksProperty.set(config.trackingTasks)
                 trackingBranchesProperty.set(config.trackingBranches)
                 databaseConfigProperty.set(config.getDatabaseConfig())
-                modules.set(config.project.subprojects
-                    .filter { it.isDependingOnOtherProject() }
-                    .map { it.toModule() })
                 outputs.cacheIf { false }
             }
         }
@@ -118,7 +113,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
-            modules = modules.get()
         )
 
         with(injector.provideReportAnalyticsLogic()) {

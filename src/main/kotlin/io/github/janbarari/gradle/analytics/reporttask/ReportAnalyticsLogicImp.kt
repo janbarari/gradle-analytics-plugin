@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
@@ -85,8 +84,7 @@ class ReportAnalyticsLogicImp(
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
     private val outputPath: String,
-    private val projectName: String,
-    private val modules: List<Module>
+    private val projectName: String
 ) : ReportAnalyticsLogic {
 
     @ExcludeJacocoGenerated
@@ -121,7 +119,8 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateOverallBuildProcessReportStage(data))
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
-            .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
+            .addStage(CreateCacheHitReportStage(data))
+            .addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
             .addStage(CreateModulesExecutionProcessReportStage(data))
@@ -131,7 +130,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
             .addStage(CreateModulesSourceSizeReportStage(data))
-            .addStage(CreateModulesCrashCountReportStage(modules, data))
+            .addStage(CreateModulesCrashCountReportStage(data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks

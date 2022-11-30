@@ -35,9 +35,8 @@ class CreateModulesCrashCountReportStageTest {
 
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
-        val modules = listOf<Module>()
         val metrics = listOf<BuildMetric>()
-        val stage = CreateModulesCrashCountReportStage(modules, metrics)
+        val stage = CreateModulesCrashCountReportStage(metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
         assertEquals(0, report.modulesCrashCountReport!!.modules.size)
@@ -86,7 +85,7 @@ class CreateModulesCrashCountReportStageTest {
             )
         )
 
-        val stage = CreateModulesCrashCountReportStage(modules, metrics)
+        val stage = CreateModulesCrashCountReportStage(metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
