@@ -94,7 +94,11 @@ class RenderModulesExecutionProcessReportStage(
             }
 
             val tableData = buildString {
-                modules.forEachIndexed { i, module ->
+                modules
+                    .sortedByDescending {
+                        it.avgMedianExecInMillis
+                    }
+                    .forEachIndexed { i, module ->
                     append("<tr>")
                     append("<th>${i+1}</th>")
                     append("<th>${module.path}</th>")
@@ -119,10 +123,7 @@ class RenderModulesExecutionProcessReportStage(
             var chartHeight = 400
             // 16 px per each module
             if (modules.size * 16 > 400) {
-                chartHeight = modules.size * 16
-            }
-            if(chartHeight > 1200) {
-                chartHeight = 1200
+                chartHeight = modules.size * 19
             }
 
             renderedTemplate = renderedTemplate

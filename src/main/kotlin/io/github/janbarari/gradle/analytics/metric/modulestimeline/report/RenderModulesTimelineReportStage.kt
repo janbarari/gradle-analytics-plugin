@@ -95,11 +95,15 @@ class RenderModulesTimelineReportStage(
             appendLine()
             append("]")
         }
+
+        val maxLabelWidth = report.modulesTimelineReport?.modules?.maxOf { it.path }?.length?.times(20) ?: 128
+
         renderedTemplate = renderedTemplate
             .replace("%timelines%", result)
             .replace("%beginning%", beginning.toString())
             .replace("%ending%", ending.toString())
             .replace("%datetime%", DateTimeUtils.formatToDateTime(createdAt))
+            .replace("%max-label-width%", "$maxLabelWidth")
         return renderedTemplate
     }
 
