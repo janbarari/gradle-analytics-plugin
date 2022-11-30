@@ -64,7 +64,8 @@ class CreateModulesCrashCountReportStageTest {
                         ModulesCrashCountMetric.ModuleCrash(":life", 4),
                         ModulesCrashCountMetric.ModuleCrash(":freedom", 22)
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -80,7 +81,8 @@ class CreateModulesCrashCountReportStageTest {
                         ModulesCrashCountMetric.ModuleCrash(":life", 4),
                         ModulesCrashCountMetric.ModuleCrash(":freedom", 22)
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

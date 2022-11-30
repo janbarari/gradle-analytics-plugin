@@ -127,7 +127,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateModulesExecutionProcessReportStage(modules, data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modules, data))
+            .addStage(CreateBuildStatusReportStage(data))
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
             .addStage(CreateModulesSourceSizeReportStage(data))

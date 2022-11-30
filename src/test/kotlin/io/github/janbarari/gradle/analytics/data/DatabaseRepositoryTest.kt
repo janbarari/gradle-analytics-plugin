@@ -65,6 +65,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveNewMetric(metric)
@@ -78,6 +79,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveTemporaryMetric(metric)
@@ -97,6 +99,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.saveNewMetric(metric)
         delay(300)
@@ -111,6 +114,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.saveNewMetric(metric)
         assertEquals("develop", repo.getDayMetric().first.branch)
@@ -135,6 +139,7 @@ class DatabaseRepositoryTest {
                 listOf("assembleDebug"),
                 createdAt = System.currentTimeMillis(),
                 gitHeadCommitHash = "unknown",
+                modules = emptyList()
             )
             repo.saveNewMetric(metric)
         }
@@ -144,6 +149,7 @@ class DatabaseRepositoryTest {
             listOf("assembleRelease"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.updateDayMetric(dayMetric.second, newMetric)
         assertEquals("master", repo.getDayMetric().first.branch)

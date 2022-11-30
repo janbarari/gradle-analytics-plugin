@@ -43,7 +43,7 @@ data class BuildMetric(
     var gitHeadCommitHash: String,
 
     @Json(name = "modules")
-    var modules: List<String> = emptyList(),
+    var modules: List<String>,
 
     @Json(name = "initialization_process_metric")
     var initializationProcessMetric: InitializationProcessMetric? = null,

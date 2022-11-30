@@ -55,6 +55,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
+                modules = listOf(":core", ":data", ":domain")
             ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
@@ -84,6 +85,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
+                modules = listOf(":core", ":data", ":domain")
             ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
@@ -94,6 +96,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
+                modules = listOf(":core", ":data", ":domain")
             )
         )
 
@@ -118,7 +121,8 @@ class UpdateCacheHitMetricUseCaseTest {
             branch = "develop",
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf("assemble"),
-            createdAt = 1660202190213
+            createdAt = 1660202190213,
+            modules = listOf(":core", ":data", ":domain")
         ).apply {
             cacheHitMetric = CacheHitMetric(
                 cacheHit,
