@@ -30,6 +30,7 @@ import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.utils.HtmlUtils
+import io.github.janbarari.gradle.utils.MathUtils
 import java.io.File
 
 
@@ -71,10 +72,13 @@ class RenderModulesDependencyGraphReportStage(
                 result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME)
 
                 var externalGraphRender = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME)
+                val mermaidCommands = generateMermaidCommands(dependencies)
+                val maxTextSize = MathUtils.sumWithPercentage(mermaidCommands.length.toLong(), 10).toInt()
+
                 externalGraphRender = externalGraphRender
                     .replace("%root-project-name%", projectName)
-                    .replace("%max-text-size%", "200000")
-                    .replace("%mermaid-commands%", generateMermaidCommands(dependencies))
+                    .replace("%max-text-size%", "$maxTextSize")
+                    .replace("%mermaid-commands%", mermaidCommands)
 
                 val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
                 val directory = File(savePath)
