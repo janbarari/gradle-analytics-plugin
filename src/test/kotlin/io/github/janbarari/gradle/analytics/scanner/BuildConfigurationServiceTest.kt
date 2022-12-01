@@ -40,17 +40,30 @@ class BuildConfigurationServiceTest {
     }
 
     @Test
-    fun `check reset() function clears the CONFIGURED_AT`() {
-        BuildConfigurationService.CONFIGURED_AT = 1804
+    fun `check reset() function clears the CONFIGURATION_STARTED_AT`() {
+        BuildConfigurationService.CONFIGURATION_STARTED_AT = 1804
         BuildConfigurationService.reset()
-        assertEquals(0, BuildConfigurationService.CONFIGURED_AT)
+        assertEquals(0, BuildConfigurationService.CONFIGURATION_STARTED_AT)
     }
 
     @Test
-    fun `check projectsEvaluated() updates the CONFIGURED_AT`() {
-        BuildConfigurationService.CONFIGURED_AT = 0L
-        service.projectsEvaluated(mockk())
-        assert(BuildConfigurationService.CONFIGURED_AT > 0)
+    fun `check beforeEvaluate() assigns the CONFIGURATION_STARTED_AT if its not initialized`() {
+        service.beforeEvaluate(mockk())
+        assert(BuildConfigurationService.CONFIGURATION_STARTED_AT > 0)
+
+        BuildConfigurationService.CONFIGURATION_STARTED_AT = 10L
+        service.beforeEvaluate(mockk())
+        assert(BuildConfigurationService.CONFIGURATION_STARTED_AT == 10L)
+    }
+
+    @Test
+    fun `check afterEvaluate() assigns the CONFIGURATION_STARTED_AT if its not initialized`() {
+        service.afterEvaluate(mockk(), mockk())
+        assert(BuildConfigurationService.CONFIGURATION_STARTED_AT > 0)
+
+        BuildConfigurationService.CONFIGURATION_STARTED_AT = 10L
+        service.afterEvaluate(mockk(), mockk())
+        assert(BuildConfigurationService.CONFIGURATION_STARTED_AT == 10L)
     }
 
 }

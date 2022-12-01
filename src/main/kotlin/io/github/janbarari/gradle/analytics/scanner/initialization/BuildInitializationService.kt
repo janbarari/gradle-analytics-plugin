@@ -24,9 +24,6 @@ package io.github.janbarari.gradle.analytics.scanner.initialization
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.BuildResult
-import org.gradle.api.Project
-import org.gradle.api.ProjectEvaluationListener
-import org.gradle.api.ProjectState
 import org.gradle.api.initialization.Settings
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.invocation.Gradle
@@ -39,34 +36,18 @@ import org.gradle.internal.scan.time.BuildScanBuildStartedTime
  */
 class BuildInitializationService(
     private val gradle: Gradle
-) : InternalBuildListener, ProjectEvaluationListener {
+) : InternalBuildListener {
 
     companion object {
         var STARTED_AT: Long = 0L
-        var INITIALIZED_AT: Long = 0L
 
         fun reset() {
             STARTED_AT = 0L
-            INITIALIZED_AT = 0L
         }
     }
 
     init {
         reset()
-    }
-
-    override fun beforeEvaluate(project: Project) {
-        assignInitializationTimestamp()
-    }
-
-    override fun afterEvaluate(project: Project, state: ProjectState) {
-        assignInitializationTimestamp()
-    }
-
-    private fun assignInitializationTimestamp() {
-        if (INITIALIZED_AT == 0L) {
-            INITIALIZED_AT = System.currentTimeMillis()
-        }
     }
 
     @ExcludeJacocoGenerated

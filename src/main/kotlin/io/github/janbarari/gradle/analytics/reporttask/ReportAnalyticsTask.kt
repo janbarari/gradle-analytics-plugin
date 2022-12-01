@@ -27,9 +27,9 @@ import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
-import io.github.janbarari.gradle.extension.registerTask
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.analytics.domain.model.Module
+import io.github.janbarari.gradle.extension.createTask
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
@@ -56,14 +56,17 @@ abstract class ReportAnalyticsTask : DefaultTask() {
 
         @ExcludeJacocoGenerated
         fun register(config: GradleAnalyticsPluginConfig) {
-            config.project.registerTask<ReportAnalyticsTask>(TASK_NAME) {
-                projectNameProperty.set(project.rootProject.name)
-                envCIProperty.set(envCI())
-                outputPathProperty.set(config.outputPath)
-                trackingTasksProperty.set(config.trackingTasks)
-                trackingBranchesProperty.set(config.trackingBranches)
-                databaseConfigProperty.set(config.getDatabaseConfig())
-                outputs.cacheIf { false }
+            val task = config.project.createTask<ReportAnalyticsTask>(TASK_NAME)
+            config.project.gradle.projectsEvaluated {
+                with(task) {
+                    projectNameProperty.set(config.project.rootProject.name)
+                    envCIProperty.set(envCI())
+                    outputPathProperty.set(config.outputPath)
+                    trackingTasksProperty.set(config.trackingTasks)
+                    trackingBranchesProperty.set(config.trackingBranches)
+                    databaseConfigProperty.set(config.getDatabaseConfig())
+                    outputs.cacheIf { false }
+                }
             }
         }
     }
