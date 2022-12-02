@@ -45,6 +45,27 @@ class BuildInitializationServiceTest {
         BuildInitializationService.reset()
 
         assertEquals(0, BuildInitializationService.STARTED_AT)
+        assertEquals(0, BuildInitializationService.INITIALIZED_AT)
+    }
+
+    @Test
+    fun `check beforeEvaluate() assigns the INITIALIZED_AT if its not initialized`() {
+        service.beforeEvaluate(mockk())
+        assert(BuildInitializationService.INITIALIZED_AT > 0)
+
+        BuildInitializationService.INITIALIZED_AT = 10L
+        service.beforeEvaluate(mockk())
+        assert(BuildInitializationService.INITIALIZED_AT == 10L)
+    }
+
+    @Test
+    fun `check afterEvaluate() assigns the INITIALIZED_AT if its not initialized`() {
+        service.afterEvaluate(mockk(), mockk())
+        assert(BuildInitializationService.INITIALIZED_AT > 0)
+
+        BuildInitializationService.INITIALIZED_AT = 10L
+        service.afterEvaluate(mockk(), mockk())
+        assert(BuildInitializationService.INITIALIZED_AT == 10L)
     }
 
 }

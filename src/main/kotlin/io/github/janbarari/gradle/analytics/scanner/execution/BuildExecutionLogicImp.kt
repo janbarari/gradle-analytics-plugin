@@ -104,6 +104,7 @@ class BuildExecutionLogicImp(
 
     init {
         assignStartTimestampIfProcessSkipped()
+        assignInitializationTimestampIfProcessSkipped()
         assignConfigurationTimestampIfProcessSkipped()
     }
 
@@ -114,8 +115,8 @@ class BuildExecutionLogicImp(
         val buildInfo = BuildInfo(
             createdAt = System.currentTimeMillis(),
             startedAt = BuildInitializationService.STARTED_AT,
-            initializedAt = BuildConfigurationService.CONFIGURATION_STARTED_AT,
-            configuredAt = executedTasks.minOfOrNull { it.startedAt } ?: 0,
+            initializedAt = BuildInitializationService.INITIALIZED_AT,
+            configuredAt = BuildConfigurationService.CONFIGURED_AT,
             finishedAt = System.currentTimeMillis(),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values.toList(),
             executedTasks = executedTasks.toList(),
@@ -218,13 +219,24 @@ class BuildExecutionLogicImp(
     }
 
     /**
+     * If the build initialization is reused by configuration-cache, then the
+     * [io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService] won't
+     * register to the project and the initialization time won't assign.
+     */
+    private fun assignInitializationTimestampIfProcessSkipped() {
+        if (BuildInitializationService.INITIALIZED_AT == 0L) {
+            BuildInitializationService.INITIALIZED_AT = System.currentTimeMillis()
+        }
+    }
+
+    /**
      * If the build configuration is reused by configuration-cache, then the
      * [io.github.janbarari.gradle.analytics.scanner.configuration.BuildConfigurationService] won't
      * register to the project and the configuration time won't assign.
      */
     private fun assignConfigurationTimestampIfProcessSkipped() {
-        if (BuildConfigurationService.CONFIGURATION_STARTED_AT == 0L) {
-            BuildConfigurationService.CONFIGURATION_STARTED_AT = System.currentTimeMillis()
+        if (BuildConfigurationService.CONFIGURED_AT == 0L) {
+            BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
         }
     }
 

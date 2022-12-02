@@ -24,9 +24,6 @@ package io.github.janbarari.gradle.analytics.scanner.configuration
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.BuildResult
-import org.gradle.api.Project
-import org.gradle.api.ProjectEvaluationListener
-import org.gradle.api.ProjectState
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.internal.InternalBuildListener
@@ -35,13 +32,13 @@ import org.gradle.internal.InternalBuildListener
  * Track and holds the build configuration finish timestamp to use by
  * [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
  */
-class BuildConfigurationService : InternalBuildListener, ProjectEvaluationListener {
+class BuildConfigurationService : InternalBuildListener {
 
     companion object {
-        var CONFIGURATION_STARTED_AT: Long = 0L
+        var CONFIGURED_AT: Long = 0L
 
         fun reset() {
-            CONFIGURATION_STARTED_AT = 0L
+            CONFIGURED_AT = 0L
         }
 
     }
@@ -61,27 +58,13 @@ class BuildConfigurationService : InternalBuildListener, ProjectEvaluationListen
     }
 
     override fun projectsEvaluated(gradle: Gradle) {
-        // called when projects evaluated.
+        CONFIGURED_AT = System.currentTimeMillis()
     }
 
     @ExcludeJacocoGenerated
     @Deprecated("Deprecated")
     override fun buildFinished(result: BuildResult) {
         // This method is deprecated, Execution process are handled by BuildExecutionService.kt
-    }
-
-    override fun beforeEvaluate(project: Project) {
-        assignConfigurationStartTime()
-    }
-
-    override fun afterEvaluate(project: Project, state: ProjectState) {
-        assignConfigurationStartTime()
-    }
-
-    private fun assignConfigurationStartTime() {
-        if (CONFIGURATION_STARTED_AT == 0L) {
-            CONFIGURATION_STARTED_AT = System.currentTimeMillis()
-        }
     }
 
 }
