@@ -70,7 +70,8 @@ class CreateModulesDependencyGraphReportStageTest {
                             dependency = ""
                         )
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -98,7 +99,8 @@ class CreateModulesDependencyGraphReportStageTest {
                             dependency = ""
                         )
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

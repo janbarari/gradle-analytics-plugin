@@ -36,6 +36,7 @@ import io.github.janbarari.gradle.extension.isDependingOnOtherProject
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.api.Project
+import org.gradle.api.internal.GradleInternal
 import org.gradle.build.event.BuildEventsListenerRegistry
 import java.util.*
 
@@ -76,6 +77,7 @@ object ScannerUtils {
                 BuildExecutionService::class.java
             ) { spec ->
                 with(spec.parameters) {
+                    enabled.set(configuration.isEnabled)
                     databaseConfig.set(configuration.getDatabaseConfig())
                     envCI.set(envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())
@@ -91,7 +93,13 @@ object ScannerUtils {
     }
 
     private fun setupInitializationService(project: Project) {
-        project.gradle.addBuildListener(BuildInitializationService(project.gradle))
+        project.gradle.addBuildListener(BuildInitializationService(project))
+
+        // Gradle build listener's `projectsLoaded` function is not invoked during the build process,
+        // This is an alternative solution to figure out when the initialization process has been finished.
+        (project.gradle as GradleInternal).rootProject {
+            BuildInitializationService.assignInitializedAt()
+        }
     }
 
     private fun setupConfigurationService(project: Project) {

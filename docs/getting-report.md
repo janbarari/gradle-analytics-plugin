@@ -45,14 +45,6 @@ Gradle Analytics Plugin uses daily basis data to generate reports. So you could 
 
 <br/>
 
-!!! warning
-
-    If using <a href="https://docs.gradle.org/current/userguide/configuration_cache.html">`configuration-cache`</a> make sure to put `org.gradle.unsafe.configuration-cache-problems=warn
-    ` into the `gradle.properties` file or run <strong>`reportAnalytics`</strong> task with `--configuration-cache-problems=warn`.
-
-
-<br/>
-
 To understand the metrics and report that plugin provides, It is required to understand Gradle basics and how this build
 system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
 <br/>

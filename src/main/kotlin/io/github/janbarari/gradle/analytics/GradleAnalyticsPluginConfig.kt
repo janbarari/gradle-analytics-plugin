@@ -34,6 +34,8 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
 
     private var databaseConfig: DatabaseConfig = DatabaseConfig()
 
+    var isEnabled: Boolean = true
+
     var trackingTasks: List<String> = listOf()
 
     var trackingBranches: List<String> = listOf()

@@ -28,6 +28,8 @@ import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -63,6 +65,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveNewMetric(metric)
@@ -76,6 +79,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveTemporaryMetric(metric)
@@ -89,14 +93,16 @@ class DatabaseRepositoryTest {
     }
 
     @Test
-    fun `check isDayMetricExists() returns true when data is exists`() {
+    fun `check isDayMetricExists() returns true when data is exists`() = runBlocking {
         val metric = BuildMetric(
             branch = "develop",
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.saveNewMetric(metric)
+        delay(300)
         assertEquals(true, repo.isDayMetricExists())
     }
 
@@ -108,6 +114,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.saveNewMetric(metric)
         assertEquals("develop", repo.getDayMetric().first.branch)
@@ -132,6 +139,7 @@ class DatabaseRepositoryTest {
                 listOf("assembleDebug"),
                 createdAt = System.currentTimeMillis(),
                 gitHeadCommitHash = "unknown",
+                modules = emptyList()
             )
             repo.saveNewMetric(metric)
         }
@@ -141,6 +149,7 @@ class DatabaseRepositoryTest {
             listOf("assembleRelease"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
+            modules = emptyList()
         )
         repo.updateDayMetric(dayMetric.second, newMetric)
         assertEquals("master", repo.getDayMetric().first.branch)

@@ -64,7 +64,8 @@ class CreateCacheHitReportStageTest {
                     path = ":data"
                 )
             )
-        )
+        ),
+        modules = listOf(":core", ":domain", ":data")
     )
 
     private val sampleBuildMetricWithCacheHit = BuildMetric(
@@ -90,7 +91,8 @@ class CreateCacheHitReportStageTest {
                     path = ":data"
                 )
             )
-        )
+        ),
+        modules = listOf(":core", ":domain", ":data")
     )
 
     private val sampleBuildMetricWithoutCacheHit = BuildMetric(
@@ -100,6 +102,7 @@ class CreateCacheHitReportStageTest {
         ),
         createdAt = 16588904332,
         gitHeadCommitHash = "unknown",
+        modules = emptyList()
     )
 
     @Test

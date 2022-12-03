@@ -38,7 +38,7 @@ import org.gradle.internal.scan.time.BuildScanBuildStartedTime
  * [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService].
  */
 class BuildInitializationService(
-    private val gradle: Gradle
+    private val project: Project
 ) : InternalBuildListener, ProjectEvaluationListener {
 
     companion object {
@@ -48,6 +48,12 @@ class BuildInitializationService(
         fun reset() {
             STARTED_AT = 0L
             INITIALIZED_AT = 0L
+        }
+
+        fun assignInitializedAt() {
+            if(INITIALIZED_AT == 0L) {
+                INITIALIZED_AT = System.currentTimeMillis()
+            }
         }
     }
 
@@ -64,9 +70,7 @@ class BuildInitializationService(
     }
 
     private fun assignInitializationTimestamp() {
-        if (INITIALIZED_AT == 0L) {
-            INITIALIZED_AT = System.currentTimeMillis()
-        }
+        assignInitializedAt()
     }
 
     @ExcludeJacocoGenerated
@@ -95,7 +99,7 @@ class BuildInitializationService(
      */
     @ExcludeJacocoGenerated
     private fun getStartTimestamp(): Long {
-        val buildStartedTimeService = (gradle as GradleInternal).services.get(BuildScanBuildStartedTime::class.java)
+        val buildStartedTimeService = (project.gradle as GradleInternal).services.get(BuildScanBuildStartedTime::class.java)
         return buildStartedTimeService?.buildStartedTime ?: System.currentTimeMillis()
     }
 

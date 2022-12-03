@@ -56,7 +56,8 @@ class CreateOverallBuildProcessReportStageTest {
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 1000L,
                     mean = 1200L
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -69,7 +70,8 @@ class CreateOverallBuildProcessReportStageTest {
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 900L,
                     mean = 1100L
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

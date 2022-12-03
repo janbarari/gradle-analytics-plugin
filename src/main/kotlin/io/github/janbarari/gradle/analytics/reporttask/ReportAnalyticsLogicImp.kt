@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
@@ -85,8 +84,7 @@ class ReportAnalyticsLogicImp(
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
     private val outputPath: String,
-    private val projectName: String,
-    private val modules: List<Module>
+    private val projectName: String
 ) : ReportAnalyticsLogic {
 
     @ExcludeJacocoGenerated
@@ -121,17 +119,18 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateOverallBuildProcessReportStage(data))
             .addStage(CreateModulesSourceCountReportStage(data))
             .addStage(CreateModulesMethodCountReportStage(data))
-            .addStage(CreateCacheHitReportStage(data)).addStage(CreateSuccessBuildRateReportStage(data))
+            .addStage(CreateCacheHitReportStage(data))
+            .addStage(CreateSuccessBuildRateReportStage(data))
             .addStage(CreateDependencyResolveProcessReportStage(data))
             .addStage(CreateParallelExecutionRateReportStage(data))
-            .addStage(CreateModulesExecutionProcessReportStage(modules, data))
+            .addStage(CreateModulesExecutionProcessReportStage(data))
             .addStage(CreateModulesDependencyGraphReportStage(data))
             .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(modules, data))
+            .addStage(CreateBuildStatusReportStage(data))
             .addStage(CreateModulesBuildHeatmapReportStage(data))
             .addStage(CreateNonCacheableTasksReportStage(data))
             .addStage(CreateModulesSourceSizeReportStage(data))
-            .addStage(CreateModulesCrashCountReportStage(modules, data))
+            .addStage(CreateModulesCrashCountReportStage(data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -166,7 +165,7 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderDependencyResolveProcessReportStage(report))
             .addStage(RenderParallelExecutionRateReportStage(report))
             .addStage(RenderModulesExecutionProcessReportStage(report))
-            .addStage(RenderModulesDependencyGraphReportStage(report))
+            .addStage(RenderModulesDependencyGraphReportStage(report, outputPath, projectName))
             .addStage(RenderModulesTimelineReportStage(report))
             .addStage(RenderBuildStatusReportStage(report))
             .addStage(RenderModulesBuildHeatmapReportStage(report))
@@ -180,7 +179,16 @@ class ReportAnalyticsLogicImp(
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
         val resources = listOf(
-            "nunito.ttf", "plugin-logo.png", "styles.css", "functions.js", "chart.js", "mermaid.js", "d3.js", "timeline.js"
+            "nunito.ttf",
+            "plugin-logo.png",
+            "styles.css",
+            "functions.js",
+            "chart.js",
+            "mermaid.js",
+            "d3.js",
+            "timeline.js",
+            "jquery.js",
+            "panzoom.js"
         )
         val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
 

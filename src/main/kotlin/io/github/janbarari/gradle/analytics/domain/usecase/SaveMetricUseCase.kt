@@ -110,7 +110,8 @@ class SaveMetricUseCase(
                         branch = input.branch,
                         requestedTasks = input.requestedTasks,
                         createdAt = input.createdAt,
-                        gitHeadCommitHash = input.gitHeadCommitHash
+                        gitHeadCommitHash = input.gitHeadCommitHash,
+                        modules = input.modules
                     )
                 )
 
