@@ -569,13 +569,13 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta3&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta4&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta3&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta4&#39;</span><span class="w"></span>
 <span class="o">}</span><span class="w"></span>
 </code></pre></div>
 </div>
@@ -589,6 +589,8 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// By default it&#39;s True.</span><span class="w"></span>
+
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_PATH&quot;</span><span class="w"></span>
@@ -622,6 +624,8 @@ so It is required for your project to use Git VCS.</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// By default it&#39;s True.</span><span class="w"></span>
+
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_PATH&#39;</span><span class="w"></span>
