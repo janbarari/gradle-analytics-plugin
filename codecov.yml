@@ -32,6 +32,8 @@ coverage:
   precision: 2
 
   status:
+    patch: no
+
     project:
       default:
         target: 60%
