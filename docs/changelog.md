@@ -23,6 +23,17 @@
 
 # Changelog
 
+## 1.0.0-beta4
+* [Feature 45](https://github.com/janbarari/gradle-analytics-plugin/issues/45)
+* [Issue 61](https://github.com/janbarari/gradle-analytics-plugin/issues/61)
+* [Issue 67](https://github.com/janbarari/gradle-analytics-plugin/issues/67)
+* [Issue 68](https://github.com/janbarari/gradle-analytics-plugin/issues/68)
+* [Issue 69](https://github.com/janbarari/gradle-analytics-plugin/issues/69)
+* [Issue 70](https://github.com/janbarari/gradle-analytics-plugin/issues/70)
+* [Issue 71](https://github.com/janbarari/gradle-analytics-plugin/issues/71)
+* [Issue 72](https://github.com/janbarari/gradle-analytics-plugin/issues/72)
+* [Issue 73](https://github.com/janbarari/gradle-analytics-plugin/issues/73)
+
 ## 1.0.0-beta3
 * Documentation dark mode added
 * Report dark mode added
