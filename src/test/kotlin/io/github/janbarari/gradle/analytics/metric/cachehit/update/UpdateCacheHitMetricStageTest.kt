@@ -42,6 +42,7 @@ class UpdateCacheHitMetricStageTest {
         requestedTasks = listOf("assemble"),
         createdAt = 16588904332,
         gitHeadCommitHash = "unknown",
+        modules = listOf(":core", ":data", ":domain")
     )
 
     @BeforeAll

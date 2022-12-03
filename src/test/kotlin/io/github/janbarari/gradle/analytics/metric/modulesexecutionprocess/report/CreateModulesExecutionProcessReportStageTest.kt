@@ -36,9 +36,8 @@ class CreateModulesExecutionProcessReportStageTest {
 
     @Test
     fun `when process() executes without metric, expect empty report`() = runBlocking {
-        val modules = listOf<Module>()
         val metrics = listOf<BuildMetric>()
-        val stage = CreateModulesExecutionProcessReportStage(modules, metrics)
+        val stage = CreateModulesExecutionProcessReportStage(metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -69,7 +68,8 @@ class CreateModulesExecutionProcessReportStageTest {
                 branch = "main",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
-                gitHeadCommitHash = UUID.randomUUID().toString()
+                gitHeadCommitHash = UUID.randomUUID().toString(),
+                modules = listOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesExecutionProcessMetric = ModulesExecutionProcessMetric(
                     listOf(
@@ -85,7 +85,8 @@ class CreateModulesExecutionProcessReportStageTest {
                 branch = "main",
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668936974389,
-                gitHeadCommitHash = UUID.randomUUID().toString()
+                gitHeadCommitHash = UUID.randomUUID().toString(),
+                modules = listOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesExecutionProcessMetric = ModulesExecutionProcessMetric(
                     listOf(
@@ -98,7 +99,7 @@ class CreateModulesExecutionProcessReportStageTest {
         )
 
 
-        val stage = CreateModulesExecutionProcessReportStage(modules, metrics)
+        val stage = CreateModulesExecutionProcessReportStage(metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

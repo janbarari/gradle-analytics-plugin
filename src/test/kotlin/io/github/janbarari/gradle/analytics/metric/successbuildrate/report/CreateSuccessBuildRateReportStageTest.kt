@@ -57,7 +57,8 @@ class CreateSuccessBuildRateReportStageTest {
                     meanRate = 36F,
                     successes = 14,
                     fails = 5
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -72,7 +73,8 @@ class CreateSuccessBuildRateReportStageTest {
                     meanRate = 63F,
                     successes = 19,
                     fails = 2
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

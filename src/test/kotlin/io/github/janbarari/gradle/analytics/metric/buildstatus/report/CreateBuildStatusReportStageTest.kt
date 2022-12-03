@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.metric.buildstatus.report
 
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
@@ -43,10 +42,9 @@ class CreateBuildStatusReportStageTest {
 
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
-        val modules = listOf<Module>()
         val metrics = mutableListOf<BuildMetric>()
 
-        val stage = CreateBuildStatusReportStage(modules, metrics)
+        val stage = CreateBuildStatusReportStage(metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -67,12 +65,7 @@ class CreateBuildStatusReportStageTest {
 
     @Test
     fun `check process() generates report when metric is available`() = runBlocking {
-        val modules = mutableListOf<Module>()
         val metrics = mutableListOf<BuildMetric>()
-
-        modules.add(Module(":woman", "woman/fake/directory"))
-        modules.add(Module(":life", "life/fake/directory"))
-        modules.add(Module(":freedom", "freedom/fake/directory"))
 
         metrics.add(
             BuildMetric(
@@ -80,6 +73,11 @@ class CreateBuildStatusReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
+                modules = listOf(
+                    ":woman",
+                    ":life",
+                    ":freedom"
+                ),
                 overallBuildProcessMetric = OverallBuildProcessMetric(median = 100L, mean = 135L),
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(median = 50L, mean = 50L),
                 executionProcessMetric = ExecutionProcessMetric(median = 1500L, mean = 1750L),
@@ -101,6 +99,11 @@ class CreateBuildStatusReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
+                modules = listOf(
+                    ":woman",
+                    ":life",
+                    ":freedom"
+                ),
                 overallBuildProcessMetric = OverallBuildProcessMetric(median = 80L, mean = 98L),
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(median = 69L, mean = 64L),
                 executionProcessMetric = ExecutionProcessMetric(median = 1000L, mean = 1450L),
@@ -116,7 +119,7 @@ class CreateBuildStatusReportStageTest {
             )
         )
 
-        val stage = CreateBuildStatusReportStage(modules, metrics)
+        val stage = CreateBuildStatusReportStage(metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

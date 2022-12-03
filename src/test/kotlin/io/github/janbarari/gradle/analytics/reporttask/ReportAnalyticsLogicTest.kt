@@ -55,8 +55,7 @@ class ReportAnalyticsLogicTest {
             },
             branch = "master",
             outputPath = "./build/test/result/",
-            projectName = "gradle-analytics-plugin",
-            modules = emptyList()
+            projectName = "gradle-analytics-plugin"
         )
     }
 

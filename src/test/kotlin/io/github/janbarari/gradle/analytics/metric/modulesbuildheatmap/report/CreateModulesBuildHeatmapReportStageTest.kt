@@ -69,7 +69,8 @@ class CreateModulesBuildHeatmapReportStageTest {
                         ModuleCacheHit(":life", 40),
                         ModuleCacheHit(":freedom", 20),
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -93,7 +94,8 @@ class CreateModulesBuildHeatmapReportStageTest {
                         ModuleCacheHit(":life", 40),
                         ModuleCacheHit(":freedom", 20),
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

@@ -22,7 +22,6 @@
  */
 package io.github.janbarari.gradle.analytics.metric.buildstatus.report
 
-import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.BuildStatusReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -32,7 +31,6 @@ import io.github.janbarari.gradle.extension.millisToSeconds
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateBuildStatusReportStage(
-    private val modules: List<Module>,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
@@ -42,7 +40,7 @@ class CreateBuildStatusReportStage(
                 cumulativeOverallBuildProcessBySeconds = getCumulativeOverallBuildProcessInSeconds(),
                 avgOverallBuildProcessBySeconds = getAvgOverallBuildProcessInSeconds(),
                 totalBuildProcessCount = metrics.size,
-                totalProjectModulesCount = modules.size,
+                totalProjectModulesCount = metrics.lastOrNull()?.modules?.size ?: 0,
                 cumulativeDependencyResolveBySeconds = getCumulativeDependencyResolveInSeconds(),
                 cumulativeParallelExecutionBySeconds = getCumulativeParallelExecutionInSeconds(),
                 avgParallelExecutionRate = getAvgParallelExecutionRate(),

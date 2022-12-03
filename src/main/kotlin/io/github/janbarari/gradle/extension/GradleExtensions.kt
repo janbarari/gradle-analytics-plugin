@@ -67,6 +67,14 @@ inline fun <reified T : DefaultTask> Project.registerTask(name: String, noinline
 }
 
 /**
+ * Create the given task.
+ */
+@ExcludeJacocoGenerated
+inline fun <reified T : DefaultTask> Project.createTask(name: String): T {
+    return project.tasks.create(name, T::class.java)
+}
+
+/**
  * Check if the given Task is cacheable.
  */
 @ExcludeJacocoGenerated

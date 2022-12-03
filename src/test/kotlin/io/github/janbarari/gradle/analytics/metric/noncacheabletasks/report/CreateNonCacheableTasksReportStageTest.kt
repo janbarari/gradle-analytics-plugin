@@ -59,7 +59,8 @@ class CreateNonCacheableTasksReportStageTest {
                             avgExecutionDurationInMillis = 100
                         )
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -76,7 +77,8 @@ class CreateNonCacheableTasksReportStageTest {
                             avgExecutionDurationInMillis = 100
                         )
                     )
-                )
+                ),
+                modules = listOf(":woman", ":life", ":freedom")
             )
         )
 

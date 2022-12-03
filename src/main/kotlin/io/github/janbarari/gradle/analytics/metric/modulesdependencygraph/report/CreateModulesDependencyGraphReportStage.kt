@@ -34,7 +34,8 @@ class CreateModulesDependencyGraphReportStage(
     override suspend fun process(input: Report): Report {
         return input.apply {
             modulesDependencyGraphReport = ModulesDependencyGraphReport(
-                dependencies = metrics.lastOrNull()?.modulesDependencyGraphMetric?.dependencies ?: emptyList()
+                dependencies = metrics.lastOrNull()?.modulesDependencyGraphMetric?.dependencies ?: emptyList(),
+                modules = metrics.lastOrNull()?.modules ?: emptyList()
             )
         }
     }

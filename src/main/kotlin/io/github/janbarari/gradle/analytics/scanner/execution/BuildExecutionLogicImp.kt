@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
+import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
@@ -78,6 +79,7 @@ import kotlinx.coroutines.runBlocking
  */
 class BuildExecutionLogicImp(
     private val requestedTasks: List<String>,
+    private val modules: List<Module>,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -152,7 +154,8 @@ class BuildExecutionLogicImp(
                     buildInfo.branch,
                     buildInfo.requestedTasks,
                     buildInfo.createdAt,
-                    buildInfo.gitHeadCommitHash
+                    buildInfo.gitHeadCommitHash,
+                    modules.map { it.path }
                 )
             )
 

@@ -152,7 +152,7 @@ class RenderBuildStatusReportStageTest {
                     "          </tr>\n" +
                     "          <tr>\n" +
                     "            <th>\n" +
-                    "              <span class=\"green\">33</span> | <span class=\"red\">12</span>\n" +
+                    "              <span style=\"color: #2e8b57;\">33</span> | <span style=\"color: #ff4040;\">12</span>\n" +
                     "            </th>\n" +
                     "          </tr>\n" +
                     "        </table>\n" +

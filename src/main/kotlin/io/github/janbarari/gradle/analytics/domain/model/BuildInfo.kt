@@ -60,11 +60,20 @@ data class BuildInfo(
                 }
             } + executedTasks.map { TimeSlot(startedAt = it.startedAt, finishedAt = it.finishedAt) }
 
+        // Find the remaining duration from the latest executed task till the finish process.
+        var remainingDuration = 0L
+        val lastExecutedTask = executedTasks.maxByOrNull { it.finishedAt }
+        if (lastExecutedTask != null) {
+            if (finishedAt > lastExecutedTask.finishedAt) {
+                remainingDuration = finishedAt - lastExecutedTask.finishedAt
+            }
+        }
+
         return getInitializationDuration() + getConfigurationDuration() + Duration.ofMillis(
             MathUtils.calculateTimeSlotNonParallelDurationInMillis(
                 mergeDependencyResolvesAndExecutionProcessTimeSlots
             )
-        )
+        ) + Duration.ofMillis(remainingDuration)
     }
 
     /**

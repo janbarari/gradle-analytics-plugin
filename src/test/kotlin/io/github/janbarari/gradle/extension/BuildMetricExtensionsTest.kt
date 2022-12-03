@@ -46,7 +46,8 @@ class BuildMetricExtensionsTest {
                 initializationProcessMetric = InitializationProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToInitializationMedianTimespanChartPoints()
@@ -66,7 +67,8 @@ class BuildMetricExtensionsTest {
                 initializationProcessMetric = InitializationProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToInitializationMeanTimespanChartPoints()
@@ -86,7 +88,8 @@ class BuildMetricExtensionsTest {
                 configurationProcessMetric = ConfigurationProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToConfigurationMedianTimespanChartPoints()
@@ -106,7 +109,8 @@ class BuildMetricExtensionsTest {
                 configurationProcessMetric = ConfigurationProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToConfigurationMeanTimespanChartPoints()
@@ -126,7 +130,8 @@ class BuildMetricExtensionsTest {
                 executionProcessMetric = ExecutionProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToExecutionMedianTimespanChartPoints()
@@ -146,7 +151,8 @@ class BuildMetricExtensionsTest {
                 executionProcessMetric = ExecutionProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToExecutionMeanTimespanChartPoints()
@@ -166,7 +172,8 @@ class BuildMetricExtensionsTest {
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToOverallBuildProcessMedianTimespanChartPoints()
@@ -186,7 +193,8 @@ class BuildMetricExtensionsTest {
                 overallBuildProcessMetric = OverallBuildProcessMetric(
                     median = 1000L,
                     mean = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToOverallBuildProcessMeanTimespanChartPoints()
@@ -206,7 +214,8 @@ class BuildMetricExtensionsTest {
                 successBuildRateMetric = SuccessBuildRateMetric(
                     medianRate = 100F,
                     meanRate = 100F
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToSuccessBuildRateMedianTimespanChartPoints()
@@ -226,7 +235,8 @@ class BuildMetricExtensionsTest {
                 successBuildRateMetric = SuccessBuildRateMetric(
                     medianRate = 100F,
                     meanRate = 100F
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToSuccessBuildRateMeanTimespanChartPoints()
@@ -246,7 +256,8 @@ class BuildMetricExtensionsTest {
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(
                     mean = 1000L,
                     median = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToDependencyResolveMedianTimespanChartPoints()
@@ -266,7 +277,8 @@ class BuildMetricExtensionsTest {
                 dependencyResolveProcessMetric = DependencyResolveProcessMetric(
                     mean = 1000L,
                     median = 1000L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToDependencyResolveMeanTimespanChartPoints()
@@ -285,7 +297,8 @@ class BuildMetricExtensionsTest {
                 gitHeadCommitHash = "unknown",
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(
                     medianRate = 90L
-                )
+                ),
+                modules = emptyList()
             )
         )
         val result = buildMetrics.mapToParallelExecutionRateMedianTimespanPoints()

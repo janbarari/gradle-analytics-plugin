@@ -309,6 +309,7 @@ fun BuildExecutionInjector.provideCreateModulesCrashCountMetricUseCase(): Create
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
         requestedTasks = requestedTasks!!,
+        modules = modules!!,
         saveMetricUseCase = provideSaveMetricUseCase(),
         saveTemporaryMetricUseCase = provideSaveTemporaryMetricUseCase(),
         upsertModulesTimelineUseCase = provideUpsertModulesTimelineUseCase(),

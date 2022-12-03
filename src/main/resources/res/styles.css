@@ -110,7 +110,7 @@ td {
 }
 
 #container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: auto;
 }
 
@@ -289,8 +289,8 @@ hr {
 }
 
 .dark-mode .mermaid {
-    background-color: #F5F5F5;
-    border-radius: 10px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
 }
 
 .modules-timeline-graph {
@@ -298,8 +298,8 @@ hr {
 }
 
 .dark-mode .modules-timeline-graph {
-    background-color: #F5F5F5;
-    border-radius: 10px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
     padding: 16px;
 
 }
