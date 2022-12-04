@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
-import io.github.janbarari.gradle.extension.isDependingOnOtherProject
+import io.github.janbarari.gradle.extension.isModuleProject
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 
@@ -34,7 +34,7 @@ object DependencyGraphGenerator {
         val dependencies = mutableListOf<ModuleDependency>()
 
         project.subprojects.filter {
-            it.isDependingOnOtherProject()
+            it.isModuleProject()
         }.forEach { subProject ->
             subProject.configurations.forEach { configuration ->
                 configuration.dependencies.withType(ProjectDependency::class.java).forEach { dependency ->

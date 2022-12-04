@@ -165,7 +165,9 @@ class BuildExecutionLogicImp(
         if (buildMetric.modulesTimelineMetric.isNotNull())
             upsertModulesTimelineUseCase.execute(buildInfo.branch to buildMetric.modulesTimelineMetric!!)
 
-        printBuildInfo(buildMetric)
+        if (isSuccessful) {
+            printBuildInfo(buildMetric)
+        }
     }
 
     private fun printBuildInfo(buildMetric: BuildMetric) {

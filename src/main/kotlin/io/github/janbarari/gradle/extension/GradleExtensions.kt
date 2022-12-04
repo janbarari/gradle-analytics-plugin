@@ -26,7 +26,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.invocation.Gradle
 import java.util.*
 
@@ -54,8 +53,15 @@ fun envCI(): Boolean {
  * Check is project dependency has dependency to ProjectDependency type.
  */
 @ExcludeJacocoGenerated
-fun Project.isDependingOnOtherProject(): Boolean {
-    return configurations.any { configuration -> configuration.dependencies.any { it is ProjectDependency } }
+fun Project.isModuleProject(): Boolean {
+    return plugins.hasPlugin("com.android.application") ||
+            plugins.hasPlugin("com.android.library") ||
+            plugins.hasPlugin("jvm") ||
+            plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
+            plugins.hasPlugin("java-library") ||
+            plugins.hasPlugin("org.gradle.java-library") ||
+            plugins.hasPlugin("org.gradle.java")
+
 }
 
 /**
