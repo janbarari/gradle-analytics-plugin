@@ -58,7 +58,10 @@ fun Project.isModuleProject(): Boolean {
             plugins.hasPlugin("com.android.library") ||
             plugins.hasPlugin("jvm") ||
             plugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
-            plugins.hasPlugin("java-library")
+            plugins.hasPlugin("java-library") ||
+            plugins.hasPlugin("org.gradle.java-library") ||
+            plugins.hasPlugin("org.gradle.java")
+
 }
 
 /**
