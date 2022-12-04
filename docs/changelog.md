@@ -23,6 +23,9 @@
 
 # Changelog
 
+## HotFix - 1.0.0-beta5
+* [Issue 77](https://github.com/janbarari/gradle-analytics-plugin/issues/77)
+
 ## 1.0.0-beta4
 * [Feature 45](https://github.com/janbarari/gradle-analytics-plugin/issues/45)
 * [Issue 61](https://github.com/janbarari/gradle-analytics-plugin/issues/61)
