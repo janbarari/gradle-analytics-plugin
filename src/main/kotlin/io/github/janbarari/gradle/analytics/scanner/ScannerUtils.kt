@@ -32,7 +32,7 @@ import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitiali
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.extension.getNonCacheableTasks
 import io.github.janbarari.gradle.extension.getRequestedTasks
-import io.github.janbarari.gradle.extension.isDependingOnOtherProject
+import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.api.Project
@@ -67,7 +67,7 @@ object ScannerUtils {
             }
 
             val modules = project.subprojects
-                .filter { it.isDependingOnOtherProject() }
+                .filter { it.isModuleProject() }
                 .map { it.toModule() }
 
             val modulesDependencyGraph = DependencyGraphGenerator.generate(project)
