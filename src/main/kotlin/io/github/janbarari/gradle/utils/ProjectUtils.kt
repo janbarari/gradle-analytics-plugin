@@ -30,13 +30,9 @@ import org.gradle.util.GradleVersion
 object ProjectUtils {
 
     /**
-     * List of official Gradle releases.
+     * List of official Gradle versions.
      */
     enum class GradleVersions(val versionNumber: String) {
-        V8_0_2("8.0.2"),
-        V8_0_1("8.0.1"),
-        V8_0("8.0"),
-        V7_6_1("7.6.1"),
         V7_6("7.6"),
         V7_5_1("7.5.1"),
         V7_5("7.5"),
@@ -77,11 +73,12 @@ object ProjectUtils {
     }
 
     /**
-     * Checks that the project's Gradle version is compatible with the entered Gradle version.
+     * Check the project Gradle version is compatible(above the entered gradle version).
      */
-    fun isProjectCompatibleWith(version: GradleVersions): Boolean {
+    fun isCompatibleWith(version: GradleVersions): Boolean {
         val projectGradleVersion = GradleVersion.current()
         val minimumRequiredGradleVersion = GradleVersion.version(version.versionNumber)
         return projectGradleVersion > minimumRequiredGradleVersion
     }
+
 }
