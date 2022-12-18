@@ -65,7 +65,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                     trackingTasksProperty.set(config.trackingTasks)
                     trackingBranchesProperty.set(config.trackingBranches)
                     databaseConfigProperty.set(config.getDatabaseConfig())
+                    // disable the task from being cached or reuse the outputs on incremental builds.
                     outputs.cacheIf { false }
+                    outputs.upToDateWhen { false }
                 }
             }
         }
