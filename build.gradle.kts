@@ -23,7 +23,6 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
-import kotlin.Throwable
 
 val pluginId: String by project
 val pluginDisplayName: String by project
@@ -146,6 +145,7 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
+                "clean",
                 "validateSourceHeaderLicense",
                 "detekt",
                 "build",

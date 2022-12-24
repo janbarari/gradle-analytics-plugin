@@ -147,7 +147,7 @@ class RenderBuildStatusReportStageTest {
                     "          <tr>\n" +
                     "            <th>\n" +
                     "              <i class=\"bi bi-check-circle\"></i><br>\n" +
-                    "              Total<br>Succeed | Failed<br>Builds\n" +
+                    "              Total<br>Succeed|Failed<br>Builds\n" +
                     "            </th>\n" +
                     "          </tr>\n" +
                     "          <tr>\n" +
