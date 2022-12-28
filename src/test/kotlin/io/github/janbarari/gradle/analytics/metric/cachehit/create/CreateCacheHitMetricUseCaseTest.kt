@@ -36,7 +36,7 @@ class CreateCacheHitMetricUseCaseTest {
 
     lateinit var usecase: CreateCacheHitMetricUseCase
 
-    private val modules = listOf(
+    private val modules = setOf(
         Module(path = ":app", "TEMPORARY_DIRECTORY"),
         Module(path = ":domain", "TEMPORARY_DIRECTORY"),
         Module(path = ":core", "TEMPORARY_DIRECTORY")

@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 
 class CreateCacheHitMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ): UseCase<BuildInfo, CacheHitMetric>() {
 
     override suspend fun execute(input: BuildInfo): CacheHitMetric {

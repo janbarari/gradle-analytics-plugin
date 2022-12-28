@@ -29,7 +29,13 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
+import io.github.janbarari.gradle.analytics.scanner.execution.tower
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.logger.Tower
+import io.github.janbarari.gradle.logger.TowerImpl
+import kotlin.io.path.Path
 
 /**
  * Dependency injection for [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask].
@@ -44,9 +50,29 @@ class ReportAnalyticsInjector(
     var projectName: String? = null
 )
 
+// Singleton instances
+val tower: Tower? = null
+
+@ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideTower(): Tower {
+    if (tower.isNull()) {
+        tower = TowerImpl(
+            name = "report",
+            outputPath = Path("${outputPath!!}/${OUTPUT_DIRECTORY_NAME}"),
+            shouldDropOldLogFile = true,
+            maximumOldLogsCount = 0
+        )
+    }
+    return tower!!
+}
+
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
-    return Database(databaseConfig!!, isCI!!)
+    return Database(
+        provideTower(),
+        databaseConfig!!,
+        isCI!!
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -60,7 +86,8 @@ fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
         db = provideDatabase(),
         branch = branch!!,
         requestedTasks = requestedTasks!!,
-        moshi = provideMoshi()
+        moshi = provideMoshi(),
+        tower = provideTower()
     )
 }
 

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
@@ -44,7 +45,10 @@ class UpdateCacheHitMetricUseCaseTest {
     @BeforeAll
     fun setup() {
         repo = mockk()
-        useCase = UpdateCacheHitMetricUseCase(repo)
+        useCase = UpdateCacheHitMetricUseCase(
+            TowerMockImpl(),
+            repo
+        )
     }
 
     @Test

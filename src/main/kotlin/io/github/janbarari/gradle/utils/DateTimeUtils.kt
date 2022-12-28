@@ -87,6 +87,13 @@ object DateTimeUtils {
     }
 
     /**
+     * Convert time in milliseconds to `yyyy/MM/dd HH:mm:ss a UTC`.
+     */
+    fun formatToFullDateTime(timeInMs: Long): String {
+        return format(timeInMs, "yyyy/MM/dd HH:mm:ss a 'UTC'")
+    }
+
+    /**
      * Convert time in seconds to the human-readable elapsed time.
      */
     fun convertSecondsToHumanReadableTime(seconds: Long): String {

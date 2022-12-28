@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class CreateModulesSourceCountMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ) : UseCaseNoInput<ModulesSourceCountMetric>() {
 
     override suspend fun execute(): ModulesSourceCountMetric {

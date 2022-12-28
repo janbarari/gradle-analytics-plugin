@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
@@ -190,7 +191,7 @@ class ReportAnalyticsLogicImp(
             "jquery.js",
             "panzoom.js"
         )
-        val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
+        val savePath = "${outputPath.toRealPath()}/$OUTPUT_DIRECTORY_NAME"
 
         //copy resources
         resources.forEach { resource ->

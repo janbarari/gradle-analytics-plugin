@@ -30,7 +30,7 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenNotNull
 
 class CreateModulesCrashCountMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ) : UseCase<BuildInfo, ModulesCrashCountMetric>() {
 
     override suspend fun execute(input: BuildInfo): ModulesCrashCountMetric {

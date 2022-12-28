@@ -20,32 +20,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create
+package io.github.janbarari.gradle
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
-import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
-import io.github.janbarari.gradle.core.UseCase
-import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateNonCacheableTasksMetricUseCase(
-    private val nonCacheableTasks: Set<String>
-) : UseCase<BuildInfo, NonCacheableTasksMetric>() {
-
-    override suspend fun execute(input: BuildInfo): NonCacheableTasksMetric {
-        val temp = mutableListOf<NonCacheableTasksMetric.NonCacheableTask>()
-
-        nonCacheableTasks.whenEach {
-            input.executedTasks.filter { it.path == this }.forEach { task ->
-                temp.add(
-                    NonCacheableTasksMetric.NonCacheableTask(
-                        path = task.path,
-                        avgExecutionDurationInMillis = task.getDurationInMillis()
-                    )
-                )
-            }
-        }
-
-        return NonCacheableTasksMetric(tasks = temp)
+class TowerMockImpl: Tower {
+    override fun <T> e(clazz: Class<T>, message: String) {
+        // do nothing
     }
 
+    override fun <T> e(clazz: Class<T>, method: String, message: String) {
+        // do nothing
+    }
+
+    override fun <T> w(clazz: Class<T>, message: String) {
+        // do nothing
+    }
+
+    override fun <T> w(clazz: Class<T>, method: String, message: String) {
+        // do nothing
+    }
+
+    override fun <T> i(clazz: Class<T>, message: String) {
+        // do nothing
+    }
+
+    override fun <T> i(clazz: Class<T>, method: String, message: String) {
+        // do nothing
+    }
+
+    override fun r(message: String) {
+        // do nothing
+    }
+
+    override fun save() {
+        //do nothing
+    }
 }

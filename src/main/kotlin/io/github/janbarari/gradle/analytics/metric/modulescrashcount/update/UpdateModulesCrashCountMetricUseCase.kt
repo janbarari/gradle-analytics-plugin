@@ -31,7 +31,7 @@ import io.github.janbarari.gradle.extension.whenEach
 
 class UpdateModulesCrashCountMetricUseCase(
     private val repo: DatabaseRepository,
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ): UseCaseNoInput<ModulesCrashCountMetric>() {
 
     override suspend fun execute(): ModulesCrashCountMetric {

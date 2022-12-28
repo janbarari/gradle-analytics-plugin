@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineM
 import io.github.janbarari.gradle.core.UseCase
 
 class CreateModulesTimelineMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ): UseCase<BuildInfo, ModulesTimelineMetric>() {
 
     override suspend fun execute(input: BuildInfo): ModulesTimelineMetric {

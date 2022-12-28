@@ -34,7 +34,7 @@ import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateModulesExecutionProcessMetricUseCase(
     private val repo: DatabaseRepository,
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ): UseCaseNoInput<ModulesExecutionProcessMetric>() {
 
     override suspend fun execute(): ModulesExecutionProcessMetric {

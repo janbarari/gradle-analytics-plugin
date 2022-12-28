@@ -29,7 +29,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesBuildHeat
 import io.github.janbarari.gradle.core.UseCaseNoInput
 
 class CreateModulesBuildHeatmapMetricUseCase(
-    private val modules: List<Module>,
+    private val modules: Set<Module>,
     private val modulesDependencyGraph: ModulesDependencyGraph
 ): UseCaseNoInput<ModulesBuildHeatmapMetric>() {
 

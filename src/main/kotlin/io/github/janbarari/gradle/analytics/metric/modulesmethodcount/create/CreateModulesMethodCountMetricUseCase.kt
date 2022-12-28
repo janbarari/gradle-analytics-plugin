@@ -38,7 +38,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class CreateModulesMethodCountMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ) : UseCaseNoInput<ModulesMethodCountMetric>() {
 
     private val commentRegex = """(//.*)|(\/\*[^/*]*(?:(?!\/\*|\*\/)[/*][^/*]*)*\*\/)""".toRegex()

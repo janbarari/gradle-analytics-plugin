@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.data
 
 import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
@@ -49,12 +50,17 @@ class DatabaseRepositoryTest {
                 name = "testdb"
             }
         }
-        val db = Database(databaseConfig, false)
+        val db = Database(
+            TowerMockImpl(),
+            databaseConfig,
+            false
+        )
         repo = DatabaseRepositoryImp(
             db = db,
             branch = "develop",
             requestedTasks = "assembleDebug",
-            moshi = Moshi.Builder().build()
+            moshi = Moshi.Builder().build(),
+            tower = TowerMockImpl()
         )
     }
 

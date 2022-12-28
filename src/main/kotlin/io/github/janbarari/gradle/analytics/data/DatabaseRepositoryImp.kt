@@ -33,6 +33,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SortOrder
@@ -47,12 +48,18 @@ class DatabaseRepositoryImp(
     private val db: Database,
     private val branch: String,
     private val requestedTasks: String,
-    moshi: Moshi
+    moshi: Moshi,
+    private val tower: Tower
 ) : DatabaseRepository {
+
+    companion object {
+        private val clazz = DatabaseRepositoryImp::class.java
+    }
 
     private var jsonAdapter: BuildMetricJsonAdapter = BuildMetricJsonAdapter(moshi)
 
     override fun saveNewMetric(metric: BuildMetric): Long {
+        tower.i(clazz, "saveNewMetric() metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = MetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -66,6 +73,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun saveTemporaryMetric(metric: BuildMetric): Long {
+        tower.i(clazz, "saveTemporaryMetric() metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = TemporaryMetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -78,6 +86,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun getDayMetric(): Pair<BuildMetric, Long> {
+        tower.i(clazz, "getDayMetric()")
         return db.transaction {
             val queryResult = MetricTable.select {
                 (MetricTable.createdAt greaterEq DateTimeUtils.getDayStartMs()) and
@@ -85,6 +94,8 @@ class DatabaseRepositoryImp(
                         (MetricTable.branch eq branch) and
                         (MetricTable.requestedTasks eq requestedTasks)
             }.single()
+            tower.i(clazz, "getDayMetric() value.hashCode=${queryResult[MetricTable.value].hashCode()} " +
+                    "number=${queryResult[MetricTable.number]}")
             return@transaction Pair(
                 jsonAdapter.fromJson(queryResult[MetricTable.value])!!, queryResult[MetricTable.number]
             )
@@ -92,6 +103,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun isDayMetricExists(): Boolean {
+        tower.i(clazz, "isDayMetricExists()")
         return db.transaction {
             val queryResult = MetricTable.select {
                 (MetricTable.createdAt greaterEq DateTimeUtils.getDayStartMs()) and
@@ -99,11 +111,14 @@ class DatabaseRepositoryImp(
                         (MetricTable.branch eq branch) and
                         (MetricTable.requestedTasks eq requestedTasks)
             }
-            return@transaction queryResult.count() > 0
+            val result = queryResult.count() > 0
+            tower.i(clazz, "isDayMetricExists() return $result")
+            return@transaction result
         }
     }
 
     override fun getMetrics(period: Pair<Long, Long>): List<BuildMetric> {
+        tower.i(clazz, "getMetrics() period from ${period.first} to ${period.second}")
         return db.transaction {
             val result = arrayListOf<BuildMetric>()
             MetricTable.select {
@@ -121,6 +136,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun updateDayMetric(number: Long, metric: BuildMetric): Boolean {
+        tower.i(clazz, "updateDayMetric() number=$number metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = MetricTable.update({
                 MetricTable.number eq number
@@ -133,6 +149,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun dropOutdatedTemporaryMetrics(): Boolean {
+        tower.i(clazz, "dropOutdatedTemporaryMetrics()")
         return db.transaction {
             val dayMetrics = mutableListOf<ResultRow>()
             TemporaryMetricTable.select {
@@ -159,6 +176,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun dropOutdatedMetrics() {
+        tower.i(clazz, "dropOutdatedMetrics()")
         return db.transaction {
             MetricTable.deleteWhere {
                 // Delete all metrics that are created more than 1 year ago.
@@ -168,6 +186,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun dropMetrics(): Boolean {
+        tower.i(clazz, "dropMetrics()")
         return db.transaction {
             MetricTable.deleteAll()
             ResetAutoIncremental.getQuery("metric")?.let {
@@ -178,6 +197,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun getTemporaryMetrics(): List<BuildMetric> {
+        tower.i(clazz, "getTemporaryMetrics()")
         return db.transaction {
             if (dropOutdatedTemporaryMetrics()) {
                 val metrics = arrayListOf<BuildMetric>()
@@ -190,26 +210,32 @@ class DatabaseRepositoryImp(
                         metrics.add(metric)
                     }
                 }
+                tower.i(clazz, "getTemporaryMetrics() return ${metrics.size} metrics")
                 return@transaction metrics
             } else {
+                tower.i(clazz, "getTemporaryMetrics() return empty list")
                 return@transaction emptyList()
             }
         }
     }
 
     override fun getSingleMetric(key: String, branch: String): String? {
+        tower.i(clazz, "getSingleMetric() key=$key branch=$branch")
         return db.transaction {
             val queryResult = SingleMetricTable.select {
                 (SingleMetricTable.key eq key) and (SingleMetricTable.branch eq branch)
             }
             if (queryResult.count() > 0) {
+                tower.i(clazz, "getSingleMetric() key=$key branch=$branch, metric found")
                 return@transaction queryResult.single()[SingleMetricTable.value]
             }
+            tower.i(clazz, "getSingleMetric() key=$key branch=$branch, metric not found")
             return@transaction null
         }
     }
 
     override fun updateSingleMetric(key: String, branch: String, value: String): Boolean {
+        tower.i(clazz, "updateSingleMetric() key=$key branch=$branch value.hashCode=${value.hashCode()}")
         return db.transaction {
             val queryResult = SingleMetricTable.update(
                 {
@@ -224,6 +250,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun saveSingleMetric(key: String, branch: String, value: String): Boolean {
+        tower.i(clazz, "saveSingleMetric() key=$key branch=$branch value.hashCode=${value.hashCode()}")
         return db.transaction {
             SingleMetricTable.insert {
                 it[SingleMetricTable.key] = key
@@ -236,6 +263,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun dropSingleMetric(key: String, branch: String): Boolean {
+        tower.i(clazz, "dropSingleMetric() key=$key branch=$branch")
         return db.transaction {
             SingleMetricTable.deleteWhere {
                 (SingleMetricTable.key eq key) and (SingleMetricTable.branch eq branch)
@@ -245,10 +273,10 @@ class DatabaseRepositoryImp(
     }
 
     override fun dropSingleMetrics(): Boolean {
+        tower.i(clazz, "dropSingleMetrics()")
         return db.transaction {
             SingleMetricTable.deleteAll()
             return@transaction true
         }
     }
-
 }

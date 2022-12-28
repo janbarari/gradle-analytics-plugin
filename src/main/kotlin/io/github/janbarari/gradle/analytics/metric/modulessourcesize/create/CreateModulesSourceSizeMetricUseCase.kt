@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class CreateModulesSourceSizeMetricUseCase(
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ) : UseCaseNoInput<ModulesSourceSizeMetric>() {
 
     override suspend fun execute(): ModulesSourceSizeMetric {
