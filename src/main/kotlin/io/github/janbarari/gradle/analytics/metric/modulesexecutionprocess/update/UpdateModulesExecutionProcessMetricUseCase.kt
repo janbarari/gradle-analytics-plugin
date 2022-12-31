@@ -30,14 +30,21 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateModulesExecutionProcessMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository,
     private val modules: Set<Module>
 ): UseCaseNoInput<ModulesExecutionProcessMetric>() {
 
+    companion object {
+        private val clazz = UpdateModulesExecutionProcessMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesExecutionProcessMetric {
+        tower.i(clazz, "execute()")
         val modulesMedianExecutionProcess = modules.map {
             calculateMedianModuleExecutionProcess(modulePath = it.path, metrics = repo.getTemporaryMetrics())
         }

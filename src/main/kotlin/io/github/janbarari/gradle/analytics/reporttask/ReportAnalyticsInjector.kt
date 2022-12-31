@@ -31,7 +31,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.scanner.execution.tower
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
@@ -48,20 +47,33 @@ class ReportAnalyticsInjector(
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
     var projectName: String? = null
-)
+) {
 
-// Singleton instances
-val tower: Tower? = null
+    // Singleton objects
+    @Volatile
+    var tower: Tower? = null
+
+    /**
+     * Destroy singleton objects
+     */
+    fun destroy() {
+        tower = null
+    }
+
+}
+
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideTower(): Tower {
     if (tower.isNull()) {
-        tower = TowerImpl(
-            name = "report",
-            outputPath = Path("${outputPath!!}/${OUTPUT_DIRECTORY_NAME}"),
-            shouldDropOldLogFile = true,
-            maximumOldLogsCount = 0
-        )
+        tower = synchronized(this) {
+            TowerImpl(
+                name = "report",
+                outputPath = Path("${outputPath!!}/${OUTPUT_DIRECTORY_NAME}"),
+                shouldDropOldLogFile = true,
+                maximumOldLogsCount = 0
+            )
+        }
     }
     return tower!!
 }

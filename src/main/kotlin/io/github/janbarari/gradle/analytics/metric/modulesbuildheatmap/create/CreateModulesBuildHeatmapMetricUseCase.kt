@@ -27,13 +27,20 @@ import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleBuildHeatmap
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesBuildHeatmapMetric
 import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesBuildHeatmapMetricUseCase(
+    private val tower: Tower,
     private val modules: Set<Module>,
     private val modulesDependencyGraph: ModulesDependencyGraph
 ): UseCaseNoInput<ModulesBuildHeatmapMetric>() {
 
+    companion object {
+        private val clazz = CreateModulesBuildHeatmapMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesBuildHeatmapMetric {
+        tower.i(clazz, "execute()")
         val result = mutableListOf<ModuleBuildHeatmap>()
 
         modules.forEach { module ->

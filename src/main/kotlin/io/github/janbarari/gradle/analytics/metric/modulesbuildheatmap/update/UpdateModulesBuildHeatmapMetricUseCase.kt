@@ -25,12 +25,19 @@ package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.update
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesBuildHeatmapMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.logger.Tower
 
 class UpdateModulesBuildHeatmapMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ModulesBuildHeatmapMetric>() {
 
+    companion object {
+        private val clazz = UpdateModulesBuildHeatmapMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesBuildHeatmapMetric {
+        tower.i(clazz, "execute()")
         return ModulesBuildHeatmapMetric(
             modules = repo.getTemporaryMetrics().lastOrNull()?.modulesBuildHeatmap?.modules ?: emptyList()
         )

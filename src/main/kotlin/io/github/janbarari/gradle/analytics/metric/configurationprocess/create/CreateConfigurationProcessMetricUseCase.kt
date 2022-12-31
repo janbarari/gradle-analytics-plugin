@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.configurationprocess.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ConfigurationProcessMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateConfigurationProcessMetricUseCase: UseCase<BuildInfo, ConfigurationProcessMetric>() {
+class CreateConfigurationProcessMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, ConfigurationProcessMetric>() {
+
+    companion object {
+        private val clazz = CreateConfigurationProcessMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): ConfigurationProcessMetric {
+        tower.i(clazz, "execute()")
         return ConfigurationProcessMetric(
             median = input.getConfigurationDuration().toMillis(),
             mean = input.getConfigurationDuration().toMillis()

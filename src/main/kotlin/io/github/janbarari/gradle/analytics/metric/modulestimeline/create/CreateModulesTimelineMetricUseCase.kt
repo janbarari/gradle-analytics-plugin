@@ -27,12 +27,19 @@ import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesTimelineMetricUseCase(
+    private val tower: Tower,
     private val modules: Set<Module>
 ): UseCase<BuildInfo, ModulesTimelineMetric>() {
 
+    companion object {
+        private val clazz = CreateModulesTimelineMetricUseCase::class.java
+    }
+
     override suspend fun execute(input: BuildInfo): ModulesTimelineMetric {
+        tower.i(clazz, "execute()")
         val start = input.executedTasks.minOfOrNull { it.startedAt } ?: 0
         val end = input.executedTasks.maxOfOrNull { it.finishedAt } ?: 0
 

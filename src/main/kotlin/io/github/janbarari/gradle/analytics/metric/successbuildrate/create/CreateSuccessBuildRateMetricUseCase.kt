@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.successbuildrate.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.SuccessBuildRateMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateSuccessBuildRateMetricUseCase: UseCase<BuildInfo, SuccessBuildRateMetric>() {
+class CreateSuccessBuildRateMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, SuccessBuildRateMetric>() {
+
+    companion object {
+        private val clazz = CreateSuccessBuildRateMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): SuccessBuildRateMetric {
+        tower.i(clazz, "execute()")
         return SuccessBuildRateMetric(
             medianRate = if (input.isSuccessful) 100F else 0F,
             meanRate = if (input.isSuccessful) 100F else 0F,

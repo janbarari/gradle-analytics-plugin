@@ -28,12 +28,19 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCoun
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesCrashCountMetricUseCase(
+    private val tower: Tower,
     private val modules: Set<Module>
 ) : UseCase<BuildInfo, ModulesCrashCountMetric>() {
 
+    companion object {
+        private val clazz = CreateModulesCrashCountMetricUseCase::class.java
+    }
+
     override suspend fun execute(input: BuildInfo): ModulesCrashCountMetric {
+        tower.i(clazz, "execute()")
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
         if (!input.isSuccessful && input.failure.isNotNull()) {

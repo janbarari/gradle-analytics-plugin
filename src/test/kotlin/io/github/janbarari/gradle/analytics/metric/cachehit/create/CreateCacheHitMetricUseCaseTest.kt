@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
@@ -72,7 +73,10 @@ class CreateCacheHitMetricUseCaseTest {
 
     @BeforeAll
     fun setup() {
-        usecase = CreateCacheHitMetricUseCase(modules)
+        usecase = CreateCacheHitMetricUseCase(
+            TowerMockImpl(),
+            modules
+        )
     }
 
     @Test

@@ -26,12 +26,19 @@ import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateNonCacheableTasksMetricUseCase(
+    private val tower: Tower,
     private val nonCacheableTasks: Set<String>
 ) : UseCase<BuildInfo, NonCacheableTasksMetric>() {
 
+    companion object {
+        private val clazz = CreateNonCacheableTasksMetricUseCase::class.java
+    }
+
     override suspend fun execute(input: BuildInfo): NonCacheableTasksMetric {
+        tower.i(clazz, "execute()")
         val temp = mutableListOf<NonCacheableTasksMetric.NonCacheableTask>()
 
         nonCacheableTasks.whenEach {

@@ -27,13 +27,20 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.modify
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateNonCacheableTasksMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<NonCacheableTasksMetric>() {
 
+    companion object {
+        private val clazz = UpdateNonCacheableTasksMetricUseCase::class.java
+    }
+
     override suspend fun execute(): NonCacheableTasksMetric {
+        tower.i(clazz, "execute()")
         val tasks = repo.getTemporaryMetrics().last().nonCacheableTasksMetric!!.tasks
             .modify {
                 val medianValue = repo.getTemporaryMetrics()

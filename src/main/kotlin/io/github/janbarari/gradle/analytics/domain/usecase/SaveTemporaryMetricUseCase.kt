@@ -33,8 +33,8 @@ import io.github.janbarari.gradle.logger.Tower
  * build metrics of the day.
  */
 class SaveTemporaryMetricUseCase(
-    private val repo: DatabaseRepository,
-    private val tower: Tower
+    private val tower: Tower,
+    private val repo: DatabaseRepository
 ): UseCase<BuildMetric, Long>() {
 
     companion object {

@@ -29,12 +29,19 @@ import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateCacheHitMetricUseCase(
+    private val tower: Tower,
     private val modules: Set<Module>
 ): UseCase<BuildInfo, CacheHitMetric>() {
 
+    companion object {
+        private val clazz = CreateCacheHitMetricUseCase::class.java
+    }
+
     override suspend fun execute(input: BuildInfo): CacheHitMetric {
+        tower.i(clazz, "execute()")
         var cachedTasksCount = 0
         input.executedTasks.whenEach {
             if (!isSkipped) {
