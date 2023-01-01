@@ -45,8 +45,9 @@ class UpdateModulesExecutionProcessMetricUseCase(
 
     override suspend fun execute(): ModulesExecutionProcessMetric {
         tower.i(clazz, "execute()")
+        val temporaryMetrics = repo.getTemporaryMetrics()
         val modulesMedianExecutionProcess = modules.map {
-            calculateMedianModuleExecutionProcess(modulePath = it.path, metrics = repo.getTemporaryMetrics())
+            calculateMedianModuleExecutionProcess(modulePath = it.path, metrics = temporaryMetrics)
         }
 
         return ModulesExecutionProcessMetric(

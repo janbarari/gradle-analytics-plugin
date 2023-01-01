@@ -70,7 +70,7 @@ class TowerImpl constructor(
     }
 
     override fun <T> w(clazz: Class<T>, method: String, message: String) {
-        logs.add("w: ${getFormattedTime()}, ${clazz.simpleName}.$message, $message")
+        logs.add("w: ${getFormattedTime()}, ${clazz.simpleName}.$method, $message")
     }
 
     override fun <T> w(clazz: Class<T>, message: String) {
@@ -91,7 +91,8 @@ class TowerImpl constructor(
                 append(this).append("\n")
             }
         }.also {
-            logFile.appendText(it)
+            val separator = "\n\n\n\n"
+            logFile.appendText(it + separator)
         }
 
         logs.clear()
@@ -112,7 +113,6 @@ class TowerImpl constructor(
                     append(this).append("\n")
                 }
             }.also {
-                logFile.appendText("\n\n\n\n")
                 logFile.appendText(it)
             }
         }

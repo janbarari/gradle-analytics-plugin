@@ -30,10 +30,14 @@ import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
+import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
+import io.github.janbarari.gradle.memorycache.MemoryCache
 import kotlin.io.path.Path
 
 /**
@@ -93,13 +97,26 @@ fun ReportAnalyticsInjector.provideMoshi(): Moshi {
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideTemporaryMetricsMemoryCache(): MemoryCache<List<BuildMetric>> {
+    return TemporaryMetricsMemoryCacheImpl(
+        tower = provideTower()
+    )
+}
+
+@ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapter {
+    return BuildMetricJsonAdapter(provideMoshi())
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     return DatabaseRepositoryImp(
+        tower = provideTower(),
         db = provideDatabase(),
         branch = branch!!,
         requestedTasks = requestedTasks!!,
-        moshi = provideMoshi(),
-        tower = provideTower()
+        buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
+        temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
     )
 }
 

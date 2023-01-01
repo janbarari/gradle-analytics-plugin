@@ -23,17 +23,17 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
+import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
 import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricUseCase
@@ -43,6 +43,7 @@ import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.upda
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.update.UpdateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulescrashcount.create.CreateModulesCrashCountMetricUseCase
@@ -60,14 +61,17 @@ import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.Upda
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
+import io.github.janbarari.gradle.memorycache.MemoryCache
 import io.github.janbarari.gradle.utils.GitUtils
 import oshi.SystemInfo
 import kotlin.io.path.Path
@@ -82,14 +86,18 @@ data class BuildExecutionInjector(
     // Singleton objects
     @Volatile
     var tower: Tower? = null
+
     @Volatile
     var moshi: Moshi? = null
-    @Volatile
-    var database: Database? = null
+
     @Volatile
     var systemInfo: SystemInfo? = null
+
     @Volatile
     var currentBranch: String? = null
+
+    @Volatile
+    var databaseRepository: DatabaseRepository? = null
 
     /**
      * Destroy singleton objects
@@ -97,9 +105,9 @@ data class BuildExecutionInjector(
     fun destroy() {
         tower = null
         moshi = null
-        database = null
         systemInfo = null
         currentBranch = null
+        databaseRepository = null
     }
 }
 
@@ -140,16 +148,11 @@ fun BuildExecutionInjector.provideTower(): Tower {
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabase(): Database {
-    if (database.isNull()) {
-        database = synchronized(this) {
-            Database(
-                provideTower(),
-                parameters.databaseConfig.get(),
-                parameters.envCI.get()
-            )
-        }
-    }
-    return database!!
+    return Database(
+        provideTower(),
+        parameters.databaseConfig.get(),
+        parameters.envCI.get()
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -163,14 +166,32 @@ fun BuildExecutionInjector.provideMoshi(): Moshi {
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
-    return DatabaseRepositoryImp(
-        db = provideDatabase(),
-        branch = provideCurrentBranch(),
-        requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace(),
-        moshi = provideMoshi(),
+fun BuildExecutionInjector.provideTemporaryMetricsMemoryCache(): MemoryCache<List<BuildMetric>> {
+    return TemporaryMetricsMemoryCacheImpl(
         tower = provideTower()
     )
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapter {
+    return BuildMetricJsonAdapter(provideMoshi())
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
+    if (databaseRepository.isNull()) {
+        databaseRepository = synchronized(this) {
+            DatabaseRepositoryImp(
+                tower = provideTower(),
+                db = provideDatabase(),
+                branch = provideCurrentBranch(),
+                requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace(),
+                buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
+            )
+        }
+    }
+    return databaseRepository!!
 }
 
 @ExcludeJacocoGenerated

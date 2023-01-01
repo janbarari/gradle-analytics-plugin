@@ -44,8 +44,9 @@ class UpdateModulesCrashCountMetricUseCase(
         tower.i(clazz, "execute()")
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
+        val temporaryMetric = repo.getTemporaryMetrics()
         this.modules.whenEach {
-            val crashes = repo.getTemporaryMetrics()
+            val crashes = temporaryMetric
                 .filter { it.modulesCrashCountMetric.isNotNull() }
                 .sumOf { metric ->
                     metric.modulesCrashCountMetric!!.modules

@@ -41,9 +41,10 @@ class UpdateNonCacheableTasksMetricUseCase(
 
     override suspend fun execute(): NonCacheableTasksMetric {
         tower.i(clazz, "execute()")
-        val tasks = repo.getTemporaryMetrics().last().nonCacheableTasksMetric!!.tasks
+        val temporaryMetrics = repo.getTemporaryMetrics()
+        val tasks = temporaryMetrics.last().nonCacheableTasksMetric!!.tasks
             .modify {
-                val medianValue = repo.getTemporaryMetrics()
+                val medianValue = temporaryMetrics
                     .filter { it.nonCacheableTasksMetric.isNotNull() }
                     .flatMap { metric ->
                         metric.nonCacheableTasksMetric!!.tasks

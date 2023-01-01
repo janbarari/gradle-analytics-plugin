@@ -28,6 +28,7 @@ import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -56,11 +57,12 @@ class DatabaseRepositoryTest {
             false
         )
         repo = DatabaseRepositoryImp(
+            tower = TowerMockImpl(),
             db = db,
             branch = "develop",
             requestedTasks = "assembleDebug",
-            moshi = Moshi.Builder().build(),
-            tower = TowerMockImpl()
+            buildMetricJsonAdapter = BuildMetricJsonAdapter(Moshi.Builder().build()),
+            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl())
         )
     }
 
