@@ -29,12 +29,19 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToParallelExecutionRateMedianTimespanPoints
 import io.github.janbarari.gradle.extension.whenEmpty
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateParallelExecutionRateReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private val clazz = CreateParallelExecutionRateReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val timespanPoints = metrics
             .filter { it.parallelExecutionRateMetric.isNotNull() }
             .mapToParallelExecutionRateMedianTimespanPoints()

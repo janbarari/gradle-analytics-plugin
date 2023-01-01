@@ -30,12 +30,19 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToSuccessBuildRateMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToSuccessBuildRateMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.whenEmpty
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateSuccessBuildRateReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private val clazz = CreateSuccessBuildRateReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val medianChartPoints = metrics.filter { metric ->
             metric.successBuildRateMetric.isNotNull()
         }.mapToSuccessBuildRateMedianTimespanChartPoints()

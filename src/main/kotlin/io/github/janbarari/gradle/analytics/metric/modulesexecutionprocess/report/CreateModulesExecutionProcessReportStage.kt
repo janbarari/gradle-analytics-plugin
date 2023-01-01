@@ -32,13 +32,20 @@ import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateModulesExecutionProcessReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private val clazz = CreateModulesExecutionProcessReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val temp = metrics.lastOrNull()?.modules?.map { path ->
             var firstAvgMedianDuration: Long? = null
             var lastAvgMedianDuration: Long? = null

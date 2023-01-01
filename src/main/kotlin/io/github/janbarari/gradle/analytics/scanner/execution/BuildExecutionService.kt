@@ -161,7 +161,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         if (!isBranchTrackable()) return
 
-        tower.r("analytics process started")
+        tower.r("build process started")
         tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
         tower.r("manufacturer: ${systemInfo.operatingSystem.manufacturer}")
         tower.r("os: ${systemInfo.operatingSystem.family} " +
@@ -184,6 +184,9 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
         injector.destroy()
         executedTasks.clear()
+
+        tower.r("build process finished")
+        tower.save()
     }
 
     private fun isForbiddenTasksRequested(): Boolean {

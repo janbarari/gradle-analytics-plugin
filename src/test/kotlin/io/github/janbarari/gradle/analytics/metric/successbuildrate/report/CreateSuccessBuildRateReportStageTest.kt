@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.successbuildrate.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.SuccessBuildRateMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -36,7 +37,7 @@ class CreateSuccessBuildRateReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateSuccessBuildRateReportStage(metrics)
+        val stage = CreateSuccessBuildRateReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -79,7 +80,7 @@ class CreateSuccessBuildRateReportStageTest {
         )
 
 
-        val stage = CreateSuccessBuildRateReportStage(metrics)
+        val stage = CreateSuccessBuildRateReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

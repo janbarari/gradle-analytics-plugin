@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
@@ -112,7 +113,7 @@ class CreateCacheHitReportStageTest {
             sampleBuildMetricWithCacheHit
         )
 
-        stage = CreateCacheHitReportStage(buildMetrics)
+        stage = CreateCacheHitReportStage(TowerMockImpl(), buildMetrics)
 
         var report = Report(
             branch = "master",
@@ -144,7 +145,7 @@ class CreateCacheHitReportStageTest {
             sampleBuildMetricWithCacheHit2
         )
 
-        stage = CreateCacheHitReportStage(buildMetrics)
+        stage = CreateCacheHitReportStage(TowerMockImpl(), buildMetrics)
 
         var report = Report(
             branch = "master",
@@ -174,7 +175,7 @@ class CreateCacheHitReportStageTest {
     fun `When the stage proceeds with empty data, expect the report to be skipped`() = runBlocking {
         val buildMetrics = emptyList<BuildMetric>()
 
-        stage = CreateCacheHitReportStage(buildMetrics)
+        stage = CreateCacheHitReportStage(TowerMockImpl(), buildMetrics)
 
         var report = Report(
             branch = "master",

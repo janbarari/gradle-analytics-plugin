@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.parallelexecutionrate.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ParallelExecutionRateReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -38,7 +39,7 @@ class RenderParallelExecutionRateReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%parallel-execution-rate-metric%"
-        val stage = RenderParallelExecutionRateReportStage(report)
+        val stage = RenderParallelExecutionRateReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Parallel Execution Rate is not available!</p><div class=\"space\"></div>"
@@ -59,7 +60,7 @@ class RenderParallelExecutionRateReportStageTest {
         )
 
         val renderTemplate = "%parallel-execution-rate-metric%"
-        val stage = RenderParallelExecutionRateReportStage(report)
+        val stage = RenderParallelExecutionRateReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

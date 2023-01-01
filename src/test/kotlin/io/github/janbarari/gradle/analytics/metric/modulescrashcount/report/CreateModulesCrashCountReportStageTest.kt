@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulescrashcount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
@@ -36,7 +37,7 @@ class CreateModulesCrashCountReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = listOf<BuildMetric>()
-        val stage = CreateModulesCrashCountReportStage(metrics)
+        val stage = CreateModulesCrashCountReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
         assertEquals(0, report.modulesCrashCountReport!!.modules.size)
@@ -85,7 +86,7 @@ class CreateModulesCrashCountReportStageTest {
             )
         )
 
-        val stage = CreateModulesCrashCountReportStage(metrics)
+        val stage = CreateModulesCrashCountReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

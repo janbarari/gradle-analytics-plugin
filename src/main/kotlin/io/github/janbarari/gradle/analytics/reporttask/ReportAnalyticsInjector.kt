@@ -38,6 +38,7 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
 import io.github.janbarari.gradle.memorycache.MemoryCache
+import oshi.SystemInfo
 import kotlin.io.path.Path
 
 /**
@@ -57,13 +58,20 @@ class ReportAnalyticsInjector(
     @Volatile
     var tower: Tower? = null
 
+    @Volatile
+    var moshi: Moshi? = null
+
+    @Volatile
+    var databaseRepository: DatabaseRepository? = null
+
     /**
      * Destroy singleton objects
      */
     fun destroy() {
         tower = null
+        moshi = null
+        databaseRepository = null
     }
-
 }
 
 
@@ -83,17 +91,27 @@ fun ReportAnalyticsInjector.provideTower(): Tower {
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideSystemInfo(): SystemInfo {
+    return SystemInfo()
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
     return Database(
-        provideTower(),
-        databaseConfig!!,
-        isCI!!
+        tower = provideTower(),
+        config = databaseConfig!!,
+        isCI = isCI!!
     )
 }
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideMoshi(): Moshi {
-    return Moshi.Builder().build()
+    if (moshi.isNull()) {
+        moshi = synchronized(this) {
+            Moshi.Builder().build()
+        }
+    }
+    return moshi!!
 }
 
 @ExcludeJacocoGenerated
@@ -105,24 +123,33 @@ fun ReportAnalyticsInjector.provideTemporaryMetricsMemoryCache(): MemoryCache<Li
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapter {
-    return BuildMetricJsonAdapter(provideMoshi())
-}
-
-@ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
-    return DatabaseRepositoryImp(
-        tower = provideTower(),
-        db = provideDatabase(),
-        branch = branch!!,
-        requestedTasks = requestedTasks!!,
-        buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
-        temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
+    return BuildMetricJsonAdapter(
+        moshi = provideMoshi()
     )
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
+    if (databaseRepository.isNull()) {
+        databaseRepository = synchronized(this) {
+            DatabaseRepositoryImp(
+                tower = provideTower(),
+                db = provideDatabase(),
+                branch = branch!!,
+                requestedTasks = requestedTasks!!,
+                buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
+            )
+        }
+    }
+    return databaseRepository!!
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideGetMetricsUseCase(): GetMetricsUseCase {
-    return GetMetricsUseCase(provideDatabaseRepository())
+    return GetMetricsUseCase(
+        repo = provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -136,10 +163,11 @@ fun ReportAnalyticsInjector.provideGetModulesTimelineUseCase(): GetModulesTimeli
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
-        provideGetMetricsUseCase(),
-        provideGetModulesTimelineUseCase(),
-        isCI!!,
-        outputPath!!,
-        projectName!!
+        tower = provideTower(),
+        getMetricsUseCase = provideGetMetricsUseCase(),
+        getModulesTimelineUseCase = provideGetModulesTimelineUseCase(),
+        isCI = isCI!!,
+        outputPath = outputPath!!,
+        projectName = projectName!!
     )
 }

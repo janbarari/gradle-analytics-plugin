@@ -30,9 +30,11 @@ import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderSuccessBuildRateReportStage(
+    private val tower: Tower,
     private val report: Report
 ): Stage<String, String> {
 
@@ -40,9 +42,11 @@ class RenderSuccessBuildRateReportStage(
         private const val CHART_MAX_COLUMNS = 12
         private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID = "%success-build-rate-metric%"
         private const val BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_FILE_NAME = "success-build-rate-metric-template"
+        private val clazz = RenderSuccessBuildRateReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.successBuildRateReport.isNull())
             return input.replace(BUILD_SUCCESS_RATIO_METRIC_TEMPLATE_ID, getEmptyRender())
 

@@ -179,9 +179,6 @@ class BuildExecutionLogicImp(
         if (isSuccessful) {
             printBuildInfo(buildMetric)
         }
-
-        tower.r("analytics process finished")
-        tower.save()
     }
 
     private fun printBuildInfo(buildMetric: BuildMetric) {

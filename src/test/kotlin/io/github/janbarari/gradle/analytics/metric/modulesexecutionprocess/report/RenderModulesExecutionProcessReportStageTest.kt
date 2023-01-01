@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleExecutionProcess
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport
@@ -38,7 +39,7 @@ class RenderModulesExecutionProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Execution Process is not available!</p><div class=\"space\"></div>"
@@ -53,7 +54,7 @@ class RenderModulesExecutionProcessReportStageTest {
         report.modulesExecutionProcessReport = ModulesExecutionProcessReport(data)
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -97,7 +98,7 @@ class RenderModulesExecutionProcessReportStageTest {
         report.modulesExecutionProcessReport = ModulesExecutionProcessReport(data)
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -129,7 +130,7 @@ class RenderModulesExecutionProcessReportStageTest {
         report.modulesExecutionProcessReport = ModulesExecutionProcessReport(data)
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -161,7 +162,7 @@ class RenderModulesExecutionProcessReportStageTest {
         report.modulesExecutionProcessReport = ModulesExecutionProcessReport(data)
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -193,7 +194,7 @@ class RenderModulesExecutionProcessReportStageTest {
         report.modulesExecutionProcessReport = ModulesExecutionProcessReport(data)
 
         val renderTemplate = "%modules-execution-process-metric%"
-        val stage = RenderModulesExecutionProcessReportStage(report)
+        val stage = RenderModulesExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

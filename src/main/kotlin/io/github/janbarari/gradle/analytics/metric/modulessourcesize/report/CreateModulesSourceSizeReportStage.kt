@@ -33,12 +33,19 @@ import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesSourceSizeReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private val clazz = CreateModulesSourceSizeReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val metrics = metrics.filter {
             it.modulesSourceSizeMetric.isNotNull()
         }.map {

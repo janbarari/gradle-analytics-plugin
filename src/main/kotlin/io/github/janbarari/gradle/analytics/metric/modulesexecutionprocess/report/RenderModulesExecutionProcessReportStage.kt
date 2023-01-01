@@ -34,6 +34,7 @@ import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
@@ -41,6 +42,7 @@ import io.github.janbarari.gradle.utils.MathUtils
  * Generates html render for [io.github.janbarari.gradle.analytics.domain.model.report.ModulesExecutionProcessReport].
  */
 class RenderModulesExecutionProcessReportStage(
+    private val tower: Tower,
     private val report: Report
 ) : Stage<String, String> {
 
@@ -49,9 +51,11 @@ class RenderModulesExecutionProcessReportStage(
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID = "%modules-execution-process-metric%"
         private const val MODULES_EXECUTION_PROCESS_METRIC_FILE_NAME = "modules-execution-process-metric-template"
+        private val clazz = RenderModulesExecutionProcessReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesExecutionProcessReport.isNull()) {
             return input.replace(MODULES_EXECUTION_PROCESS_METRIC_TEMPLATE_ID, getEmptyRender())
         }

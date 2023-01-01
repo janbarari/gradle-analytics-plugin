@@ -30,13 +30,20 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateModulesBuildHeatmapReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
+    companion object {
+        private val clazz = CreateModulesBuildHeatmapReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val temp = mutableListOf<ModuleBuildHeatmap>()
 
         metrics.lastOrNull()?.modulesBuildHeatmap.whenNotNull {

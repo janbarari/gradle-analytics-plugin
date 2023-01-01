@@ -26,19 +26,23 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesTimelineReportStage(
+    private val tower: Tower,
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val MODULES_TIMELINE_METRIC_TEMPLATE_ID = "%modules-execution-timeline-metric%"
         private const val MODULES_TIMELINE_METRIC_TEMPLATE_FILE_NAME = "modules-timeline-metric-template"
+        private val clazz = RenderModulesTimelineReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesTimelineReport.isNull()) {
             return input.replace(MODULES_TIMELINE_METRIC_TEMPLATE_ID, getEmptyRender())
         }

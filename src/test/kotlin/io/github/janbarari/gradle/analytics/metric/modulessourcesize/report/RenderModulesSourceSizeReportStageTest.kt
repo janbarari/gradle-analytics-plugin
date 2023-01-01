@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulessourcesize.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceSizeReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import kotlinx.coroutines.runBlocking
@@ -36,7 +37,7 @@ class RenderModulesSourceSizeReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-source-size-metric%"
-        val stage = RenderModulesSourceSizeReportStage(report)
+        val stage = RenderModulesSourceSizeReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Source Size is not available!</p><div class=\"space\"></div>"
@@ -72,7 +73,7 @@ class RenderModulesSourceSizeReportStageTest {
         )
 
         val renderTemplate = "%modules-source-size-metric%"
-        val stage = RenderModulesSourceSizeReportStage(report)
+        val stage = RenderModulesSourceSizeReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -143,7 +144,7 @@ class RenderModulesSourceSizeReportStageTest {
         )
 
         val renderTemplate = "%modules-source-size-metric%"
-        val stage = RenderModulesSourceSizeReportStage(report)
+        val stage = RenderModulesSourceSizeReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -214,7 +215,7 @@ class RenderModulesSourceSizeReportStageTest {
         )
 
         val renderTemplate = "%modules-source-size-metric%"
-        val stage = RenderModulesSourceSizeReportStage(report)
+        val stage = RenderModulesSourceSizeReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

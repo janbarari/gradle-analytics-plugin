@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderModulesMethodCountReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-method-count-metric%"
-        val stage = RenderModulesMethodCountReportStage(report)
+        val stage = RenderModulesMethodCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Method Count is not available!</p><div class=\"space\"></div>"
@@ -73,7 +74,7 @@ class RenderModulesMethodCountReportStageTest {
         )
 
         val renderTemplate = "%modules-method-count-metric%"
-        val stage = RenderModulesMethodCountReportStage(report)
+        val stage = RenderModulesMethodCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -144,7 +145,7 @@ class RenderModulesMethodCountReportStageTest {
         )
 
         val renderTemplate = "%modules-method-count-metric%"
-        val stage = RenderModulesMethodCountReportStage(report)
+        val stage = RenderModulesMethodCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -215,7 +216,7 @@ class RenderModulesMethodCountReportStageTest {
         )
 
         val renderTemplate = "%modules-method-count-metric%"
-        val stage = RenderModulesMethodCountReportStage(report)
+        val stage = RenderModulesMethodCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

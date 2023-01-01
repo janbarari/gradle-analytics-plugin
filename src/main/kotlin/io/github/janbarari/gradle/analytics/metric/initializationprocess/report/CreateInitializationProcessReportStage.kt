@@ -31,16 +31,20 @@ import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToInitializationMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToInitializationMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.whenEmpty
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateInitializationProcessReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
 ) : Stage<Report, Report> {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
+        private val clazz = CreateInitializationProcessReportStage::class.java
     }
 
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val medianChartPoints = metrics.filter { metric ->
             metric.initializationProcessMetric.isNotNull() &&
                     metric.initializationProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false

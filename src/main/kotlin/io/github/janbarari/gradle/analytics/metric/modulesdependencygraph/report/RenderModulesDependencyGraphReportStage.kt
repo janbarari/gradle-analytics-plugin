@@ -29,12 +29,14 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 import java.io.File
 
 
 class RenderModulesDependencyGraphReportStage(
+    private val tower: Tower,
     private val report: Report,
     private val outputPath: String,
     private val projectName: String
@@ -48,9 +50,11 @@ class RenderModulesDependencyGraphReportStage(
             "modules-dependency-graph-metric-external-template"
         private const val MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME = "modules-dependency-graph-template"
         private const val MAXIMUM_ALLOWED_MODULES_TO_RENDER_INTERNALLY = 16
+        private val clazz = RenderModulesDependencyGraphReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesDependencyGraphReport.isNull()) {
             return input.replace(MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID, getEmptyRender())
         }

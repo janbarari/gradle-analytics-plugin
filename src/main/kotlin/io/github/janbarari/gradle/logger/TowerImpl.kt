@@ -91,8 +91,12 @@ class TowerImpl constructor(
                 append(this).append("\n")
             }
         }.also {
-            val separator = "\n\n\n\n"
-            logFile.appendText(it + separator)
+            if (!shouldDropOldLogFile) {
+                val separator = "\n\n\n\n"
+                logFile.appendText(it + separator)
+            } else {
+                logFile.appendText(it)
+            }
         }
 
         logs.clear()
@@ -106,7 +110,9 @@ class TowerImpl constructor(
     private fun dropOldLogs() {
         if (logFile.readLines().isBiggerThan(maximumOldLogsCount)) {
             val oldLogs = logFile.readLines().takeLast(maximumOldLogsCount)
-            logFile.delete()
+            if(!logFile.delete()) {
+                // Delete log file failed
+            }
 
             buildString {
                 oldLogs.whenEach {
