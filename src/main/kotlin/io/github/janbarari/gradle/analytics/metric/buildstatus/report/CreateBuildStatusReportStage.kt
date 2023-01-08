@@ -40,6 +40,10 @@ class CreateBuildStatusReportStage(
         private val clazz = CreateBuildStatusReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateBuildStatusReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         return input.apply {

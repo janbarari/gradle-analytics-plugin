@@ -31,11 +31,8 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
-import io.github.janbarari.gradle.analytics.data.V100B6DatabaseResultMigrationStage
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
-import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
@@ -54,8 +51,7 @@ class ReportAnalyticsInjector(
     var isCI: Boolean? = null,
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
-    var projectName: String? = null,
-    var modules: Set<String>? = null
+    var projectName: String? = null
 ) {
 
     // Singleton objects
@@ -133,11 +129,6 @@ fun ReportAnalyticsInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdap
 }
 
 @ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideDatabaseResultMigrationPipeline(): DatabaseResultMigrationPipeline {
-    return DatabaseResultMigrationPipeline(V100B6DatabaseResultMigrationStage(modules = modules!!))
-}
-
-@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     if (databaseRepository.isNull()) {
         databaseRepository = synchronized(this) {
@@ -147,8 +138,7 @@ fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
                 branch = branch!!,
                 requestedTasks = requestedTasks!!,
                 buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
-                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache(),
-                databaseResultMigrationPipeline = provideDatabaseResultMigrationPipeline()
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
             )
         }
     }
@@ -171,15 +161,9 @@ fun ReportAnalyticsInjector.provideGetModulesTimelineUseCase(): GetModulesTimeli
 }
 
 @ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideModulesDependencyGraphReportJsonAdapter(): ModulesDependencyGraphReportJsonAdapter {
-    return ModulesDependencyGraphReportJsonAdapter(provideMoshi())
-}
-
-@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
         tower = provideTower(),
-        modulesDependencyGraphReportJsonAdapter = provideModulesDependencyGraphReportJsonAdapter(),
         getMetricsUseCase = provideGetMetricsUseCase(),
         getModulesTimelineUseCase = provideGetModulesTimelineUseCase(),
         isCI = isCI!!,

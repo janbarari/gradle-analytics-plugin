@@ -63,8 +63,6 @@ class BuildExecutionLogicTest {
                 get() = SetPropertyMock(mutableSetOf("assembleDebug"))
             override val trackingBranches: SetProperty<String>
                 get() = SetPropertyMock(mutableSetOf("master"))
-            override val trackAllBranchesEnabled: Property<Boolean>
-                get() = PropertyMock(false)
             override val modules: SetProperty<Module>
                 get() = SetPropertyMock(mutableSetOf())
             override val modulesDependencyGraph: Property<ModulesDependencyGraph>

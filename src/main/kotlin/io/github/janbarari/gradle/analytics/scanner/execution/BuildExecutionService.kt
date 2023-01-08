@@ -66,11 +66,6 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         private val clazz = BuildExecutionService::class.java
     }
 
-    /**
-     * **Important Note**
-     *
-     * Using "is", "get", "set" prefix is not allowed to be used as parameter name.
-     */
     interface Params : BuildServiceParameters {
         val enabled: Property<Boolean>
         val databaseConfig: Property<DatabaseConfig>
@@ -78,7 +73,6 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val requestedTasks: ListProperty<String>
         val trackingTasks: SetProperty<String>
         val trackingBranches: SetProperty<String>
-        val trackAllBranchesEnabled: Property<Boolean>
         val modules: SetProperty<Module>
         val modulesDependencyGraph: Property<ModulesDependencyGraph>
         val nonCacheableTasks: SetProperty<String>
@@ -209,7 +203,6 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     }
 
     private fun isBranchTrackable(): Boolean {
-        if (parameters.trackAllBranchesEnabled.get()) return true
         return parameters.trackingBranches.get().contains(GitUtils.currentBranch())
     }
 
