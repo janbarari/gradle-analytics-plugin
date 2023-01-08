@@ -23,6 +23,9 @@
 
 # Changelog
 
+## 1.0.0-beta6
+* Internal logger added for debugging
+
 ## HotFix - 1.0.0-beta5
 * [Issue 77](https://github.com/janbarari/gradle-analytics-plugin/issues/77)
 
