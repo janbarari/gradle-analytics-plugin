@@ -110,8 +110,8 @@ class TowerImpl constructor(
     private fun dropOldLogs() {
         if (logFile.readLines().isBiggerThan(maximumOldLogsCount)) {
             val oldLogs = logFile.readLines().takeLast(maximumOldLogsCount)
-            if(!logFile.delete()) {
-                // Delete log file failed
+            if (!logFile.delete()) {
+                // failed to delete the log file.
             }
 
             buildString {
