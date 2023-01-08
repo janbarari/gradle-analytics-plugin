@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.successbuildrate.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.report.SuccessBuildRateReport
@@ -37,7 +38,7 @@ class RenderSuccessBuildRateReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%success-build-rate-metric%"
-        val stage = RenderSuccessBuildRateReportStage(report)
+        val stage = RenderSuccessBuildRateReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Success Build Rate is not available!</p><div class=\"space\"></div>"
@@ -65,7 +66,7 @@ class RenderSuccessBuildRateReportStageTest {
         )
 
         val renderTemplate = "%success-build-rate-metric%"
-        val stage = RenderSuccessBuildRateReportStage(report)
+        val stage = RenderSuccessBuildRateReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

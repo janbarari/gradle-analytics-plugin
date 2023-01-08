@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleBuildHeatmap
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesBuildHeatmapReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderModulesBuildHeatmapReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-build-heatmap-metric%"
-        val stage = RenderModulesBuildHeatmapReportStage(report)
+        val stage = RenderModulesBuildHeatmapReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Build Heatmap is not available!</p><div class=\"space\"></div>"
@@ -52,7 +53,7 @@ class RenderModulesBuildHeatmapReportStageTest {
         )
 
         val renderTemplate = "%modules-build-heatmap-metric%"
-        val stage = RenderModulesBuildHeatmapReportStage(report)
+        val stage = RenderModulesBuildHeatmapReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -76,7 +77,7 @@ class RenderModulesBuildHeatmapReportStageTest {
         )
 
         val renderTemplate = "%modules-build-heatmap-metric%"
-        val stage = RenderModulesBuildHeatmapReportStage(report)
+        val stage = RenderModulesBuildHeatmapReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

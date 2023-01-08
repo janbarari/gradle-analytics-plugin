@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.executionprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ExecutionProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderExecutionProcessProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%execution-process-metric%"
-        val stage = RenderExecutionProcessReportStage(report)
+        val stage = RenderExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Execution Process is not available!</p><div class=\"space\"></div>"
@@ -65,7 +66,7 @@ class RenderExecutionProcessProcessReportStageTest {
         )
 
         val renderTemplate = "%execution-process-metric%"
-        val stage = RenderExecutionProcessReportStage(report)
+        val stage = RenderExecutionProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

@@ -69,6 +69,7 @@ dependencies {
     kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
+    implementation(libs.oshi)
 }
 
 tasks.withType<KotlinCompile>().configureEach {

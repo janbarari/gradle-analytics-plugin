@@ -30,6 +30,7 @@ import io.github.janbarari.gradle.extension.isJavaFile
 import io.github.janbarari.gradle.extension.isKotlinFile
 import io.github.janbarari.gradle.extension.readText
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -38,8 +39,13 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class CreateModulesMethodCountMetricUseCase(
-    private val modules: List<Module>
+    private val tower: Tower,
+    private val modules: Set<Module>
 ) : UseCaseNoInput<ModulesMethodCountMetric>() {
+
+    companion object {
+        private val clazz = CreateModulesMethodCountMetricUseCase::class.java
+    }
 
     private val commentRegex = """(//.*)|(\/\*[^/*]*(?:(?!\/\*|\*\/)[/*][^/*]*)*\*\/)""".toRegex()
 
@@ -51,6 +57,7 @@ class CreateModulesMethodCountMetricUseCase(
         """(.*class[\\${'$'}\w\<\>\w\s\[\]]*\s+\w.*\([^\)]*\)|.*constructor.*\([^\)]*\))|((\sinit) *(\{|\=))""".toRegex()
 
     override suspend fun execute(): ModulesMethodCountMetric {
+        tower.i(clazz, "execute()")
         val modulesProperties = Collections.synchronizedList(mutableListOf<ModuleMethodCount>())
         withContext(dispatcher) {
             val defers = mutableListOf<Deferred<Boolean>>()

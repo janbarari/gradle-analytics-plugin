@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -51,7 +52,7 @@ class RenderCacheHitReportStageTest {
             requestedTasks = "assemble",
             cacheHitReport = cacheHitReport
         )
-        val stage = RenderCacheHitReportStage(report)
+        val stage = RenderCacheHitReportStage(TowerMockImpl(), report)
 
         var renderedResult = "%cache-hit-metric%"
         renderedResult = stage.process(renderedResult)
@@ -97,7 +98,7 @@ class RenderCacheHitReportStageTest {
             requestedTasks = "assemble",
             cacheHitReport = cacheHitReport
         )
-        val stage = RenderCacheHitReportStage(report)
+        val stage = RenderCacheHitReportStage(TowerMockImpl(), report)
 
         var renderedResult = "%cache-hit-metric%"
         renderedResult = stage.process(renderedResult)
@@ -126,7 +127,7 @@ class RenderCacheHitReportStageTest {
             requestedTasks = "assemble",
             cacheHitReport = cacheHitReport
         )
-        val stage = RenderCacheHitReportStage(report)
+        val stage = RenderCacheHitReportStage(TowerMockImpl(), report)
 
         var renderedResult = "%cache-hit-metric%"
         renderedResult = stage.process(renderedResult)
@@ -151,7 +152,7 @@ class RenderCacheHitReportStageTest {
             requestedTasks = "assemble",
             cacheHitReport = cacheHitReport
         )
-        val stage = RenderCacheHitReportStage(report)
+        val stage = RenderCacheHitReportStage(TowerMockImpl(), report)
 
         var renderedResult = "%cache-hit-metric%"
         renderedResult = stage.process(renderedResult)
@@ -169,7 +170,7 @@ class RenderCacheHitReportStageTest {
             branch = "master",
             requestedTasks = "assemble"
         )
-        val stage = RenderCacheHitReportStage(report)
+        val stage = RenderCacheHitReportStage(TowerMockImpl(), report)
 
         var renderedResult = "%cache-hit-metric%"
         renderedResult = stage.process(renderedResult)

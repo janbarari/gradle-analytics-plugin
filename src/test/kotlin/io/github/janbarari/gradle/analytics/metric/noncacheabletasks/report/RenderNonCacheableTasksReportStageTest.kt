@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.NonCacheableTasksReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderNonCacheableTasksReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%non-cacheable-tasks-metric%"
-        val stage = RenderNonCacheableTasksReportStage(report)
+        val stage = RenderNonCacheableTasksReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Non-cacheable Tasks is not available!</p><div class=\"space\"></div>"
@@ -57,7 +58,7 @@ class RenderNonCacheableTasksReportStageTest {
         )
 
         val renderTemplate = "%non-cacheable-tasks-metric%"
-        val stage = RenderNonCacheableTasksReportStage(report)
+        val stage = RenderNonCacheableTasksReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         println(result)

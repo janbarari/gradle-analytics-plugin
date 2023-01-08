@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.initializationprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderInitializationProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%initialization-process-metric%"
-        val stage = RenderInitializationProcessReportStage(report)
+        val stage = RenderInitializationProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Initialization Process is not available!</p><div class=\"space\"></div>"
@@ -65,7 +66,7 @@ class RenderInitializationProcessReportStageTest {
         )
 
         val renderTemplate = "%initialization-process-metric%"
-        val stage = RenderInitializationProcessReportStage(report)
+        val stage = RenderInitializationProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.executionprocess.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ExecutionProcessMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateExecutionProcessMetricUseCase: UseCase<BuildInfo, ExecutionProcessMetric>() {
+class CreateExecutionProcessMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, ExecutionProcessMetric>() {
+
+    companion object {
+        private val clazz = CreateExecutionProcessMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): ExecutionProcessMetric {
+        tower.i(clazz, "execute()")
         return ExecutionProcessMetric(
             median = input.getExecutionDuration().toMillis(),
             mean = input.getExecutionDuration().toMillis()

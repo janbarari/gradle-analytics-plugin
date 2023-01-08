@@ -28,18 +28,22 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesCrashCountReportStage(
+    private val tower: Tower,
     private val report: Report
 ): Stage<String, String> {
 
     companion object {
         private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID = "%modules-crash-count-metric%"
         private const val MODULES_CRASH_COUNT_METRIC_TEMPLATE_FILENAME = "modules-crash-count-metric-template"
+        private val clazz = RenderModulesCrashCountReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesCrashCountReport.isNull())
             return input.replace(MODULES_CRASH_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
 

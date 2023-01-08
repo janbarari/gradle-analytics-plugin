@@ -26,18 +26,22 @@ import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesSourceCountReportStage(
+    private val tower: Tower,
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val MODULES_SOURCE_COUNT_METRIC_TEMPLATE_ID = "%modules-source-count-metric%"
         private const val MODULES_SOURCE_COUNT_METRIC_TEMPLATE_FILE_NAME = "modules-source-count-metric-template"
+        private val clazz = RenderModulesSourceCountReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesSourceCountReport.isNull())
             return input.replace(MODULES_SOURCE_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
 

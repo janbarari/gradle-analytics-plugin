@@ -28,12 +28,19 @@ import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 
 class UpdateSuccessBuildRateMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<SuccessBuildRateMetric>() {
 
+    companion object {
+        private val clazz = UpdateSuccessBuildRateMetricUseCase::class.java
+    }
+
     override suspend fun execute(): SuccessBuildRateMetric {
+        tower.i(clazz, "execute()")
         var meanSuccesses = 0
         var meanFailures = 0
         var medianSuccesses = 0
@@ -58,10 +65,12 @@ class UpdateSuccessBuildRateMetricUseCase(
 
         val meanTotalBuildCount = meanFailures + meanSuccesses
         val medianTotalBuildCount = medianFailures + medianSuccesses
+        val medianRate = medianSuccesses.toPercentageOf(medianTotalBuildCount)
+        val meanRate = meanSuccesses.toPercentageOf(meanTotalBuildCount)
 
         return SuccessBuildRateMetric(
-            medianRate = medianSuccesses.toPercentageOf(medianTotalBuildCount),
-            meanRate = meanSuccesses.toPercentageOf(meanTotalBuildCount),
+            medianRate = medianRate,
+            meanRate = meanRate,
             successes = successesCount,
             fails = failsCount
         )

@@ -29,7 +29,17 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
+import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
+import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.logger.Tower
+import io.github.janbarari.gradle.logger.TowerImpl
+import io.github.janbarari.gradle.memorycache.MemoryCache
+import oshi.SystemInfo
+import kotlin.io.path.Path
 
 /**
  * Dependency injection for [io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask].
@@ -42,31 +52,104 @@ class ReportAnalyticsInjector(
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
     var projectName: String? = null
-)
+) {
+
+    // Singleton objects
+    @Volatile
+    var tower: Tower? = null
+
+    @Volatile
+    var moshi: Moshi? = null
+
+    @Volatile
+    var databaseRepository: DatabaseRepository? = null
+
+    /**
+     * Destroy singleton objects
+     */
+    fun destroy() {
+        tower = null
+        moshi = null
+        databaseRepository = null
+    }
+}
+
+
+@ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideTower(): Tower {
+    if (tower.isNull()) {
+        tower = synchronized(this) {
+            TowerImpl(
+                name = "report",
+                outputPath = Path("${outputPath!!}/${OUTPUT_DIRECTORY_NAME}"),
+                shouldDropOldLogFile = true,
+                maximumOldLogsCount = 0
+            )
+        }
+    }
+    return tower!!
+}
+
+@ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideSystemInfo(): SystemInfo {
+    return SystemInfo()
+}
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabase(): Database {
-    return Database(databaseConfig!!, isCI!!)
+    return Database(
+        tower = provideTower(),
+        config = databaseConfig!!,
+        isCI = isCI!!
+    )
 }
 
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideMoshi(): Moshi {
-    return Moshi.Builder().build()
+    if (moshi.isNull()) {
+        moshi = synchronized(this) {
+            Moshi.Builder().build()
+        }
+    }
+    return moshi!!
 }
 
 @ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
-    return DatabaseRepositoryImp(
-        db = provideDatabase(),
-        branch = branch!!,
-        requestedTasks = requestedTasks!!,
+fun ReportAnalyticsInjector.provideTemporaryMetricsMemoryCache(): MemoryCache<List<BuildMetric>> {
+    return TemporaryMetricsMemoryCacheImpl(
+        tower = provideTower()
+    )
+}
+
+@ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapter {
+    return BuildMetricJsonAdapter(
         moshi = provideMoshi()
     )
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
+    if (databaseRepository.isNull()) {
+        databaseRepository = synchronized(this) {
+            DatabaseRepositoryImp(
+                tower = provideTower(),
+                db = provideDatabase(),
+                branch = branch!!,
+                requestedTasks = requestedTasks!!,
+                buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
+            )
+        }
+    }
+    return databaseRepository!!
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideGetMetricsUseCase(): GetMetricsUseCase {
-    return GetMetricsUseCase(provideDatabaseRepository())
+    return GetMetricsUseCase(
+        repo = provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
@@ -80,10 +163,11 @@ fun ReportAnalyticsInjector.provideGetModulesTimelineUseCase(): GetModulesTimeli
 @ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
-        provideGetMetricsUseCase(),
-        provideGetModulesTimelineUseCase(),
-        isCI!!,
-        outputPath!!,
-        projectName!!
+        tower = provideTower(),
+        getMetricsUseCase = provideGetMetricsUseCase(),
+        getModulesTimelineUseCase = provideGetModulesTimelineUseCase(),
+        isCI = isCI!!,
+        outputPath = outputPath!!,
+        projectName = projectName!!
     )
 }

@@ -27,19 +27,23 @@ import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderModulesBuildHeatmapReportStage(
+    private val tower: Tower,
     private val report: Report
 ) : Stage<String, String> {
 
     companion object {
         private const val MODULES_BUILD_HEATMAP_TEMPLATE_ID = "%modules-build-heatmap-metric%"
         private const val MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME = "modules-build-heatmap-template"
+        private val clazz = RenderModulesBuildHeatmapReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesBuildHeatmapReport.isNull())
             return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getEmptyRender())
 

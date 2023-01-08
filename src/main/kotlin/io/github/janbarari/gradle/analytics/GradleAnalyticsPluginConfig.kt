@@ -36,9 +36,9 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
 
     var isEnabled: Boolean = true
 
-    var trackingTasks: List<String> = listOf()
+    var trackingTasks: Set<String> = setOf()
 
-    var trackingBranches: List<String> = listOf()
+    var trackingBranches: Set<String> = setOf()
 
     var outputPath: String = project.rootProject.buildDir.absolutePath
 

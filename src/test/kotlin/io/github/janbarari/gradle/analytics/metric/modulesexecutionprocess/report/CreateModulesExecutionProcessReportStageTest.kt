@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesexecutionprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleExecutionProcess
@@ -37,7 +38,7 @@ class CreateModulesExecutionProcessReportStageTest {
     @Test
     fun `when process() executes without metric, expect empty report`() = runBlocking {
         val metrics = listOf<BuildMetric>()
-        val stage = CreateModulesExecutionProcessReportStage(metrics)
+        val stage = CreateModulesExecutionProcessReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -99,7 +100,7 @@ class CreateModulesExecutionProcessReportStageTest {
         )
 
 
-        val stage = CreateModulesExecutionProcessReportStage(metrics)
+        val stage = CreateModulesExecutionProcessReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

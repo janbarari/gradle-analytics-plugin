@@ -28,13 +28,20 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.modify
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateCacheHitMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<CacheHitMetric?>() {
 
+    companion object {
+        private val clazz = UpdateCacheHitMetricUseCase::class.java
+    }
+
     override suspend fun execute(): CacheHitMetric? {
+        tower.i(clazz, "execute()")
         val temporaryMetrics = repo.getTemporaryMetrics()
 
         val hitRates = temporaryMetrics.filter { it.cacheHitMetric.isNotNull() }

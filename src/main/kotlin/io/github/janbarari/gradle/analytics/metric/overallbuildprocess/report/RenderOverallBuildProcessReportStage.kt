@@ -32,10 +32,12 @@ import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderOverallBuildProcessReportStage(
+    private val tower: Tower,
     private val report: Report
 ) : Stage<String, String> {
 
@@ -44,9 +46,11 @@ class RenderOverallBuildProcessReportStage(
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID = "%overall-build-process-metric%"
         private const val OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_FILE_NAME = "overall-build-process-metric-template"
+        private val clazz = RenderOverallBuildProcessReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.overallBuildProcessReport.isNull())
             return input.replace(OVERALL_BUILD_PROCESS_METRIC_TEMPLATE_ID, getEmptyRender())
 

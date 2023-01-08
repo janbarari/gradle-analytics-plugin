@@ -26,13 +26,20 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutio
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateParallelExecutionRateMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ): UseCaseNoInput<ParallelExecutionRateMetric>() {
 
+    companion object {
+        private val clazz = UpdateParallelExecutionRateMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ParallelExecutionRateMetric {
+        tower.i(clazz, "execute()")
         val rates = repo.getTemporaryMetrics()
             .filter { it.parallelExecutionRateMetric.isNotNull() }
             .map { it.parallelExecutionRateMetric!!.medianRate }

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.InitializationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.OverallBuildProcessReport
@@ -38,7 +39,7 @@ class RenderOverallBuildProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%overall-build-process-metric%"
-        val stage = RenderOverallBuildProcessReportStage(report)
+        val stage = RenderOverallBuildProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Overall Build Process is not available!</p><div class=\"space\"></div>"
@@ -66,7 +67,7 @@ class RenderOverallBuildProcessReportStageTest {
         )
 
         val renderTemplate = "%overall-build-process-metric%"
-        val stage = RenderOverallBuildProcessReportStage(report)
+        val stage = RenderOverallBuildProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.initializationprocess.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.metric.InitializationProcessMetric
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateInitializationProcessMetricUseCase: UseCase<BuildInfo, InitializationProcessMetric>() {
+class CreateInitializationProcessMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, InitializationProcessMetric>() {
+
+    companion object {
+        private val clazz = CreateInitializationProcessMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): InitializationProcessMetric {
+        tower.i(clazz, "execute()")
         return InitializationProcessMetric(
             median = input.getInitializationDuration().toMillis(),
             mean = input.getInitializationDuration().toMillis()

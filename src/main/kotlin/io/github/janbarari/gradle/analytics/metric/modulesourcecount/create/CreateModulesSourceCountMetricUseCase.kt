@@ -27,6 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleSourceCoun
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.FileUtils
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -35,10 +36,16 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class CreateModulesSourceCountMetricUseCase(
-    private val modules: List<Module>
+    private val tower: Tower,
+    private val modules: Set<Module>
 ) : UseCaseNoInput<ModulesSourceCountMetric>() {
 
+    companion object {
+        private val clazz = CreateModulesSourceCountMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesSourceCountMetric {
+        tower.i(clazz, "execute()")
         val result = Collections.synchronizedList(mutableListOf<ModuleSourceCount>())
         withContext(dispatcher) {
             val defers = mutableListOf<Deferred<Boolean>>()

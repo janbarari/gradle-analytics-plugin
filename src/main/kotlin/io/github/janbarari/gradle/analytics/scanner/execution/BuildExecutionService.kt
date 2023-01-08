@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics.scanner.execution
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.Module
@@ -33,22 +34,26 @@ import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.GitUtils
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.tooling.Failure
 import org.gradle.tooling.events.FailureResult
 import org.gradle.tooling.events.FinishEvent
-import org.gradle.tooling.events.OperationCompletionListener
-import org.gradle.tooling.events.OperationDescriptor
 import org.gradle.tooling.events.SkippedResult
 import org.gradle.tooling.events.SuccessResult
+import org.gradle.tooling.events.OperationCompletionListener
+import org.gradle.tooling.events.OperationDescriptor
 import org.gradle.tooling.events.task.TaskFailureResult
 import org.gradle.tooling.events.task.TaskFinishEvent
 import org.gradle.tooling.events.task.TaskSuccessResult
+import org.gradle.util.GradleVersion
+import oshi.SystemInfo
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
@@ -57,17 +62,26 @@ import java.util.concurrent.ConcurrentLinkedQueue
 @ExcludeJacocoGenerated
 abstract class BuildExecutionService : BuildService<BuildExecutionService.Params>, OperationCompletionListener, AutoCloseable {
 
+    companion object {
+        private val clazz = BuildExecutionService::class.java
+    }
+
     interface Params : BuildServiceParameters {
         val enabled: Property<Boolean>
         val databaseConfig: Property<DatabaseConfig>
         val envCI: Property<Boolean>
         val requestedTasks: ListProperty<String>
-        val trackingTasks: ListProperty<String>
-        val trackingBranches: ListProperty<String>
-        val modules: ListProperty<Module>
+        val trackingTasks: SetProperty<String>
+        val trackingBranches: SetProperty<String>
+        val modules: SetProperty<Module>
         val modulesDependencyGraph: Property<ModulesDependencyGraph>
-        val nonCacheableTasks: ListProperty<String>
+        val nonCacheableTasks: SetProperty<String>
+        val outputPath: Property<String>
     }
+
+    private val injector = BuildExecutionInjector(parameters)
+    private val tower: Tower = injector.provideTower()
+    private val systemInfo: SystemInfo = injector.provideSystemInfo()
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
@@ -147,25 +161,32 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         if (!isBranchTrackable()) return
 
+        tower.r("build process started")
+        tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
+        tower.r("manufacturer: ${systemInfo.operatingSystem.manufacturer}")
+        tower.r("os: ${systemInfo.operatingSystem.family} " +
+                "${systemInfo.operatingSystem.versionInfo.version} " +
+                "x${systemInfo.operatingSystem.bitness}")
+        tower.r("gradle version: ${GradleVersion.current().version}")
+        tower.r("requested tasks: ${parameters.requestedTasks.get().separateElementsWithSpace()}")
+        tower.r("modules count: ${parameters.modules.get().size}")
+        tower.r("ci: ${parameters.envCI.get()}")
+        tower.r("tracking tasks count: ${parameters.trackingTasks.get().size}")
+        tower.r("tracking branches count: ${parameters.trackingBranches.get().size}")
+
         printConfigurationNotices()
 
-        if (!isDatabaseConfigurationValid()) return
-
-        BuildExecutionInjector(
-            databaseConfig = parameters.databaseConfig.get(),
-            isCI = parameters.envCI.get(),
-            branch = GitUtils.currentBranch(),
-            requestedTasks = parameters.requestedTasks.get(),
-            trackingBranches = parameters.trackingBranches.get(),
-            trackingTasks = parameters.trackingTasks.get(),
-            modules = parameters.modules.get(),
-            modulesDependencyGraph = parameters.modulesDependencyGraph.get(),
-            nonCacheableTasks = parameters.nonCacheableTasks.get()
-        ).apply {
-            provideBuildExecutionLogic().onExecutionFinished(executedTasks)
-        }.also {
-            executedTasks.clear()
+        if (!isDatabaseConfigurationValid()) {
+            tower.e(clazz, "close()", "database configuration is not valid, process stopped")
+            return
         }
+
+        injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
+        injector.destroy()
+        executedTasks.clear()
+
+        tower.r("build process finished")
+        tower.save()
     }
 
     private fun isForbiddenTasksRequested(): Boolean {
@@ -186,12 +207,12 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     }
 
     private fun isDatabaseConfigurationValid(): Boolean {
-        //return false if local machine executed and the config is not set.
+        // return false if local machine executed and the config is not set.
         if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
             return false
         }
-        if(parameters.databaseConfig.get().local.isNotNull()) {
-            when(parameters.databaseConfig.get().local) {
+        if (parameters.databaseConfig.get().local.isNotNull()) {
+            when (parameters.databaseConfig.get().local) {
                 is SqliteDatabaseConnection -> {
                     val sqliteConfig = parameters.databaseConfig.get().local!! as SqliteDatabaseConnection
                     if (sqliteConfig.path.isNull()) {
@@ -217,8 +238,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
             return false
         }
-        if(parameters.databaseConfig.get().ci.isNotNull()) {
-            when(parameters.databaseConfig.get().ci) {
+        if (parameters.databaseConfig.get().ci.isNotNull()) {
+            when (parameters.databaseConfig.get().ci) {
                 is SqliteDatabaseConnection -> {
                     val sqliteConfig = parameters.databaseConfig.get().ci!! as SqliteDatabaseConnection
                     if (sqliteConfig.path.isNull()) {
@@ -244,7 +265,10 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
     }
 
     private fun printConfigurationNotices() {
+        tower.i(clazz, "printConfigurationNotices()")
         if (parameters.databaseConfig.get().local.isNull() && parameters.databaseConfig.get().ci.isNull()) {
+            tower.w(clazz, "printConfigurationNotices()", "database configuration is missing")
+
             ConsolePrinter(36).apply {
                 printFirstLine()
                 printLine("Gradle Analytics Plugin")
@@ -254,6 +278,12 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
                 printLastLine()
             }
         } else if (parameters.databaseConfig.get().ci.isNull() && parameters.envCI.get()) {
+            tower.w(
+                clazz = clazz,
+                method ="printConfigurationNotices()",
+                message = "build ran on ci machine, plugin database config for ci machine is not set"
+            )
+
             ConsolePrinter(74).apply {
                 printFirstLine()
                 printLine("Gradle Analytics Plugin")
@@ -264,6 +294,12 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
                 printLastLine()
             }
         } else if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
+            tower.w(
+                clazz = clazz,
+                method ="printConfigurationNotices()",
+                message = "build ran on local machine, plugin database config for Local machine is not set"
+            )
+
             ConsolePrinter(80).apply {
                 printFirstLine()
                 printLine("Gradle Analytics Plugin")

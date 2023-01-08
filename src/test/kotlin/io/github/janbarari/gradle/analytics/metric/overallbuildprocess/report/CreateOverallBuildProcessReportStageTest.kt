@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.OverallBuildProcessMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -36,7 +37,7 @@ class CreateOverallBuildProcessReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateOverallBuildProcessReportStage(metrics)
+        val stage = CreateOverallBuildProcessReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -75,7 +76,7 @@ class CreateOverallBuildProcessReportStageTest {
             )
         )
 
-        val stage = CreateOverallBuildProcessReportStage(metrics)
+        val stage = CreateOverallBuildProcessReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

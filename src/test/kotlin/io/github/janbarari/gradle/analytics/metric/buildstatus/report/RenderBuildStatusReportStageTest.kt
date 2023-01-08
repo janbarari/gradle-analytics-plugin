@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.buildstatus.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.BuildStatusReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import kotlinx.coroutines.runBlocking
@@ -36,7 +37,7 @@ class RenderBuildStatusReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%build-status-metric%"
-        val stage = RenderBuildStatusReportStage(report)
+        val stage = RenderBuildStatusReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Build Status is not available!</p><div class=\"space\"></div>"
@@ -63,7 +64,7 @@ class RenderBuildStatusReportStageTest {
         )
 
         val renderTemplate = "%build-status-metric%"
-        val stage = RenderBuildStatusReportStage(report)
+        val stage = RenderBuildStatusReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

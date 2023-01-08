@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesmethodcount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleMethodCount
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
@@ -36,7 +37,7 @@ class CreateModulesMethodCountReportStageTest {
     @Test
     fun `when process() executes with empty metric, expect null report`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateModulesMethodCountReportStage(metrics)
+        val stage = CreateModulesMethodCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -66,7 +67,7 @@ class CreateModulesMethodCountReportStageTest {
             }
         )
 
-        val stage = CreateModulesMethodCountReportStage(metrics)
+        val stage = CreateModulesMethodCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -119,7 +120,7 @@ class CreateModulesMethodCountReportStageTest {
             }
         )
 
-        val stage = CreateModulesMethodCountReportStage(metrics)
+        val stage = CreateModulesMethodCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

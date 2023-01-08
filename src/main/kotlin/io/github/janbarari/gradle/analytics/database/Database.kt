@@ -30,6 +30,7 @@ import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -38,12 +39,14 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transactionManager
 
 class Database(
+    private val tower: Tower,
     config: DatabaseConfig,
     private var isCI: Boolean
 ) {
 
     companion object {
         const val DEFAULT_VARCHAR_LENGTH = 256
+        private val clazz = io.github.janbarari.gradle.analytics.database.Database::class.java
     }
 
     private lateinit var _database: Database
@@ -54,6 +57,7 @@ class Database(
     }
 
     private fun connect(config: DatabaseConfig) {
+        tower.i(clazz, "connect()")
         databaseConfig = config.local
 
         if (isCI && config.ci.isNotNull()) {
@@ -76,11 +80,11 @@ class Database(
             }
 
             createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
-
         }
     }
 
     private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {
+        tower.i(clazz, "connectToMysqlDatabase()")
         _database = Database.connect(
             url = "jdbc:mysql://${config.host}:${config.port}/${config.name}",
             driver = "com.mysql.cj.jdbc.Driver",
@@ -90,6 +94,7 @@ class Database(
     }
 
     private fun connectSqliteDatabase(config: SqliteDatabaseConnection) {
+        tower.i(clazz, "connectSqliteDatabase()")
         _database = Database.connect(
             url = "jdbc:sqlite:${config.path!!.toRealPath()}/${config.name}.db",
             driver = "org.sqlite.JDBC",
@@ -102,6 +107,7 @@ class Database(
      * Creates the database tables if not exist.
      */
     private fun createTables(vararg entities: Table) {
+        tower.i(clazz, "createTables() with ${entities.size} tables")
         transaction  {
             SchemaUtils.createMissingTablesAndColumns(*entities, withLogs = false)
         }

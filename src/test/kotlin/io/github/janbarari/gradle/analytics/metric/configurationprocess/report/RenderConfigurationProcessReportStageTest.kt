@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.configurationprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderConfigurationProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%configuration-process-metric%"
-        val stage = RenderConfigurationProcessReportStage(report)
+        val stage = RenderConfigurationProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Configuration Process is not available!</p><div class=\"space\"></div>"
@@ -65,7 +66,7 @@ class RenderConfigurationProcessReportStageTest {
         )
 
         val renderTemplate = "%configuration-process-metric%"
-        val stage = RenderConfigurationProcessReportStage(report)
+        val stage = RenderConfigurationProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

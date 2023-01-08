@@ -25,12 +25,19 @@ package io.github.janbarari.gradle.analytics.metric.modulesourcecount.update
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.logger.Tower
 
 class UpdateModulesSourceCountMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ModulesSourceCountMetric>() {
 
+    companion object {
+        private val clazz = UpdateModulesSourceCountMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesSourceCountMetric {
+        tower.i(clazz, "execute()")
         return repo.getTemporaryMetrics().last().modulesSourceCountMetric!!
     }
 

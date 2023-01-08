@@ -32,3 +32,4 @@ All third-party dependencies that are being used in the plugin source:
 - `mysql:mysql-connector-java:8.0.29`
 - `org.xerial:sqlite-jdbc:3.36.0.3`
 - `commons-io:commons-io:2.11.0`
+- `com.github.oshi:oshi-core`

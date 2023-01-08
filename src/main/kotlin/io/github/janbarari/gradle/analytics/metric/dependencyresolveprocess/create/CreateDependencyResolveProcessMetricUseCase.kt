@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.cre
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.DependencyResolveProcessMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateDependencyResolveProcessMetricUseCase: UseCase<BuildInfo, DependencyResolveProcessMetric>() {
+class CreateDependencyResolveProcessMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, DependencyResolveProcessMetric>() {
+
+    companion object {
+        private val clazz = CreateDependencyResolveProcessMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): DependencyResolveProcessMetric {
+        tower.i(clazz, "execute()")
         return DependencyResolveProcessMetric(
             median = input.getTotalDependenciesResolveDuration().toMillis(),
             mean = input.getTotalDependenciesResolveDuration().toMillis()

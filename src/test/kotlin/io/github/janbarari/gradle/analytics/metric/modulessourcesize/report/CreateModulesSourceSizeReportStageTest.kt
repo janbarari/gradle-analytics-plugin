@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulessourcesize.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceSizeMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -35,7 +36,7 @@ class CreateModulesSourceSizeReportStageTest {
     @Test
     fun `when process() executes with empty metric, expect null report`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateModulesSourceSizeReportStage(metrics)
+        val stage = CreateModulesSourceSizeReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -65,7 +66,7 @@ class CreateModulesSourceSizeReportStageTest {
             }
         )
 
-        val stage = CreateModulesSourceSizeReportStage(metrics)
+        val stage = CreateModulesSourceSizeReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -118,7 +119,7 @@ class CreateModulesSourceSizeReportStageTest {
             }
         )
 
-        val stage = CreateModulesSourceSizeReportStage(metrics)
+        val stage = CreateModulesSourceSizeReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

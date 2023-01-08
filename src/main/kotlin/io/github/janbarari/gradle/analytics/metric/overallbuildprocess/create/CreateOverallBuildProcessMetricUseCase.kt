@@ -25,10 +25,18 @@ package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.OverallBuildProcessMetric
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateOverallBuildProcessMetricUseCase: UseCase<BuildInfo, OverallBuildProcessMetric>() {
+class CreateOverallBuildProcessMetricUseCase(
+    private val tower: Tower
+): UseCase<BuildInfo, OverallBuildProcessMetric>() {
+
+    companion object {
+        private val clazz = CreateOverallBuildProcessMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): OverallBuildProcessMetric {
+        tower.i(clazz, "execute()")
         return OverallBuildProcessMetric(
             median = input.getTotalDuration().toMillis(),
             mean = input.getTotalDuration().toMillis()

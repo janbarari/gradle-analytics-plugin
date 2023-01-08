@@ -57,11 +57,13 @@ import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.U
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.core.UseCase
+import io.github.janbarari.gradle.logger.Tower
 
 /**
  * Saves daily build metrics.
  */
 class SaveMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository,
     private val updateInitializationProcessMetricUseCase: UpdateInitializationProcessMetricUseCase,
     private val updateConfigurationProcessMetricUseCase: UpdateConfigurationProcessMetricUseCase,
@@ -81,12 +83,17 @@ class SaveMetricUseCase(
     private val updateModulesCrashCountMetricUseCase: UpdateModulesCrashCountMetricUseCase,
 ) : UseCase<BuildMetric, Long>() {
 
+    companion object {
+        private val clazz = SaveMetricUseCase::class.java
+    }
+
     /**
      * Upsert the daily metric in the database.
      *
      * @param input BuildMetric of the build.
      */
     override suspend fun execute(input: BuildMetric): Long {
+        tower.i(clazz, "execute() metric.hashCode=${input.hashCode()}")
         if (!repo.isDayMetricExists()) return repo.saveNewMetric(input)
 
         val pipeline = UpdateMetricPipeline(UpdateInitializationProcessMetricStage(updateInitializationProcessMetricUseCase))
