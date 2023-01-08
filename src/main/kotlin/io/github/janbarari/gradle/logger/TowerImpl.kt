@@ -30,7 +30,7 @@ import java.util.*
 import kotlin.io.path.Path
 
 /**
- * Implementation of [io.github.janbarari.gradle.logger.Tower].
+ * **Implementation of [io.github.janbarari.gradle.logger.Tower].**
  *
  * @param name File name.
  * @param outputPath Path to save the log file.
