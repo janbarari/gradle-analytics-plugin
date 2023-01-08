@@ -42,6 +42,10 @@ class CreateModulesBuildHeatmapReportStage(
         private val clazz = CreateModulesBuildHeatmapReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesBuildHeatmapReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val temp = mutableListOf<ModuleBuildHeatmap>()

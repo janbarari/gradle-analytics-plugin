@@ -41,6 +41,10 @@ class CreateNonCacheableTasksReportStage(
         private val clazz = CreateNonCacheableTasksReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateNonCacheableTasksReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         return input.apply {
