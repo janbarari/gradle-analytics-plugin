@@ -25,7 +25,6 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
@@ -63,8 +62,6 @@ import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.Cr
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
-import io.github.janbarari.gradle.analytics.metric.redundantdependencyconnection.report.CreateRedundantDependencyConnectionReportStage
-import io.github.janbarari.gradle.analytics.metric.redundantdependencyconnection.report.RenderRedundantDependencyConnectionReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -86,13 +83,11 @@ import java.io.IOException
  */
 class ReportAnalyticsLogicImp(
     private val tower: Tower,
-    private val modulesDependencyGraphReportJsonAdapter: ModulesDependencyGraphReportJsonAdapter,
     private val getMetricsUseCase: GetMetricsUseCase,
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
     private val outputPath: String,
-    private val projectName: String,
-    private val excludeModules: Set<String>
+    private val projectName: String
 ) : ReportAnalyticsLogic {
 
     companion object {
@@ -143,7 +138,6 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateNonCacheableTasksReportStage(tower, data))
             .addStage(CreateModulesSourceSizeReportStage(tower, data))
             .addStage(CreateModulesCrashCountReportStage(tower, data))
-            .addStage(CreateRedundantDependencyConnectionReportStage(tower, data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -179,23 +173,13 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderDependencyResolveProcessReportStage(tower, report))
             .addStage(RenderParallelExecutionRateReportStage(tower, report))
             .addStage(RenderModulesExecutionProcessReportStage(tower, report))
-            .addStage(
-                RenderModulesDependencyGraphReportStage(
-                    tower,
-                    modulesDependencyGraphReportJsonAdapter,
-                    report,
-                    outputPath,
-                    projectName,
-                    excludeModules
-                )
-            )
+            .addStage(RenderModulesDependencyGraphReportStage(tower, report, outputPath, projectName))
             .addStage(RenderModulesTimelineReportStage(tower, report))
             .addStage(RenderBuildStatusReportStage(tower, report))
             .addStage(RenderModulesBuildHeatmapReportStage(tower, report))
             .addStage(RenderNonCacheableTasksReportStage(tower, report))
             .addStage(RenderModulesSourceSizeReportStage(tower, report))
             .addStage(RenderModulesCrashCountReportStage(tower, report))
-            .addStage(RenderRedundantDependencyConnectionReportStage(tower, report))
             .execute(rawHTML)
     }
 
@@ -205,7 +189,6 @@ class ReportAnalyticsLogicImp(
         tower.i(clazz, "saveReport()")
         val resources = listOf(
             "opensans-regular.ttf",
-            "jetbrainsmono-regular.ttf",
             "plugin-logo.png",
             "styles.css",
             "functions.js",

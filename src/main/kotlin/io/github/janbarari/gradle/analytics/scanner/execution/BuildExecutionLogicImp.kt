@@ -82,7 +82,6 @@ class BuildExecutionLogicImp(
     private val tower: Tower,
     private val requestedTasks: List<String>,
     private val modules: Set<Module>,
-    private val gradleWorker: Pair<Int, Int>,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -110,8 +109,6 @@ class BuildExecutionLogicImp(
     }
 
     init {
-        tower.i(clazz, "init { }", "initialize start timestamp, initialization process timestamp and" +
-                "configuration process timestamp")
         assignStartTimestampIfProcessSkipped()
         assignInitializationTimestampIfProcessSkipped()
         assignConfigurationTimestampIfProcessSkipped()
@@ -167,11 +164,9 @@ class BuildExecutionLogicImp(
                     buildInfo.requestedTasks,
                     buildInfo.createdAt,
                     buildInfo.gitHeadCommitHash,
-                    modules.map { it.path }.toSet()
+                    modules.map { it.path }
                 )
             )
-
-        buildMetric.gradleWorkers = gradleWorker
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
@@ -209,10 +204,6 @@ class BuildExecutionLogicImp(
             printLine(left = "Overall Build Process:", right = "${buildMetric.overallBuildProcessMetric?.median}ms")
             printLine(left = "Cache Hit:", right = "${buildMetric.cacheHitMetric?.rate}%")
             printLine(left = "Parallel Execution Rate:", right = "${buildMetric.parallelExecutionRateMetric?.medianRate}%")
-            printLine(
-                left = "Used/Available Worker Count:",
-                right = "${buildMetric.gradleWorkers.first}/${buildMetric.gradleWorkers.second}"
-            )
             printBreakLine(char = '-')
             printLine(left = "Datetime:", right = DateTimeUtils.formatToDateTime(buildMetric.createdAt))
             printBreakLine(char = '-')
@@ -278,4 +269,5 @@ class BuildExecutionLogicImp(
             BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
         }
     }
+
 }

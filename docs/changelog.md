@@ -23,25 +23,8 @@
 
 # Changelog
 
-## 1.0.0-beta8
-* [Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
-* Used/Available worker count added in console report
-* `upcoming-milestone`, `social-press` added in documentation 
-* More logs added in the `build logger` and `report logger`
-
-## HotFix - 1.0.0-beta7
-* Modules Dependency Graph first node selection bug fixed
-
 ## 1.0.0-beta6
-* [Issue 89](https://github.com/janbarari/gradle-analytics-plugin/issues/89)
-* Tracking All Branches feature added [Feature 52](https://github.com/janbarari/gradle-analytics-plugin/issues/52)
-* [Issue 90](https://github.com/janbarari/gradle-analytics-plugin/issues/90)
-* Redundant Dependency Connection Metric [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/93)
-* Internal Logger [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/86)
-* Change report font style
-* Upgrade Gradle version to 7.6 [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/84)
-* Modules Dependency Graph selection feature added
-* Fix minor critical bugs
+* Internal logger added for debugging
 
 ## HotFix - 1.0.0-beta5
 * [Issue 77](https://github.com/janbarari/gradle-analytics-plugin/issues/77)

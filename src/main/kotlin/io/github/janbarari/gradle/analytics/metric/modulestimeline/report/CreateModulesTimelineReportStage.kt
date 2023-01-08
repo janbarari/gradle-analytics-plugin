@@ -39,6 +39,10 @@ class CreateModulesTimelineReportStage(
         private val clazz = CreateModulesTimelineReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesTimelineReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val temp = getModulesTimelineUseCase.execute(branch)

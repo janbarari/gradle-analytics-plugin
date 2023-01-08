@@ -26,36 +26,29 @@ import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertDoesNotThrow
-import kotlin.random.Random
 import kotlin.test.assertEquals
 
-//todo these tests are deprecated
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DatabaseRepositoryTest {
 
     private lateinit var repo: DatabaseRepository
-    private lateinit var databaseResultMigrationPipeline: DatabaseResultMigrationPipeline
 
-    @BeforeEach
+    @BeforeAll
     fun setup() {
-        databaseResultMigrationPipeline = mockk()
         val databaseConfig = DatabaseConfig().apply {
             local = SqliteDatabaseConnection {
                 path = "./build"
-                name = "DRT_${Random.nextInt()}"
+                name = "testdb"
             }
         }
         val db = Database(
@@ -63,15 +56,13 @@ class DatabaseRepositoryTest {
             databaseConfig,
             false
         )
-
         repo = DatabaseRepositoryImp(
             tower = TowerMockImpl(),
             db = db,
             branch = "develop",
             requestedTasks = "assembleDebug",
             buildMetricJsonAdapter = BuildMetricJsonAdapter(Moshi.Builder().build()),
-            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl()),
-            databaseResultMigrationPipeline = databaseResultMigrationPipeline
+            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl())
         )
     }
 
@@ -82,7 +73,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
-            modules = emptySet()
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveNewMetric(metric)
@@ -96,7 +87,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
-            modules = emptySet()
+            modules = emptyList()
         )
         assertDoesNotThrow {
             repo.saveTemporaryMetric(metric)
@@ -110,6 +101,35 @@ class DatabaseRepositoryTest {
     }
 
     @Test
+    fun `check isDayMetricExists() returns true when data is exists`() = runBlocking {
+        val metric = BuildMetric(
+            branch = "develop",
+            listOf("assembleDebug"),
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
+            modules = emptyList()
+        )
+        repo.saveNewMetric(metric)
+        delay(300)
+        assertEquals(true, repo.isDayMetricExists())
+    }
+
+    @Test
+    fun `check getDayMetric() returns result when data is exists`() {
+        repo.dropMetrics()
+        val metric = BuildMetric(
+            branch = "develop",
+            listOf("assembleDebug"),
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
+            modules = emptyList()
+        )
+        repo.saveNewMetric(metric)
+        assertEquals("develop", repo.getDayMetric().first.branch)
+        assertEquals("assembleDebug", repo.getDayMetric().first.requestedTasks.first())
+    }
+
+    @Test
     fun `check dropOutdatedTemporaryMetrics() returns true`() {
         repo.dropOutdatedTemporaryMetrics()
     }
@@ -117,6 +137,30 @@ class DatabaseRepositoryTest {
     @Test
     fun `check getTemporaryMetrics() returns correct result`() {
         assert(repo.getTemporaryMetrics() is List<BuildMetric>)
+    }
+
+    @Test
+    fun `check updateDayMetric() updates the day metric`() {
+        if (!repo.isDayMetricExists()) {
+            val metric = BuildMetric(
+                branch = "develop",
+                listOf("assembleDebug"),
+                createdAt = System.currentTimeMillis(),
+                gitHeadCommitHash = "unknown",
+                modules = emptyList()
+            )
+            repo.saveNewMetric(metric)
+        }
+        val dayMetric = repo.getDayMetric()
+        val newMetric = BuildMetric(
+            branch = "master",
+            listOf("assembleRelease"),
+            createdAt = System.currentTimeMillis(),
+            gitHeadCommitHash = "unknown",
+            modules = emptyList()
+        )
+        repo.updateDayMetric(dayMetric.second, newMetric)
+        assertEquals("master", repo.getDayMetric().first.branch)
     }
 
     @Test

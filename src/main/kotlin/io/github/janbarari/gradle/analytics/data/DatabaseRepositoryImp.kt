@@ -23,7 +23,6 @@
 package io.github.janbarari.gradle.analytics.data
 
 import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.database.ResetAutoIncremental
 import io.github.janbarari.gradle.analytics.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
@@ -51,8 +50,7 @@ class DatabaseRepositoryImp(
     private val branch: String,
     private val requestedTasks: String,
     private val buildMetricJsonAdapter: BuildMetricJsonAdapter,
-    private val temporaryMetricsMemoryCache: MemoryCache<List<BuildMetric>>,
-    private val databaseResultMigrationPipeline: DatabaseResultMigrationPipeline
+    private val temporaryMetricsMemoryCache: MemoryCache<List<BuildMetric>>
 ) : DatabaseRepository {
 
     companion object {
@@ -62,7 +60,7 @@ class DatabaseRepositoryImp(
     private var temporaryMetricsLastDropTimestamp: Long = 0L
 
     override fun saveNewMetric(metric: BuildMetric): Long {
-        tower.i(clazz, "saveNewMetric()", metric.getLog())
+        tower.i(clazz, "saveNewMetric() metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = MetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -76,7 +74,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun saveTemporaryMetric(metric: BuildMetric): Long {
-        tower.i(clazz, "saveTemporaryMetric()", metric.getLog())
+        tower.i(clazz, "saveTemporaryMetric() metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = TemporaryMetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -97,13 +95,8 @@ class DatabaseRepositoryImp(
                         (MetricTable.branch eq branch) and
                         (MetricTable.requestedTasks eq requestedTasks)
             }.single()
-
-            val buildMetric = databaseResultMigrationPipeline.execute(
-                buildMetricJsonAdapter.fromJson(queryResult[MetricTable.value])!!
-            )
-
             return@transaction Pair(
-                buildMetric, queryResult[MetricTable.number]
+                buildMetricJsonAdapter.fromJson(queryResult[MetricTable.value])!!, queryResult[MetricTable.number]
             )
         }
     }
@@ -134,9 +127,7 @@ class DatabaseRepositoryImp(
                         (MetricTable.requestedTasks eq requestedTasks)
             }.orderBy(MetricTable.number, SortOrder.ASC).forEach {
                 result.add(
-                    databaseResultMigrationPipeline.execute(
-                        buildMetricJsonAdapter.fromJson(it[MetricTable.value])!!
-                    )
+                    buildMetricJsonAdapter.fromJson(it[MetricTable.value])!!
                 )
             }
             return@transaction result
@@ -144,7 +135,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun updateDayMetric(number: Long, metric: BuildMetric): Boolean {
-        tower.i(clazz, "updateDayMetric()", metric.getLog())
+        tower.i(clazz, "updateDayMetric() metric.hashCode=${metric.hashCode()}")
         return db.transaction {
             val queryResult = MetricTable.update({
                 MetricTable.number eq number
@@ -221,10 +212,9 @@ class DatabaseRepositoryImp(
                         (TemporaryMetricTable.requestedTasks eq requestedTasks)
             }
             queryResult.toList().forEach {
-                val metric = databaseResultMigrationPipeline.execute(
-                    buildMetricJsonAdapter.fromJson(it[value])!!
-                )
-                metrics.add(metric)
+                buildMetricJsonAdapter.fromJson(it[value])?.let { metric ->
+                    metrics.add(metric)
+                }
             }
             temporaryMetricsMemoryCache.write(metrics)
             return@transaction metrics

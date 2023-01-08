@@ -26,10 +26,10 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
-import io.github.janbarari.gradle.analytics.exception.GitUnavailableException
-import io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException
+import io.github.janbarari.gradle.analytics.exception.NotAccessibleGitTerminalException
+import io.github.janbarari.gradle.analytics.exception.PluginConfigNotValidException
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
-import io.github.janbarari.gradle.analytics.scanner.BuildScanner
+import io.github.janbarari.gradle.analytics.scanner.ScannerUtils
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
@@ -42,10 +42,8 @@ import org.gradle.build.event.BuildEventsListenerRegistry
 import javax.inject.Inject
 
 /**
- * A free Gradle plugin to analyze your project builds. It provides unique visual and text metrics in HTML format.
- *
- * Copyright © 2022
- * @author Mehdi Janbarari (@janbarari)
+ * A free Gradle plugin for analytics of your projects. Provides unique visual and
+ * text metrics in HTML format.
  */
 @ExcludeJacocoGenerated
 class GradleAnalyticsPlugin @Inject constructor(
@@ -54,7 +52,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.0-beta8"
+        const val PLUGIN_VERSION = "1.0.0-beta5"
         const val OUTPUT_DIRECTORY_NAME = "gradle-analytics-plugin"
     }
 
@@ -62,12 +60,12 @@ class GradleAnalyticsPlugin @Inject constructor(
      * Gradle will invoke this function once the plugin is added into the project build script.
      */
     override fun apply(project: Project) {
-        ensureGradleCompatibility()
-        ensureGitAvailable()
-        val config = setupConfig(project)
-        validateConfig(config)
+        ensureProjectGradleCompatible()
+        ensureGitTerminalAccessible()
+        val config = setupPluginConfig(project)
+        ensureConfigValid(config)
         registerTasks(config)
-        BuildScanner.setup(config, registry)
+        ScannerUtils.setupScannerServices(config, registry)
     }
 
     /**
@@ -78,9 +76,9 @@ class GradleAnalyticsPlugin @Inject constructor(
      * when the Gradle version is not compatible.
      */
     @kotlin.jvm.Throws(IncompatibleVersionException::class)
-    private fun ensureGradleCompatibility() {
+    private fun ensureProjectGradleCompatible() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
-        if (!ProjectUtils.isProjectCompatibleWith(requiredGradleVersion)) {
+        if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
             throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
         }
     }
@@ -88,12 +86,12 @@ class GradleAnalyticsPlugin @Inject constructor(
     /**
      * The plugin only works on projects which use Git. This function ensures the Git terminal accessible in project directory.
      */
-    @kotlin.jvm.Throws(GitUnavailableException::class)
-    private fun ensureGitAvailable() {
+    @kotlin.jvm.Throws(NotAccessibleGitTerminalException::class)
+    private fun ensureGitTerminalAccessible() {
         try {
             GitUtils.currentBranch()
         } catch (e: Throwable) {
-            throw GitUnavailableException()
+            throw NotAccessibleGitTerminalException()
         }
     }
 
@@ -102,7 +100,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      *
      * Note: extension will be initialized after projectsEvaluated(configuration process).
      */
-    private fun setupConfig(project: Project): GradleAnalyticsPluginConfig {
+    private fun setupPluginConfig(project: Project): GradleAnalyticsPluginConfig {
         return project.extensions.create(
             PLUGIN_NAME,
             GradleAnalyticsPluginConfig::class.java,
@@ -119,22 +117,22 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     /**
      * Ensure the plugin config inputs are valid.
-     * @throws io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException when something is missing or wrong.
+     * @throws io.github.janbarari.gradle.analytics.exception.PluginConfigNotValidException when something is missing or wrong.
      */
-    @kotlin.jvm.Throws(PluginConfigInvalidException::class)
+    @kotlin.jvm.Throws(PluginConfigNotValidException::class)
     @Suppress("ThrowsCount")
-    private fun validateConfig(config: GradleAnalyticsPluginConfig) {
+    private fun ensureConfigValid(config: GradleAnalyticsPluginConfig) {
         config.project.gradle.projectsEvaluated {
             config.getDatabaseConfig().local.whenNotNull {
                 whenTypeIs<SqliteDatabaseConnection> {
                     if (path.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`path` is missing in local Sqlite database configuration.",
                             config.project.buildFile
                         )
                     }
                     if (name.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`name` is missing in local Sqlite database configuration.",
                             config.project.buildFile
                         )
@@ -142,13 +140,13 @@ class GradleAnalyticsPlugin @Inject constructor(
                 }
                 whenTypeIs<MySqlDatabaseConnection> {
                     if (host.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`host` is missing in local MySql database configuration.",
                             config.project.buildFile
                         )
                     }
                     if (name.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`name` is missing in local MySql database configuration.",
                             config.project.buildFile
                         )
@@ -158,13 +156,13 @@ class GradleAnalyticsPlugin @Inject constructor(
             config.getDatabaseConfig().ci.whenNotNull {
                 whenTypeIs<SqliteDatabaseConnection> {
                     if (path.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`path` is missing in ci Sqlite database configuration.",
                             config.project.buildFile
                         )
                     }
                     if (name.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`name` is missing in ci Sqlite database configuration.",
                             config.project.buildFile
                         )
@@ -172,13 +170,13 @@ class GradleAnalyticsPlugin @Inject constructor(
                 }
                 whenTypeIs<MySqlDatabaseConnection> {
                     if (host.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`host` is missing in ci MySql database configuration.",
                             config.project.buildFile
                         )
                     }
                     if (name.isNull()) {
-                        throw PluginConfigInvalidException(
+                        throw PluginConfigNotValidException(
                             "`name` is missing in ci MySql database configuration.",
                             config.project.buildFile
                         )
@@ -187,7 +185,7 @@ class GradleAnalyticsPlugin @Inject constructor(
             }
 
             config.trackingTasks.contains("reportAnalytics").whenTrue {
-                throw PluginConfigInvalidException(
+                throw PluginConfigNotValidException(
                     "`reportAnalytics` task is forbidden from being tracked.",
                     config.project.buildFile
                 )

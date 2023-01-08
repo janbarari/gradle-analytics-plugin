@@ -40,14 +40,6 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
 
     var trackingBranches: Set<String> = setOf()
 
-    var excludeModules: Set<String> = setOf()
-
-    /**
-     * Tracing all branches has disabled by default during to the significant drawback
-     * it creates in the database, especially for temporary branches.
-     */
-    var isTrackAllBranchesEnabled: Boolean = false
-
     var outputPath: String = project.rootProject.buildDir.absolutePath
 
     fun database(closure: Closure<*>) {
@@ -60,4 +52,5 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
     }
 
     fun getDatabaseConfig(): DatabaseConfig = databaseConfig
+
 }

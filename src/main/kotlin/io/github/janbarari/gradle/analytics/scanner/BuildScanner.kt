@@ -35,17 +35,15 @@ import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
-import io.github.janbarari.gradle.utils.DependencyGraphGenerator
 import org.gradle.api.Project
 import org.gradle.api.internal.GradleInternal
 import org.gradle.build.event.BuildEventsListenerRegistry
-import oshi.SystemInfo
 import java.util.*
 
 @ExcludeJacocoGenerated
-object BuildScanner {
+object ScannerUtils {
 
-    fun setup(
+    fun setupScannerServices(
         config: GradleAnalyticsPluginConfig,
         registry: BuildEventsListenerRegistry
     ) {
@@ -60,10 +58,6 @@ object BuildScanner {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
-        val systemProcessor = SystemInfo().hardware.processor
-        val availableWorkerCount = project.gradle.startParameter.maxWorkerCount
-        val maximumWorkerCount = systemProcessor.logicalProcessorCount + systemProcessor.physicalProcessorCount
-
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
             project.allprojects.whenEach {
@@ -72,12 +66,11 @@ object BuildScanner {
                 }
             }
 
-            val subprojects = project.subprojects
-                .filter { it.isModuleProject() && !configuration.excludeModules.contains(it.path) }
+            val modules = project.subprojects
+                .filter { it.isModuleProject() }
+                .map { it.toModule() }
 
-            val modulesDependencyGraph = DependencyGraphGenerator.generate(subprojects)
-
-            val modules = subprojects.map { it.toModule() }
+            val modulesDependencyGraph = DependencyGraphGenerator.generate(project)
 
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
                 BuildExecutionService::class.java.simpleName,
@@ -90,10 +83,7 @@ object BuildScanner {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    trackAllBranchesEnabled.set(configuration.isTrackAllBranchesEnabled)
                     outputPath.set(configuration.outputPath)
-                    this.maximumWorkerCount.set(maximumWorkerCount)
-                    this.availableWorkerCount.set(availableWorkerCount)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)
