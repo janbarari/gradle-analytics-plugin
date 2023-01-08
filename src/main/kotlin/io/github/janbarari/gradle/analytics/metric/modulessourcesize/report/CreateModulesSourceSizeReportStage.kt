@@ -44,6 +44,10 @@ class CreateModulesSourceSizeReportStage(
         private val clazz = CreateModulesSourceSizeReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesSourceSizeReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val metrics = metrics.filter {

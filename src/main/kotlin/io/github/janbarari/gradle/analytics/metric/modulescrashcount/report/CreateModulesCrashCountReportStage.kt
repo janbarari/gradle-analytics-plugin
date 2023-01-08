@@ -40,6 +40,10 @@ class CreateModulesCrashCountReportStage(
         private val clazz = CreateModulesCrashCountReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesCrashCountReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()

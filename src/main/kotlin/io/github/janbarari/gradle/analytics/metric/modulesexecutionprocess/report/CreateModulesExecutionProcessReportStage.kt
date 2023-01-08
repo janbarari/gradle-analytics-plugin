@@ -44,6 +44,10 @@ class CreateModulesExecutionProcessReportStage(
         private val clazz = CreateModulesExecutionProcessReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesExecutionProcessReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val temp = metrics.lastOrNull()?.modules?.map { path ->

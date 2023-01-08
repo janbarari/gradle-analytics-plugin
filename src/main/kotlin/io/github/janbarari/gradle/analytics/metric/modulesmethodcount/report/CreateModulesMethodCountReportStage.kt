@@ -45,6 +45,10 @@ class CreateModulesMethodCountReportStage(
         private val clazz = CreateModulesMethodCountReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateModulesMethodCountReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val metrics = metrics.filter {

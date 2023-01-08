@@ -40,6 +40,10 @@ class CreateParallelExecutionRateReportStage(
         private val clazz = CreateParallelExecutionRateReportStage::class.java
     }
 
+    companion object {
+        private val clazz = CreateParallelExecutionRateReportStage::class.java
+    }
+
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val timespanPoints = metrics
