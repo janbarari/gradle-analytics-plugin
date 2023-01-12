@@ -22,19 +22,15 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report
 
-import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
-import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
-import io.github.janbarari.gradle.utils.MathUtils
 import java.io.File
-
 
 class RenderModulesDependencyGraphReportStage(
     private val tower: Tower,
@@ -71,16 +67,12 @@ class RenderModulesDependencyGraphReportStage(
             result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME)
 
             var externalGraphRender = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME)
-            val mermaidCommands = generateMermaidCommands(dependencies, modules)
-            val maxTextSize = MathUtils.sumWithPercentage(mermaidCommands.length.toLong(), 30).toInt()
 
             externalGraphRender = externalGraphRender
                 .replace("%root-project-name%", projectName)
-                .replace("%max-text-size%", "$maxTextSize")
                 .replace("%graph-json%", modulesDependencyGraphReportJsonAdapter.toJson(
                     report.modulesDependencyGraphReport
                 ))
-                .replace("%mermaid-commands%", mermaidCommands)
 
             val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
             val directory = File(savePath)
@@ -90,40 +82,6 @@ class RenderModulesDependencyGraphReportStage(
             File("$savePath/modules-dependency-graph.html").writeText(externalGraphRender)
         }
         return result
-    }
-
-    fun generateMermaidCommands(dependencies: List<ModuleDependency>, modules: List<String>): String {
-        return buildString {
-            appendLine()
-            dependencies.whenEach {
-                val type = when(configuration) {
-                    "api" -> "api"
-                    "implementation" -> "impl"
-                    else -> configuration
-                }
-
-                val pathColor = dependencies.filter { it.dependency == dependency }.size
-                var heatmapColor = ":::blue"
-                if (pathColor in 3 .. 4) {
-                    heatmapColor = ":::yellow"
-                } else if (pathColor in 5 .. 6) {
-                    heatmapColor = ":::orange"
-                } else if (pathColor > 6) {
-                    heatmapColor = ":::red"
-                }
-
-                append("\t\t\t$path ---> |$type| $dependency$heatmapColor")
-                appendLine()
-            }
-            appendLine()
-            modules.whenEach {
-                append(
-                    "\t\t\tclick $this href \"$outputPath/gradle-analytics-plugin/modules-dependency-graph.html?path=$this\"" +
-                    " \"$this Dependency Graph\" _blank"
-                )
-                appendLine()
-            }
-        }
     }
 
 }

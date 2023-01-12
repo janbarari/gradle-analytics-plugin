@@ -44,7 +44,7 @@ class RenderModulesDependencyGraphReportStageTest {
             TowerMockImpl(),
             ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
             report,
-            "OUTPUT_PATH",
+            "./build/",
             "PROJECT_NAME"
         )
         val result = stage.process(renderTemplate)
@@ -82,7 +82,7 @@ class RenderModulesDependencyGraphReportStageTest {
             TowerMockImpl(),
             ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
             report,
-            "OUTPUT_PATH",
+            "./build/",
             "PROJECT_NAME"
         )
         val result = stage.process(renderTemplate)
