@@ -22,9 +22,11 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report
 
+import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReport
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
@@ -38,7 +40,13 @@ class RenderModulesDependencyGraphReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-dependency-graph-metric%"
-        val stage = RenderModulesDependencyGraphReportStage(TowerMockImpl(), report, "OUTPUT_PATH", "PROJECT_NAME")
+        val stage = RenderModulesDependencyGraphReportStage(
+            TowerMockImpl(),
+            ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
+            report,
+            "OUTPUT_PATH",
+            "PROJECT_NAME"
+        )
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Dependency Graph is not available!</p><div class=\"space\"></div>"
@@ -70,13 +78,17 @@ class RenderModulesDependencyGraphReportStageTest {
         )
 
         val renderTemplate = "%modules-dependency-graph-metric%"
-        val stage = RenderModulesDependencyGraphReportStage(TowerMockImpl(), report, "OUTPUT_PATH", "PROJECT_NAME")
+        val stage = RenderModulesDependencyGraphReportStage(
+            TowerMockImpl(),
+            ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
+            report,
+            "OUTPUT_PATH",
+            "PROJECT_NAME"
+        )
         val result = stage.process(renderTemplate)
 
         assertTrue {
-            result.contains(":freedom ---> |impl| :life:::blue\n" +
-                    "\t:life ---> |impl| :woman:::blue\n" +
-                    "\t:woman ---> |impl| :::blue")
+            result.contains("<a class=\"center-text\" href=\"modules-dependency-graph.html\" target=\"_blank\"><i class=\"bi bi-box-arrow-up-right\"></i> Show Graph</a>")
         }
     }
 

@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.report
 
 import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.Stage
 import io.github.janbarari.gradle.extension.isNull
@@ -37,6 +38,7 @@ import java.io.File
 
 class RenderModulesDependencyGraphReportStage(
     private val tower: Tower,
+    private val modulesDependencyGraphReportJsonAdapter: ModulesDependencyGraphReportJsonAdapter,
     private val report: Report,
     private val outputPath: String,
     private val projectName: String
@@ -44,12 +46,9 @@ class RenderModulesDependencyGraphReportStage(
 
     companion object {
         private const val MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID = "%modules-dependency-graph-metric%"
-        private const val MODULES_DEPENDENCY_GRAPH_METRIC_INTERNAL_TEMPLATE_FILE_NAME =
-            "modules-dependency-graph-metric-internal-template"
         private const val MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME =
             "modules-dependency-graph-metric-external-template"
         private const val MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME = "modules-dependency-graph-template"
-        private const val MAXIMUM_ALLOWED_MODULES_TO_RENDER_INTERNALLY = 16
         private val clazz = RenderModulesDependencyGraphReportStage::class.java
     }
 
@@ -69,33 +68,31 @@ class RenderModulesDependencyGraphReportStage(
     fun getMetricRender(): String {
         var result = ""
         report.modulesDependencyGraphReport.whenNotNull {
-            if (modules.size <= MAXIMUM_ALLOWED_MODULES_TO_RENDER_INTERNALLY) {
-                result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_INTERNAL_TEMPLATE_FILE_NAME)
-                result = result.replace("%mermaid-commands%", generateMermaidCommands(dependencies))
-            } else {
-                result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME)
+            result = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_METRIC_EXTERNAL_TEMPLATE_FILE_NAME)
 
-                var externalGraphRender = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME)
-                val mermaidCommands = generateMermaidCommands(dependencies)
-                val maxTextSize = MathUtils.sumWithPercentage(mermaidCommands.length.toLong(), 10).toInt()
+            var externalGraphRender = HtmlUtils.getTemplate(MODULES_DEPENDENCY_GRAPH_TEMPLATE_FILE_NAME)
+            val mermaidCommands = generateMermaidCommands(dependencies, modules)
+            val maxTextSize = MathUtils.sumWithPercentage(mermaidCommands.length.toLong(), 30).toInt()
 
-                externalGraphRender = externalGraphRender
-                    .replace("%root-project-name%", projectName)
-                    .replace("%max-text-size%", "$maxTextSize")
-                    .replace("%mermaid-commands%", mermaidCommands)
+            externalGraphRender = externalGraphRender
+                .replace("%root-project-name%", projectName)
+                .replace("%max-text-size%", "$maxTextSize")
+                .replace("%graph-json%", modulesDependencyGraphReportJsonAdapter.toJson(
+                    report.modulesDependencyGraphReport
+                ))
+                .replace("%mermaid-commands%", mermaidCommands)
 
-                val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
-                val directory = File(savePath)
-                if (!directory.exists()) {
-                    directory.mkdirs()
-                }
-                File("$savePath/modules-dependency-graph.html").writeText(externalGraphRender)
+            val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
+            val directory = File(savePath)
+            if (!directory.exists()) {
+                directory.mkdirs()
             }
+            File("$savePath/modules-dependency-graph.html").writeText(externalGraphRender)
         }
         return result
     }
 
-    fun generateMermaidCommands(dependencies: List<ModuleDependency>): String {
+    fun generateMermaidCommands(dependencies: List<ModuleDependency>, modules: List<String>): String {
         return buildString {
             appendLine()
             dependencies.whenEach {
@@ -115,7 +112,15 @@ class RenderModulesDependencyGraphReportStage(
                     heatmapColor = ":::red"
                 }
 
-                append("\t$path ---> |$type| $dependency$heatmapColor")
+                append("\t\t\t$path ---> |$type| $dependency$heatmapColor")
+                appendLine()
+            }
+            appendLine()
+            modules.whenEach {
+                append(
+                    "\t\t\tclick $this href \"$outputPath/gradle-analytics-plugin/modules-dependency-graph.html?path=$this\"" +
+                    " \"$this Dependency Graph\" _blank"
+                )
                 appendLine()
             }
         }

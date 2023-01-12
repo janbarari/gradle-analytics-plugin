@@ -65,8 +65,14 @@
   </style>
 </head>
 <body>
+  <div style="text-align: center; margin-bottom: 8px;">
+    <div style="display: inline-block;">
+      <input type="checkbox" id="deep-selection" name="deep-selection" style="cursor: pointer;">
+      <label for="deep-selection" style="cursor: pointer;">Show Deep Graph on Selection</label><br>
+    </div>
+  </div>
   <div id="zoomPanCont">
-    <div class="mermaid">
+    <div id="mermaid-content" class="mermaid" style="text-align: center;">
       graph TB
 
       classDef blue fill:#99f0ff, stroke:#52cce0;
@@ -84,6 +90,8 @@
   </div>
 
   <script>
+      var graphJson = '%graph-json%';
+
       var area = document.getElementById('zoomPanCont');
       var instance = "";
 
