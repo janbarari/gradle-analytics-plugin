@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics.reporttask
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
@@ -83,6 +84,7 @@ import java.io.IOException
  */
 class ReportAnalyticsLogicImp(
     private val tower: Tower,
+    private val modulesDependencyGraphReportJsonAdapter: ModulesDependencyGraphReportJsonAdapter,
     private val getMetricsUseCase: GetMetricsUseCase,
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
@@ -173,7 +175,15 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderDependencyResolveProcessReportStage(tower, report))
             .addStage(RenderParallelExecutionRateReportStage(tower, report))
             .addStage(RenderModulesExecutionProcessReportStage(tower, report))
-            .addStage(RenderModulesDependencyGraphReportStage(tower, report, outputPath, projectName))
+            .addStage(
+                RenderModulesDependencyGraphReportStage(
+                    tower,
+                    modulesDependencyGraphReportJsonAdapter,
+                    report,
+                    outputPath,
+                    projectName
+                )
+            )
             .addStage(RenderModulesTimelineReportStage(tower, report))
             .addStage(RenderBuildStatusReportStage(tower, report))
             .addStage(RenderModulesBuildHeatmapReportStage(tower, report))

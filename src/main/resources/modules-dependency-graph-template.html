@@ -29,10 +29,10 @@
   <script src="res/mermaid.js" type="text/javascript"></script>
   <link href="res/styles.css" rel="stylesheet">
   <link href="res/plugin-logo.png" rel="icon">
-  <script>mermaid.initialize({startOnLoad:true, maxTextSize:%max-text-size%});</script>
   <style>
 	body {
 		background-color: #DDDDDD;
+        margin: 0px;
 	}
 
 	.pan-zoom-control {
@@ -59,49 +59,352 @@
 	}
 
 	.mermaid svg {
-        height: 100vh;
-        width: 100wh;
+      height: 100vh;
+      width: 100wh;
+    }
+
+    .deep-graph-div {
+      z-index: 1000;
+      width: auto;
+      height: auto;
+      position: absolute;
+      display: block;
+      top: 20px;
+      left: 20px;
+      padding: 4px;
+      font-weight: 800;
+      background-color: #fff;
+      font-size: 15px;
     }
   </style>
 </head>
 <body>
-  <div id="zoomPanCont">
-    <div class="mermaid">
-      graph TB
+<div id="deep-graph-div" class="deep-graph-div">
+  <input type="checkbox" id="deep-graph" name="deep-graph" style="cursor: pointer;">
+  <label for="deep-graph" style="cursor: pointer;">Show Module Graph Nodes On Selection</label><br>
+</div>
+<div id="zoomPanCont">
+  <div id="mermaid-content" class="mermaid" style="text-align: center;">
+  </div>
+</div>
+<div class="pan-zoom-control">
+  <button id="btnBack" class="btn">&lt;</button>
+  <button id="btnZoomIn" class="btn">+</button>
+  <button id="btnZoomOut" class="btn">-</button>
+</div>
+<script>
+    function percentage(num, per)
+    {
+      return (num/100)*per;
+    }
 
+    function getParameter(name) {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      return urlParams.get(name);
+    }
+
+    function addParameter(key, value) {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      urlParams.set(key, value);
+      document.location.search =  urlParams
+    }
+
+    function removeParameter(parameter) {
+      const url = window.location.href;
+      var urlparts = url.split('?');
+      if (urlparts.length >= 2) {
+
+          var prefix = encodeURIComponent(parameter) + '=';
+          var pars = urlparts[1].split(/[&;]/g);
+
+          //reverse iteration as may be destructive
+          for (var i = pars.length; i-- > 0;) {
+              //idiom for string.startsWith
+              if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                  pars.splice(i, 1);
+              }
+          }
+
+          return urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : '');
+      }
+      return url;
+    }
+
+    const graphJson = '%graph-json%';
+    const parsedGraph = JSON.parse(graphJson);
+
+    function loadDefaultGraph(isDeepGraph) {
+      var mermaidCommands = `graph TB
       classDef blue fill:#99f0ff, stroke:#52cce0;
       classDef yellow fill:#fcf8a2, stroke:#c4be40;
       classDef orange fill:#fbc36f, stroke:#e4a13b;
-      classDef red fill:#ff8c7f, stroke:#e44c3b;
+      classDef red fill:#ff8c7f, stroke:#e44c3b;`;
 
-      %mermaid-commands%
-    </div>
-  </div>
+      mermaidCommands += "\n";
 
-  <div class="pan-zoom-control">
-    <button id="btnZoomIn" class="btn">+</button>
-    <button id="btnZoomOut" class="btn">-</button>
-  </div>
+      for(var i=0; i<parsedGraph.dependencies.length; i++) {
+        const item = parsedGraph.dependencies[i];
 
-  <script>
-      var area = document.getElementById('zoomPanCont');
-      var instance = "";
+        var type = "";
+        if(item.configuration == "api") {
+          type = "api";
+        } else if(item.configuration == "implementation") {
+          type = "impl";
+        } else {
+          type = item.configuration;
+        }
 
-      instance = panzoom(area, {
-          bounds: true,
-          maxZoom: 8.55,
-          minZoom: 0.8,
-          zoomDoubleClickSpeed: 1,
-          smoothScroll: false,
-          transformOrigin: {x: 0.5, y: 0.5}
-      });
+        const dependencyCount = parsedGraph.dependencies.filter(d =>
+          d.dependency == item.dependency
+        ).length;
 
-      $("#btnZoomIn").on("click",function(){
-          instance.zoomTo(0, 0, 1.25);
-      });
-      $("#btnZoomOut").on("click",function(){
-          instance.zoomTo(0, 0, 0.8);
-      });
+        var heatmapColor = ":::blue";
+        if(dependencyCount >= 3 && dependencyCount <= 4) {
+          heatmapColor = ":::yellow";
+        } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+          heatmapColor = ":::orange";
+        } else if (dependencyCount >= 8) {
+          heatmapColor = ":::red";
+        }
+
+        mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+      }
+
+      mermaidCommands += "\n";
+
+      for(var i=0; i<parsedGraph.modules.length; i++) {
+        const item = parsedGraph.modules[i];
+        var deepGraphParam = ""
+        if(isDeepGraph) {
+          deepGraphParam = "&deep-graph=true"
+        }
+        mermaidCommands += "click " + item + " href \"" + "?path=" + item + deepGraphParam + "\" _blank" + "\n";
+      }
+
+      document.getElementById("mermaid-content").innerHTML = mermaidCommands;
+    }
+
+    function loadPathGraph(path) {
+      var mermaidCommands = `graph TB
+      classDef blue fill:#99f0ff, stroke:#52cce0;
+      classDef yellow fill:#fcf8a2, stroke:#c4be40;
+      classDef orange fill:#fbc36f, stroke:#e4a13b;
+      classDef red fill:#ff8c7f, stroke:#e44c3b;`;
+
+      mermaidCommands += "\n";
+
+      for(var i=0; i<parsedGraph.dependencies.length; i++) {
+        const item = parsedGraph.dependencies[i];
+
+        if(item.path == path || item.dependency.includes(path)) {
+          var type = "";
+          if(item.configuration == "api") {
+            type = "api";
+          } else if(item.configuration == "implementation") {
+            type = "impl";
+          } else {
+            type = item.configuration;
+          }
+
+          const dependencyCount = parsedGraph.dependencies.filter(d =>
+            d.dependency == item.dependency
+          ).length;
+
+          var heatmapColor = ":::blue";
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
+            heatmapColor = ":::yellow";
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+            heatmapColor = ":::orange";
+          } else if (dependencyCount >= 8) {
+            heatmapColor = ":::red";
+          }
+
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+        }
+      }
+
+      document.getElementById("mermaid-content").innerHTML = mermaidCommands;
+    }
+
+    function loadPathDeepGraph(path) {
+      var mermaidCommands = `graph TB
+      classDef blue fill:#99f0ff, stroke:#52cce0;
+      classDef yellow fill:#fcf8a2, stroke:#c4be40;
+      classDef orange fill:#fbc36f, stroke:#e4a13b;
+      classDef red fill:#ff8c7f, stroke:#e44c3b;`;
+
+      mermaidCommands += "\n";
+
+      for(var i=0; i<parsedGraph.dependencies.length; i++) {
+        const item = parsedGraph.dependencies[i];
+
+        if(item.path == path) {
+          var type = "";
+          if(item.configuration == "api") {
+            type = "api";
+          } else if(item.configuration == "implementation") {
+            type = "impl";
+          } else {
+            type = item.configuration;
+          }
+
+          const dependencyCount = parsedGraph.dependencies.filter(d =>
+            d.dependency == item.dependency
+          ).length;
+
+          var heatmapColor = ":::blue";
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
+            heatmapColor = ":::yellow";
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+            heatmapColor = ":::orange";
+          } else if (dependencyCount >= 8) {
+            heatmapColor = ":::red";
+          }
+
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+        }
+      }
+
+      const hierarchy = getModuleGraph(path);
+
+      for(var i=0; i<hierarchy.length; i++) {
+        const module = hierarchy[i];
+
+        const filteredGraph = parsedGraph.dependencies.filter(g=>
+          g.path == module
+        );
+
+        for(var j=0; j<filteredGraph.length; j++) {
+          const item = filteredGraph[j];
+
+          var type = "";
+          if(item.configuration == "api") {
+            type = "api";
+          } else if(item.configuration == "implementation") {
+            type = "impl";
+          } else {
+            type = item.configuration;
+          }
+
+          const dependencyCount = parsedGraph.dependencies.filter(d =>
+            d.dependency == item.dependency
+          ).length;
+
+          var heatmapColor = ":::blue";
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
+            heatmapColor = ":::yellow";
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+            heatmapColor = ":::orange";
+          } else if (dependencyCount >= 8) {
+            heatmapColor = ":::red";
+          }
+
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+        }
+      }
+
+      const hasGraph = parsedGraph.dependencies.filter(g=>
+        g.path == path
+      ).length;
+
+      if(hasGraph == 0) {
+        const dependencyCount = parsedGraph.dependencies.filter(d =>
+          d.dependency == path
+        ).length;
+
+        var heatmapColor = ":::blue";
+        if(dependencyCount >= 3 && dependencyCount <= 4) {
+          heatmapColor = ":::yellow";
+        } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+          heatmapColor = ":::orange";
+        } else if (dependencyCount >= 8) {
+          heatmapColor = ":::red";
+        }
+        mermaidCommands += path + heatmapColor + "\n";
+      }
+
+      document.getElementById("mermaid-content").innerHTML = mermaidCommands;
+    }
+
+    function getModuleGraph(path) {
+      var result = [];
+
+      const filteredGraph = parsedGraph.dependencies.filter(g=>
+        g.path == path
+      );
+
+      for(var j=0; j<filteredGraph.length; j++) {
+        const item = filteredGraph[j];
+
+        if(item.path == path) {
+          result = result.concat(item.dependency);
+          result = result.concat(getModuleGraph(item.dependency));
+        }
+      }
+
+      return result;
+    }
+
+    if(getParameter("deep-graph") == "true") {
+      document.getElementById("deep-graph").checked = true;
+    }
+
+    document.getElementById("deep-graph").addEventListener('change', function() {
+      if (this.checked) {
+        addParameter("deep-graph", "true");
+      } else {
+        addParameter("deep-graph", "false");
+      }
+    });
+
+    if(getParameter("path") == null) {
+      document.getElementById("btnBack").remove();
+      if(getParameter("deep-graph") == "true") {
+        loadDefaultGraph(true);
+      } else {
+        loadDefaultGraph(false);
+      }
+    } else {
+      document.getElementById("deep-graph-div").remove();
+      const path = getParameter("path");
+      const isDeepGraphSelected = getParameter("deep-graph");
+      if(isDeepGraphSelected == "true") {
+        loadPathDeepGraph(path);
+      } else {
+        loadPathGraph(path);
+      }
+    }
+
+    $("#btnBack").on("click",function(){
+      window.history.back();
+    });
+
+    var commandsLength = document.getElementById("mermaid-content").innerHTML.length;
+    commandsLength += percentage(commandsLength, 30);
+
+    var area = document.getElementById('zoomPanCont');
+    var instance = "";
+
+    instance = panzoom(area, {
+        bounds: true,
+        maxZoom: 8.55,
+        minZoom: 0.8,
+        zoomDoubleClickSpeed: 1,
+        smoothScroll: false,
+        transformOrigin: {x: 0.5, y: 0.5}
+    });
+
+    $("#btnZoomIn").on("click",function(){
+        instance.zoomTo(0, 0, 1.25);
+    });
+
+    $("#btnZoomOut").on("click",function(){
+        instance.zoomTo(0, 0, 0.8);
+    });
+
+    mermaid.initialize({startOnLoad:true, maxTextSize:commandsLength});
   </script>
 </body>
 </html>
