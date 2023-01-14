@@ -33,6 +33,7 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTP
 import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
@@ -161,9 +162,15 @@ fun ReportAnalyticsInjector.provideGetModulesTimelineUseCase(): GetModulesTimeli
 }
 
 @ExcludeJacocoGenerated
+fun ReportAnalyticsInjector.provideModulesDependencyGraphReportJsonAdapter(): ModulesDependencyGraphReportJsonAdapter {
+    return ModulesDependencyGraphReportJsonAdapter(provideMoshi())
+}
+
+@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic {
     return ReportAnalyticsLogicImp(
         tower = provideTower(),
+        modulesDependencyGraphReportJsonAdapter = provideModulesDependencyGraphReportJsonAdapter(),
         getMetricsUseCase = provideGetMetricsUseCase(),
         getModulesTimelineUseCase = provideGetModulesTimelineUseCase(),
         isCI = isCI!!,
