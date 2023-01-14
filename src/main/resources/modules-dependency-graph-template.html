@@ -161,11 +161,11 @@
         ).length;
 
         var heatmapColor = ":::blue";
-        if(dependencyCount >= 4 && dependencyCount <= 7) {
+        if(dependencyCount >= 3 && dependencyCount <= 4) {
           heatmapColor = ":::yellow";
-        } else if (dependencyCount >= 8 && dependencyCount <= 11) {
+        } else if (dependencyCount >= 5 && dependencyCount <= 7) {
           heatmapColor = ":::orange";
-        } else if (dependencyCount >= 12) {
+        } else if (dependencyCount >= 8) {
           heatmapColor = ":::red";
         }
 
@@ -183,13 +183,6 @@
         mermaidCommands += "click " + item + " href \"" + "?path=" + item + deepGraphParam + "\" _blank" + "\n";
       }
 
-      for(var i=0; i<parsedGraph.dependencies.length; i++) {
-        const item = parsedGraph.dependencies[i];
-        if(item.configuration == "api") {
-          mermaidCommands += "linkStyle " + i + " stroke:#c74c3c" + "\n";
-        }
-      }
-
       document.getElementById("mermaid-content").innerHTML = mermaidCommands;
     }
 
@@ -202,14 +195,10 @@
 
       mermaidCommands += "\n";
 
-      const addedItems = [];
-
       for(var i=0; i<parsedGraph.dependencies.length; i++) {
         const item = parsedGraph.dependencies[i];
 
-        if(item.path == path || item.dependency == path) {
-          addedItems.push(item);
-
+        if(item.path == path || item.dependency.includes(path)) {
           var type = "";
           if(item.configuration == "api") {
             type = "api";
@@ -224,30 +213,17 @@
           ).length;
 
           var heatmapColor = ":::blue";
-          if(dependencyCount >= 4 && dependencyCount <= 7) {
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
             heatmapColor = ":::yellow";
-          } else if (dependencyCount >= 8 && dependencyCount <= 11) {
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
             heatmapColor = ":::orange";
-          } else if (dependencyCount >= 12) {
+          } else if (dependencyCount >= 8) {
             heatmapColor = ":::red";
-          }
-
-          if(item.dependency == path) {
-            heatmapColor = "";
           }
 
           mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
         }
       }
-
-      for(var i=0; i<addedItems.length; i++) {
-        const item = addedItems[i];
-        if(item.configuration == "api") {
-          mermaidCommands += "linkStyle " + i + " stroke:#c74c3c" + "\n";
-        }
-      }
-
-      mermaidCommands += "style " + path + " fill:#00f,stroke:#00b,color:#fff;" + "\n";
 
       document.getElementById("mermaid-content").innerHTML = mermaidCommands;
     }
@@ -260,8 +236,6 @@
       classDef red fill:#ff8c7f, stroke:#e44c3b;`;
 
       mermaidCommands += "\n";
-
-      const addedItems = [];
 
       for(var i=0; i<parsedGraph.dependencies.length; i++) {
         const item = parsedGraph.dependencies[i];
@@ -281,22 +255,15 @@
           ).length;
 
           var heatmapColor = ":::blue";
-          if(dependencyCount >= 4 && dependencyCount <= 7) {
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
             heatmapColor = ":::yellow";
-          } else if (dependencyCount >= 8 && dependencyCount <= 11) {
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
             heatmapColor = ":::orange";
-          } else if (dependencyCount >= 12) {
+          } else if (dependencyCount >= 8) {
             heatmapColor = ":::red";
           }
 
-          const itemCommand = item.path + " ---> |" + type + "| " + item.dependency + heatmapColor
-          if(mermaidCommands.includes(itemCommand)) {
-            continue;
-          }
-
-          addedItems.push(item);
-
-          mermaidCommands += itemCommand + "\n";
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
         }
       }
 
@@ -326,41 +293,37 @@
           ).length;
 
           var heatmapColor = ":::blue";
-          if(dependencyCount >= 4 && dependencyCount <= 7) {
+          if(dependencyCount >= 3 && dependencyCount <= 4) {
             heatmapColor = ":::yellow";
-          } else if (dependencyCount >= 8 && dependencyCount <= 11) {
+          } else if (dependencyCount >= 5 && dependencyCount <= 7) {
             heatmapColor = ":::orange";
-          } else if (dependencyCount >= 12) {
+          } else if (dependencyCount >= 8) {
             heatmapColor = ":::red";
           }
 
-          const itemCommand = item.path + " ---> |" + type + "| " + item.dependency + heatmapColor
-          if(mermaidCommands.includes(itemCommand)) {
-            continue;
-          }
-
-          addedItems.push(item);
-
-          mermaidCommands += itemCommand + "\n";
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
         }
       }
 
       const hasGraph = parsedGraph.dependencies.filter(g=>
         g.path == path
-      ).length == 0;
+      ).length;
 
-      if(hasGraph) {
-        mermaidCommands += path + "\n";
-      }
+      if(hasGraph == 0) {
+        const dependencyCount = parsedGraph.dependencies.filter(d =>
+          d.dependency == path
+        ).length;
 
-      for(var i=0; i<addedItems.length; i++) {
-        const item = addedItems[i];
-        if(item.configuration == "api") {
-          mermaidCommands += "linkStyle " + i + " stroke:#c74c3c" + "\n";
+        var heatmapColor = ":::blue";
+        if(dependencyCount >= 3 && dependencyCount <= 4) {
+          heatmapColor = ":::yellow";
+        } else if (dependencyCount >= 5 && dependencyCount <= 7) {
+          heatmapColor = ":::orange";
+        } else if (dependencyCount >= 8) {
+          heatmapColor = ":::red";
         }
+        mermaidCommands += path + heatmapColor + "\n";
       }
-
-      mermaidCommands += "style " + path + " fill:#00f,stroke:#00b,color:#fff;" + "\n";
 
       document.getElementById("mermaid-content").innerHTML = mermaidCommands;
     }
