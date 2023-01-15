@@ -58,7 +58,7 @@ class CreateOverallBuildProcessReportStageTest {
                     median = 1000L,
                     mean = 1200L
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -72,7 +72,7 @@ class CreateOverallBuildProcessReportStageTest {
                     median = 900L,
                     mean = 1100L
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 

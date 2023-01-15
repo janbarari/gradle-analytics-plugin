@@ -20,22 +20,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.executionprocess.create
+package io.github.janbarari.gradle.analytics.data
 
-import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.SuspendStage
+import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.extension.whenEach
 
-class CreateExecutionProcessMetricStage(
-    private val buildInfo: BuildInfo,
-    private val createExecutionProcessMetricUseCase: CreateExecutionProcessMetricUseCase
-): SuspendStage<BuildMetric, BuildMetric> {
+/**
+ * **v1.0.0-beta6 Database Result Migration State**
+ *
+ * The migration stage supports the older versions till mentioned version.
+ */
+class V100B6DatabaseResultMigrationStage(
+    private val modules: Set<String>
+): Stage<BuildMetric, BuildMetric> {
 
-    override suspend fun process(input: BuildMetric): BuildMetric {
-        return input.apply {
-            if (buildInfo.isSuccessful) {
-                executionProcessMetric = createExecutionProcessMetricUseCase.execute(buildInfo)
-            }
+    override fun process(input: BuildMetric): BuildMetric {
+        // Assign the current available modules when modules are empty in old JSON.
+        if (input.modules.isEmpty()) {
+            input.modules = modules
         }
+
+        // `averageDuration` and `averageParallelDuration` are deprecated, replace their value into
+        // `medianExecInMillis` and `medianParallelExecInMillis`.
+        input.modulesExecutionProcessMetric?.modules?.whenEach {
+            medianExecInMillis = averageDuration
+            medianParallelExecInMillis = averageParallelDuration
+        }
+
+        return input
     }
 }

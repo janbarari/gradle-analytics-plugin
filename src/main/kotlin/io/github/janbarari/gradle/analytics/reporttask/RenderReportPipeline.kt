@@ -22,7 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.core.Pipeline
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendPipeline
+import io.github.janbarari.gradle.core.SuspendStage
 
-class RenderReportPipeline(firstStage: Stage<String, String>): Pipeline<String, String>(firstStage)
+class RenderReportPipeline(firstStage: SuspendStage<String, String>): SuspendPipeline<String, String>(firstStage)

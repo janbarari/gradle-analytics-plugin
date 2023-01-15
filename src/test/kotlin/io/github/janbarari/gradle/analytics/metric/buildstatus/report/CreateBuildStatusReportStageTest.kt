@@ -74,7 +74,7 @@ class CreateBuildStatusReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(
+                modules = setOf(
                     ":woman",
                     ":life",
                     ":freedom"
@@ -100,7 +100,7 @@ class CreateBuildStatusReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(
+                modules = setOf(
                     ":woman",
                     ":life",
                     ":freedom"

@@ -34,5 +34,5 @@ data class ModulesDependencyGraphReport(
     @Json(name = "dependencies")
     var dependencies: List<ModuleDependency>,
     @Json(name = "modules")
-    var modules: List<String>
+    var modules: Set<String>
 ) : Serializable

@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenEach
@@ -34,7 +34,7 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 class RenderNonCacheableTasksReportStage(
     private val tower: Tower,
     private val report: Report
-): Stage<String, String> {
+): SuspendStage<String, String> {
 
     companion object {
         private const val NON_CACHEABLE_TASKS_METRIC_TEMPLATE_ID = "%non-cacheable-tasks-metric%"

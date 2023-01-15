@@ -23,16 +23,15 @@
 package io.github.janbarari.gradle.analytics.metric.modulesourcecount.create
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class CreateModulesSourceCountMetricStage(
     private val createModulesSourceCountMetricUseCase: CreateModulesSourceCountMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
             modulesSourceCountMetric = createModulesSourceCountMetricUseCase.execute()
         }
     }
-
 }

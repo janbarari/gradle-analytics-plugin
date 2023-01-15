@@ -23,6 +23,7 @@
 package io.github.janbarari.gradle.analytics.data
 
 import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.database.ResetAutoIncremental
 import io.github.janbarari.gradle.analytics.database.table.MetricTable
 import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
@@ -50,7 +51,8 @@ class DatabaseRepositoryImp(
     private val branch: String,
     private val requestedTasks: String,
     private val buildMetricJsonAdapter: BuildMetricJsonAdapter,
-    private val temporaryMetricsMemoryCache: MemoryCache<List<BuildMetric>>
+    private val temporaryMetricsMemoryCache: MemoryCache<List<BuildMetric>>,
+    private val databaseResultMigrationPipeline: DatabaseResultMigrationPipeline
 ) : DatabaseRepository {
 
     companion object {
@@ -95,8 +97,13 @@ class DatabaseRepositoryImp(
                         (MetricTable.branch eq branch) and
                         (MetricTable.requestedTasks eq requestedTasks)
             }.single()
+
+            val buildMetric = databaseResultMigrationPipeline.execute(
+                buildMetricJsonAdapter.fromJson(queryResult[MetricTable.value])!!
+            )
+
             return@transaction Pair(
-                buildMetricJsonAdapter.fromJson(queryResult[MetricTable.value])!!, queryResult[MetricTable.number]
+                buildMetric, queryResult[MetricTable.number]
             )
         }
     }
@@ -127,7 +134,9 @@ class DatabaseRepositoryImp(
                         (MetricTable.requestedTasks eq requestedTasks)
             }.orderBy(MetricTable.number, SortOrder.ASC).forEach {
                 result.add(
-                    buildMetricJsonAdapter.fromJson(it[MetricTable.value])!!
+                    databaseResultMigrationPipeline.execute(
+                        buildMetricJsonAdapter.fromJson(it[MetricTable.value])!!
+                    )
                 )
             }
             return@transaction result
@@ -212,9 +221,10 @@ class DatabaseRepositoryImp(
                         (TemporaryMetricTable.requestedTasks eq requestedTasks)
             }
             queryResult.toList().forEach {
-                buildMetricJsonAdapter.fromJson(it[value])?.let { metric ->
-                    metrics.add(metric)
-                }
+                val metric = databaseResultMigrationPipeline.execute(
+                    buildMetricJsonAdapter.fromJson(it[value])!!
+                )
+                metrics.add(metric)
             }
             temporaryMetricsMemoryCache.write(metrics)
             return@transaction metrics

@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class CreateCacheHitMetricStage(
     private val buildInfo: BuildInfo,
     private val createCacheHitMetricUseCase: CreateCacheHitMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
@@ -38,5 +38,4 @@ class CreateCacheHitMetricStage(
             }
         }
     }
-
 }

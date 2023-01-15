@@ -32,11 +32,19 @@ data class ModuleExecutionProcess(
     @Json(name = "path")
     val path: String,
     @Json(name = "median")
-    val medianExecInMillis: Long,
+    var medianExecInMillis: Long = 0L,
     @Json(name = "median_parallel")
-    val medianParallelExecInMillis: Long,
+    var medianParallelExecInMillis: Long = 0L,
     @Json(name = "parallel_rate")
     val parallelRate: Float,
     @Json(name = "coverage")
-    val coverageRate: Float
+    val coverageRate: Float,
+
+    @Deprecated("`averageDuration` deprecated in version `1.0.0-beta4`, replaced with `medianExecInMillis`")
+    @Json(name = "average_duration")
+    val averageDuration: Long = 0L,
+    @Deprecated("`averageParallelDuration` deprecated in version `1.0.0-beta4`, " +
+            "replaced with `medianParallelExecInMillis`")
+    @Json(name = "average_parallel_duration")
+    val averageParallelDuration: Long = 0L
 ) : java.io.Serializable

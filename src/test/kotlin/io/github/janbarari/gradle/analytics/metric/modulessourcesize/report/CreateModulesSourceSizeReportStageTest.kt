@@ -53,7 +53,7 @@ class CreateModulesSourceSizeReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceSizeMetric = ModulesSourceSizeMetric(
                     listOf(
@@ -88,7 +88,7 @@ class CreateModulesSourceSizeReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceSizeMetric = ModulesSourceSizeMetric(
                     listOf(
@@ -106,7 +106,7 @@ class CreateModulesSourceSizeReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceSizeMetric = ModulesSourceSizeMetric(
                     listOf(

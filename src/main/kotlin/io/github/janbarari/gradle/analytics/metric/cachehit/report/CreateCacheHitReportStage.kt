@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.CacheHitReport
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
@@ -39,7 +39,7 @@ import io.github.janbarari.gradle.logger.Tower
 class CreateCacheHitReportStage(
     private val tower: Tower,
     private val metrics: List<BuildMetric>
-) : Stage<Report, Report> {
+) : SuspendStage<Report, Report> {
 
     companion object {
         private val clazz = CreateCacheHitReportStage::class.java

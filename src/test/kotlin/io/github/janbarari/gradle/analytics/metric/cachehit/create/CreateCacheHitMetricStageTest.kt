@@ -45,7 +45,7 @@ class CreateCacheHitMetricStageTest {
         requestedTasks = listOf("assemble"),
         createdAt = 16588904332,
         gitHeadCommitHash = "unknown",
-        modules = emptyList()
+        modules = emptySet()
     )
 
     private var buildInfo = BuildInfo(

@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -34,7 +34,7 @@ import io.github.janbarari.gradle.utils.MathUtils
 class RenderModulesBuildHeatmapReportStage(
     private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val MODULES_BUILD_HEATMAP_TEMPLATE_ID = "%modules-build-heatmap-metric%"
@@ -86,5 +86,4 @@ class RenderModulesBuildHeatmapReportStage(
         else if (dependantModulesCount in 1..2) "#abd9e9"
         else "#4575b4"
     }
-
 }
