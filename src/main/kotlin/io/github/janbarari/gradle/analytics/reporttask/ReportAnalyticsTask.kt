@@ -30,12 +30,15 @@ import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsExc
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.analytics.domain.model.Module
+import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.extension.createTask
+import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.logger.Tower
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
@@ -69,6 +72,12 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                     trackingTasksProperty.set(config.trackingTasks)
                     trackingBranchesProperty.set(config.trackingBranches)
                     databaseConfigProperty.set(config.getDatabaseConfig())
+                    modules.set(
+                        config.project.subprojects
+                            .filter { it.isModuleProject() }
+                            .map { it.toModule() }
+                            .toSet()
+                    )
                     // disable the task from being cached or reuse the outputs on incremental builds.
                     outputs.cacheIf { false }
                     outputs.upToDateWhen { false }
@@ -108,7 +117,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     abstract val databaseConfigProperty: Property<DatabaseConfig>
 
     @get:Input
-    abstract val modules: ListProperty<Module>
+    abstract val modules: SetProperty<Module>
 
     private lateinit var tower: Tower
 
@@ -124,6 +133,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
+            modules = modules.get().map { it.path }.toSet()
         )
         tower = injector.provideTower()
         val systemInfo = injector.provideSystemInfo()
@@ -189,5 +199,4 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             printLastLine()
         }
     }
-
 }

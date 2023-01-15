@@ -74,7 +74,7 @@ class RenderModulesDependencyGraphReportStageTest {
                     dependency = ""
                 )
             ),
-            listOf(":woman", ":life", ":freedom")
+            setOf(":woman", ":life", ":freedom")
         )
 
         val renderTemplate = "%modules-dependency-graph-metric%"
