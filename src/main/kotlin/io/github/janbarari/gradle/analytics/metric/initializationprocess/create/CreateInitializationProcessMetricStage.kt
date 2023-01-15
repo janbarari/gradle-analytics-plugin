@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.metric.initializationprocess.create
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class CreateInitializationProcessMetricStage(
     private val buildInfo: BuildInfo,
     private val createInitializationProcessMetricUseCase: CreateInitializationProcessMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
@@ -38,5 +38,4 @@ class CreateInitializationProcessMetricStage(
             }
         }
     }
-
 }

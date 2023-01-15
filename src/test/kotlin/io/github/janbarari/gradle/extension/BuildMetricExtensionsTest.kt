@@ -47,7 +47,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToInitializationMedianTimespanChartPoints()
@@ -68,7 +68,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToInitializationMeanTimespanChartPoints()
@@ -89,7 +89,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToConfigurationMedianTimespanChartPoints()
@@ -110,7 +110,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToConfigurationMeanTimespanChartPoints()
@@ -131,7 +131,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToExecutionMedianTimespanChartPoints()
@@ -152,7 +152,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToExecutionMeanTimespanChartPoints()
@@ -173,7 +173,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToOverallBuildProcessMedianTimespanChartPoints()
@@ -194,7 +194,7 @@ class BuildMetricExtensionsTest {
                     median = 1000L,
                     mean = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToOverallBuildProcessMeanTimespanChartPoints()
@@ -215,7 +215,7 @@ class BuildMetricExtensionsTest {
                     medianRate = 100F,
                     meanRate = 100F
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToSuccessBuildRateMedianTimespanChartPoints()
@@ -236,7 +236,7 @@ class BuildMetricExtensionsTest {
                     medianRate = 100F,
                     meanRate = 100F
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToSuccessBuildRateMeanTimespanChartPoints()
@@ -257,7 +257,7 @@ class BuildMetricExtensionsTest {
                     mean = 1000L,
                     median = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToDependencyResolveMedianTimespanChartPoints()
@@ -278,7 +278,7 @@ class BuildMetricExtensionsTest {
                     mean = 1000L,
                     median = 1000L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToDependencyResolveMeanTimespanChartPoints()
@@ -298,7 +298,7 @@ class BuildMetricExtensionsTest {
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(
                     medianRate = 90L
                 ),
-                modules = emptyList()
+                modules = emptySet()
             )
         )
         val result = buildMetrics.mapToParallelExecutionRateMedianTimespanPoints()

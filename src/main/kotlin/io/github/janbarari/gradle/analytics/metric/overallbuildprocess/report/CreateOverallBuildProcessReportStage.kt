@@ -25,7 +25,7 @@ package io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.OverallBuildProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToOverallBuildProcessMeanTimespanChartPoints
@@ -36,7 +36,7 @@ import io.github.janbarari.gradle.logger.Tower
 class CreateOverallBuildProcessReportStage(
     private val tower: Tower,
     private val metrics: List<BuildMetric>
-) : Stage<Report, Report> {
+) : SuspendStage<Report, Report> {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
@@ -68,5 +68,4 @@ class CreateOverallBuildProcessReportStage(
             )
         }
     }
-
 }

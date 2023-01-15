@@ -58,7 +58,7 @@ class CreateDependencyResolveProcessReportStageTest {
                     median = 1000L,
                     mean = 1200L
                 ),
-                modules = listOf(":core", ":data", ":domain")
+                modules = setOf(":core", ":data", ":domain")
             )
         )
 
@@ -72,7 +72,7 @@ class CreateDependencyResolveProcessReportStageTest {
                     median = 900L,
                     mean = 1100L
                 ),
-                modules = listOf(":core", ":data", ":domain")
+                modules = setOf(":core", ":data", ":domain")
             )
         )
 

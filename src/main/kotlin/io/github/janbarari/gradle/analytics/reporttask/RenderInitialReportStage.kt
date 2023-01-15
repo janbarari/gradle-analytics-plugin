@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.utils.DateTimeUtils
 
@@ -34,7 +34,7 @@ class RenderInitialReportStage private constructor(
     private val branch: String,
     private val gitHeadCommitHash: String,
     private val isCI: Boolean
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     class Builder {
 
@@ -100,5 +100,4 @@ class RenderInitialReportStage private constructor(
 
         return result
     }
-
 }

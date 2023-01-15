@@ -61,7 +61,7 @@ class CreateNonCacheableTasksReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -79,7 +79,7 @@ class CreateNonCacheableTasksReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 

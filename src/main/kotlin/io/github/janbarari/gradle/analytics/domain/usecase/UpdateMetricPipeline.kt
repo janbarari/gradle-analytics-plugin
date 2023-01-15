@@ -23,7 +23,8 @@
 package io.github.janbarari.gradle.analytics.domain.usecase
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Pipeline
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendPipeline
+import io.github.janbarari.gradle.core.SuspendStage
 
-class UpdateMetricPipeline(firstStage: Stage<BuildMetric, BuildMetric>): Pipeline<BuildMetric, BuildMetric>(firstStage)
+class UpdateMetricPipeline(firstStage: SuspendStage<BuildMetric, BuildMetric>):
+    SuspendPipeline<BuildMetric, BuildMetric>(firstStage)

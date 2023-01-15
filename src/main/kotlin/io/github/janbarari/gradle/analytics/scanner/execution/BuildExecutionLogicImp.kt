@@ -164,7 +164,7 @@ class BuildExecutionLogicImp(
                     buildInfo.requestedTasks,
                     buildInfo.createdAt,
                     buildInfo.gitHeadCommitHash,
-                    modules.map { it.path }
+                    modules.map { it.path }.toSet()
                 )
             )
 
@@ -269,5 +269,4 @@ class BuildExecutionLogicImp(
             BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
         }
     }
-
 }

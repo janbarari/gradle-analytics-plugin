@@ -25,7 +25,7 @@ package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.NonCacheableTasksReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isBigger
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.modify
@@ -35,7 +35,7 @@ import io.github.janbarari.gradle.utils.MathUtils
 class CreateNonCacheableTasksReportStage(
     private val tower: Tower,
     private val metrics: List<BuildMetric>
-): Stage<Report, Report> {
+): SuspendStage<Report, Report> {
 
     companion object {
         private val clazz = CreateNonCacheableTasksReportStage::class.java
@@ -63,5 +63,4 @@ class CreateNonCacheableTasksReportStage(
             )
         }
     }
-
 }

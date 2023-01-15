@@ -24,12 +24,12 @@ package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.cre
 
 import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class CreateDependencyResolveProcessMetricStage(
     private val buildInfo: BuildInfo,
     private val createDependencyResolveProcessMetricUseCase: CreateDependencyResolveProcessMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
@@ -38,6 +38,5 @@ class CreateDependencyResolveProcessMetricStage(
             }
         }
     }
-
 }
 

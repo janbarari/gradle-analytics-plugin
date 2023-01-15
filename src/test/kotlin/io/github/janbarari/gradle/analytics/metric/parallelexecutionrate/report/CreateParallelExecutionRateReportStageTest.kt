@@ -55,7 +55,7 @@ class CreateParallelExecutionRateReportStageTest {
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(35),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -66,7 +66,7 @@ class CreateParallelExecutionRateReportStageTest {
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(45),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 

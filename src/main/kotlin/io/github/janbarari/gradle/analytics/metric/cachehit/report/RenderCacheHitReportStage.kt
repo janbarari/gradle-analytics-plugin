@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.metric.cachehit.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleCacheHit
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.toArrayRender
@@ -36,7 +36,7 @@ import io.github.janbarari.gradle.utils.HtmlUtils
 class RenderCacheHitReportStage(
     private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val CACHE_HIT_METRIC_TEMPLATE_ID = "%cache-hit-metric%"
@@ -160,5 +160,4 @@ class RenderCacheHitReportStage(
             .mapToChartPoints()
             .map { it.description }
     }
-
 }

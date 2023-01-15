@@ -72,7 +72,7 @@ class CreateModulesDependencyGraphReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -101,7 +101,7 @@ class CreateModulesDependencyGraphReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
