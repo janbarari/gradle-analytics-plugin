@@ -24,7 +24,7 @@ package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.repor
 
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenNotNull
@@ -38,7 +38,7 @@ class RenderModulesDependencyGraphReportStage(
     private val report: Report,
     private val outputPath: String,
     private val projectName: String
-): Stage<String, String> {
+): SuspendStage<String, String> {
 
     companion object {
         private const val MODULES_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID = "%modules-dependency-graph-metric%"
@@ -83,5 +83,4 @@ class RenderModulesDependencyGraphReportStage(
         }
         return result
     }
-
 }

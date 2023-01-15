@@ -45,10 +45,6 @@ class CreateCacheHitReportStage(
         private val clazz = CreateCacheHitReportStage::class.java
     }
 
-    companion object {
-        private val clazz = CreateCacheHitReportStage::class.java
-    }
-
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val metrics = metrics.filter {

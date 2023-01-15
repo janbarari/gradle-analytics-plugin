@@ -60,8 +60,7 @@ class ReportAnalyticsLogicTest {
                 ":women",
                 ":life",
                 ":freedom"
-            ),
-            excludeModules = setOf()
+            )
         )
     }
 

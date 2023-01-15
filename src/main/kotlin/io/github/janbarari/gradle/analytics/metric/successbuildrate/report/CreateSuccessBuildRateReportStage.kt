@@ -41,10 +41,6 @@ class CreateSuccessBuildRateReportStage(
         private val clazz = CreateSuccessBuildRateReportStage::class.java
     }
 
-    companion object {
-        private val clazz = CreateSuccessBuildRateReportStage::class.java
-    }
-
     override suspend fun process(input: Report): Report {
         tower.i(clazz, "process()")
         val medianChartPoints = metrics.filter { metric ->
