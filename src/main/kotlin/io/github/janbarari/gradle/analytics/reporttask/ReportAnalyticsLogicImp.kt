@@ -63,6 +63,8 @@ import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.Cr
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
+import io.github.janbarari.gradle.analytics.metric.redundantdependencygraph.report.CreateRedundantDependencyGraphReportStage
+import io.github.janbarari.gradle.analytics.metric.redundantdependencygraph.report.RenderRedundantDependencyGraphReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -140,6 +142,7 @@ class ReportAnalyticsLogicImp(
             .addStage(CreateNonCacheableTasksReportStage(tower, data))
             .addStage(CreateModulesSourceSizeReportStage(tower, data))
             .addStage(CreateModulesCrashCountReportStage(tower, data))
+            .addStage(CreateRedundantDependencyGraphReportStage(tower, data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -190,6 +193,7 @@ class ReportAnalyticsLogicImp(
             .addStage(RenderNonCacheableTasksReportStage(tower, report))
             .addStage(RenderModulesSourceSizeReportStage(tower, report))
             .addStage(RenderModulesCrashCountReportStage(tower, report))
+            .addStage(RenderRedundantDependencyGraphReportStage(tower, report))
             .execute(rawHTML)
     }
 
@@ -199,6 +203,7 @@ class ReportAnalyticsLogicImp(
         tower.i(clazz, "saveReport()")
         val resources = listOf(
             "opensans-regular.ttf",
+            "jetbrainsmono-regular.ttf",
             "plugin-logo.png",
             "styles.css",
             "functions.js",

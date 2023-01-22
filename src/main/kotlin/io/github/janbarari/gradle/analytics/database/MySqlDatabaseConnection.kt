@@ -32,7 +32,7 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
     }
 
     init {
-        also(block)
+        apply(block)
     }
 
     var host: String? = null
