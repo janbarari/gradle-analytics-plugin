@@ -57,6 +57,9 @@ class RenderRedundantDependencyGraphReportStage(
         var renderedTemplate = HtmlUtils.getTemplate(REDUNDANT_DEPENDENCY_GRAPH_METRIC_TEMPLATE_FILENAME)
         report.redundantDependencyGraphReport.whenNotNull {
             val redundantGraphsRender = buildString {
+                if (redundantDependencies.isEmpty()) {
+                    append("<p>No redundant dependency graph was found.</p>")
+                }
                 redundantDependencies.forEach { redundantDependency ->
                     append("<div class=\"redundant-dependency-item\">")
                     append("\n")
