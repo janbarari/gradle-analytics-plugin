@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.metric.redundantdependencygraph.report
+package io.github.janbarari.gradle.analytics.metric.redundantdependencyconnection.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.SuspendStage
@@ -29,16 +29,16 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 
-class RenderRedundantDependencyGraphReportStage(
+class RenderRedundantDependencyConnectionReportStage(
     private val tower: Tower,
     private val report: Report
 ): SuspendStage<String, String> {
 
     companion object {
-        private const val REDUNDANT_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID = "%redundant-dependency-graph-metric%"
+        private const val REDUNDANT_DEPENDENCY_GRAPH_METRIC_TEMPLATE_ID = "%redundant-dependency-connection-metric%"
         private const val REDUNDANT_DEPENDENCY_GRAPH_METRIC_TEMPLATE_FILENAME =
-            "redundant-dependency-graph-metric-template"
-        private val clazz = RenderRedundantDependencyGraphReportStage::class.java
+            "redundant-dependency-connection-metric-template"
+        private val clazz = RenderRedundantDependencyConnectionReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
