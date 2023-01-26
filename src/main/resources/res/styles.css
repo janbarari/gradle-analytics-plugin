@@ -363,7 +363,7 @@ hr {
 
 .redundant-dependency-item {
     margin-top: 12px;
-    font-family: 'JetBrainsMono';
+    font-family: 'JetBrainsMono', Helvetica, Arial, Verdana, Tahoma, sans-serif;
     border-radius: 10px;
     background-color: #f0f0f0;
     padding-top: 8px;
