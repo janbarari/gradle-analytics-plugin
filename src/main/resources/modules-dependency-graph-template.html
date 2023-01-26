@@ -263,7 +263,12 @@
             heatmapColor = ":::red";
           }
 
-          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+          const itemCommand = item.path + " ---> |" + type + "| " + item.dependency + heatmapColor
+          if(mermaidCommands.includes(itemCommand)) {
+            continue;
+          }
+
+          mermaidCommands += itemCommand + "\n";
         }
       }
 
@@ -301,7 +306,12 @@
             heatmapColor = ":::red";
           }
 
-          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+          const itemCommand = item.path + " ---> |" + type + "| " + item.dependency + heatmapColor
+          if(mermaidCommands.includes(itemCommand)) {
+            continue;
+          }
+
+          mermaidCommands += itemCommand + "\n";
         }
       }
 
