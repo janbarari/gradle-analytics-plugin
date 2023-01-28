@@ -150,8 +150,8 @@ tasks.register("publishToLocal") {
                 "validateSourceHeaderLicense",
                 "detekt",
                 "build",
-                "test",
-                "publishToMavenLocal"
+                "publishToMavenLocal",
+                "test"
             ).args("--info")
         }
     }
