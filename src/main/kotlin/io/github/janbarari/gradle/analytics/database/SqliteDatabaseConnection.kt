@@ -27,10 +27,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 @ExcludeJacocoGenerated
 class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): DatabaseConnection() {
 
-    init {
-        apply(block)
-    }
-
     var path: String? = null
 
     var name: String? = null
@@ -39,4 +35,7 @@ class SqliteDatabaseConnection(block: SqliteDatabaseConnection.() -> Unit): Data
 
     var password: String = ""
 
+    init {
+        apply(block)
+    }
 }

@@ -31,10 +31,6 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
         const val DEFAULT_MYSQL_PORT = 3306
     }
 
-    init {
-        apply(block)
-    }
-
     var host: String? = null
 
     var name: String? = null
@@ -45,4 +41,7 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
 
     var password: String = ""
 
+    init {
+        apply(block)
+    }
 }
