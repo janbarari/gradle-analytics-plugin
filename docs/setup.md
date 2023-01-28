@@ -84,7 +84,9 @@ Add plugin configuration in the root of your project.
             "master",
             "develop"
         )
-    
+
+        isTrackAllBranchesEnabled = false // Default is false
+
         outputPath = "OUTPUT_REPORT_PATH"
     }
     ```
@@ -120,6 +122,8 @@ Add plugin configuration in the root of your project.
             'develop'
         ]
     
+        isTrackAllBranchesEnabled = false // Default is false
+
         outputPath = 'OUTPUT_REPORT_PATH'
     }
     ```
