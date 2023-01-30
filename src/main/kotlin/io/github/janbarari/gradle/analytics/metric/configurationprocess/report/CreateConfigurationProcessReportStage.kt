@@ -25,22 +25,26 @@ package io.github.janbarari.gradle.analytics.metric.configurationprocess.report
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.mapToConfigurationMeanTimespanChartPoints
 import io.github.janbarari.gradle.extension.mapToConfigurationMedianTimespanChartPoints
 import io.github.janbarari.gradle.extension.whenEmpty
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateConfigurationProcessReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
-) : Stage<Report, Report> {
+) : SuspendStage<Report, Report> {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
+        private val clazz = CreateConfigurationProcessReportStage::class.java
     }
 
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val medianChartPoints = metrics.filter { metric ->
             metric.configurationProcessMetric.isNotNull() &&
                     metric.configurationProcessMetric?.median?.isBiggerEquals(SKIP_THRESHOLD_IN_MS) ?: false
@@ -64,5 +68,4 @@ class CreateConfigurationProcessReportStage(
             )
         }
     }
-
 }

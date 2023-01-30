@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulescrashcount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesCrashCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -35,7 +36,7 @@ class RenderModulesCrashCountReportStageTest {
     @Test
     fun `check render when report is not available`() = runBlocking {
         val report = Report("main", "assemble")
-        val stage = RenderModulesCrashCountReportStage(report)
+        val stage = RenderModulesCrashCountReportStage(TowerMockImpl(), report)
 
         val renderTemplate = "%modules-crash-count-metric%"
         val result = stage.process(renderTemplate)
@@ -55,7 +56,7 @@ class RenderModulesCrashCountReportStageTest {
             )
         )
 
-        val stage = RenderModulesCrashCountReportStage(report)
+        val stage = RenderModulesCrashCountReportStage(TowerMockImpl(), report)
 
         val renderTemplate = "%modules-crash-count-metric%"
         val result = stage.process(renderTemplate)

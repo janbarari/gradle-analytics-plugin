@@ -26,17 +26,24 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleBuildHeatmap
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesBuildHeatmapReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class CreateModulesBuildHeatmapReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
-) : Stage<Report, Report> {
+) : SuspendStage<Report, Report> {
+
+    companion object {
+        private val clazz = CreateModulesBuildHeatmapReportStage::class.java
+    }
 
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val temp = mutableListOf<ModuleBuildHeatmap>()
 
         metrics.lastOrNull()?.modulesBuildHeatmap.whenNotNull {
@@ -78,5 +85,4 @@ class CreateModulesBuildHeatmapReportStage(
             it.modulesBuildHeatmap.isNotNull() && it.modulesBuildHeatmap!!.modules.any { module -> module.path == path }
         }.size
     }
-
 }

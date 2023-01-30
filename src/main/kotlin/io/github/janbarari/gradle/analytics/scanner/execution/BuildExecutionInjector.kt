@@ -23,19 +23,19 @@
 package io.github.janbarari.gradle.analytics.scanner.execution
 
 import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
+import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
+import io.github.janbarari.gradle.analytics.data.V100B6DatabaseResultMigrationStage
 import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveMetricUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.SaveTemporaryMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
-import io.github.janbarari.gradle.analytics.DatabaseConfig
-import io.github.janbarari.gradle.analytics.domain.model.Module
-import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
 import io.github.janbarari.gradle.analytics.domain.usecase.UpsertModulesTimelineUseCase
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.create.CreateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.cachehit.update.UpdateCacheHitMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.configurationprocess.create.CreateConfigurationProcessMetricUseCase
@@ -45,6 +45,7 @@ import io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.upda
 import io.github.janbarari.gradle.analytics.metric.executionprocess.create.CreateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.executionprocess.update.UpdateExecutionProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.initializationprocess.create.CreateInitializationProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.initializationprocess.update.UpdateInitializationProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.create.CreateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.update.UpdateModulesBuildHeatmapMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.modulescrashcount.create.CreateModulesCrashCountMetricUseCase
@@ -62,131 +63,283 @@ import io.github.janbarari.gradle.analytics.metric.modulessourcesize.update.Upda
 import io.github.janbarari.gradle.analytics.metric.modulestimeline.create.CreateModulesTimelineMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.create.CreateNonCacheableTasksMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.noncacheabletasks.update.UpdateNonCacheableTasksMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
-import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.create.CreateOverallBuildProcessMetricUseCase
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.update.UpdateOverallBuildProcessMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.create.CreateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update.UpdateParallelExecutionRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.create.CreateSuccessBuildRateMetricUseCase
+import io.github.janbarari.gradle.analytics.metric.successbuildrate.update.UpdateSuccessBuildRateMetricUseCase
+import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.logger.Tower
+import io.github.janbarari.gradle.logger.TowerImpl
+import io.github.janbarari.gradle.memorycache.MemoryCache
+import io.github.janbarari.gradle.utils.GitUtils
+import oshi.SystemInfo
+import kotlin.io.path.Path
 
 /**
  * Dependency injector for [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
 @ExcludeJacocoGenerated
 data class BuildExecutionInjector(
-    var databaseConfig: DatabaseConfig? = null,
-    var isCI: Boolean? = null,
-    var branch: String? = null,
-    var requestedTasks: List<String>? = null,
-    var trackingBranches: List<String>? = null,
-    var trackingTasks: List<String>? = null,
-    var modules: List<Module>? = null,
-    var modulesDependencyGraph: ModulesDependencyGraph? = null,
-    var nonCacheableTasks: List<String>? = null
-)
+    val parameters: BuildExecutionService.Params
+) {
+    // Singleton objects
+    @Volatile
+    var tower: Tower? = null
+
+    @Volatile
+    var moshi: Moshi? = null
+
+    @Volatile
+    var systemInfo: SystemInfo? = null
+
+    @Volatile
+    var currentBranch: String? = null
+
+    @Volatile
+    var databaseRepository: DatabaseRepository? = null
+
+    /**
+     * Destroy singleton objects
+     */
+    fun destroy() {
+        tower = null
+        moshi = null
+        systemInfo = null
+        currentBranch = null
+        databaseRepository = null
+    }
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideCurrentBranch(): String {
+    if (currentBranch.isNull()) {
+        currentBranch = synchronized(this) {
+            GitUtils.currentBranch()
+        }
+    }
+    return currentBranch!!
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideSystemInfo(): SystemInfo {
+    if (systemInfo.isNull()) {
+        systemInfo = synchronized(this) {
+            SystemInfo()
+        }
+    }
+    return systemInfo!!
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideTower(): Tower {
+    if (tower.isNull()) {
+        tower = synchronized(this) {
+            TowerImpl(
+                name = "build",
+                outputPath = Path("${parameters.outputPath.get()}/$OUTPUT_DIRECTORY_NAME"),
+                shouldDropOldLogFile = false,
+                maximumOldLogsCount = 500
+            )
+        }
+    }
+    return tower!!
+}
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabase(): Database {
-    return Database(databaseConfig!!, isCI!!)
-}
-
-@ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideMoshi(): Moshi {
-    return Moshi.Builder().build()
-}
-
-@ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
-    return DatabaseRepositoryImp(
-        db = provideDatabase(),
-        branch = branch!!,
-        requestedTasks = requestedTasks!!.separateElementsWithSpace(),
-        moshi = provideMoshi()
+    return Database(
+        provideTower(),
+        parameters.databaseConfig.get(),
+        parameters.envCI.get()
     )
 }
 
 @ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideMoshi(): Moshi {
+    if (moshi.isNull()) {
+        moshi = synchronized(this) {
+            Moshi.Builder().build()
+        }
+    }
+    return moshi!!
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideTemporaryMetricsMemoryCache(): MemoryCache<List<BuildMetric>> {
+    return TemporaryMetricsMemoryCacheImpl(
+        tower = provideTower()
+    )
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapter {
+    return BuildMetricJsonAdapter(provideMoshi())
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideDatabaseResultMigrationPipeline(): DatabaseResultMigrationPipeline {
+    return DatabaseResultMigrationPipeline(
+        V100B6DatabaseResultMigrationStage(
+            modules = parameters.modules.get().map { it.path }.toSet()
+        )
+    )
+}
+
+@ExcludeJacocoGenerated
+fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
+    if (databaseRepository.isNull()) {
+        databaseRepository = synchronized(this) {
+            DatabaseRepositoryImp(
+                tower = provideTower(),
+                db = provideDatabase(),
+                branch = provideCurrentBranch(),
+                requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace(),
+                buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache(),
+                databaseResultMigrationPipeline = provideDatabaseResultMigrationPipeline()
+            )
+        }
+    }
+    return databaseRepository!!
+}
+
+@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateInitializationMetricUseCase(): UpdateInitializationProcessMetricUseCase {
-    return UpdateInitializationProcessMetricUseCase(provideDatabaseRepository())
+    return UpdateInitializationProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateConfigurationMetricUseCase(): UpdateConfigurationProcessMetricUseCase {
-    return UpdateConfigurationProcessMetricUseCase(provideDatabaseRepository())
+    return UpdateConfigurationProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateExecutionProcessMetricUseCase(): UpdateExecutionProcessMetricUseCase {
-    return UpdateExecutionProcessMetricUseCase(provideDatabaseRepository())
+    return UpdateExecutionProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateOverallBuildProcessMetricUseCase(): UpdateOverallBuildProcessMetricUseCase {
-    return UpdateOverallBuildProcessMetricUseCase(provideDatabaseRepository())
+    return UpdateOverallBuildProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesSourceCountMetricUseCase(): UpdateModulesSourceCountMetricUseCase {
-    return UpdateModulesSourceCountMetricUseCase(provideDatabaseRepository())
+    return UpdateModulesSourceCountMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesMethodCountMetricUseCase(): UpdateModulesMethodCountMetricUseCase {
-    return UpdateModulesMethodCountMetricUseCase(provideDatabaseRepository())
+    return UpdateModulesMethodCountMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateCacheHitMetricUseCase(): UpdateCacheHitMetricUseCase {
-    return UpdateCacheHitMetricUseCase(provideDatabaseRepository())
+    return UpdateCacheHitMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateSuccessBuildRateMetricUseCase(): UpdateSuccessBuildRateMetricUseCase {
-    return UpdateSuccessBuildRateMetricUseCase(provideDatabaseRepository())
+    return UpdateSuccessBuildRateMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateDependencyResolveProcessMetricUseCase(): UpdateDependencyResolveProcessMetricUseCase {
-    return UpdateDependencyResolveProcessMetricUseCase(provideDatabaseRepository())
+    return UpdateDependencyResolveProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateParallelExecutionRateMetricUseCase(): UpdateParallelExecutionRateMetricUseCase {
-    return UpdateParallelExecutionRateMetricUseCase(provideDatabaseRepository())
+    return UpdateParallelExecutionRateMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesExecutionProcessMetricUseCase(): UpdateModulesExecutionProcessMetricUseCase {
-    return UpdateModulesExecutionProcessMetricUseCase(provideDatabaseRepository(), modules!!)
+    return UpdateModulesExecutionProcessMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository(),
+        parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesDependencyGraphMetricUseCase(): UpdateModulesDependencyGraphMetricUseCase {
-    return UpdateModulesDependencyGraphMetricUseCase(provideDatabaseRepository())
+    return UpdateModulesDependencyGraphMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesBuildHeatmapMetricUseCase(): UpdateModulesBuildHeatmapMetricUseCase {
-    return UpdateModulesBuildHeatmapMetricUseCase(provideDatabaseRepository())
+    return UpdateModulesBuildHeatmapMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateNonCacheableTasksMetricUseCase(): UpdateNonCacheableTasksMetricUseCase {
-    return UpdateNonCacheableTasksMetricUseCase(provideDatabaseRepository())
+    return UpdateNonCacheableTasksMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesSourceSizeMetricUseCase(): UpdateModulesSourceSizeMetricUseCase {
-    return UpdateModulesSourceSizeMetricUseCase(provideDatabaseRepository())
+    return UpdateModulesSourceSizeMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpdateModulesCrashCountMetricUseCase(): UpdateModulesCrashCountMetricUseCase {
-    return UpdateModulesCrashCountMetricUseCase(provideDatabaseRepository(), modules!!)
+    return UpdateModulesCrashCountMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository(),
+        parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
     return SaveMetricUseCase(
+        provideTower(),
         provideDatabaseRepository(),
         provideUpdateInitializationMetricUseCase(),
         provideUpdateConfigurationMetricUseCase(),
@@ -209,12 +362,16 @@ fun BuildExecutionInjector.provideSaveMetricUseCase(): SaveMetricUseCase {
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideSaveTemporaryMetricUseCase(): SaveTemporaryMetricUseCase {
-    return SaveTemporaryMetricUseCase(provideDatabaseRepository())
+    return SaveTemporaryMetricUseCase(
+        provideTower(),
+        provideDatabaseRepository()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideUpsertModulesTimelineUseCase(): UpsertModulesTimelineUseCase {
     return UpsertModulesTimelineUseCase(
+        tower = provideTower(),
         moshi = provideMoshi(),
         repo = provideDatabaseRepository()
     )
@@ -222,94 +379,140 @@ fun BuildExecutionInjector.provideUpsertModulesTimelineUseCase(): UpsertModulesT
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateInitializationProcessMetricUseCase(): CreateInitializationProcessMetricUseCase {
-    return CreateInitializationProcessMetricUseCase()
+    return CreateInitializationProcessMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateConfigurationProcessMetricUseCase(): CreateConfigurationProcessMetricUseCase {
-    return CreateConfigurationProcessMetricUseCase()
+    return CreateConfigurationProcessMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateExecutionProcessMetricUseCase(): CreateExecutionProcessMetricUseCase {
-    return CreateExecutionProcessMetricUseCase()
+    return CreateExecutionProcessMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateOverallBuildProcessMetricUseCase(): CreateOverallBuildProcessMetricUseCase {
-    return CreateOverallBuildProcessMetricUseCase()
+    return CreateOverallBuildProcessMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesSourceCountMetricUseCase(): CreateModulesSourceCountMetricUseCase {
-    return CreateModulesSourceCountMetricUseCase(modules!!)
+    return CreateModulesSourceCountMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesMethodCountMetricUseCase(): CreateModulesMethodCountMetricUseCase {
-    return CreateModulesMethodCountMetricUseCase(modules!!)
+    return CreateModulesMethodCountMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateCacheHitMetricUseCase(): CreateCacheHitMetricUseCase {
-    return CreateCacheHitMetricUseCase(modules!!)
+    return CreateCacheHitMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateSuccessBuildRateMetricUseCase(): CreateSuccessBuildRateMetricUseCase {
-    return CreateSuccessBuildRateMetricUseCase()
+    return CreateSuccessBuildRateMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateDependencyResolveProcessMetricUseCase(): CreateDependencyResolveProcessMetricUseCase {
-    return CreateDependencyResolveProcessMetricUseCase()
+    return CreateDependencyResolveProcessMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateParallelExecutionRateMetricUseCase(): CreateParallelExecutionRateMetricUseCase {
-    return CreateParallelExecutionRateMetricUseCase()
+    return CreateParallelExecutionRateMetricUseCase(
+        provideTower()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesExecutionProcessMetricUseCase(): CreateModulesExecutionProcessMetricUseCase {
-    return CreateModulesExecutionProcessMetricUseCase(modules!!)
+    return CreateModulesExecutionProcessMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesDependencyGraphMetricUseCase(): CreateModulesDependencyGraphMetricUseCase {
-    return CreateModulesDependencyGraphMetricUseCase(modulesDependencyGraph!!)
+    return CreateModulesDependencyGraphMetricUseCase(
+        tower = provideTower(),
+        modulesDependencyGraph = parameters.modulesDependencyGraph.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesTimelineMetricUseCase(): CreateModulesTimelineMetricUseCase {
-    return CreateModulesTimelineMetricUseCase(modules!!)
+    return CreateModulesTimelineMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesBuildHeatmapMetricUseCase(): CreateModulesBuildHeatmapMetricUseCase {
-    return CreateModulesBuildHeatmapMetricUseCase(modules!!, modulesDependencyGraph!!)
+    return CreateModulesBuildHeatmapMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get(),
+        modulesDependencyGraph = parameters.modulesDependencyGraph.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateNonCacheableTasksMetricUseCase(): CreateNonCacheableTasksMetricUseCase {
-    return CreateNonCacheableTasksMetricUseCase(nonCacheableTasks!!)
+    return CreateNonCacheableTasksMetricUseCase(
+        tower = provideTower(),
+        nonCacheableTasks = parameters.nonCacheableTasks.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesSourceSizeMetricUseCase(): CreateModulesSourceSizeMetricUseCase {
-    return CreateModulesSourceSizeMetricUseCase(modules!!)
+    return CreateModulesSourceSizeMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideCreateModulesCrashCountMetricUseCase(): CreateModulesCrashCountMetricUseCase {
-    return CreateModulesCrashCountMetricUseCase(modules!!)
+    return CreateModulesCrashCountMetricUseCase(
+        tower = provideTower(),
+        modules = parameters.modules.get()
+    )
 }
 
 @ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
     return BuildExecutionLogicImp(
-        requestedTasks = requestedTasks!!,
-        modules = modules!!,
+        tower = provideTower(),
+        requestedTasks = parameters.requestedTasks.get(),
+        modules = parameters.modules.get(),
         saveMetricUseCase = provideSaveMetricUseCase(),
         saveTemporaryMetricUseCase = provideSaveTemporaryMetricUseCase(),
         upsertModulesTimelineUseCase = provideUpsertModulesTimelineUseCase(),

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulestimeline.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesTimelineReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderModulesTimelineReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-execution-timeline-metric%"
-        val stage = RenderModulesTimelineReportStage(report)
+        val stage = RenderModulesTimelineReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Execution Timeline is not available!</p><div class=\"space\"></div>"
@@ -107,7 +108,7 @@ class RenderModulesTimelineReportStageTest {
         )
 
         val renderTemplate = "%modules-execution-timeline-metric%"
-        val stage = RenderModulesTimelineReportStage(report)
+        val stage = RenderModulesTimelineReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

@@ -23,16 +23,15 @@
 package io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class UpdateParallelExecutionRateMetricStage(
     private val updateParallelExecutionRateMetricUseCase: UpdateParallelExecutionRateMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
             parallelExecutionRateMetric = updateParallelExecutionRateMetricUseCase.execute()
         }
     }
-
 }

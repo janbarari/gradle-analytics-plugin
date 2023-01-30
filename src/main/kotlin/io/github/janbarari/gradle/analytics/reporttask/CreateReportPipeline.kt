@@ -22,9 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
-import io.github.janbarari.gradle.core.Pipeline
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendPipeline
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 
-open class CreateReportPipeline(firstStage: Stage<Report, Report>) :
-    Pipeline<Report, Report>(firstStage)
+open class CreateReportPipeline(firstStage: SuspendStage<Report, Report>) :
+    SuspendPipeline<Report, Report>(firstStage)

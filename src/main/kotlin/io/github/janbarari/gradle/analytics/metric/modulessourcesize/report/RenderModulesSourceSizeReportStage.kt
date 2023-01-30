@@ -23,21 +23,25 @@
 package io.github.janbarari.gradle.analytics.metric.modulessourcesize.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderModulesSourceSizeReportStage(
+    private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID = "%modules-source-size-metric%"
         private const val MODULES_METHOD_COUNT_METRIC_TEMPLATE_FILE_NAME = "modules-source-size-metric-template"
+        private val clazz = RenderModulesSourceSizeReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesSourceSizeReport.isNull())
             return input.replace(MODULES_METHOD_COUNT_METRIC_TEMPLATE_ID, getEmptyRender())
 

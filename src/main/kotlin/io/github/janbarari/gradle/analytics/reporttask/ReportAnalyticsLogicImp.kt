@@ -23,7 +23,9 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
@@ -61,6 +63,8 @@ import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.Cr
 import io.github.janbarari.gradle.analytics.metric.overallbuildprocess.report.RenderOverallBuildProcessReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.CreateParallelExecutionRateReportStage
 import io.github.janbarari.gradle.analytics.metric.paralleexecutionrate.report.RenderParallelExecutionRateReportStage
+import io.github.janbarari.gradle.analytics.metric.redundantdependencyconnection.report.CreateRedundantDependencyConnectionReportStage
+import io.github.janbarari.gradle.analytics.metric.redundantdependencyconnection.report.RenderRedundantDependencyConnectionReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.CreateSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.metric.successbuildrate.report.RenderSuccessBuildRateReportStage
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
@@ -70,6 +74,7 @@ import io.github.janbarari.gradle.extension.getSafeResourceAsStream
 import io.github.janbarari.gradle.extension.getTextResourceContent
 import io.github.janbarari.gradle.extension.hasSpace
 import io.github.janbarari.gradle.extension.toRealPath
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -80,6 +85,8 @@ import java.io.IOException
  * testable and the logic framework independent.
  */
 class ReportAnalyticsLogicImp(
+    private val tower: Tower,
+    private val modulesDependencyGraphReportJsonAdapter: ModulesDependencyGraphReportJsonAdapter,
     private val getMetricsUseCase: GetMetricsUseCase,
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
@@ -87,9 +94,14 @@ class ReportAnalyticsLogicImp(
     private val projectName: String
 ) : ReportAnalyticsLogic {
 
+    companion object {
+        private val clazz = ReportAnalyticsLogicImp::class.java
+    }
+
     @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(EmptyMetricsException::class)
     override suspend fun generateReport(branch: String, requestedTasks: String, period: String): String {
+        tower.i(clazz, "generateReport() period=$period")
         val convertedPeriod = convertQueryToPeriod(period)
         val data = getMetricsUseCase.execute(convertedPeriod)
 
@@ -111,26 +123,26 @@ class ReportAnalyticsLogicImp(
 
     @ExcludeJacocoGenerated
     private suspend fun generateReport(data: List<BuildMetric>, branch: String, requestedTasks: String): Report {
-        return CreateReportPipeline(CreateInitializationProcessReportStage(data)).addStage(
-                CreateConfigurationProcessReportStage(
-                    data
-                )
-            ).addStage(CreateExecutionProcessReportStage(data))
-            .addStage(CreateOverallBuildProcessReportStage(data))
-            .addStage(CreateModulesSourceCountReportStage(data))
-            .addStage(CreateModulesMethodCountReportStage(data))
-            .addStage(CreateCacheHitReportStage(data))
-            .addStage(CreateSuccessBuildRateReportStage(data))
-            .addStage(CreateDependencyResolveProcessReportStage(data))
-            .addStage(CreateParallelExecutionRateReportStage(data))
-            .addStage(CreateModulesExecutionProcessReportStage(data))
-            .addStage(CreateModulesDependencyGraphReportStage(data))
-            .addStage(CreateModulesTimelineReportStage(branch, getModulesTimelineUseCase))
-            .addStage(CreateBuildStatusReportStage(data))
-            .addStage(CreateModulesBuildHeatmapReportStage(data))
-            .addStage(CreateNonCacheableTasksReportStage(data))
-            .addStage(CreateModulesSourceSizeReportStage(data))
-            .addStage(CreateModulesCrashCountReportStage(data))
+        tower.i(clazz, "generateReport() data.size=${data.size}")
+        return CreateReportPipeline(CreateInitializationProcessReportStage(tower, data))
+            .addStage(CreateConfigurationProcessReportStage(tower, data))
+            .addStage(CreateExecutionProcessReportStage(tower, data))
+            .addStage(CreateOverallBuildProcessReportStage(tower, data))
+            .addStage(CreateModulesSourceCountReportStage(tower, data))
+            .addStage(CreateModulesMethodCountReportStage(tower, data))
+            .addStage(CreateCacheHitReportStage(tower, data))
+            .addStage(CreateSuccessBuildRateReportStage(tower, data))
+            .addStage(CreateDependencyResolveProcessReportStage(tower, data))
+            .addStage(CreateParallelExecutionRateReportStage(tower, data))
+            .addStage(CreateModulesExecutionProcessReportStage(tower, data))
+            .addStage(CreateModulesDependencyGraphReportStage(tower, data))
+            .addStage(CreateModulesTimelineReportStage(tower, branch, getModulesTimelineUseCase))
+            .addStage(CreateBuildStatusReportStage(tower, data))
+            .addStage(CreateModulesBuildHeatmapReportStage(tower, data))
+            .addStage(CreateNonCacheableTasksReportStage(tower, data))
+            .addStage(CreateModulesSourceSizeReportStage(tower, data))
+            .addStage(CreateModulesCrashCountReportStage(tower, data))
+            .addStage(CreateRedundantDependencyConnectionReportStage(tower, data))
             .execute(
                 Report(
                     branch = branch, requestedTasks = requestedTasks
@@ -142,6 +154,7 @@ class ReportAnalyticsLogicImp(
     private suspend fun generateRender(
         data: List<BuildMetric>, report: Report, branch: String, requestedTasks: String
     ): String {
+        tower.i(clazz, "generateRender() data.size=${data.size}")
         val rawHTML: String = getTextResourceContent("index-template.html")
 
         val renderInitialReportStage = RenderInitialReportStage.Builder()
@@ -154,32 +167,43 @@ class ReportAnalyticsLogicImp(
             .build()
 
         return RenderReportPipeline(renderInitialReportStage)
-            .addStage(RenderInitializationProcessReportStage(report))
-            .addStage(RenderConfigurationProcessReportStage(report))
-            .addStage(RenderExecutionProcessReportStage(report))
-            .addStage(RenderOverallBuildProcessReportStage(report))
-            .addStage(RenderModulesSourceCountReportStage(report))
-            .addStage(RenderModulesMethodCountReportStage(report))
-            .addStage(RenderCacheHitReportStage(report))
-            .addStage(RenderSuccessBuildRateReportStage(report))
-            .addStage(RenderDependencyResolveProcessReportStage(report))
-            .addStage(RenderParallelExecutionRateReportStage(report))
-            .addStage(RenderModulesExecutionProcessReportStage(report))
-            .addStage(RenderModulesDependencyGraphReportStage(report, outputPath, projectName))
-            .addStage(RenderModulesTimelineReportStage(report))
-            .addStage(RenderBuildStatusReportStage(report))
-            .addStage(RenderModulesBuildHeatmapReportStage(report))
-            .addStage(RenderNonCacheableTasksReportStage(report))
-            .addStage(RenderModulesSourceSizeReportStage(report))
-            .addStage(RenderModulesCrashCountReportStage(report))
+            .addStage(RenderInitializationProcessReportStage(tower, report))
+            .addStage(RenderConfigurationProcessReportStage(tower, report))
+            .addStage(RenderExecutionProcessReportStage(tower, report))
+            .addStage(RenderOverallBuildProcessReportStage(tower, report))
+            .addStage(RenderModulesSourceCountReportStage(tower, report))
+            .addStage(RenderModulesMethodCountReportStage(tower, report))
+            .addStage(RenderCacheHitReportStage(tower, report))
+            .addStage(RenderSuccessBuildRateReportStage(tower, report))
+            .addStage(RenderDependencyResolveProcessReportStage(tower, report))
+            .addStage(RenderParallelExecutionRateReportStage(tower, report))
+            .addStage(RenderModulesExecutionProcessReportStage(tower, report))
+            .addStage(
+                RenderModulesDependencyGraphReportStage(
+                    tower,
+                    modulesDependencyGraphReportJsonAdapter,
+                    report,
+                    outputPath,
+                    projectName
+                )
+            )
+            .addStage(RenderModulesTimelineReportStage(tower, report))
+            .addStage(RenderBuildStatusReportStage(tower, report))
+            .addStage(RenderModulesBuildHeatmapReportStage(tower, report))
+            .addStage(RenderNonCacheableTasksReportStage(tower, report))
+            .addStage(RenderModulesSourceSizeReportStage(tower, report))
+            .addStage(RenderModulesCrashCountReportStage(tower, report))
+            .addStage(RenderRedundantDependencyConnectionReportStage(tower, report))
             .execute(rawHTML)
     }
 
     @ExcludeJacocoGenerated
     @kotlin.jvm.Throws(IOException::class)
     override suspend fun saveReport(renderedHTML: String): String {
+        tower.i(clazz, "saveReport()")
         val resources = listOf(
-            "nunito.ttf",
+            "opensans-regular.ttf",
+            "jetbrainsmono-regular.ttf",
             "plugin-logo.png",
             "styles.css",
             "functions.js",
@@ -190,7 +214,7 @@ class ReportAnalyticsLogicImp(
             "jquery.js",
             "panzoom.js"
         )
-        val savePath = "${outputPath.toRealPath()}/gradle-analytics-plugin"
+        val savePath = "${outputPath.toRealPath()}/$OUTPUT_DIRECTORY_NAME"
 
         //copy resources
         resources.forEach { resource ->
@@ -210,6 +234,7 @@ class ReportAnalyticsLogicImp(
      */
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     override fun ensureBranchArgumentValid(branchArgument: String) {
+        tower.i(clazz, "ensureBranchArgumentValid()")
         if (branchArgument.isEmpty()) throw MissingPropertyException("`--branch` is not present!")
         if (branchArgument.hasSpace()) throw InvalidPropertyException("`--branch` is not valid!")
     }
@@ -219,6 +244,7 @@ class ReportAnalyticsLogicImp(
      */
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     override fun ensurePeriodArgumentValid(periodArgument: String) {
+        tower.i(clazz, "ensurePeriodArgumentValid()")
         if (periodArgument.isEmpty()) throw MissingPropertyException("`--period` is not present!")
         convertQueryToPeriod(periodArgument)
     }
@@ -228,11 +254,13 @@ class ReportAnalyticsLogicImp(
      */
     @kotlin.jvm.Throws(MissingPropertyException::class)
     override fun ensureTaskArgumentValid(requestedTasksArgument: String) {
+        tower.i(clazz, "ensureTaskArgumentValid")
         if (requestedTasksArgument.isEmpty()) throw MissingPropertyException("`--task` is not present!")
     }
 
     @kotlin.jvm.Throws(InvalidPropertyException::class)
     override fun convertQueryToPeriod(query: String): Pair<Long, Long> {
+        tower.i(clazz, "convertQueryToPeriod() query=$query")
 
         @Suppress("ComplexCondition")
         fun isCorrectlySorted(query: String): Boolean {

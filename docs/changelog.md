@@ -23,6 +23,17 @@
 
 # Changelog
 
+## 1.0.0-beta6
+* [Issue 89](https://github.com/janbarari/gradle-analytics-plugin/issues/89)
+* [Feature 52](https://github.com/janbarari/gradle-analytics-plugin/issues/52)
+* [Issue 90](https://github.com/janbarari/gradle-analytics-plugin/issues/90)
+* Redundant Dependency Connection Metric [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/93)
+* Internal Logger [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/86)
+* Change report font style
+* Upgrade Gradle version to 7.6 [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/84)
+* Modules Dependency Graph selection feature added
+* Fix minor critical bugs
+
 ## HotFix - 1.0.0-beta5
 * [Issue 77](https://github.com/janbarari/gradle-analytics-plugin/issues/77)
 

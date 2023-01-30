@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.configurationprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.maxValue
@@ -32,6 +32,7 @@ import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
@@ -39,17 +40,20 @@ import io.github.janbarari.gradle.utils.MathUtils
  * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.ConfigurationProcessReport].
  */
 class RenderConfigurationProcessReportStage(
+    private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val CONFIGURATION_METRIC_TEMPLATE_ID = "%configuration-process-metric%"
         private const val CONFIGURATION_METRIC_TEMPLATE_FILE_NAME = "configuration-process-metric-template"
+        private val clazz = RenderConfigurationProcessReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.configurationProcessReport.isNull()) {
             return input.replace(CONFIGURATION_METRIC_TEMPLATE_ID, getEmptyRender())
         }
@@ -98,5 +102,4 @@ class RenderConfigurationProcessReportStage(
     fun getEmptyRender(): String {
         return HtmlUtils.renderMessage("Configuration Process is not available!")
     }
-
 }

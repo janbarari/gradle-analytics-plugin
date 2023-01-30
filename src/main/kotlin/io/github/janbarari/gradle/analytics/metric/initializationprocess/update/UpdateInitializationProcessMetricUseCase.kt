@@ -29,17 +29,21 @@ import io.github.janbarari.gradle.extension.isBiggerEquals
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.MathUtils
 
 class UpdateInitializationProcessMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<InitializationProcessMetric>() {
 
     companion object {
         private const val SKIP_THRESHOLD_IN_MS = 50L
+        private val clazz = UpdateInitializationProcessMetricUseCase::class.java
     }
 
     override suspend fun execute(): InitializationProcessMetric {
+        tower.i(clazz, "execute()")
         val medianValues = mutableListOf<Long>()
         val meanValues = mutableListOf<Long>()
         repo.getTemporaryMetrics().whenEach {

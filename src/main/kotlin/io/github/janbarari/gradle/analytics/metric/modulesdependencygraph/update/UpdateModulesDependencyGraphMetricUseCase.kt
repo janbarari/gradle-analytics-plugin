@@ -25,12 +25,19 @@ package io.github.janbarari.gradle.analytics.metric.modulesdependencygraph.updat
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesDependencyGraphMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
+import io.github.janbarari.gradle.logger.Tower
 
 class UpdateModulesDependencyGraphMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository
 ) : UseCaseNoInput<ModulesDependencyGraphMetric>() {
 
+    companion object {
+        private val clazz = UpdateModulesDependencyGraphMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesDependencyGraphMetric {
+        tower.i(clazz, "execute()")
         return ModulesDependencyGraphMetric(
             dependencies = repo.getTemporaryMetrics().lastOrNull()?.modulesDependencyGraphMetric?.dependencies ?: emptyList()
         )

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.TimespanPoint
 import io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class RenderDependencyResolveProcessReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%dependency-resolve-process-metric%"
-        val stage = RenderDependencyResolveProcessReportStage(report)
+        val stage = RenderDependencyResolveProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Dependency Resolve Process is not available!</p><div class=\"space\"></div>"
@@ -65,7 +66,7 @@ class RenderDependencyResolveProcessReportStageTest {
         )
 
         val renderTemplate = "%dependency-resolve-process-metric%"
-        val stage = RenderDependencyResolveProcessReportStage(report)
+        val stage = RenderDependencyResolveProcessReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

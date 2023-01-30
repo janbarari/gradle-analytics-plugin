@@ -24,19 +24,25 @@ package io.github.janbarari.gradle.analytics.reporttask
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
 import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.analytics.domain.model.Module
+import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
 import io.github.janbarari.gradle.extension.createTask
+import io.github.janbarari.gradle.extension.isModuleProject
+import io.github.janbarari.gradle.logger.Tower
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.util.GradleVersion
 import org.gradle.work.DisableCachingByDefault
 
 /**
@@ -53,6 +59,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
 
     companion object {
         const val TASK_NAME = "reportAnalytics"
+        private val clazz = ReportAnalyticsTask::class.java
 
         @ExcludeJacocoGenerated
         fun register(config: GradleAnalyticsPluginConfig) {
@@ -65,7 +72,15 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                     trackingTasksProperty.set(config.trackingTasks)
                     trackingBranchesProperty.set(config.trackingBranches)
                     databaseConfigProperty.set(config.getDatabaseConfig())
+                    modules.set(
+                        config.project.subprojects
+                            .filter { it.isModuleProject() }
+                            .map { it.toModule() }
+                            .toSet()
+                    )
+                    // disable the task from being cached or reuse the outputs on incremental builds.
                     outputs.cacheIf { false }
+                    outputs.upToDateWhen { false }
                 }
             }
         }
@@ -102,7 +117,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     abstract val databaseConfigProperty: Property<DatabaseConfig>
 
     @get:Input
-    abstract val modules: ListProperty<Module>
+    abstract val modules: SetProperty<Module>
+
+    private lateinit var tower: Tower
 
     /**
      * Invokes when the task execution process started.
@@ -116,7 +133,23 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
+            modules = modules.get().map { it.path }.toSet()
         )
+        tower = injector.provideTower()
+        val systemInfo = injector.provideSystemInfo()
+
+        tower.r("report process started")
+        tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
+        tower.r("manufacturer: ${systemInfo.operatingSystem.manufacturer}")
+        tower.r("os: ${systemInfo.operatingSystem.family} " +
+                "${systemInfo.operatingSystem.versionInfo.version} " +
+                "x${systemInfo.operatingSystem.bitness}")
+        tower.r("gradle version: ${GradleVersion.current().version}")
+        tower.r("requested tasks: $requestedTasksArgument")
+        tower.r("modules count: ${modules.get().size}")
+        tower.r("ci: ${envCIProperty.get()}")
+        tower.r("tracking tasks count: ${trackingTasksProperty.get().size}")
+        tower.r("tracking branches count: ${trackingBranchesProperty.get().size}")
 
         with(injector.provideReportAnalyticsLogic()) {
             ensureBranchArgumentValid(branchArgument)
@@ -126,12 +159,17 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                 val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument))
                 printSuccessfulResult(reportPath)
             } catch (e: EmptyMetricsException) {
+                tower.e(clazz, e.message)
                 printNoData()
             }
         }
+
+        tower.r("report process finished")
+        tower.save()
     }
 
     private fun printSuccessfulResult(reportPath: String) {
+        tower.i(clazz, "printSuccessfulResult()")
         ConsolePrinter(blockCharWidth = reportPath.length).run {
             printFirstLine()
             printLine(left = "Gradle Analytics Plugin")
@@ -147,6 +185,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     }
 
     private fun printNoData() {
+        tower.i(clazz, "printNoData()")
         val message = listOf(
             "There is no data to process. Please check the plugin configuration",
             "and wait until the first desired task information is saved."
@@ -160,5 +199,4 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             printLastLine()
         }
     }
-
 }

@@ -23,11 +23,16 @@
 package io.github.janbarari.gradle.analytics.data
 
 import com.squareup.moshi.Moshi
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.Database
+import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeAll
@@ -40,6 +45,7 @@ import kotlin.test.assertEquals
 class DatabaseRepositoryTest {
 
     private lateinit var repo: DatabaseRepository
+    private var databaseResultMigrationPipeline: DatabaseResultMigrationPipeline = mockk()
 
     @BeforeAll
     fun setup() {
@@ -49,12 +55,20 @@ class DatabaseRepositoryTest {
                 name = "testdb"
             }
         }
-        val db = Database(databaseConfig, false)
+        val db = Database(
+            TowerMockImpl(),
+            databaseConfig,
+            false
+        )
+
         repo = DatabaseRepositoryImp(
+            tower = TowerMockImpl(),
             db = db,
             branch = "develop",
             requestedTasks = "assembleDebug",
-            moshi = Moshi.Builder().build()
+            buildMetricJsonAdapter = BuildMetricJsonAdapter(Moshi.Builder().build()),
+            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl()),
+            databaseResultMigrationPipeline = databaseResultMigrationPipeline
         )
     }
 
@@ -65,7 +79,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
-            modules = emptyList()
+            modules = emptySet()
         )
         assertDoesNotThrow {
             repo.saveNewMetric(metric)
@@ -79,7 +93,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = 16194745374333,
             gitHeadCommitHash = "unknown",
-            modules = emptyList()
+            modules = emptySet()
         )
         assertDoesNotThrow {
             repo.saveTemporaryMetric(metric)
@@ -99,7 +113,7 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
-            modules = emptyList()
+            modules = emptySet()
         )
         repo.saveNewMetric(metric)
         delay(300)
@@ -114,8 +128,13 @@ class DatabaseRepositoryTest {
             listOf("assembleDebug"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
-            modules = emptyList()
+            modules = emptySet()
         )
+
+        every {
+            databaseResultMigrationPipeline.execute(any())
+        } returns metric
+
         repo.saveNewMetric(metric)
         assertEquals("develop", repo.getDayMetric().first.branch)
         assertEquals("assembleDebug", repo.getDayMetric().first.requestedTasks.first())
@@ -139,7 +158,7 @@ class DatabaseRepositoryTest {
                 listOf("assembleDebug"),
                 createdAt = System.currentTimeMillis(),
                 gitHeadCommitHash = "unknown",
-                modules = emptyList()
+                modules = emptySet()
             )
             repo.saveNewMetric(metric)
         }
@@ -149,8 +168,12 @@ class DatabaseRepositoryTest {
             listOf("assembleRelease"),
             createdAt = System.currentTimeMillis(),
             gitHeadCommitHash = "unknown",
-            modules = emptyList()
+            modules = emptySet()
         )
+        every {
+            databaseResultMigrationPipeline.execute(any())
+        } returns newMetric
+
         repo.updateDayMetric(dayMetric.second, newMetric)
         assertEquals("master", repo.getDayMetric().first.branch)
     }

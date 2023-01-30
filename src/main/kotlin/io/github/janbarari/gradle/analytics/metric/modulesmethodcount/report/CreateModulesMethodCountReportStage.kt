@@ -27,19 +27,26 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModuleMethodCoun
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesMethodCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesMethodCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.diffPercentageOf
 import io.github.janbarari.gradle.extension.hasMultipleItems
 import io.github.janbarari.gradle.extension.hasSingleItem
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.toPercentageOf
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesMethodCountReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
-) : Stage<Report, Report> {
+) : SuspendStage<Report, Report> {
+
+    companion object {
+        private val clazz = CreateModulesMethodCountReportStage::class.java
+    }
 
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val metrics = metrics.filter {
             it.modulesMethodCountMetric.isNotNull()
         }.map {
@@ -111,5 +118,4 @@ class CreateModulesMethodCountReportStage(
     fun calculateModuleDiffRatio(metrics: List<ModulesMethodCountMetric>, path: String, value: Int): Float? {
         return metrics.first().modules.find { it.path == path }?.value?.diffPercentageOf(value)
     }
-
 }

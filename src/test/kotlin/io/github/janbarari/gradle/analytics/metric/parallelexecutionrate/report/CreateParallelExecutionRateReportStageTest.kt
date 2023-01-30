@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.parallelexecutionrate.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutionRateMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -37,7 +38,7 @@ class CreateParallelExecutionRateReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateParallelExecutionRateReportStage(metrics)
+        val stage = CreateParallelExecutionRateReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -54,7 +55,7 @@ class CreateParallelExecutionRateReportStageTest {
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(35),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -65,12 +66,12 @@ class CreateParallelExecutionRateReportStageTest {
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
                 parallelExecutionRateMetric = ParallelExecutionRateMetric(45),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
 
-        val stage = CreateParallelExecutionRateReportStage(metrics)
+        val stage = CreateParallelExecutionRateReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulessourcecount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleSourceCount
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesSourceCountMetric
@@ -37,7 +38,7 @@ class CreateModulesSourceCountReportStageTest {
     @Test
     fun `when process() executes with empty metric, expect null report`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateModulesSourceCountReportStage(metrics)
+        val stage = CreateModulesSourceCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -54,7 +55,7 @@ class CreateModulesSourceCountReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceCountMetric = ModulesSourceCountMetric(
                     listOf(
@@ -67,7 +68,7 @@ class CreateModulesSourceCountReportStageTest {
             }
         )
 
-        val stage = CreateModulesSourceCountReportStage(metrics)
+        val stage = CreateModulesSourceCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)
@@ -89,7 +90,7 @@ class CreateModulesSourceCountReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668836798265,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceCountMetric = ModulesSourceCountMetric(
                     listOf(
@@ -107,7 +108,7 @@ class CreateModulesSourceCountReportStageTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1668936974389,
                 gitHeadCommitHash = UUID.randomUUID().toString(),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             ).apply {
                 modulesSourceCountMetric = ModulesSourceCountMetric(
                     listOf(
@@ -120,7 +121,7 @@ class CreateModulesSourceCountReportStageTest {
             }
         )
 
-        val stage = CreateModulesSourceCountReportStage(metrics)
+        val stage = CreateModulesSourceCountReportStage(TowerMockImpl(), metrics)
 
         var report = Report("main", "assemble")
         report = stage.process(report)

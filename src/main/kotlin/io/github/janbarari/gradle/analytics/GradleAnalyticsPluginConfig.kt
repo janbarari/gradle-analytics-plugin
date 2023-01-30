@@ -36,9 +36,15 @@ open class GradleAnalyticsPluginConfig(val project: Project) {
 
     var isEnabled: Boolean = true
 
-    var trackingTasks: List<String> = listOf()
+    var trackingTasks: Set<String> = setOf()
 
-    var trackingBranches: List<String> = listOf()
+    var trackingBranches: Set<String> = setOf()
+
+    /**
+     * Tracing all branches has disabled by default during to the significant drawback
+     * it creates in the database, especially for temporary branches.
+     */
+    var isTrackAllBranchesEnabled: Boolean = false
 
     var outputPath: String = project.rootProject.buildDir.absolutePath
 

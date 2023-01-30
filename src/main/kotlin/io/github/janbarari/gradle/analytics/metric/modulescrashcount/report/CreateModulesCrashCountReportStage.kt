@@ -26,15 +26,22 @@ import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesCrashCountMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesCrashCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class CreateModulesCrashCountReportStage(
+    private val tower: Tower,
     private val metrics: List<BuildMetric>
-): Stage<Report, Report> {
+): SuspendStage<Report, Report> {
+
+    companion object {
+        private val clazz = CreateModulesCrashCountReportStage::class.java
+    }
 
     override suspend fun process(input: Report): Report {
+        tower.i(clazz, "process()")
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
         metrics.lastOrNull()?.modules?.whenEach {
@@ -59,5 +66,4 @@ class CreateModulesCrashCountReportStage(
             )
         }
     }
-
 }

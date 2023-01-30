@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.noncacheabletasks.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.NonCacheableTasksMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -35,7 +36,7 @@ class CreateNonCacheableTasksReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateNonCacheableTasksReportStage(metrics)
+        val stage = CreateNonCacheableTasksReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -60,7 +61,7 @@ class CreateNonCacheableTasksReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -78,11 +79,11 @@ class CreateNonCacheableTasksReportStageTest {
                         )
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
-        val stage = CreateNonCacheableTasksReportStage(metrics)
+        val stage = CreateNonCacheableTasksReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

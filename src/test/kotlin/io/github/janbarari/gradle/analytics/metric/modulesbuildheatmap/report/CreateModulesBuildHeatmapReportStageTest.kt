@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleBuildHeatmap
@@ -38,7 +39,7 @@ class CreateModulesBuildHeatmapReportStageTest {
     @Test
     fun `check process() generates report when metric is not available`() = runBlocking {
         val metrics = mutableListOf<BuildMetric>()
-        val stage = CreateModulesBuildHeatmapReportStage(metrics)
+        val stage = CreateModulesBuildHeatmapReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -70,7 +71,7 @@ class CreateModulesBuildHeatmapReportStageTest {
                         ModuleCacheHit(":freedom", 20),
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
@@ -95,11 +96,11 @@ class CreateModulesBuildHeatmapReportStageTest {
                         ModuleCacheHit(":freedom", 20),
                     )
                 ),
-                modules = listOf(":woman", ":life", ":freedom")
+                modules = setOf(":woman", ":life", ":freedom")
             )
         )
 
-        val stage = CreateModulesBuildHeatmapReportStage(metrics)
+        val stage = CreateModulesBuildHeatmapReportStage(TowerMockImpl(), metrics)
         var report = Report("main", "assemble")
         report = stage.process(report)
 

@@ -23,7 +23,7 @@
 package io.github.janbarari.gradle.analytics.metric.dependencyresolveprocess.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.mapToChartPoints
 import io.github.janbarari.gradle.extension.maxValue
@@ -32,6 +32,7 @@ import io.github.janbarari.gradle.extension.minimize
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toIntList
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
@@ -39,17 +40,20 @@ import io.github.janbarari.gradle.utils.MathUtils
  * Generates html result for [io.github.janbarari.gradle.analytics.domain.model.report.DependencyResolveProcessReport].
  */
 class RenderDependencyResolveProcessReportStage(
+    private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val CHART_MAX_COLUMNS = 12
         private const val CHART_SUGGESTED_MIN_MAX_PERCENTAGE = 30
         private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID = "%dependency-resolve-process-metric%"
         private const val DEPENDENCY_RESOLVE_METRIC_TEMPLATE_FILE_NAME = "dependency-resolve-process-metric-template"
+        private val clazz = RenderDependencyResolveProcessReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.dependencyResolveProcessReport.isNull()) {
             return input.replace(DEPENDENCY_RESOLVE_METRIC_TEMPLATE_ID, getEmptyRender())
         }
@@ -98,5 +102,4 @@ class RenderDependencyResolveProcessReportStage(
     fun getEmptyRender(): String {
         return HtmlUtils.renderMessage("Dependency Resolve Process is not available!")
     }
-
 }

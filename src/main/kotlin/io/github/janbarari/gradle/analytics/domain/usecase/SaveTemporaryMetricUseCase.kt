@@ -25,15 +25,24 @@ package io.github.janbarari.gradle.analytics.domain.usecase
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.logger.Tower
 
 /**
  * Saves day build metrics.
  * It's temporary and only valid for a day. to measure a valid result from all
  * build metrics of the day.
  */
-class SaveTemporaryMetricUseCase(private val repo: DatabaseRepository): UseCase<BuildMetric, Long>() {
+class SaveTemporaryMetricUseCase(
+    private val tower: Tower,
+    private val repo: DatabaseRepository
+): UseCase<BuildMetric, Long>() {
+
+    companion object {
+        private val clazz = SaveTemporaryMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildMetric): Long {
+        tower.i(clazz, "execute() metric.hashCode=${input.hashCode()}")
         return repo.saveTemporaryMetric(input)
     }
 

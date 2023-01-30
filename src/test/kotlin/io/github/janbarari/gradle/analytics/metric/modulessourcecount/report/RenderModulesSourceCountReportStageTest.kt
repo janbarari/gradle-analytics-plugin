@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulessourcecount.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.report.ModuleSourceCount
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesSourceCountReport
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -38,7 +39,7 @@ class RenderModulesSourceCountReportStageTest {
         val report = Report("main", "assemble")
 
         val renderTemplate = "%modules-source-count-metric%"
-        val stage = RenderModulesSourceCountReportStage(report)
+        val stage = RenderModulesSourceCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         val expectedAnswer = "<p>Modules Source Count is not available!</p><div class=\"space\"></div>"
@@ -74,7 +75,7 @@ class RenderModulesSourceCountReportStageTest {
         )
 
         val renderTemplate = "%modules-source-count-metric%"
-        val stage = RenderModulesSourceCountReportStage(report)
+        val stage = RenderModulesSourceCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -145,7 +146,7 @@ class RenderModulesSourceCountReportStageTest {
         )
 
         val renderTemplate = "%modules-source-count-metric%"
-        val stage = RenderModulesSourceCountReportStage(report)
+        val stage = RenderModulesSourceCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {
@@ -216,7 +217,7 @@ class RenderModulesSourceCountReportStageTest {
         )
 
         val renderTemplate = "%modules-source-count-metric%"
-        val stage = RenderModulesSourceCountReportStage(report)
+        val stage = RenderModulesSourceCountReportStage(TowerMockImpl(), report)
         val result = stage.process(renderTemplate)
 
         assertTrue {

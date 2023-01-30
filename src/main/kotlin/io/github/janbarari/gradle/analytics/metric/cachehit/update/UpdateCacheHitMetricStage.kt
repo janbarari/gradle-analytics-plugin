@@ -23,16 +23,15 @@
 package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 
 class UpdateCacheHitMetricStage(
     private val updateCacheHitMetricUseCase: UpdateCacheHitMetricUseCase
-): Stage<BuildMetric, BuildMetric> {
+): SuspendStage<BuildMetric, BuildMetric> {
 
     override suspend fun process(input: BuildMetric): BuildMetric {
         return input.apply {
             cacheHitMetric = updateCacheHitMetricUseCase.execute()
         }
     }
-
 }

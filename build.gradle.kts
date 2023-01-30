@@ -23,7 +23,6 @@
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.ByteArrayOutputStream
-import kotlin.Throwable
 
 val pluginId: String by project
 val pluginDisplayName: String by project
@@ -70,6 +69,7 @@ dependencies {
     kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
+    implementation(libs.oshi)
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -146,11 +146,12 @@ tasks.register("publishToLocal") {
         exec {
             commandLine(
                 "./gradlew",
+                "clean",
                 "validateSourceHeaderLicense",
                 "detekt",
                 "build",
-                "test",
-                "publishToMavenLocal"
+                "publishToMavenLocal",
+                "test"
             ).args("--info")
         }
     }

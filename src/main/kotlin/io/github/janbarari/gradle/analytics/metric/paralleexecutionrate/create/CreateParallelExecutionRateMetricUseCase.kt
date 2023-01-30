@@ -26,10 +26,18 @@ import io.github.janbarari.gradle.analytics.domain.model.BuildInfo
 import io.github.janbarari.gradle.analytics.domain.model.metric.ParallelExecutionRateMetric
 import io.github.janbarari.gradle.core.UseCase
 import io.github.janbarari.gradle.extension.toPercentageOf
+import io.github.janbarari.gradle.logger.Tower
 
-class CreateParallelExecutionRateMetricUseCase : UseCase<BuildInfo, ParallelExecutionRateMetric>() {
+class CreateParallelExecutionRateMetricUseCase(
+    private val tower: Tower
+) : UseCase<BuildInfo, ParallelExecutionRateMetric>() {
+
+    companion object {
+        private val clazz = CreateParallelExecutionRateMetricUseCase::class.java
+    }
 
     override suspend fun execute(input: BuildInfo): ParallelExecutionRateMetric {
+        tower.i(clazz, "execute()")
         val nonParallelExecutionInMillis = input.calculateNonParallelExecutionInMillis()
         val parallelExecutionInMillis = input.calculateParallelExecutionByMillis()
         val rate = (parallelExecutionInMillis - nonParallelExecutionInMillis)

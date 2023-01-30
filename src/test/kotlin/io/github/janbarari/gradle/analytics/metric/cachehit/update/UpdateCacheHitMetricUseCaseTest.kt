@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.cachehit.update
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.CacheHitMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleCacheHit
@@ -44,7 +45,10 @@ class UpdateCacheHitMetricUseCaseTest {
     @BeforeAll
     fun setup() {
         repo = mockk()
-        useCase = UpdateCacheHitMetricUseCase(repo)
+        useCase = UpdateCacheHitMetricUseCase(
+            TowerMockImpl(),
+            repo
+        )
     }
 
     @Test
@@ -55,7 +59,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
-                modules = listOf(":core", ":data", ":domain")
+                modules = setOf(":core", ":data", ":domain")
             ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
@@ -85,7 +89,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
-                modules = listOf(":core", ":data", ":domain")
+                modules = setOf(":core", ":data", ":domain")
             ),
             fakeBuildMetric(70, 50, 30, 20),
             fakeBuildMetric(12, 43, 11, 15),
@@ -96,7 +100,7 @@ class UpdateCacheHitMetricUseCaseTest {
                 requestedTasks = listOf("assemble"),
                 createdAt = 1660202190213,
                 gitHeadCommitHash = "unknown",
-                modules = listOf(":core", ":data", ":domain")
+                modules = setOf(":core", ":data", ":domain")
             )
         )
 
@@ -122,7 +126,7 @@ class UpdateCacheHitMetricUseCaseTest {
             gitHeadCommitHash = "unknown",
             requestedTasks = listOf("assemble"),
             createdAt = 1660202190213,
-            modules = listOf(":core", ":data", ":domain")
+            modules = setOf(":core", ":data", ":domain")
         ).apply {
             cacheHitMetric = CacheHitMetric(
                 cacheHit,

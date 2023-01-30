@@ -83,6 +83,8 @@ object ScannerUtils {
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
+                    trackAllBranchesEnabled.set(configuration.isTrackAllBranchesEnabled)
+                    outputPath.set(configuration.outputPath)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)

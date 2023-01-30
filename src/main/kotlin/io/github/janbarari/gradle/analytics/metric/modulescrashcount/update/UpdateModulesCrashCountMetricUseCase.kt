@@ -28,17 +28,25 @@ import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
 import io.github.janbarari.gradle.core.UseCaseNoInput
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.whenEach
+import io.github.janbarari.gradle.logger.Tower
 
 class UpdateModulesCrashCountMetricUseCase(
+    private val tower: Tower,
     private val repo: DatabaseRepository,
-    private val modules: List<Module>
+    private val modules: Set<Module>
 ): UseCaseNoInput<ModulesCrashCountMetric>() {
 
+    companion object {
+        private val clazz = UpdateModulesCrashCountMetricUseCase::class.java
+    }
+
     override suspend fun execute(): ModulesCrashCountMetric {
+        tower.i(clazz, "execute()")
         val modules = mutableListOf<ModulesCrashCountMetric.ModuleCrash>()
 
+        val temporaryMetric = repo.getTemporaryMetrics()
         this.modules.whenEach {
-            val crashes = repo.getTemporaryMetrics()
+            val crashes = temporaryMetric
                 .filter { it.modulesCrashCountMetric.isNotNull() }
                 .sumOf { metric ->
                     metric.modulesCrashCountMetric!!.modules

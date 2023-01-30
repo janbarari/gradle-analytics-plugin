@@ -69,6 +69,7 @@ import io.github.janbarari.gradle.analytics.scanner.dependencyresolution.BuildDe
 import io.github.janbarari.gradle.analytics.scanner.initialization.BuildInitializationService
 import io.github.janbarari.gradle.extension.isNotNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.GitUtils
@@ -78,8 +79,9 @@ import kotlinx.coroutines.runBlocking
  * Implementation of [io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionLogic].
  */
 class BuildExecutionLogicImp(
+    private val tower: Tower,
     private val requestedTasks: List<String>,
-    private val modules: List<Module>,
+    private val modules: Set<Module>,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -102,6 +104,10 @@ class BuildExecutionLogicImp(
     private val createModulesCrashCountMetricUseCase: CreateModulesCrashCountMetricUseCase,
 ) : BuildExecutionLogic {
 
+    companion object {
+        private val clazz = BuildExecutionLogicImp::class.java
+    }
+
     init {
         assignStartTimestampIfProcessSkipped()
         assignInitializationTimestampIfProcessSkipped()
@@ -109,8 +115,11 @@ class BuildExecutionLogicImp(
     }
 
     override fun onExecutionFinished(executedTasks: Collection<TaskInfo>) = runBlocking {
+        tower.i(clazz, "onExecutionFinished()", "${executedTasks.size} tasks executed")
         val isSuccessful = executedTasks.all { it.isSuccessful }
+        tower.i(clazz, "onExecutionFinished()","all tasks build succeed")
         val failure = executedTasks.find { !it.isSuccessful && it.failures.isNotNull() }?.failures
+        tower.w(clazz, "onExecutionFinished()","${failure?.size ?: 0} tasks failed")
 
         val buildInfo = BuildInfo(
             createdAt = System.currentTimeMillis(),
@@ -155,15 +164,17 @@ class BuildExecutionLogicImp(
                     buildInfo.requestedTasks,
                     buildInfo.createdAt,
                     buildInfo.gitHeadCommitHash,
-                    modules.map { it.path }
+                    modules.map { it.path }.toSet()
                 )
             )
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
 
-        if (buildMetric.modulesTimelineMetric.isNotNull())
+        if (buildMetric.modulesTimelineMetric.isNotNull()) {
+            tower.i(clazz, "onExecutionFinished()", "upsert modules timeline metric")
             upsertModulesTimelineUseCase.execute(buildInfo.branch to buildMetric.modulesTimelineMetric!!)
+        }
 
         if (isSuccessful) {
             printBuildInfo(buildMetric)
@@ -171,6 +182,7 @@ class BuildExecutionLogicImp(
     }
 
     private fun printBuildInfo(buildMetric: BuildMetric) {
+        tower.i(clazz, "printBuildInfo()")
         val requestedTasks = buildMetric.requestedTasks.separateElementsWithSpace()
         val repoLink = "https://github.com/janbarari/gradle-analytics-plugin"
 
@@ -204,6 +216,7 @@ class BuildExecutionLogicImp(
 
     @ExcludeJacocoGenerated
     override fun resetDependentServices() {
+        tower.i(clazz, "resetDependentServices()")
         BuildInitializationService.reset()
         BuildConfigurationService.reset()
         BuildDependencyResolutionService.reset()
@@ -216,6 +229,11 @@ class BuildExecutionLogicImp(
      */
     private fun assignStartTimestampIfProcessSkipped() {
         if (BuildInitializationService.STARTED_AT == 0L) {
+            tower.i(
+                clazz = clazz,
+                method = "assignStartTimestampIfProcessSkipped()",
+                message = "started at ${System.currentTimeMillis()}"
+            )
             BuildInitializationService.STARTED_AT = System.currentTimeMillis()
         }
     }
@@ -227,6 +245,11 @@ class BuildExecutionLogicImp(
      */
     private fun assignInitializationTimestampIfProcessSkipped() {
         if (BuildInitializationService.INITIALIZED_AT == 0L) {
+            tower.i(
+                clazz = clazz,
+                method = "assignInitializationTimestampIfProcessSkipped()",
+                message = "initialized at ${System.currentTimeMillis()}"
+            )
             BuildInitializationService.INITIALIZED_AT = System.currentTimeMillis()
         }
     }
@@ -238,8 +261,12 @@ class BuildExecutionLogicImp(
      */
     private fun assignConfigurationTimestampIfProcessSkipped() {
         if (BuildConfigurationService.CONFIGURED_AT == 0L) {
+            tower.i(
+                clazz = clazz,
+                method = "assignConfigurationTimestampIfProcessSkipped()",
+                message = "configured at ${System.currentTimeMillis()}"
+            )
             BuildConfigurationService.CONFIGURED_AT = System.currentTimeMillis()
         }
     }
-
 }

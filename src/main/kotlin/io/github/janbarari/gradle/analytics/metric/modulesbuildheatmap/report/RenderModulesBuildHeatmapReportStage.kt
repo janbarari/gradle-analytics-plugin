@@ -23,23 +23,27 @@
 package io.github.janbarari.gradle.analytics.metric.modulesbuildheatmap.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.HtmlUtils
 import io.github.janbarari.gradle.utils.MathUtils
 
 class RenderModulesBuildHeatmapReportStage(
+    private val tower: Tower,
     private val report: Report
-) : Stage<String, String> {
+) : SuspendStage<String, String> {
 
     companion object {
         private const val MODULES_BUILD_HEATMAP_TEMPLATE_ID = "%modules-build-heatmap-metric%"
         private const val MODULES_BUILD_HEATMAP_TEMPLATE_FILE_NAME = "modules-build-heatmap-template"
+        private val clazz = RenderModulesBuildHeatmapReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.modulesBuildHeatmapReport.isNull())
             return input.replace(MODULES_BUILD_HEATMAP_TEMPLATE_ID, getEmptyRender())
 
@@ -76,11 +80,10 @@ class RenderModulesBuildHeatmapReportStage(
     }
 
     fun getColor(dependantModulesCount: Int): String {
-        return if (dependantModulesCount > 6) "#d73027"
-        else if (dependantModulesCount in 5..6) "#fdae61"
-        else if (dependantModulesCount in 3..4) "#ffffbf"
-        else if (dependantModulesCount in 1..2) "#abd9e9"
+        return if (dependantModulesCount >= 12) "#d73027"
+        else if (dependantModulesCount in 8..11) "#fdae61"
+        else if (dependantModulesCount in 4..7) "#ffffbf"
+        else if (dependantModulesCount in 1..3) "#abd9e9"
         else "#4575b4"
     }
-
 }

@@ -23,23 +23,27 @@
 package io.github.janbarari.gradle.analytics.metric.buildstatus.report
 
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
-import io.github.janbarari.gradle.core.Stage
+import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.round
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.DateTimeUtils
 import io.github.janbarari.gradle.utils.HtmlUtils
 
 class RenderBuildStatusReportStage(
+    private val tower: Tower,
     private val report: Report
-): Stage<String, String> {
+): SuspendStage<String, String> {
 
     companion object {
         private const val BUILD_STATUS_METRIC_TEMPLATE_ID = "%build-status-metric%"
         private const val BUILD_STATUS_METRIC_TEMPLATE_FILENAME = "build-status-metric-template"
+        private val clazz = RenderBuildStatusReportStage::class.java
     }
 
     override suspend fun process(input: String): String {
+        tower.i(clazz, "process()")
         if (report.buildStatusReport.isNull())
             return input.replace(BUILD_STATUS_METRIC_TEMPLATE_ID, getEmptyRender())
 
@@ -78,7 +82,4 @@ class RenderBuildStatusReportStage(
         }
         return renderedTemplate
     }
-
-
-
 }

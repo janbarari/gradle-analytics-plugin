@@ -40,10 +40,10 @@ data class BuildMetric(
     var createdAt: Long,
 
     @Json(name = "git_head_commit_hash")
-    var gitHeadCommitHash: String,
+    var gitHeadCommitHash: String = "Unset",
 
     @Json(name = "modules")
-    var modules: List<String>,
+    var modules: Set<String> = emptySet(),
 
     @Json(name = "initialization_process_metric")
     var initializationProcessMetric: InitializationProcessMetric? = null,

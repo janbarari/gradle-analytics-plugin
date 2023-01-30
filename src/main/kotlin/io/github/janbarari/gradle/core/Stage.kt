@@ -26,5 +26,5 @@ package io.github.janbarari.gradle.core
  * Pipeline design pattern stage interface.
  */
 interface Stage<I, O> {
-   suspend fun process(input: I): O
+   fun process(input: I): O
 }

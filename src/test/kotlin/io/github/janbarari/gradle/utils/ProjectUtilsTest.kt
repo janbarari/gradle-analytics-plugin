@@ -35,7 +35,7 @@ class ProjectUtilsTest {
 
     @Test
     fun `check isCompatibleWith() returns true when the version is before 7_5`() {
-        val result = ProjectUtils.isCompatibleWith(ProjectUtils.GradleVersions.V7_5)
+        val result = ProjectUtils.isCompatibleWith(ProjectUtils.GradleVersions.V7_6)
         assertEquals(false, result)
     }
 

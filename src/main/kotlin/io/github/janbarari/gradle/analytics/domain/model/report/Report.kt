@@ -72,6 +72,9 @@ data class Report(
     @Json(name = "modules_dependency_graph_report")
     var modulesDependencyGraphReport: ModulesDependencyGraphReport? = null,
 
+    @Json(name = "redundant_dependency_graph_report")
+    var redundantDependencyGraphReport: RedundantDependencyGraphReport? = null,
+
     @Json(name = "modules_timeline_report")
     var modulesTimelineReport: ModulesTimelineReport? = null,
 

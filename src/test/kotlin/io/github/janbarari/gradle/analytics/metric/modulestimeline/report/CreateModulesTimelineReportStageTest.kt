@@ -22,6 +22,7 @@
  */
 package io.github.janbarari.gradle.analytics.metric.modulestimeline.report
 
+import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModuleTimeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.ModulesTimelineMetric
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
@@ -41,7 +42,7 @@ class CreateModulesTimelineReportStageTest {
             getModulesTimelineUseCase.execute(any())
         }.returns(null)
 
-        val stage = CreateModulesTimelineReportStage("main", getModulesTimelineUseCase)
+        val stage = CreateModulesTimelineReportStage(TowerMockImpl(), "main", getModulesTimelineUseCase)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
@@ -114,7 +115,7 @@ class CreateModulesTimelineReportStageTest {
             )
         )
 
-        val stage = CreateModulesTimelineReportStage("main", getModulesTimelineUseCase)
+        val stage = CreateModulesTimelineReportStage(TowerMockImpl(), "main", getModulesTimelineUseCase)
         var report = Report("main", "assemble")
         report = stage.process(report)
 
