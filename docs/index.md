@@ -140,7 +140,13 @@ It represents the project module's dependency graph and their connection types.
 
 Modules have colors that warm colors have represents more dependent modules, and It is recommended to have fewer warm color modules because by applying any change in these modules, all other dependent modules need to rebuild and this cost more time and resources from your machines and put the builds in queue.
 
-![](img/modules-dependency-graph.png)
+![](img/modules-dependency-graph.gif)
+
+<br/>
+## Redundant Dependency Connection
+it represents the project modules redundant dependency connection.
+
+![](img/redundant-dependency-connection.png)
 
 <br/>
 ## Modules Execution Timeline
