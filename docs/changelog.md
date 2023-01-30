@@ -25,7 +25,7 @@
 
 ## 1.0.0-beta6
 * [Issue 89](https://github.com/janbarari/gradle-analytics-plugin/issues/89)
-* [Feature 52](https://github.com/janbarari/gradle-analytics-plugin/issues/52)
+* Tracking All Branches feature added [Feature 52](https://github.com/janbarari/gradle-analytics-plugin/issues/52)
 * [Issue 90](https://github.com/janbarari/gradle-analytics-plugin/issues/90)
 * Redundant Dependency Connection Metric [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/93)
 * Internal Logger [PR](https://github.com/janbarari/gradle-analytics-plugin/pull/86)
