@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://janbarari.github.io/gradle-analytics-plugin/setup/">
       
       <link rel="icon" href="../img/plugin-logo.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.2">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.9f9400aa.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
@@ -666,11 +666,13 @@ so It is required for your project to use Git VCS.</p>
 <p><br/>
 <strong>Important Notes</strong><br/></p>
 <ul>
-<li>The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the <code>name</code> and <code>path</code>.</li>
+<li>The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the <code>name</code> and <code>path</code> (Recommended).</li>
 <li>Both <code>sqlite / mysql</code> can be used to config <code>local</code> or <code>ci</code> databases.</li>
-<li>The <code>local</code> or <code>ci</code> database can be skipped if don't need analytics on each of them.</li>
+<li>Both <code>local</code> and <code>ci</code> configs are optional.</li>
 <li>If using the plugin in your CI/CD make sure the <code>CI=true</code> environment variable exists in your CI system environments and the <code>ci</code> database is configured.</li>
 <li>The <code>outputPath</code> can be skipped, it will generate the report inside the project build directory.</li>
+<li>By enabling <code>isTrackAllBranchesEnabled</code> analytics will be kicked on all branches.</li>
+<li><code>isEnabled</code> and <code>isTrackAllBranchesEnabled</code> are not mandatory since they have default values.</li>
 </ul>
 <p><br/></p>
 
@@ -767,10 +769,10 @@ so It is required for your project to use Git VCS.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.39f04ddb.min.js"></script>
+      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
       
     
   </body>
