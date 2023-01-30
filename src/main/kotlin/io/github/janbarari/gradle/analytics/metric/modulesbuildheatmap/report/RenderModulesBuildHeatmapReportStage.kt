@@ -80,10 +80,10 @@ class RenderModulesBuildHeatmapReportStage(
     }
 
     fun getColor(dependantModulesCount: Int): String {
-        return if (dependantModulesCount > 6) "#d73027"
-        else if (dependantModulesCount in 5..6) "#fdae61"
-        else if (dependantModulesCount in 3..4) "#ffffbf"
-        else if (dependantModulesCount in 1..2) "#abd9e9"
+        return if (dependantModulesCount >= 12) "#d73027"
+        else if (dependantModulesCount in 8..11) "#fdae61"
+        else if (dependantModulesCount in 4..7) "#ffffbf"
+        else if (dependantModulesCount in 1..3) "#abd9e9"
         else "#4575b4"
     }
 }
