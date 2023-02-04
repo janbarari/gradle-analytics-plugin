@@ -589,7 +589,7 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// By default it&#39;s True.</span><span class="w"></span>
+<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -603,13 +603,15 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_NAME&quot;</span><span class="w"></span>
 <span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_USER&quot;</span><span class="w"></span>
 <span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_PASSWORD&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Default is 3306</span><span class="w"></span>
+<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Optional: Default is 3306.</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
 <span class="w">    </span><span class="p">}</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">(</span><span class="w"></span>
 <span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;:app:assembleDebug&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;:app:assembleDebug&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s">&quot;:jar&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="s">&quot;:assemble&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">(</span><span class="w"></span>
@@ -618,15 +620,15 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">        </span><span class="s">&quot;develop&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Default is false</span><span class="w"></span>
+<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// By default it&#39;s True.</span><span class="w"></span>
+<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
@@ -640,13 +642,15 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_NAME&#39;</span><span class="w"></span>
 <span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_USER&#39;</span><span class="w"></span>
 <span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_PASSWORD&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Default is 3306</span><span class="w"></span>
+<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Optional: Default is 3306.</span><span class="w"></span>
 <span class="w">        </span><span class="o">}</span><span class="w"></span>
 <span class="w">    </span><span class="o">}</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
 <span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s1">&#39;:app:assembleDebug&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="s1">&#39;:app:assembleDebug&#39;</span><span class="o">,</span><span class="w"></span>
+<span class="w">        </span><span class="s1">&#39;:jar&#39;</span><span class="o">,</span><span class="w"> </span>
+<span class="w">        </span><span class="s1">&#39;:assemble&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="o">]</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
@@ -655,9 +659,9 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">        </span><span class="s1">&#39;develop&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="o">]</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Default is false</span><span class="w"></span>
+<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OUTPUT_REPORT_PATH&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OUTPUT_REPORT_PATH&#39;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span><span class="w"></span>
 <span class="o">}</span><span class="w"></span>
 </code></pre></div>
 </div>
