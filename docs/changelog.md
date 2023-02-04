@@ -23,6 +23,9 @@
 
 # Changelog
 
+## HotFix - 1.0.0-beta7
+* Modules Dependency Graph first node selection bug fixed
+
 ## 1.0.0-beta6
 * [Issue 89](https://github.com/janbarari/gradle-analytics-plugin/issues/89)
 * Tracking All Branches feature added [Feature 52](https://github.com/janbarari/gradle-analytics-plugin/issues/52)
