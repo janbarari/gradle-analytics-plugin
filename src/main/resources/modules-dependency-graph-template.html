@@ -207,7 +207,7 @@
       for(var i=0; i<parsedGraph.dependencies.length; i++) {
         const item = parsedGraph.dependencies[i];
 
-        if(item.path == path || item.dependency.includes(path)) {
+        if(item.path == path || item.dependency == path) {
           addedItems.push(item);
 
           var type = "";
