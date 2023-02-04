@@ -38,13 +38,13 @@ Apply the Gradle Plugin to the root of your project.
 === "Kotlin"
     ``` kotlin
     plugins {
-        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta5"
+        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta6"
     }
     ```
 === "Groovy"
     ``` groovy
     plugins {
-        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta5'
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta6'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
@@ -56,7 +56,7 @@ Add plugin configuration in the root of your project.
 === "Kotlin"
     ``` kotlin
     gradleAnalyticsPlugin {
-        isEnabled = true // By default it's True.
+        isEnabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -70,30 +70,32 @@ Add plugin configuration in the root of your project.
                 name = "MYSQL_DATABASE_NAME"
                 user = "MYSQL_DATABASE_USER"
                 password = "MYSQL_DATABASE_PASSWORD"
-                port = MYSQL_DATABASE_PORT // Default is 3306
+                port = MYSQL_DATABASE_PORT // Optional: Default is 3306.
             }
         }
     
-        trackingTasks = listOf(
+        trackingTasks = setOf(
             // Add your requested tasks to be analyzed, Example:
-            ":app:assembleDebug"
+            ":app:assembleDebug",
+            ":jar", 
+            ":assemble"
         )
     
-        trackingBranches = listOf(
+        trackingBranches = setOf(
             // requested tasks only analyzed in the branches you add here, Example:
             "master",
             "develop"
         )
 
-        isTrackAllBranchesEnabled = false // Default is false
+        isTrackAllBranchesEnabled = false // Optional: Default is False.
 
-        outputPath = "OUTPUT_REPORT_PATH"
+        outputPath = "OUTPUT_REPORT_PATH" // Optional: Default is project /build/ dir.
     }
     ```
 === "Groovy"
     ``` groovy
     gradleAnalyticsPlugin {
-        isEnabled = true // By default it's True.
+        isEnabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -107,13 +109,15 @@ Add plugin configuration in the root of your project.
                 name = 'MYSQL_DATABASE_NAME'
                 user = 'MYSQL_DATABASE_USER'
                 password = 'MYSQL_DATABASE_PASSWORD'
-                port = MYSQL_DATABASE_PORT // Default is 3306
+                port = MYSQL_DATABASE_PORT // Optional: Default is 3306.
             }
         }
     
         trackingTasks = [
             // Add your requested tasks to be analyzed, Example:
-            ':app:assembleDebug'
+            ':app:assembleDebug',
+            ':jar', 
+            ':assemble'
         ]
     
         trackingBranches = [
@@ -122,18 +126,20 @@ Add plugin configuration in the root of your project.
             'develop'
         ]
     
-        isTrackAllBranchesEnabled = false // Default is false
+        isTrackAllBranchesEnabled = false // Optional: Default is False.
 
-        outputPath = 'OUTPUT_REPORT_PATH'
+        outputPath = 'OUTPUT_REPORT_PATH' // Optional: Default is project /build/ dir.
     }
     ```
 <br/>
 <strong>Important Notes</strong><br/>
 
-- The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the `name` and `path`.
+- The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the `name` and `path` (Recommended).
 - Both `sqlite / mysql` can be used to config `local` or `ci` databases.
-- The `local` or `ci` database can be skipped if don't need analytics on each of them.
+- Both `local` and `ci` configs are optional.
 - If using the plugin in your CI/CD make sure the `CI=true` environment variable exists in your CI system environments and the `ci` database is configured.
 - The `outputPath` can be skipped, it will generate the report inside the project build directory.
+- By enabling `isTrackAllBranchesEnabled` analytics will be kicked on all branches.
+- `isEnabled` and `isTrackAllBranchesEnabled` are not mandatory since they have default values.
 
 <br/>
