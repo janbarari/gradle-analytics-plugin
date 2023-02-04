@@ -56,7 +56,7 @@ Add plugin configuration in the root of your project.
 === "Kotlin"
     ``` kotlin
     gradleAnalyticsPlugin {
-        isEnabled = true // By default it's True.
+        isEnabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -70,30 +70,32 @@ Add plugin configuration in the root of your project.
                 name = "MYSQL_DATABASE_NAME"
                 user = "MYSQL_DATABASE_USER"
                 password = "MYSQL_DATABASE_PASSWORD"
-                port = MYSQL_DATABASE_PORT // Default is 3306
+                port = MYSQL_DATABASE_PORT // Optional: Default is 3306.
             }
         }
     
-        trackingTasks = listOf(
+        trackingTasks = setOf(
             // Add your requested tasks to be analyzed, Example:
-            ":app:assembleDebug"
+            ":app:assembleDebug",
+            ":jar", 
+            ":assemble"
         )
     
-        trackingBranches = listOf(
+        trackingBranches = setOf(
             // requested tasks only analyzed in the branches you add here, Example:
             "master",
             "develop"
         )
 
-        isTrackAllBranchesEnabled = false // Default is false
+        isTrackAllBranchesEnabled = false // Optional: Default is False.
 
-        outputPath = "OUTPUT_REPORT_PATH"
+        outputPath = "OUTPUT_REPORT_PATH" // Optional: Default is project /build/ dir.
     }
     ```
 === "Groovy"
     ``` groovy
     gradleAnalyticsPlugin {
-        isEnabled = true // By default it's True.
+        isEnabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -107,13 +109,15 @@ Add plugin configuration in the root of your project.
                 name = 'MYSQL_DATABASE_NAME'
                 user = 'MYSQL_DATABASE_USER'
                 password = 'MYSQL_DATABASE_PASSWORD'
-                port = MYSQL_DATABASE_PORT // Default is 3306
+                port = MYSQL_DATABASE_PORT // Optional: Default is 3306.
             }
         }
     
         trackingTasks = [
             // Add your requested tasks to be analyzed, Example:
-            ':app:assembleDebug'
+            ':app:assembleDebug',
+            ':jar', 
+            ':assemble'
         ]
     
         trackingBranches = [
@@ -122,9 +126,9 @@ Add plugin configuration in the root of your project.
             'develop'
         ]
     
-        isTrackAllBranchesEnabled = false // Default is false
+        isTrackAllBranchesEnabled = false // Optional: Default is False.
 
-        outputPath = 'OUTPUT_REPORT_PATH'
+        outputPath = 'OUTPUT_REPORT_PATH' // Optional: Default is project /build/ dir.
     }
     ```
 <br/>
