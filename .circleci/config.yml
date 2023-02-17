@@ -41,7 +41,7 @@ jobs:
       - checkout
       - run:
           name: publish
-          command: ./gradlew publishToGradlePortal --info --stacktrace
+          command: ./gradlew clean validateSourceHeaderLicense detekt assemble test publishToGradlePortal --info --stacktrace
 workflows:
   build-workflow:
     jobs:
