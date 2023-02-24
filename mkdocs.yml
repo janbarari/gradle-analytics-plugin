@@ -39,6 +39,8 @@ nav:
   - Third party: third-party.md
   - License: license.md
   - Community: community.md
+  - Social/Press: social-press.md
+  - Upcoming Milestone: upcoming-milestone.md
 
 theme:
   name: material
@@ -69,6 +71,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 copyright: Made with 🧡 for everyone | Copyright &copy; 2022
 
