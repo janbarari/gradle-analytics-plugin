@@ -22,4 +22,11 @@
 -->
 
 # Upcoming Milestone
-Upcoming milestone planning is in progress.
+Upcoming milestone planned to be delivered in the first week of March 2023.
+
+Tasks:
+
+- [x] Add `upcoming-milestone`, `social-press` in documentation
+- [ ] [Request Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
+- [ ] Add used workers count and max workers count in the report analytics
+- [ ] Add more logs in the `build logger` and `report logger`
