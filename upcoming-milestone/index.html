@@ -12,14 +12,14 @@
         <meta name="author" content="Mehdi Janbarari">
       
       
-        <link rel="canonical" href="https://janbarari.github.io/gradle-analytics-plugin/setup/">
+        <link rel="canonical" href="https://janbarari.github.io/gradle-analytics-plugin/upcoming-milestone/">
       
       <link rel="icon" href="../img/plugin-logo.png">
       <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
-        <title>Setup - Gradle Analytics Plugin</title>
+        <title>Upcoming Milestone - Gradle Analytics Plugin</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#setup" class="md-skip">
+        <a href="#upcoming-milestone" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Setup
+              Upcoming Milestone
             
           </span>
         </div>
@@ -250,66 +250,11 @@
 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Setup
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../setup/" class="md-nav__link">
         Setup
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#step-1" class="md-nav__link">
-    Step 1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-2" class="md-nav__link">
-    Step 2
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-3" class="md-nav__link">
-    Step 3
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -485,11 +430,21 @@
 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../upcoming-milestone/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         Upcoming Milestone
       </a>
+      
     </li>
   
 
@@ -514,35 +469,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#step-1" class="md-nav__link">
-    Step 1
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-2" class="md-nav__link">
-    Step 2
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-3" class="md-nav__link">
-    Step 3
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -555,7 +481,7 @@
                 
                   
 
-  <a href="https://github.com/janbarari/gradle-analytics-plugin/edit/master/docs/setup.md" title="Edit this page" class="md-content__button md-icon">
+  <a href="https://github.com/janbarari/gradle-analytics-plugin/edit/master/docs/upcoming-milestone.md" title="Edit this page" class="md-content__button md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
   </a>
@@ -584,131 +510,15 @@
  SOFTWARE.
 -->
 
-<h1 id="setup">Setup</h1>
-<p>To set up the plugin in your project, follow the below instructions:</p>
-<h3 id="step-1"><strong>Step 1</strong></h3>
-<p>Make sure your project uses Git VCS and Gradle version <code>6.1+</code>.</p>
-<div class="admonition note">
-<p>Gradle Analytics Plugin uses Git terminal to get the branch names and latest HEAD commit hash. 
-so It is required for your project to use Git VCS.</p>
-</div>
-<p><br/><br/></p>
-<h3 id="step-2"><strong>Step 2</strong></h3>
-<p>Apply the Gradle Plugin to the root of your project.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Kotlin</label><label for="__tabbed_1_2">Groovy</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta7&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta7&#39;</span><span class="w"></span>
-<span class="o">}</span><span class="w"></span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p><a href="https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin">For legacy plugin application, see the Gradle Plugin Portal.</a>
-<br/><br/></p>
-<h3 id="step-3"><strong>Step 3</strong></h3>
-<p>Add plugin configuration in the root of your project.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Kotlin</label><label for="__tabbed_2_2">Groovy</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_PATH&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_NAME&quot;</span><span class="w"> </span><span class="c1">// Don&#39;t add `.db` in the database name.</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_USER&quot;</span><span class="w"> </span><span class="c1">// Remove `user` if you want the plugin to create the DB.</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;DATABASE_PASSWORD&quot;</span><span class="w"> </span><span class="c1">// Remove `password` if you want the plugin to create the DB.</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">        </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_HOST&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_NAME&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_USER&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MYSQL_DATABASE_PASSWORD&quot;</span><span class="w"></span>
-<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Optional: Default is 3306.</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;:app:assembleDebug&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;:jar&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">        </span><span class="s">&quot;:assemble&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">)</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">(</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// requested tasks only analyzed in the branches you add here, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;master&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="s">&quot;develop&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="p">)</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_PATH&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_NAME&#39;</span><span class="w"> </span><span class="c1">// Don&#39;t add `.db` in the database name.</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_USER&#39;</span><span class="w"> </span><span class="c1">// Remove `user` if you want the plugin to create the DB.</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DATABASE_PASSWORD&#39;</span><span class="w"> </span><span class="c1">// Remove `password` if you want the plugin to create the DB.</span><span class="w"></span>
-<span class="w">        </span><span class="o">}</span><span class="w"></span>
-<span class="w">        </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mysql</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_HOST&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_NAME&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_USER&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MYSQL_DATABASE_PASSWORD&#39;</span><span class="w"></span>
-<span class="w">            </span><span class="n">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MYSQL_DATABASE_PORT</span><span class="w"> </span><span class="c1">// Optional: Default is 3306.</span><span class="w"></span>
-<span class="w">        </span><span class="o">}</span><span class="w"></span>
-<span class="w">    </span><span class="o">}</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">trackingTasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// Add your requested tasks to be analyzed, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s1">&#39;:app:assembleDebug&#39;</span><span class="o">,</span><span class="w"></span>
-<span class="w">        </span><span class="s1">&#39;:jar&#39;</span><span class="o">,</span><span class="w"> </span>
-<span class="w">        </span><span class="s1">&#39;:assemble&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="o">]</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">trackingBranches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="w"></span>
-<span class="w">        </span><span class="c1">// requested tasks only analyzed in the branches you add here, Example:</span><span class="w"></span>
-<span class="w">        </span><span class="s1">&#39;master&#39;</span><span class="o">,</span><span class="w"></span>
-<span class="w">        </span><span class="s1">&#39;develop&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="o">]</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
-
-<span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OUTPUT_REPORT_PATH&#39;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span><span class="w"></span>
-<span class="o">}</span><span class="w"></span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p><br/>
-<strong>Important Notes</strong><br/></p>
-<ul>
-<li>The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the <code>name</code> and <code>path</code> (Recommended).</li>
-<li>Both <code>sqlite / mysql</code> can be used to config <code>local</code> or <code>ci</code> databases.</li>
-<li>Both <code>local</code> and <code>ci</code> configs are optional.</li>
-<li>If using the plugin in your CI/CD make sure the <code>CI=true</code> environment variable exists in your CI system environments and the <code>ci</code> database is configured.</li>
-<li>The <code>outputPath</code> can be skipped, it will generate the report inside the project build directory.</li>
-<li>By enabling <code>isTrackAllBranchesEnabled</code> analytics will be kicked on all branches.</li>
-<li><code>isEnabled</code> and <code>isTrackAllBranchesEnabled</code> are not mandatory since they have default values.</li>
+<h1 id="upcoming-milestone">Upcoming Milestone</h1>
+<p>Upcoming milestone planned to be delivered in the first week of March 2023.</p>
+<p>Tasks:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Add <code>upcoming-milestone</code>, <code>social-press</code> in documentation</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <a href="https://github.com/janbarari/gradle-analytics-plugin/issues/81">Request Feature 81</a></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Add used workers count and max workers count in the report analytics</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Add more logs in the <code>build logger</code> and <code>report logger</code></li>
 </ul>
-<p><br/></p>
 
 
 
@@ -729,7 +539,7 @@ so It is required for your project to use Git VCS.</p>
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
+        <a href="../social-press/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Social/Press" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -738,26 +548,11 @@ so It is required for your project to use Git VCS.</p>
               <span class="md-footer__direction">
                 Previous
               </span>
-              Overview
+              Social/Press
             </div>
           </div>
         </a>
       
-      
-        
-        <a href="../getting-report/" class="md-footer__link md-footer__link--next" aria-label="Next: Getting Report" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              Getting Report
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
