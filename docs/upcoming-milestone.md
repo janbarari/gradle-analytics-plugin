@@ -30,4 +30,3 @@ Tasks:
 - [ ] [Request Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
 - [ ] Add used workers count and max workers count in the report analytics
 - [ ] Add more logs in the `build logger` and `report logger`
-
