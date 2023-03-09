@@ -35,6 +35,7 @@ import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.utils.DependencyGraphGenerator
 import org.gradle.api.Project
 import org.gradle.api.internal.GradleInternal
 import org.gradle.build.event.BuildEventsListenerRegistry

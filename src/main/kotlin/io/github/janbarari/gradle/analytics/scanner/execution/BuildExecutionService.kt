@@ -182,7 +182,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         printConfigurationNotices()
 
-        if (!isDatabaseConfigurationValid()) {
+        if (!isDatabaseConfigValid()) {
             tower.e(clazz, "close()", "database configuration is not valid, process stopped")
             return
         }
@@ -213,7 +213,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         return parameters.trackingBranches.get().contains(GitUtils.currentBranch())
     }
 
-    private fun isDatabaseConfigurationValid(): Boolean {
+    private fun isDatabaseConfigValid(): Boolean {
         // return false if local machine executed and the config is not set.
         if (parameters.databaseConfig.get().local.isNull() && !parameters.envCI.get()) {
             return false
@@ -318,5 +318,4 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
             }
         }
     }
-
 }

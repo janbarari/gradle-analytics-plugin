@@ -109,6 +109,8 @@ class BuildExecutionLogicImp(
     }
 
     init {
+        tower.i(clazz, "init { }", "initialize start timestamp, initialization process timestamp and" +
+                "configuration process timestamp")
         assignStartTimestampIfProcessSkipped()
         assignInitializationTimestampIfProcessSkipped()
         assignConfigurationTimestampIfProcessSkipped()

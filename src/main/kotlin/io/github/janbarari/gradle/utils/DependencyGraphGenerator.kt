@@ -22,9 +22,37 @@
  */
 package io.github.janbarari.gradle.utils
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
+import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
+import org.gradle.api.Project
+import org.gradle.api.artifacts.ProjectDependency
 
-@ExcludeJacocoGenerated
-class TerminalCommandException(cmd: String, e: Throwable): java.lang.RuntimeException() {
-    override val message: String = "Error executing $cmd with message $e"
+object DependencyGraphGenerator {
+
+    fun generate(subprojects: List<Project>): ModulesDependencyGraph {
+        val dependencies = mutableListOf<ModuleDependency>()
+
+        subprojects.forEach { subProject ->
+            subProject.configurations.forEach { configuration ->
+                configuration.dependencies.withType(ProjectDependency::class.java).forEach { dependency ->
+                    if (dependency.dependencyProject.path != subProject.path) {
+                        dependencies.add(
+                            ModuleDependency(
+                                path = subProject.path,
+                                configuration = configuration.name,
+                                dependency = dependency.dependencyProject.path
+                            )
+                        )
+                    }
+
+                }
+            }
+
+        }
+
+        return ModulesDependencyGraph(dependencies)
+    }
+
 }
+
+
