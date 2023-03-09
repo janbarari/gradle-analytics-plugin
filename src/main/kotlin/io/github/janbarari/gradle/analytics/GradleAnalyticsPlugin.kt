@@ -80,7 +80,7 @@ class GradleAnalyticsPlugin @Inject constructor(
     @kotlin.jvm.Throws(IncompatibleVersionException::class)
     private fun ensureGradleCompatibility() {
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
-        if (!ProjectUtils.isCompatibleWith(requiredGradleVersion)) {
+        if (!ProjectUtils.isProjectCompatibleWith(requiredGradleVersion)) {
             throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
         }
     }
