@@ -27,6 +27,6 @@ import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import java.io.File
 
 @ExcludeJacocoGenerated
-class PluginConfigNotValidException(msg: String, buildScript: File): Throwable(
+class PluginConfigInvalidException(msg: String, buildScript: File): Throwable(
     message = "${GradleAnalyticsPlugin.PLUGIN_NAME}: $msg\n${buildScript.absolutePath}"
 )

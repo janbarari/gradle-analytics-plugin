@@ -26,6 +26,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 
 @ExcludeJacocoGenerated
-class NotAccessibleGitTerminalException: Throwable(
+class GitUnavailableException: Throwable(
     message = "${GradleAnalyticsPlugin.PLUGIN_NAME} works only on projects that use Git."
 )

@@ -41,9 +41,9 @@ import org.gradle.build.event.BuildEventsListenerRegistry
 import java.util.*
 
 @ExcludeJacocoGenerated
-object ScannerUtils {
+object BuildScanner {
 
-    fun setupScannerServices(
+    fun setup(
         config: GradleAnalyticsPluginConfig,
         registry: BuildEventsListenerRegistry
     ) {
