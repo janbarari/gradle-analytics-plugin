@@ -133,6 +133,7 @@
     }
 
     const graphJson = '%graph-json%';
+    const excludeModules = %exclude-modules%;
     const parsedGraph = JSON.parse(graphJson);
 
     function loadDefaultGraph(isDeepGraph) {
@@ -169,7 +170,9 @@
           heatmapColor = ":::red";
         }
 
-        mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+        if(!excludeModules.contains(item.path) && !excludeModules.contains(item.dependency)) {
+          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+        }
       }
 
       mermaidCommands += "\n";
