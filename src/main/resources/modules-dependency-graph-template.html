@@ -299,6 +299,10 @@
             continue;
           }
 
+          if(excludeModules.includes(item.path) || excludeModules.includes(item.dependency)) {
+            continue;
+          }
+
           addedItems.push(item);
 
           mermaidCommands += itemCommand + "\n";
@@ -341,6 +345,10 @@
 
           const itemCommand = item.path + " ---> |" + type + "| " + item.dependency + heatmapColor
           if(mermaidCommands.includes(itemCommand)) {
+            continue;
+          }
+
+          if(excludeModules.includes(item.path) || excludeModules.includes(item.dependency)) {
             continue;
           }
 
