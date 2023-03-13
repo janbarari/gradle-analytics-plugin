@@ -170,7 +170,7 @@
           heatmapColor = ":::red";
         }
 
-        if(!excludeModules.contains(item.path) && !excludeModules.contains(item.dependency)) {
+        if(!excludeModules.includes(item.path) && !excludeModules.includes(item.dependency)) {
           mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
         }
       }
@@ -239,7 +239,9 @@
             heatmapColor = "";
           }
 
-          mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+          if(!excludeModules.includes(item.path) && !excludeModules.includes(item.dependency)) {
+            mermaidCommands += item.path + " ---> |" + type + "| " + item.dependency + heatmapColor + "\n";
+          }
         }
       }
 
