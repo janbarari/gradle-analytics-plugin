@@ -27,6 +27,11 @@ Upcoming milestone planned to be delivered in the first week of March 2023.
 Tasks:
 
 - [x] Add `upcoming-milestone`, `social-press` in documentation
-- [ ] [Request Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
+- [x] [Request Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
 - [ ] Add used workers count and max workers count in the report analytics
-- [ ] Add more logs in the `build logger` and `report logger`
+- [x] Add more logs in the `build logger` and `report logger`
+
+<br>
+Update:
+
+It was supposed to be released during the first week of March. However, due to my busy schedule with job interviews, I will try to finalize it before March 18th.
