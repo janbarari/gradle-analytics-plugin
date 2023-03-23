@@ -26,6 +26,7 @@ import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependenc
 import io.github.janbarari.gradle.analytics.domain.model.report.Report
 import io.github.janbarari.gradle.core.SuspendStage
 import io.github.janbarari.gradle.extension.isNull
+import io.github.janbarari.gradle.extension.toArrayRender
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.logger.Tower
@@ -37,7 +38,8 @@ class RenderModulesDependencyGraphReportStage(
     private val modulesDependencyGraphReportJsonAdapter: ModulesDependencyGraphReportJsonAdapter,
     private val report: Report,
     private val outputPath: String,
-    private val projectName: String
+    private val projectName: String,
+    private val excludeModules: Set<String>
 ): SuspendStage<String, String> {
 
     companion object {
@@ -70,6 +72,7 @@ class RenderModulesDependencyGraphReportStage(
 
             externalGraphRender = externalGraphRender
                 .replace("%root-project-name%", projectName)
+                .replace("%exclude-modules%", excludeModules.toList().toArrayRender())
                 .replace("%graph-json%", modulesDependencyGraphReportJsonAdapter.toJson(
                     report.modulesDependencyGraphReport
                 ))
