@@ -45,7 +45,8 @@ class RenderModulesDependencyGraphReportStageTest {
             ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
             report,
             "./build/",
-            "PROJECT_NAME"
+            "PROJECT_NAME",
+            setOf()
         )
         val result = stage.process(renderTemplate)
 
@@ -83,7 +84,8 @@ class RenderModulesDependencyGraphReportStageTest {
             ModulesDependencyGraphReportJsonAdapter(Moshi.Builder().build()),
             report,
             "./build/",
-            "PROJECT_NAME"
+            "PROJECT_NAME",
+            setOf()
         )
         val result = stage.process(renderTemplate)
 

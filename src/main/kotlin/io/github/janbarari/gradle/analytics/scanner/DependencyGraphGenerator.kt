@@ -24,18 +24,15 @@ package io.github.janbarari.gradle.analytics.scanner
 
 import io.github.janbarari.gradle.analytics.domain.model.ModuleDependency
 import io.github.janbarari.gradle.analytics.domain.model.ModulesDependencyGraph
-import io.github.janbarari.gradle.extension.isModuleProject
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 
 object DependencyGraphGenerator {
 
-    fun generate(project: Project): ModulesDependencyGraph {
+    fun generate(subprojects: List<Project>): ModulesDependencyGraph {
         val dependencies = mutableListOf<ModuleDependency>()
 
-        project.subprojects.filter {
-            it.isModuleProject()
-        }.forEach { subProject ->
+        subprojects.forEach { subProject ->
             subProject.configurations.forEach { configuration ->
                 configuration.dependencies.withType(ProjectDependency::class.java).forEach { dependency ->
                     if (dependency.dependencyProject.path != subProject.path) {
