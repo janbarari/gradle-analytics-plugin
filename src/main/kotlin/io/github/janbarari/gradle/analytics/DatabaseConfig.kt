@@ -88,6 +88,4 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
         closure.call()
         return temp
     }
-
-
 }

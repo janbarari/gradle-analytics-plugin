@@ -78,6 +78,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
                             .map { it.toModule() }
                             .toSet()
                     )
+                    excludeModules.set(config.excludeModules)
                     // disable the task from being cached or reuse the outputs on incremental builds.
                     outputs.cacheIf { false }
                     outputs.upToDateWhen { false }
@@ -119,6 +120,9 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     abstract val modules: SetProperty<Module>
 
+    @get:Input
+    abstract val excludeModules: SetProperty<String>
+
     private lateinit var tower: Tower
 
     /**
@@ -133,7 +137,8 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
             projectName = projectNameProperty.get(),
-            modules = modules.get().map { it.path }.toSet()
+            modules = modules.get().map { it.path }.toSet(),
+            excludeModules = excludeModules.get()
         )
         tower = injector.provideTower()
         val systemInfo = injector.provideSystemInfo()

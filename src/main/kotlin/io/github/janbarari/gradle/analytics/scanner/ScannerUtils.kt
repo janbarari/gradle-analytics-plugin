@@ -66,11 +66,12 @@ object ScannerUtils {
                 }
             }
 
-            val modules = project.subprojects
-                .filter { it.isModuleProject() }
-                .map { it.toModule() }
+            val subprojects = project.subprojects
+                .filter { it.isModuleProject() && !configuration.excludeModules.contains(it.path) }
 
-            val modulesDependencyGraph = DependencyGraphGenerator.generate(project)
+            val modulesDependencyGraph = DependencyGraphGenerator.generate(subprojects)
+
+            val modules = subprojects.map { it.toModule() }
 
             val buildExecutionService = project.gradle.sharedServices.registerIfAbsent(
                 BuildExecutionService::class.java.simpleName,
