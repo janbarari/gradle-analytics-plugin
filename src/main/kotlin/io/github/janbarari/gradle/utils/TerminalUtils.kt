@@ -31,18 +31,19 @@ import java.io.InputStreamReader
 object TerminalUtils {
 
     /**
-     * Execute the command in terminal.
+     * Execute the command in system terminal.
      *
-     * @throws io.github.janbarari.gradle.utils.TerminalCommandException if the command execution failed.
+     * @return command result text
+     * @throws io.github.janbarari.gradle.utils.TerminalFailureException if the command execution failed.
      */
-    @kotlin.jvm.Throws(TerminalCommandException::class)
+    @kotlin.jvm.Throws(TerminalFailureException::class)
     fun execCommand(cmd: String): String {
         val runtime = Runtime.getRuntime()
         try {
             val reader = BufferedReader(InputStreamReader(runtime.exec(cmd).inputStream))
             return reader.readLine()
         } catch (e: Exception) {
-            throw TerminalCommandException(cmd, e)
+            throw TerminalFailureException(cmd, e)
         }
     }
 
