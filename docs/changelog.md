@@ -23,6 +23,12 @@
 
 # Changelog
 
+## 1.0.0-beta8
+* [Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
+* Used/Available worker count added in console report
+* `upcoming-milestone`, `social-press` added in documentation 
+* More logs added in the `build logger` and `report logger`
+
 ## HotFix - 1.0.0-beta7
 * Modules Dependency Graph first node selection bug fixed
 
