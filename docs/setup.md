@@ -38,13 +38,13 @@ Apply the Gradle Plugin to the root of your project.
 === "Kotlin"
     ``` kotlin
     plugins {
-        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta7"
+        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta8"
     }
     ```
 === "Groovy"
     ``` groovy
     plugins {
-        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta7'
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta8'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
@@ -87,6 +87,9 @@ Add plugin configuration in the root of your project.
             "develop"
         )
 
+        // Optional: Exclude modules that are not necessary like test or demo modules
+        excludeModules = setOf()
+
         isTrackAllBranchesEnabled = false // Optional: Default is False.
 
         outputPath = "OUTPUT_REPORT_PATH" // Optional: Default is project /build/ dir.
@@ -125,6 +128,9 @@ Add plugin configuration in the root of your project.
             'master',
             'develop'
         ]
+
+        // Optional: Exclude modules that are not necessary like test or demo modules
+        excludeModules = []
     
         isTrackAllBranchesEnabled = false // Optional: Default is False.
 
