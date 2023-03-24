@@ -22,9 +22,9 @@
  */
 package io.github.janbarari.gradle.analytics.scanner
 
-import io.github.janbarari.gradle.ListPropertyMock
-import io.github.janbarari.gradle.PropertyMock
-import io.github.janbarari.gradle.SetPropertyMock
+import io.github.janbarari.gradle.MockListProperty
+import io.github.janbarari.gradle.MockProperty
+import io.github.janbarari.gradle.MockSetProperty
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.Module
@@ -47,31 +47,35 @@ class BuildExecutionLogicTest {
     private var injector = BuildExecutionInjector(
         object :BuildExecutionService.Params {
             override val enabled: Property<Boolean>
-                get() = PropertyMock(true)
+                get() = MockProperty(true)
             override val databaseConfig: Property<DatabaseConfig>
-                get() = PropertyMock(DatabaseConfig().apply {
+                get() = MockProperty(DatabaseConfig().apply {
                     local = SqliteDatabaseConnection {
                         path = "./build"
                         name = "testdb"
                     }
                 })
             override val envCI: Property<Boolean>
-                get() = PropertyMock(false)
+                get() = MockProperty(false)
             override val requestedTasks: ListProperty<String>
-                get() = ListPropertyMock(mutableListOf("assembleDebug"))
+                get() = MockListProperty(mutableListOf("assembleDebug"))
             override val trackingTasks: SetProperty<String>
-                get() = SetPropertyMock(mutableSetOf("assembleDebug"))
+                get() = MockSetProperty(mutableSetOf("assembleDebug"))
             override val trackingBranches: SetProperty<String>
-                get() = SetPropertyMock(mutableSetOf("master"))
+                get() = MockSetProperty(mutableSetOf("master"))
             override val trackAllBranchesEnabled: Property<Boolean>
-                get() = PropertyMock(false)
+                get() = MockProperty(false)
             override val modules: SetProperty<Module>
-                get() = SetPropertyMock(mutableSetOf())
+                get() = MockSetProperty(mutableSetOf())
             override val modulesDependencyGraph: Property<ModulesDependencyGraph>
-                get() = PropertyMock(ModulesDependencyGraph(dependencies = emptyList()))
+                get() = MockProperty(ModulesDependencyGraph(dependencies = emptyList()))
             override val nonCacheableTasks: SetProperty<String>
-                get() = SetPropertyMock(mutableSetOf())
-            override val outputPath: Property<String> = PropertyMock("./build")
+                get() = MockSetProperty(mutableSetOf())
+            override val outputPath: Property<String> = MockProperty("./build")
+            override val availableWorkerCount: Property<Int>
+                get() = MockProperty(0)
+            override val maximumWorkerCount: Property<Int>
+                get() = MockProperty(0)
         }
     )
 
