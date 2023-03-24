@@ -101,6 +101,9 @@ data class BuildMetric(
     @Transient
     var modulesTimelineMetric: ModulesTimelineMetric? = null
 
+    @Transient
+    var gradleWorkers: Pair<Int, Int> = 0 to 0
+
     fun getLog(): String {
         return buildString {
             append("initializationProcessMetric = ${initializationProcessMetric.isNotNull()}")

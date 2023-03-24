@@ -28,7 +28,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
-class PropertyMock<T>(var value: T?): Property<T> {
+class MockProperty<T>(var value: T?): Property<T> {
     override fun get(): T = value!!
 
     override fun getOrNull(): T? = value

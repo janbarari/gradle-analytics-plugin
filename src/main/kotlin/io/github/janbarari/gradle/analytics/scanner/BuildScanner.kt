@@ -39,6 +39,7 @@ import io.github.janbarari.gradle.utils.DependencyGraphGenerator
 import org.gradle.api.Project
 import org.gradle.api.internal.GradleInternal
 import org.gradle.build.event.BuildEventsListenerRegistry
+import oshi.SystemInfo
 import java.util.*
 
 @ExcludeJacocoGenerated
@@ -59,6 +60,10 @@ object BuildScanner {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
+        val systemProcessor = SystemInfo().hardware.processor
+        val availableWorkerCount = project.gradle.startParameter.maxWorkerCount
+        val maximumWorkerCount = systemProcessor.logicalProcessorCount + systemProcessor.physicalProcessorCount
+
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
             project.allprojects.whenEach {
@@ -87,6 +92,8 @@ object BuildScanner {
                     trackingBranches.set(configuration.trackingBranches)
                     trackAllBranchesEnabled.set(configuration.isTrackAllBranchesEnabled)
                     outputPath.set(configuration.outputPath)
+                    this.maximumWorkerCount.set(maximumWorkerCount)
+                    this.availableWorkerCount.set(availableWorkerCount)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)

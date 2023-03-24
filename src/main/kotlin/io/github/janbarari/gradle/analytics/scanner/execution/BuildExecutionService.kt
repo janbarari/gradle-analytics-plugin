@@ -83,6 +83,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val modulesDependencyGraph: Property<ModulesDependencyGraph>
         val nonCacheableTasks: SetProperty<String>
         val outputPath: Property<String>
+        val availableWorkerCount: Property<Int>
+        val maximumWorkerCount: Property<Int>
     }
 
     private val injector = BuildExecutionInjector(parameters)
@@ -179,6 +181,8 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         tower.r("ci: ${parameters.envCI.get()}")
         tower.r("tracking tasks count: ${parameters.trackingTasks.get().size}")
         tower.r("tracking branches count: ${parameters.trackingBranches.get().size}")
+        tower.r("available/maximum worker count: " +
+                "${parameters.availableWorkerCount.get()}/${parameters.maximumWorkerCount.get()}")
 
         printConfigurationNotices()
 
