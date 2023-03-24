@@ -25,6 +25,7 @@ package io.github.janbarari.gradle.analytics.domain.model.metric
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.extension.isNotNull
 
 @ExcludeJacocoGenerated
 @JsonClass(generateAdapter = true)
@@ -99,5 +100,44 @@ data class BuildMetric(
     // size and usability, this metric should be saved in `single_metric` table.
     @Transient
     var modulesTimelineMetric: ModulesTimelineMetric? = null
+
+    @Transient
+    var gradleWorkers: Pair<Int, Int> = 0 to 0
+
+    fun getLog(): String {
+        return buildString {
+            append("initializationProcessMetric = ${initializationProcessMetric.isNotNull()}")
+            append(", ")
+            append("configurationProcessMetric = ${configurationProcessMetric.isNotNull()}")
+            append(", ")
+            append("executionProcessMetric = ${executionProcessMetric.isNotNull()}")
+            append(", ")
+            append("overallBuildProcessMetric = ${overallBuildProcessMetric.isNotNull()}")
+            append(", ")
+            append("modulesSourceCountMetric = ${modulesSourceCountMetric.isNotNull()}")
+            append(", ")
+            append("modulesMethodCountMetric = ${modulesMethodCountMetric.isNotNull()}")
+            append(", ")
+            append("cacheHitMetric = ${cacheHitMetric.isNotNull()}")
+            append(", ")
+            append("successBuildRateMetric = ${successBuildRateMetric.isNotNull()}")
+            append(", ")
+            append("dependencyResolveProcessMetric = ${dependencyResolveProcessMetric.isNotNull()}")
+            append(", ")
+            append("parallelExecutionRateMetric = ${parallelExecutionRateMetric.isNotNull()}")
+            append(", ")
+            append("modulesExecutionProcessMetric = ${modulesExecutionProcessMetric.isNotNull()}")
+            append(", ")
+            append("modulesDependencyGraphMetric = ${modulesDependencyGraphMetric.isNotNull()}")
+            append(", ")
+            append("modulesBuildHeatmap = ${modulesBuildHeatmap.isNotNull()}")
+            append(", ")
+            append("nonCacheableTasksMetric = ${nonCacheableTasksMetric.isNotNull()}")
+            append(", ")
+            append("modulesSourceSizeMetric = ${modulesSourceSizeMetric.isNotNull()}")
+            append(", ")
+            append("modulesCrashCountMetric = ${modulesCrashCountMetric.isNotNull()}")
+        }
+    }
 
 }

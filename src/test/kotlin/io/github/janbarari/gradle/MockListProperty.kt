@@ -23,20 +23,20 @@
 package io.github.janbarari.gradle
 
 import org.gradle.api.Transformer
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
-import org.gradle.api.provider.SetProperty
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
-class SetPropertyMock<T>(var value: MutableSet<T>?): SetProperty<T> {
-    override fun get(): MutableSet<T> = value!!
+class MockListProperty<T>(var value: MutableList<T>?): ListProperty<T> {
+    override fun get(): MutableList<T> = value!!
 
-    override fun getOrNull(): MutableSet<T>? = value
+    override fun getOrNull(): MutableList<T>? = value
 
     override fun isPresent(): Boolean = value != null
 
     @Deprecated("", ReplaceWith("this"))
-    override fun forUseAtConfigurationTime(): Provider<MutableSet<T>> {
+    override fun forUseAtConfigurationTime(): Provider<MutableList<T>> {
         return this
     }
 
@@ -56,20 +56,20 @@ class SetPropertyMock<T>(var value: MutableSet<T>?): SetProperty<T> {
         // do nothing
     }
 
-    override fun empty(): SetProperty<T> {
+    override fun empty(): ListProperty<T> {
         return this
     }
 
-    override fun convention(provider: Provider<out MutableIterable<T>>): SetProperty<T> {
+    override fun convention(provider: Provider<out MutableIterable<T>>): ListProperty<T> {
         return this
     }
 
-    override fun convention(elements: MutableIterable<T>?): SetProperty<T> {
+    override fun convention(elements: MutableIterable<T>?): ListProperty<T> {
         return this
     }
 
     override fun addAll(provider: Provider<out MutableIterable<T>>) {
-        throw MethodNotSupportedException("addAll(provider) is not supported in the SetPropertyMock")
+        throw MethodNotSupportedException("addAll(provider) is not supported in the ListPropertyMock")
     }
 
     override fun addAll(elements: MutableIterable<T>) {
@@ -88,46 +88,46 @@ class SetPropertyMock<T>(var value: MutableSet<T>?): SetProperty<T> {
         value?.add(element)
     }
 
-    override fun value(provider: Provider<out MutableIterable<T>>): SetProperty<T> {
+    override fun value(provider: Provider<out MutableIterable<T>>): ListProperty<T> {
         return this
     }
 
-    override fun value(elements: MutableIterable<T>?): SetProperty<T> {
+    override fun value(elements: MutableIterable<T>?): ListProperty<T> {
         return this
     }
 
     override fun set(provider: Provider<out MutableIterable<T>>) {
-        throw MethodNotSupportedException("set(provider) is not supported in the SetPropertyMock")
+        throw MethodNotSupportedException("set(provider) is not supported in the ListPropertyMock")
     }
 
     override fun set(elements: MutableIterable<T>?) {
-        this.value = elements?.toMutableSet()
+        this.value = elements?.toMutableList()
     }
 
     override fun <U : Any?, R : Any?> zip(
         p0: Provider<U>,
-        p1: BiFunction<in MutableSet<T>, in U, out R>
+        p1: BiFunction<in MutableList<T>, in U, out R>
     ): Provider<R> {
-        throw MethodNotSupportedException("zip is not supported in the SetPropertyMock")
+        throw MethodNotSupportedException("zip is not supported in the ListPropertyMock")
     }
 
-    override fun orElse(p0: Provider<out MutableSet<T>>): Provider<MutableSet<T>> {
+    override fun orElse(p0: Provider<out MutableList<T>>): Provider<MutableList<T>> {
         return this
     }
 
-    override fun orElse(value: MutableSet<T>): Provider<MutableSet<T>> {
+    override fun orElse(value: MutableList<T>): Provider<MutableList<T>> {
         return this
     }
 
-    override fun <S : Any?> flatMap(transformer: Transformer<out Provider<out S>, in MutableSet<T>>): Provider<S> {
-        throw MethodNotSupportedException("flatMap is not supported in the SetPropertyMock")
+    override fun <S : Any?> flatMap(transformer: Transformer<out Provider<out S>, in MutableList<T>>): Provider<S> {
+        throw MethodNotSupportedException("flatMap is not supported in the ListPropertyMock")
     }
 
-    override fun <S : Any?> map(transformer: Transformer<out S, in MutableSet<T>>): Provider<S> {
-        throw MethodNotSupportedException("map is not supported in the SetPropertyMock")
+    override fun <S : Any?> map(transformer: Transformer<out S, in MutableList<T>>): Provider<S> {
+        throw MethodNotSupportedException("map is not supported in the ListPropertyMock")
     }
 
-    override fun getOrElse(defaultValue: MutableSet<T>): MutableSet<T> {
+    override fun getOrElse(defaultValue: MutableList<T>): MutableList<T> {
         return value!!
     }
 
