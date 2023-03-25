@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://janbarari.github.io/gradle-analytics-plugin/setup/">
       
       <link rel="icon" href="../img/plugin-logo.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.2">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.9f9400aa.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.20d9efc8.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.cbb835fc.min.css">
@@ -599,13 +599,13 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta7&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta8&quot;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"></span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta7&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta8&#39;</span><span class="w"></span>
 <span class="o">}</span><span class="w"></span>
 </code></pre></div>
 </div>
@@ -650,6 +650,9 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">        </span><span class="s">&quot;develop&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p">)</span><span class="w"></span>
 
+<span class="w">    </span><span class="c1">// Optional: Exclude modules that are not necessary like test or demo modules</span><span class="w"></span>
+<span class="w">    </span><span class="n">excludeModules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">()</span><span class="w"></span>
+
 <span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span><span class="w"></span>
@@ -688,6 +691,9 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">        </span><span class="s1">&#39;master&#39;</span><span class="o">,</span><span class="w"></span>
 <span class="w">        </span><span class="s1">&#39;develop&#39;</span><span class="w"></span>
 <span class="w">    </span><span class="o">]</span><span class="w"></span>
+
+<span class="w">    </span><span class="c1">// Optional: Exclude modules that are not necessary like test or demo modules</span><span class="w"></span>
+<span class="w">    </span><span class="n">excludeModules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span><span class="w"></span>
 
 <span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span><span class="w"></span>
 
@@ -803,10 +809,10 @@ so It is required for your project to use Git VCS.</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.39f04ddb.min.js"></script>
+      <script src="../assets/javascripts/bundle.078830c0.min.js"></script>
       
     
   </body>
