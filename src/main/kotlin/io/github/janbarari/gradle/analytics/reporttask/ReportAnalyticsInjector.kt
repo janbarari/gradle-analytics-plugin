@@ -55,7 +55,8 @@ class ReportAnalyticsInjector(
     var databaseConfig: DatabaseConfig? = null,
     var outputPath: String? = null,
     var projectName: String? = null,
-    var modules: Set<String>? = null
+    var modules: Set<String>? = null,
+    var excludeModules: Set<String>? = null
 ) {
 
     // Singleton objects
@@ -184,6 +185,7 @@ fun ReportAnalyticsInjector.provideReportAnalyticsLogic(): ReportAnalyticsLogic 
         getModulesTimelineUseCase = provideGetModulesTimelineUseCase(),
         isCI = isCI!!,
         outputPath = outputPath!!,
-        projectName = projectName!!
+        projectName = projectName!!,
+        excludeModules = excludeModules!!
     )
 }

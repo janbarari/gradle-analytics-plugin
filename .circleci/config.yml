@@ -31,10 +31,23 @@ jobs:
       - checkout
       - run:
           name: build
-          command: ./gradlew validateSourceHeaderLicense detekt assemble test --info --stacktrace
+          command: ./gradlew clean validateSourceHeaderLicense detekt assemble test --info --stacktrace
       - codecov/upload:
           file: build/reports/jacoco/test/*.xml
+  publish:
+    machine:
+      image: ubuntu-2004:202201-02
+    steps:
+      - checkout
+      - run:
+          name: publish
+          command: ./gradlew publishToGradlePortal --info --stacktrace
 workflows:
   build-workflow:
     jobs:
       - build
+      - publish:
+          filters:
+            branches:
+              only:
+                - main

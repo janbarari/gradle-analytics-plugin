@@ -62,7 +62,7 @@ class DatabaseRepositoryImp(
     private var temporaryMetricsLastDropTimestamp: Long = 0L
 
     override fun saveNewMetric(metric: BuildMetric): Long {
-        tower.i(clazz, "saveNewMetric() metric.hashCode=${metric.hashCode()}")
+        tower.i(clazz, "saveNewMetric()", metric.getLog())
         return db.transaction {
             val queryResult = MetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -76,7 +76,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun saveTemporaryMetric(metric: BuildMetric): Long {
-        tower.i(clazz, "saveTemporaryMetric() metric.hashCode=${metric.hashCode()}")
+        tower.i(clazz, "saveTemporaryMetric()", metric.getLog())
         return db.transaction {
             val queryResult = TemporaryMetricTable.insert {
                 it[createdAt] = metric.createdAt
@@ -144,7 +144,7 @@ class DatabaseRepositoryImp(
     }
 
     override fun updateDayMetric(number: Long, metric: BuildMetric): Boolean {
-        tower.i(clazz, "updateDayMetric() metric.hashCode=${metric.hashCode()}")
+        tower.i(clazz, "updateDayMetric()", metric.getLog())
         return db.transaction {
             val queryResult = MetricTable.update({
                 MetricTable.number eq number

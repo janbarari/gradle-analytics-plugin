@@ -14,29 +14,18 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.analytics.exception
 
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 
-class ProjectUtilsTest {
-
-    @Test
-    fun `check isCompatibleWith() returns true when the version is above 7`() {
-        val result = ProjectUtils.isProjectCompatibleWith(ProjectUtils.GradleVersions.V6_1)
-        assertEquals(true, result)
-    }
-
-    @Test
-    fun `check isCompatibleWith() returns true when the version is before 7_5`() {
-        val result = ProjectUtils.isProjectCompatibleWith(ProjectUtils.GradleVersions.V7_6)
-        assertEquals(false, result)
-    }
-
-}
+@ExcludeJacocoGenerated
+class GitUnavailableException: Throwable(
+    message = "${GradleAnalyticsPlugin.PLUGIN_NAME} works only on projects that use Git."
+)

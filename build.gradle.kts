@@ -169,6 +169,21 @@ tasks.register("validateSourceHeaderLicense") {
     }
 }
 
+tasks.register("publishToGradlePortal") {
+    doLast {
+        val key = System.getenv("GRADLE_PORTAL_KEY")
+        val secret = System.getenv("GRADLE_PORTAL_SECRET")
+        exec {
+            commandLine(
+                "./gradlew",
+                "publishPlugins",
+                "-Pgradle.publish.key=$key",
+                "-Pgradle.publish.secret=$secret",
+            ).args("--info")
+        }
+    }
+}
+
 detekt {
     config = files("detekt-config.yml")
     buildUponDefaultConfig = true

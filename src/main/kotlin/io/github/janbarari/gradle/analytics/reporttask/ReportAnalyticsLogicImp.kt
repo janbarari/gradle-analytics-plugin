@@ -91,7 +91,8 @@ class ReportAnalyticsLogicImp(
     private val getModulesTimelineUseCase: GetModulesTimelineUseCase,
     private val isCI: Boolean,
     private val outputPath: String,
-    private val projectName: String
+    private val projectName: String,
+    private val excludeModules: Set<String>
 ) : ReportAnalyticsLogic {
 
     companion object {
@@ -184,7 +185,8 @@ class ReportAnalyticsLogicImp(
                     modulesDependencyGraphReportJsonAdapter,
                     report,
                     outputPath,
-                    projectName
+                    projectName,
+                    excludeModules
                 )
             )
             .addStage(RenderModulesTimelineReportStage(tower, report))

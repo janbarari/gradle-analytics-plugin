@@ -23,15 +23,15 @@
 package io.github.janbarari.gradle
 
 /**
- * In order to have reliable code coverage sometimes it's needed to exclude some
- * functions or classes that their lifecycle is based on the framework and not
- * in developer hand.
+ * To ensure reliable code coverage, it may be necessary to exclude certain functions
+ * or classes from analysis, especially those whose lifecycle is based on the framework
+ * and not controlled by the developer.
  *
- * Since Jacoco 0.8.2, developers can exclude classes and methods by annotating
- * them with a custom annotation with the following properties:
+ * Fortunately, as of Jacoco 0.8.2, developers can now exclude classes and methods by
+ * annotating them with a custom annotation that meets the following criteria:
  *
- * 1- The name of the annotation should include the 'Generated' keyword.
- * 2- The retention policy of annotation should be runtime or class.
+ * 1. The name of the annotation should include the keyword 'Generated'.
+ * 2. The retention policy of the annotation should be set to 'runtime' or 'class'.
  */
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
