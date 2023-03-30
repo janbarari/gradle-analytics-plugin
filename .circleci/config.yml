@@ -50,24 +50,24 @@ jobs:
       - run:
           name: deploy-docs
           command: |
-            echo "Update APT"
+            printf "Update APT"
             sudo apt update
-            echo "\n\n\n"
-            echo "Install Python3"
+            printf "\n\n\n"
+            printf "Install Python3"
             sudo apt install python3-pip
             pip3 --version
-            echo "\n\n\n"
-            echo "Install Git"
+            printf "\n\n\n"
+            printf "Install Git"
             sudo apt install git
-            echo "\n\n\n"
-            echo "Install Mkdocs"
+            printf "\n\n\n"
+            printf "Install Mkdocs"
             pip3 install mkdocs
             mkdocs --version
-            echo "\n\n\n"
-            echo "Install Mkdocs Material"
+            printf "\n\n\n"
+            printf "Install Mkdocs Material"
             pip3 install mkdocs-material
-            echo "\n\n\n"
-            echo "Deploy Docs"
+            printf "\n\n\n"
+            printf "Deploy Docs"
             mkdocs gh-deploy
 workflows:
   build-workflow:
