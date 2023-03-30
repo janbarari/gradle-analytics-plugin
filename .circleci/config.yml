@@ -72,7 +72,7 @@ workflows:
           filters:
             branches:
               only:
-                - noref/96
+                - main
       - publish:
           filters:
             branches:
