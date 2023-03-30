@@ -52,6 +52,7 @@ jobs:
           command: |
             sudo apt update
             sudo apt install python3-pip
+            sudo apt install git
             pip3 --version
             pip3 install mkdocs
             mkdocs --version
