@@ -42,10 +42,37 @@ jobs:
       - run:
           name: publish
           command: ./gradlew publishToGradlePortal --info --stacktrace
+  deploy-docs:
+    machine:
+      image: ubuntu-2004:202201-02
+    steps:
+      - checkout
+      - run:
+          name: deploy-docs
+          command: |
+            printf "\n\n\n --------- update apt --------- \n"
+            sudo apt update
+            printf "\n\n\n --------- install python3 ---------- \n"
+            sudo apt install python3-pip
+            pip3 --version
+            printf "\n\n\n --------- install git --------- \n"
+            sudo apt install git
+            printf "\n\n\n --------- install mkdocs -------- \n"
+            pip3 install mkdocs
+            mkdocs --version
+            printf "\n\n\n --------- install mkdocs-material --------- \n"
+            pip3 install mkdocs-material
+            printf "\n\n\n --------- deploy --------- \n"
+            mkdocs gh-deploy
 workflows:
   build-workflow:
     jobs:
       - build
+      - deploy-docs:
+          filters:
+            branches:
+              only:
+                - main
       - publish:
           filters:
             branches:
