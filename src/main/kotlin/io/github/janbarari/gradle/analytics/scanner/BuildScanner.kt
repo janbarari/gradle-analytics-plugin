@@ -84,13 +84,13 @@ object BuildScanner {
                 BuildExecutionService::class.java
             ) { spec ->
                 with(spec.parameters) {
-                    enabled.set(configuration.isEnabled)
+                    enabled.set(configuration.enabled)
                     databaseConfig.set(configuration.getDatabaseConfig())
                     envCI.set(envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    trackAllBranchesEnabled.set(configuration.isTrackAllBranchesEnabled)
+                    trackAllBranchesEnabled.set(configuration.trackAllBranchesEnabled)
                     outputPath.set(configuration.outputPath)
                     this.maximumWorkerCount.set(maximumWorkerCount)
                     this.availableWorkerCount.set(availableWorkerCount)
