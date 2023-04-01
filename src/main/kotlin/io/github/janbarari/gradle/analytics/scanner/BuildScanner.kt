@@ -61,8 +61,7 @@ object BuildScanner {
         configuration: GradleAnalyticsPluginConfig
     ) {
         val systemProcessor = SystemInfo().hardware.processor
-        val availableWorkerCount = project.gradle.startParameter.maxWorkerCount
-        val maximumWorkerCount = systemProcessor.logicalProcessorCount + systemProcessor.physicalProcessorCount
+        val maximumWorkerCount = systemProcessor.logicalProcessorCount
 
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
@@ -93,7 +92,6 @@ object BuildScanner {
                     trackAllBranchesEnabled.set(configuration.trackAllBranchesEnabled)
                     outputPath.set(configuration.outputPath)
                     this.maximumWorkerCount.set(maximumWorkerCount)
-                    this.availableWorkerCount.set(availableWorkerCount)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)
