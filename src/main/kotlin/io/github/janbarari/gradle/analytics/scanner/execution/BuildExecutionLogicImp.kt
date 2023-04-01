@@ -82,7 +82,7 @@ class BuildExecutionLogicImp(
     private val tower: Tower,
     private val requestedTasks: List<String>,
     private val modules: Set<Module>,
-    private val gradleWorker: Pair<Int, Int>,
+    private val maximumWorkerCount: Int,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -171,7 +171,7 @@ class BuildExecutionLogicImp(
                 )
             )
 
-        buildMetric.gradleWorkers = gradleWorker
+        buildMetric.maximumWorkerCount = maximumWorkerCount
 
         saveTemporaryMetricUseCase.execute(buildMetric)
         saveMetricUseCase.execute(buildMetric)
@@ -209,10 +209,7 @@ class BuildExecutionLogicImp(
             printLine(left = "Overall Build Process:", right = "${buildMetric.overallBuildProcessMetric?.median}ms")
             printLine(left = "Cache Hit:", right = "${buildMetric.cacheHitMetric?.rate}%")
             printLine(left = "Parallel Execution Rate:", right = "${buildMetric.parallelExecutionRateMetric?.medianRate}%")
-            printLine(
-                left = "Used/Available Worker Count:",
-                right = "${buildMetric.gradleWorkers.first}/${buildMetric.gradleWorkers.second}"
-            )
+            printLine(left = "Maximum Worker Count:", right = "${buildMetric.maximumWorkerCount}")
             printBreakLine(char = '-')
             printLine(left = "Datetime:", right = DateTimeUtils.formatToDateTime(buildMetric.createdAt))
             printBreakLine(char = '-')

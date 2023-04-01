@@ -39,7 +39,6 @@ import io.github.janbarari.gradle.utils.DependencyGraphGenerator
 import org.gradle.api.Project
 import org.gradle.api.internal.GradleInternal
 import org.gradle.build.event.BuildEventsListenerRegistry
-import oshi.SystemInfo
 import java.util.*
 
 @ExcludeJacocoGenerated
@@ -60,9 +59,7 @@ object BuildScanner {
         registry: BuildEventsListenerRegistry,
         configuration: GradleAnalyticsPluginConfig
     ) {
-        val systemProcessor = SystemInfo().hardware.processor
-        val availableWorkerCount = project.gradle.startParameter.maxWorkerCount
-        val maximumWorkerCount = systemProcessor.logicalProcessorCount + systemProcessor.physicalProcessorCount
+        val maximumWorkerCount = project.gradle.startParameter.maxWorkerCount
 
         project.gradle.projectsEvaluated {
             val nonCacheableTasks = Collections.synchronizedList(mutableListOf<String>())
@@ -84,16 +81,15 @@ object BuildScanner {
                 BuildExecutionService::class.java
             ) { spec ->
                 with(spec.parameters) {
-                    enabled.set(configuration.isEnabled)
+                    enabled.set(configuration.enabled)
                     databaseConfig.set(configuration.getDatabaseConfig())
                     envCI.set(envCI())
                     requestedTasks.set(project.gradle.getRequestedTasks())
                     trackingTasks.set(configuration.trackingTasks)
                     trackingBranches.set(configuration.trackingBranches)
-                    trackAllBranchesEnabled.set(configuration.isTrackAllBranchesEnabled)
+                    trackAllBranchesEnabled.set(configuration.trackAllBranchesEnabled)
                     outputPath.set(configuration.outputPath)
                     this.maximumWorkerCount.set(maximumWorkerCount)
-                    this.availableWorkerCount.set(availableWorkerCount)
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)

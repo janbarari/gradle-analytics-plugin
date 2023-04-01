@@ -72,8 +72,6 @@ class BuildExecutionLogicTest {
             override val nonCacheableTasks: SetProperty<String>
                 get() = MockSetProperty(mutableSetOf())
             override val outputPath: Property<String> = MockProperty("./build")
-            override val availableWorkerCount: Property<Int>
-                get() = MockProperty(0)
             override val maximumWorkerCount: Property<Int>
                 get() = MockProperty(0)
         }

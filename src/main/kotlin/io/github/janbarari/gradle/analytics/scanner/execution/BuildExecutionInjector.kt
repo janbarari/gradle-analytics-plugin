@@ -513,7 +513,7 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         tower = provideTower(),
         requestedTasks = parameters.requestedTasks.get(),
         modules = parameters.modules.get(),
-        gradleWorker = parameters.availableWorkerCount.get() to parameters.maximumWorkerCount.get(),
+        maximumWorkerCount = parameters.maximumWorkerCount.get(),
         saveMetricUseCase = provideSaveMetricUseCase(),
         saveTemporaryMetricUseCase = provideSaveTemporaryMetricUseCase(),
         upsertModulesTimelineUseCase = provideUpsertModulesTimelineUseCase(),
