@@ -21,7 +21,7 @@
         <link rel="next" href="../getting-report/">
       
       <link rel="icon" href="../img/plugin-logo.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.4">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.1.5">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.240905d7.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.7a7fce14.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.a0c5b2b5.min.css">
@@ -602,13 +602,13 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta8&quot;</span>
+<span class="w">    </span><span class="n">id</span><span class="p">(</span><span class="s">&quot;io.github.janbarari.gradle-analytics-plugin&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s">&quot;1.0.0-beta9&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta8&#39;</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="s1">&#39;io.github.janbarari.gradle-analytics-plugin&#39;</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="s1">&#39;1.0.0-beta9&#39;</span>
 <span class="o">}</span>
 </code></pre></div>
 </div>
@@ -622,7 +622,7 @@ so It is required for your project to use Git VCS.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span>
+<span class="w">    </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span>
 
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="p">{</span>
@@ -656,7 +656,7 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">    </span><span class="c1">// Optional: Exclude modules that are not necessary like test or demo modules</span>
 <span class="w">    </span><span class="n">excludeModules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">setOf</span><span class="p">()</span>
 
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span>
+<span class="w">    </span><span class="n">trackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span>
 
 <span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;OUTPUT_REPORT_PATH&quot;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span>
 <span class="p">}</span>
@@ -664,7 +664,7 @@ so It is required for your project to use Git VCS.</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="n">gradleAnalyticsPlugin</span><span class="w"> </span><span class="o">{</span>
-<span class="w">    </span><span class="n">isEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span>
+<span class="w">    </span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c1">// Optional: By default it&#39;s True.</span>
 
 <span class="w">    </span><span class="n">database</span><span class="w"> </span><span class="o">{</span>
 <span class="w">        </span><span class="n">local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite</span><span class="w"> </span><span class="o">{</span>
@@ -698,7 +698,7 @@ so It is required for your project to use Git VCS.</p>
 <span class="w">    </span><span class="c1">// Optional: Exclude modules that are not necessary like test or demo modules</span>
 <span class="w">    </span><span class="n">excludeModules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[]</span>
 
-<span class="w">    </span><span class="n">isTrackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span>
+<span class="w">    </span><span class="n">trackAllBranchesEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="c1">// Optional: Default is False.</span>
 
 <span class="w">    </span><span class="n">outputPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OUTPUT_REPORT_PATH&#39;</span><span class="w"> </span><span class="c1">// Optional: Default is project /build/ dir.</span>
 <span class="o">}</span>
@@ -783,7 +783,7 @@ so It is required for your project to use Git VCS.</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["header.autohide"], "search": "../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.19047be9.min.js"></script>
+      <script src="../assets/javascripts/bundle.407015b8.min.js"></script>
       
     
   </body>
