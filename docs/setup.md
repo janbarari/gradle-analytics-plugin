@@ -56,7 +56,7 @@ Add plugin configuration in the root of your project.
 === "Kotlin"
     ``` kotlin
     gradleAnalyticsPlugin {
-        isEnabled = true // Optional: By default it's True.
+        enabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -90,7 +90,7 @@ Add plugin configuration in the root of your project.
         // Optional: Exclude modules that are not necessary like test or demo modules
         excludeModules = setOf()
 
-        isTrackAllBranchesEnabled = false // Optional: Default is False.
+        trackAllBranchesEnabled = false // Optional: Default is False.
 
         outputPath = "OUTPUT_REPORT_PATH" // Optional: Default is project /build/ dir.
     }
@@ -98,7 +98,7 @@ Add plugin configuration in the root of your project.
 === "Groovy"
     ``` groovy
     gradleAnalyticsPlugin {
-        isEnabled = true // Optional: By default it's True.
+        enabled = true // Optional: By default it's True.
 
         database {
             local = sqlite {
@@ -132,7 +132,7 @@ Add plugin configuration in the root of your project.
         // Optional: Exclude modules that are not necessary like test or demo modules
         excludeModules = []
     
-        isTrackAllBranchesEnabled = false // Optional: Default is False.
+        trackAllBranchesEnabled = false // Optional: Default is False.
 
         outputPath = 'OUTPUT_REPORT_PATH' // Optional: Default is project /build/ dir.
     }
