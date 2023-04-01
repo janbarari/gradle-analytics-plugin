@@ -23,6 +23,9 @@
 
 # Changelog
 
+## 1.0.0-beta9
+* Fix critical issues
+
 ## 1.0.0-beta8
 * [Feature 81](https://github.com/janbarari/gradle-analytics-plugin/issues/81)
 * Used/Available worker count added in console report
