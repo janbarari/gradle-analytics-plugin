@@ -102,7 +102,7 @@ data class BuildMetric(
     var modulesTimelineMetric: ModulesTimelineMetric? = null
 
     @Transient
-    var gradleWorkers: Pair<Int, Int> = 0 to 0
+    var maximumWorkerCount: Int = 0
 
     fun getLog(): String {
         return buildString {
