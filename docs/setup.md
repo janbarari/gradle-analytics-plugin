@@ -38,13 +38,13 @@ Apply the Gradle Plugin to the root of your project.
 === "Kotlin"
     ``` kotlin
     plugins {
-        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta8"
+        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.0-beta9"
     }
     ```
 === "Groovy"
     ``` groovy
     plugins {
-        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta8'
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.0-beta9'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
