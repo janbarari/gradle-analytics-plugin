@@ -22,4 +22,18 @@
 -->
 
 # Upcoming Milestone
-Upcoming milestone planning is in progress.
+Finally, the first stable version of the plugin, planned for release in `Milestone/1.0.1`, is scheduled to be published during the last week of May 2023.
+<br>
+
+<b>Upcoming Changes</b>
+
+- [ ] Fix bug report #105
+- [ ] Fix bug report #121
+- [ ] Upgrade gradle version to 8.1.1
+- [ ] Fix minor UI issues
+- [ ] Add more information when the configuration is not correct
+- [ ] Refactor metrics logical codebase
+- [ ] Increase code coverage by adding more unit tests
+
+<br>
+I'm sorry for the delay in the project. It was caused by unexpected problems, like losing my job and facing personal difficulties, which made it hard for me to contribute effectively. I would really appreciate it if you could donate to support the development of this plugin.
