@@ -93,6 +93,45 @@ object BuildScanner {
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)
+                    gitCurrentBranch.set(
+                        try {
+                            project.providers
+                                .exec {
+                                    it.commandLine(
+                                        "git",
+                                        "rev-parse",
+                                        "--abbrev-ref",
+                                        "HEAD"
+                                    )
+                                }
+                                .standardOutput
+                                .asText
+                                .get()
+                                .trim()
+                        } catch (e: Exception) {
+                            "null"
+                        }
+                    )
+                    gitHeadCommitHash.set(
+                        try {
+                            project.providers
+                                .exec {
+                                    it.commandLine(
+                                        "git",
+                                        "log",
+                                        "--format=\"%H\"".replace("\"", ""),
+                                        "-n",
+                                        "1"
+                                    )
+                                }
+                                .standardOutput
+                                .asText
+                                .get()
+                                .trim()
+                        } catch (e: Exception) {
+                            "null"
+                        }
+                    )
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

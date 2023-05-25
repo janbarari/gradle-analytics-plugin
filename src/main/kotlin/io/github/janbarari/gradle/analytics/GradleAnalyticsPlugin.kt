@@ -34,7 +34,6 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.extension.whenTypeIs
-import io.github.janbarari.gradle.utils.GitUtils
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -63,7 +62,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      */
     override fun apply(project: Project) {
         ensureGradleCompatibility()
-        ensureGitAvailable()
+        ensureGitAvailable(project)
         val config = setupConfig(project)
         validateConfig(config)
         registerTasks(config)
@@ -89,9 +88,11 @@ class GradleAnalyticsPlugin @Inject constructor(
      * The plugin only works on projects which use Git. This function ensures the Git terminal accessible in project directory.
      */
     @kotlin.jvm.Throws(GitUnavailableException::class)
-    private fun ensureGitAvailable() {
+    private fun ensureGitAvailable(project: Project) {
         try {
-            GitUtils.currentBranch()
+            project.providers.exec {
+                it.commandLine("git", "--version")
+            }.standardOutput.asText.get()
         } catch (e: Throwable) {
             throw GitUnavailableException()
         }
