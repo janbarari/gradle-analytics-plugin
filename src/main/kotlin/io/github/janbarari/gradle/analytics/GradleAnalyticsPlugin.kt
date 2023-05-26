@@ -70,7 +70,7 @@ class GradleAnalyticsPlugin @Inject constructor(
         val config = setupConfig(project)
         validateConfig(config)
         registerTasks(config)
-        setupBuildScanner(config, git)
+        BuildScanner.setup(config, registry, git)
     }
 
     /**
@@ -191,14 +191,6 @@ class GradleAnalyticsPlugin @Inject constructor(
             GitGradleImpl(project)
         } else {
             GitTerminalImpl()
-        }
-    }
-
-    private fun setupBuildScanner(config: GradleAnalyticsPluginConfig, git: Git) {
-        if (GradleVersion.current() >= GradleVersion.version(ProjectUtils.GradleVersions.V8_1.versionNumber)) {
-            BuildScanner.setup(config, registry, git)
-        } else {
-            BuildScanner.setup(config, registry, git)
         }
     }
 
