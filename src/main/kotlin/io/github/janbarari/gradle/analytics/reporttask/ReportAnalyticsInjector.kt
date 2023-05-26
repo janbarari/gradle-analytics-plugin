@@ -23,25 +23,24 @@
 package io.github.janbarari.gradle.analytics.reporttask
 
 import com.squareup.moshi.Moshi
-import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
-import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
+import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
 import io.github.janbarari.gradle.analytics.data.V100B6DatabaseResultMigrationStage
+import io.github.janbarari.gradle.analytics.database.Database
 import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
+import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
+import io.github.janbarari.gradle.analytics.domain.usecase.GetMetricsUseCase
 import io.github.janbarari.gradle.analytics.domain.usecase.GetModulesTimelineUseCase
 import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
 import io.github.janbarari.gradle.memorycache.MemoryCache
-import oshi.SystemInfo
 import kotlin.io.path.Path
 
 /**
@@ -93,11 +92,6 @@ fun ReportAnalyticsInjector.provideTower(): Tower {
         }
     }
     return tower!!
-}
-
-@ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideSystemInfo(): SystemInfo {
-    return SystemInfo()
 }
 
 @ExcludeJacocoGenerated

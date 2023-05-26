@@ -74,8 +74,6 @@ import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.logger.TowerImpl
 import io.github.janbarari.gradle.memorycache.MemoryCache
-import io.github.janbarari.gradle.utils.GitUtils
-import oshi.SystemInfo
 import kotlin.io.path.Path
 
 /**
@@ -93,9 +91,6 @@ data class BuildExecutionInjector(
     var moshi: Moshi? = null
 
     @Volatile
-    var systemInfo: SystemInfo? = null
-
-    @Volatile
     var currentBranch: String? = null
 
     @Volatile
@@ -107,7 +102,6 @@ data class BuildExecutionInjector(
     fun destroy() {
         tower = null
         moshi = null
-        systemInfo = null
         currentBranch = null
         databaseRepository = null
     }
@@ -117,20 +111,10 @@ data class BuildExecutionInjector(
 fun BuildExecutionInjector.provideCurrentBranch(): String {
     if (currentBranch.isNull()) {
         currentBranch = synchronized(this) {
-            GitUtils.currentBranch()
+            parameters.gitCurrentBranch.get()
         }
     }
     return currentBranch!!
-}
-
-@ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideSystemInfo(): SystemInfo {
-    if (systemInfo.isNull()) {
-        systemInfo = synchronized(this) {
-            SystemInfo()
-        }
-    }
-    return systemInfo!!
 }
 
 @ExcludeJacocoGenerated
@@ -514,6 +498,8 @@ fun BuildExecutionInjector.provideBuildExecutionLogic(): BuildExecutionLogic {
         requestedTasks = parameters.requestedTasks.get(),
         modules = parameters.modules.get(),
         maximumWorkerCount = parameters.maximumWorkerCount.get(),
+        gitCurrentBranch = parameters.gitCurrentBranch.get(),
+        gitHeadCommitHash = parameters.gitHeadCommitHash.get(),
         saveMetricUseCase = provideSaveMetricUseCase(),
         saveTemporaryMetricUseCase = provideSaveTemporaryMetricUseCase(),
         upsertModulesTimelineUseCase = provideUpsertModulesTimelineUseCase(),

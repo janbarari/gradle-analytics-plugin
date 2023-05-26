@@ -27,8 +27,8 @@ Finally, the first stable version of the plugin, planned for release in `Milesto
 
 <b>Upcoming Changes</b>
 
-- [ ] Fix bug report #105
-- [ ] Fix bug report #121
+- [x] Fix bug report #105
+- [x] Fix bug report #121
 - [ ] Upgrade gradle version to 8.1.1
 - [ ] Fix minor UI issues
 - [ ] Add more information when the configuration is not correct
