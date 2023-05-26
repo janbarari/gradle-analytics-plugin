@@ -26,7 +26,6 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
-import io.github.janbarari.gradle.analytics.exception.GitUnavailableException
 import io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException
 import io.github.janbarari.gradle.analytics.reporttask.ReportAnalyticsTask
 import io.github.janbarari.gradle.analytics.scanner.BuildScanner
@@ -34,10 +33,14 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.extension.whenTrue
 import io.github.janbarari.gradle.extension.whenTypeIs
+import io.github.janbarari.gradle.git.Git
+import io.github.janbarari.gradle.git.GitGradleImpl
+import io.github.janbarari.gradle.git.GitTerminalImpl
 import io.github.janbarari.gradle.utils.ProjectUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.build.event.BuildEventsListenerRegistry
+import org.gradle.util.GradleVersion
 import javax.inject.Inject
 
 /**
@@ -53,7 +56,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.0-beta9"
+        const val PLUGIN_VERSION = "1.0.1"
         const val OUTPUT_DIRECTORY_NAME = "gradle-analytics-plugin"
     }
 
@@ -62,11 +65,12 @@ class GradleAnalyticsPlugin @Inject constructor(
      */
     override fun apply(project: Project) {
         ensureGradleCompatibility()
-        ensureGitAvailable(project)
+        val git = provideGitInterface(project)
+        git.ensureGitAvailable()
         val config = setupConfig(project)
         validateConfig(config)
         registerTasks(config)
-        BuildScanner.setup(config, registry)
+        setupBuildScanner(config, git)
     }
 
     /**
@@ -81,20 +85,6 @@ class GradleAnalyticsPlugin @Inject constructor(
         val requiredGradleVersion = ProjectUtils.GradleVersions.V6_1
         if (!ProjectUtils.isProjectCompatibleWith(requiredGradleVersion)) {
             throw IncompatibleVersionException(requiredGradleVersion.versionNumber)
-        }
-    }
-
-    /**
-     * The plugin only works on projects which use Git. This function ensures the Git terminal accessible in project directory.
-     */
-    @kotlin.jvm.Throws(GitUnavailableException::class)
-    private fun ensureGitAvailable(project: Project) {
-        try {
-            project.providers.exec {
-                it.commandLine("git", "--version")
-            }.standardOutput.asText.get()
-        } catch (e: Throwable) {
-            throw GitUnavailableException()
         }
     }
 
@@ -193,6 +183,22 @@ class GradleAnalyticsPlugin @Inject constructor(
                     config.project.buildFile
                 )
             }
+        }
+    }
+
+    private fun provideGitInterface(project: Project): Git {
+        return if (GradleVersion.current() >= GradleVersion.version(ProjectUtils.GradleVersions.V8_1.versionNumber)) {
+            GitGradleImpl(project)
+        } else {
+            GitTerminalImpl()
+        }
+    }
+
+    private fun setupBuildScanner(config: GradleAnalyticsPluginConfig, git: Git) {
+        if (GradleVersion.current() >= GradleVersion.version(ProjectUtils.GradleVersions.V8_1.versionNumber)) {
+            BuildScanner.setup(config, registry, git)
+        } else {
+            BuildScanner.setup(config, registry, git)
         }
     }
 
