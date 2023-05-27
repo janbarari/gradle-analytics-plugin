@@ -40,7 +40,7 @@ complexity:
   LongMethod:
     active: true
     threshold: 75
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
     threshold: 25
 
@@ -49,6 +49,8 @@ exceptions:
   SwallowedException:
     active: false
   TooGenericExceptionCaught:
+    active: false
+  InstanceOfCheckForException:
     active: false
 
 style:
@@ -72,3 +74,5 @@ style:
     active: true
     excludeImports:
       - 'java.util.*'
+  ExplicitItLambdaParameter:
+    active: false
