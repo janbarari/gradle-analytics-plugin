@@ -33,9 +33,6 @@ import io.github.janbarari.gradle.analytics.domain.model.TaskInfo
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionInjector
 import io.github.janbarari.gradle.analytics.scanner.execution.BuildExecutionService
 import io.github.janbarari.gradle.analytics.scanner.execution.provideBuildExecutionLogic
-import io.github.janbarari.gradle.utils.GitUtils
-import io.mockk.every
-import io.mockk.mockkObject
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -74,33 +71,31 @@ class BuildExecutionLogicTest {
             override val outputPath: Property<String> = MockProperty("./build")
             override val maximumWorkerCount: Property<Int>
                 get() = MockProperty(0)
+            override val gitCurrentBranch: Property<String>
+                get() = MockProperty("master")
+            override val gitHeadCommitHash: Property<String>
+                get() = MockProperty("08b94f04733efdc60561128941bd60d5")
         }
     )
 
     @Test
     fun `check onExecutionFinished() returns true`() = runBlocking {
-        mockkObject(GitUtils)
-        every { GitUtils.currentBranch() } returns "master"
-
+        injector.parameters.gitCurrentBranch.set("master")
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
     }
 
     @Test
     fun `check onExecutionFinished() returns false when branch is not trackable`() = runBlocking {
-        mockkObject(GitUtils)
-        every { GitUtils.currentBranch() } returns "feature-1"
-
+        injector.parameters.gitCurrentBranch.set("feature-1")
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
     }
 
     @Test
     fun `check onExecutionFinished() returns false when task is not trackable`() = runBlocking {
-        mockkObject(GitUtils)
-        every { GitUtils.currentBranch() } returns "master"
+        injector.parameters.gitCurrentBranch.set("master")
         injector.parameters.requestedTasks.set(listOf("clean"))
-
         val executedTasks = listOf<TaskInfo>()
         injector.provideBuildExecutionLogic().onExecutionFinished(executedTasks)
     }

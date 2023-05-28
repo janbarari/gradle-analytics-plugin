@@ -72,7 +72,6 @@ import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.utils.DateTimeUtils
-import io.github.janbarari.gradle.utils.GitUtils
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -83,6 +82,8 @@ class BuildExecutionLogicImp(
     private val requestedTasks: List<String>,
     private val modules: Set<Module>,
     private val maximumWorkerCount: Int,
+    private val gitCurrentBranch: String,
+    private val gitHeadCommitHash: String,
     private val saveMetricUseCase: SaveMetricUseCase,
     private val saveTemporaryMetricUseCase: SaveTemporaryMetricUseCase,
     private val upsertModulesTimelineUseCase: UpsertModulesTimelineUseCase,
@@ -132,8 +133,8 @@ class BuildExecutionLogicImp(
             finishedAt = System.currentTimeMillis(),
             dependenciesResolveInfo = BuildDependencyResolutionService.dependenciesResolveInfo.values.toList(),
             executedTasks = executedTasks.toList(),
-            branch = GitUtils.currentBranch(),
-            gitHeadCommitHash = GitUtils.getHeadCommitHash(),
+            branch = gitCurrentBranch,
+            gitHeadCommitHash = gitHeadCommitHash,
             requestedTasks = requestedTasks,
             isSuccessful = isSuccessful,
             failure = failure

@@ -14,23 +14,35 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.utils
+package io.github.janbarari.gradle.git
 
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import io.github.janbarari.gradle.analytics.exception.GitUnavailableException
+import io.github.janbarari.gradle.utils.GitException
+import io.github.janbarari.gradle.utils.GitUtils
 
-class ProjectUtilsTest {
-
-    @Test
-    fun `check isCompatibleWith() returns true when the version is above 7`() {
-        val result = ProjectUtils.isProjectCompatibleWith(ProjectUtils.GradleVersions.V6_1)
-        assertEquals(true, result)
+class GitTerminalImpl : Git {
+    @kotlin.jvm.Throws(GitException::class)
+    override fun getCurrentBranch(): String {
+        return GitUtils.currentBranch()
     }
 
+    @kotlin.jvm.Throws(GitException::class)
+    override fun getHeadCommitHash(): String {
+        return GitUtils.getHeadCommitHash()
+    }
+
+    @kotlin.jvm.Throws(GitUnavailableException::class)
+    override fun ensureGitAvailable() {
+        try {
+            GitUtils.getVersion()
+        } catch (e: Throwable) {
+            throw GitUnavailableException()
+        }
+    }
 }

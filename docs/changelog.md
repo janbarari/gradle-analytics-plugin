@@ -23,6 +23,12 @@
 
 # Changelog
 
+## 1.0.1
+* [Issue 105](https://github.com/janbarari/gradle-analytics-plugin/issues/105)
+* [Issue 121](https://github.com/janbarari/gradle-analytics-plugin/issues/121)
+* Upgrade gradle version to `8.0.2`
+* Upgrade kotlin and other dependencies
+
 ## 1.0.0-beta9
 * Fix critical issues
 

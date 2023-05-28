@@ -33,6 +33,7 @@ object ProjectUtils {
      * List of official Gradle releases.
      */
     enum class GradleVersions(val versionNumber: String) {
+        V8_1("8.1"),
         V8_0_2("8.0.2"),
         V8_0_1("8.0.1"),
         V8_0("8.0"),

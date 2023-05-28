@@ -36,6 +36,7 @@ import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.logger.Tower
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
+import org.gradle.api.JavaVersion
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
@@ -141,14 +142,10 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             excludeModules = excludeModules.get()
         )
         tower = injector.provideTower()
-        val systemInfo = injector.provideSystemInfo()
 
         tower.r("report process started")
         tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
-        tower.r("manufacturer: ${systemInfo.operatingSystem.manufacturer}")
-        tower.r("os: ${systemInfo.operatingSystem.family} " +
-                "${systemInfo.operatingSystem.versionInfo.version} " +
-                "x${systemInfo.operatingSystem.bitness}")
+        tower.r("jvm: ${JavaVersion.current()}")
         tower.r("gradle version: ${GradleVersion.current().version}")
         tower.r("requested tasks: $requestedTasksArgument")
         tower.r("modules count: ${modules.get().size}")
