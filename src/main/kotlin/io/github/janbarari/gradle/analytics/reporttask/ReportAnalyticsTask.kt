@@ -142,7 +142,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             excludeModules = excludeModules.get()
         )
         tower = injector.provideTower()
-
         tower.r("report process started")
         tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
         tower.r("jvm: ${JavaVersion.current()}")
