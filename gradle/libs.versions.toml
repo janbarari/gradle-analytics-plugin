@@ -41,7 +41,6 @@ commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-oshi = { module = "com.github.oshi:oshi-core", version.ref = "oshi" }
 
 [plugins]
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
