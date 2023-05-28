@@ -36,7 +36,7 @@ import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.separateElementsWithSpace
 import io.github.janbarari.gradle.logger.Tower
 import io.github.janbarari.gradle.utils.ConsolePrinter
-import io.github.janbarari.gradle.utils.GitUtils
+import org.gradle.api.JavaVersion
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
@@ -53,7 +53,6 @@ import org.gradle.tooling.events.task.TaskFailureResult
 import org.gradle.tooling.events.task.TaskFinishEvent
 import org.gradle.tooling.events.task.TaskSuccessResult
 import org.gradle.util.GradleVersion
-import oshi.SystemInfo
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
@@ -84,11 +83,12 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
         val nonCacheableTasks: SetProperty<String>
         val outputPath: Property<String>
         val maximumWorkerCount: Property<Int>
+        val gitCurrentBranch: Property<String>
+        val gitHeadCommitHash: Property<String>
     }
 
     private val injector = BuildExecutionInjector(parameters)
     private val tower: Tower = injector.provideTower()
-    private val systemInfo: SystemInfo = injector.provideSystemInfo()
 
     private val executedTasks: ConcurrentLinkedQueue<TaskInfo> = ConcurrentLinkedQueue()
 
@@ -170,10 +170,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
         tower.r("build process started")
         tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
-        tower.r("manufacturer: ${systemInfo.operatingSystem.manufacturer}")
-        tower.r("os: ${systemInfo.operatingSystem.family} " +
-                "${systemInfo.operatingSystem.versionInfo.version} " +
-                "x${systemInfo.operatingSystem.bitness}")
+        tower.r("jvm: ${JavaVersion.current()}")
         tower.r("gradle version: ${GradleVersion.current().version}")
         tower.r("requested tasks: ${parameters.requestedTasks.get().separateElementsWithSpace()}")
         tower.r("modules count: ${parameters.modules.get().size}")
@@ -212,7 +209,7 @@ abstract class BuildExecutionService : BuildService<BuildExecutionService.Params
 
     private fun isBranchTrackable(): Boolean {
         if (parameters.trackAllBranchesEnabled.get()) return true
-        return parameters.trackingBranches.get().contains(GitUtils.currentBranch())
+        return parameters.trackingBranches.get().contains(parameters.gitCurrentBranch.get())
     }
 
     private fun isDatabaseConfigValid(): Boolean {

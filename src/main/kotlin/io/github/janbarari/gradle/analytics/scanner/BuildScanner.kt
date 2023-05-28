@@ -35,6 +35,7 @@ import io.github.janbarari.gradle.extension.getRequestedTasks
 import io.github.janbarari.gradle.extension.isModuleProject
 import io.github.janbarari.gradle.extension.whenEach
 import io.github.janbarari.gradle.extension.whenNotNull
+import io.github.janbarari.gradle.git.Git
 import io.github.janbarari.gradle.utils.DependencyGraphGenerator
 import org.gradle.api.Project
 import org.gradle.api.internal.GradleInternal
@@ -46,18 +47,20 @@ object BuildScanner {
 
     fun setup(
         config: GradleAnalyticsPluginConfig,
-        registry: BuildEventsListenerRegistry
+        registry: BuildEventsListenerRegistry,
+        git: Git
     ) {
         setupInitializationService(config.project)
         setupDependencyResolutionService(config.project)
         setupConfigurationService(config.project)
-        setupExecutionService(config.project, registry, config)
+        setupExecutionService(config.project, registry, config, git)
     }
 
     private fun setupExecutionService(
         project: Project,
         registry: BuildEventsListenerRegistry,
-        configuration: GradleAnalyticsPluginConfig
+        configuration: GradleAnalyticsPluginConfig,
+        git: Git
     ) {
         val maximumWorkerCount = project.gradle.startParameter.maxWorkerCount
 
@@ -93,6 +96,8 @@ object BuildScanner {
                     this.modules.set(modules)
                     this.modulesDependencyGraph.set(modulesDependencyGraph)
                     this.nonCacheableTasks.set(nonCacheableTasks)
+                    gitCurrentBranch.set(git.getCurrentBranch())
+                    gitHeadCommitHash.set(git.getHeadCommitHash())
                 }
             }
             registry.onTaskCompletion(buildExecutionService)

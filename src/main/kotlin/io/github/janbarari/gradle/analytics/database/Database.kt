@@ -118,6 +118,7 @@ class Database(
         return transaction(
             _database.transactionManager.defaultIsolationLevel,
             _database.transactionManager.defaultRepetitionAttempts,
+            readOnly = false,
             _database,
             statement
         )

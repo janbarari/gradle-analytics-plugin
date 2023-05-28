@@ -61,6 +61,21 @@ object GitUtils {
         }
     }
 
+    /***
+     * Get the git version
+     *
+     * @throws io.github.janbarari.gradle.utils.GitException if the command execution failed.
+     */
+    @kotlin.jvm.Throws(GitException::class)
+    fun getVersion(): String {
+        try {
+            return TerminalUtils
+                .execCommand("git --version")
+        } catch (e: IllegalStateException) {
+            throw GitException("Git command execution failed with message of ${e.message}")
+        } catch (e: RuntimeException) {
+            throw GitException("Git initialization not found with message of ${e.message}")
+        }
+    }
+
 }
-
-

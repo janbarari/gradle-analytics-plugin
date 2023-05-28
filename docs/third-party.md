@@ -24,14 +24,13 @@
 # Third party
 All third-party dependencies that are being used in the plugin source:
 
-- <b>Gradle API 7.6</b>
-- <b>Kotlin 1.6.20</b>
-- <b>Coroutines 1.6.3</b>
-- <b>Moshi 1.13.0</b>
-- <b>Jetbrains Exposed 0.38.1</b>
-- <b>Detekt 1.20.0-RC2</b>
-- <b>Mockk 1.12.4</b>
-- `mysql:mysql-connector-java:8.0.29`
-- `org.xerial:sqlite-jdbc:3.36.0.3`
-- `commons-io:commons-io:2.11.0`
-- `com.github.oshi:oshi-core:6.4.0`
+- <b>Gradle API 8.0.2</b>
+- <b>Kotlin 1.8.10</b>
+- <b>Coroutines 1.7.1</b>
+- <b>Moshi 1.15.0</b>
+- <b>Jetbrains Exposed 0.41.1</b>
+- <b>Detekt 1.223.0</b>
+- <b>Mockk 1.13.5</b>
+- `mysql:mysql-connector-java:8.0.33`
+- `org.xerial:sqlite-jdbc:3.42.0.0`
+- `commons-io:commons-io:2.12.0`
