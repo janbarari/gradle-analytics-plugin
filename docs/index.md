@@ -39,6 +39,10 @@ The Gradle Analytics Plugin helps you analyze and measure your project builds. I
 To understand the metrics and report that plugin provides, It is required to understand Gradle basics and how this build
 system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
 
+!!! warning "Important"
+
+    <strong>Support the project by <a href="https://janbarari.github.io/gradle-analytics-plugin/donation/" target="_blank">donation</a>, The first stage of donation expectation is $1500 and $0 donated till now.</strong>
+
 Below you can see the metrics provided by the plugin 👇
 
 ## Build Status
