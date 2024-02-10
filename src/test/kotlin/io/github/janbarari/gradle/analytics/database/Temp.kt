@@ -22,26 +22,23 @@
  */
 package io.github.janbarari.gradle.analytics.database
 
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.transactions.transaction
+import kotlin.test.Test
 
-@ExcludeJacocoGenerated
-class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
+class Temp {
 
-    companion object {
-        const val DEFAULT_PORT = 3306
+    @Test
+    fun testpostgresdb() {
+
+//        val db = Database.connect(
+//            url = "jdbc:postgresql://snuffleupagus.db.elephantsql.com:5432/wyrzfifo",
+//            driver = "org.postgresql.Driver",
+//            user = "wyrzfifo",
+//            password = "l6dZGOvKfJmauiONjp8r7kNyQrXy_mEP"
+//        )
+
+
     }
 
-    var host: String? = null
-
-    var name: String? = null
-
-    var port: Int = DEFAULT_PORT
-
-    var user: String = "root"
-
-    var password: String = ""
-
-    init {
-        apply(block)
-    }
 }

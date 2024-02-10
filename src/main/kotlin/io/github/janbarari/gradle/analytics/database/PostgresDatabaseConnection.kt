@@ -25,10 +25,10 @@ package io.github.janbarari.gradle.analytics.database
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 
 @ExcludeJacocoGenerated
-class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
+class PostgresDatabaseConnection(block: PostgresDatabaseConnection.() -> Unit): DatabaseConnection() {
 
     companion object {
-        const val DEFAULT_PORT = 3306
+        const val DEFAULT_PORT = 5432
     }
 
     var host: String? = null
@@ -37,7 +37,7 @@ class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): Databa
 
     var port: Int = DEFAULT_PORT
 
-    var user: String = "root"
+    var user: String = ""
 
     var password: String = ""
 
