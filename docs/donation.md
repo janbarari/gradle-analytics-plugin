@@ -36,6 +36,22 @@ Of course, this project will be continued as a free open-source project. But to 
 
     <strong>0x2f23a4F4502C5e699777f3F89da6Ba965C7800FF</strong>
 
+!!! info "Send me Tether(TRC-20)"
+
+    <strong>TFkukvUMoiovcLU3BGbrzHkp5MerGqwEy4</strong>
+
+!!! info "Send me BNB(Coin)"
+
+    <strong>bnb1qejsxgmvf9jpmf7ck5jwdq2xeh27ff2l3rmmxw</strong>
+
+!!! info "Send me Dodgecoin"
+
+    <strong>DPxmRMdAes9rfPiNcQcnXiE6Mwnf1u63gH</strong>
+
+!!! info "Send me Tron"
+
+    <strong>TFkukvUMoiovcLU3BGbrzHkp5MerGqwEy4</strong>
+
 Don't forget to tap the ⭐ button on the project [Github link](https://github.com/janbarari/gradle-analytics-plugin).
 
 
