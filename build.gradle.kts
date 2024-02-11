@@ -69,6 +69,7 @@ dependencies {
     kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
+    implementation("org.postgresql:postgresql:42.5.4")
 }
 
 tasks.withType<KotlinCompile>().configureEach {

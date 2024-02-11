@@ -38,6 +38,9 @@ object ResetAutoIncremental {
             if (dbType == SqliteDatabaseConnection::class.java) {
                 return "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='$tableName';"
             }
+            if (dbType == PostgresDatabaseConnection::class.java) {
+                return "ALTER SEQUENCE $tableName RESTART WITH 0;"
+            }
         }
         return null
     }
