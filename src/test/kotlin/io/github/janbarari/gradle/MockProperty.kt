@@ -25,6 +25,7 @@ package io.github.janbarari.gradle
 import org.gradle.api.Transformer
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.specs.Spec
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
@@ -32,6 +33,9 @@ class MockProperty<T>(var value: T?): Property<T> {
     override fun get(): T = value!!
 
     override fun getOrNull(): T? = value
+    override fun filter(spec: Spec<in T>): Provider<T> {
+        return this
+    }
 
     override fun isPresent(): Boolean = value != null
 

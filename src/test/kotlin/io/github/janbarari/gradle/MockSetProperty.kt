@@ -25,6 +25,7 @@ package io.github.janbarari.gradle
 import org.gradle.api.Transformer
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
+import org.gradle.api.specs.Spec
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
@@ -32,6 +33,9 @@ class MockSetProperty<T>(var value: MutableSet<T>?): SetProperty<T> {
     override fun get(): MutableSet<T> = value!!
 
     override fun getOrNull(): MutableSet<T>? = value
+    override fun filter(spec: Spec<in MutableSet<T>>): Provider<MutableSet<T>> {
+        return this
+    }
 
     override fun isPresent(): Boolean = value != null
 

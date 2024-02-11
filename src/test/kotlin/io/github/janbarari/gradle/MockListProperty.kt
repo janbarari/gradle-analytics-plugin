@@ -25,6 +25,7 @@ package io.github.janbarari.gradle
 import org.gradle.api.Transformer
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
+import org.gradle.api.specs.Spec
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
@@ -32,6 +33,9 @@ class MockListProperty<T>(var value: MutableList<T>?): ListProperty<T> {
     override fun get(): MutableList<T> = value!!
 
     override fun getOrNull(): MutableList<T>? = value
+    override fun filter(spec: Spec<in MutableList<T>>): Provider<MutableList<T>> {
+        return this
+    }
 
     override fun isPresent(): Boolean = value != null
 
