@@ -63,15 +63,15 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(libs.sqlite.driver)
     implementation(libs.mysql.driver)
+    implementation(libs.postgres.driver)
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
     kapt(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
-    implementation("org.postgresql:postgresql:42.5.4")
-}
 
+}
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
@@ -92,13 +92,13 @@ tasks.test {
 
 tasks.jacocoTestReport {
 
-    val kotlinTree = fileTree(baseDir = "${project.buildDir}/classes") {
+    val kotlinTree = fileTree(baseDir = "${project.layout.buildDirectory.asFile.get().path}/classes") {
         excludes.add("**/*JsonAdapter.*")
         excludes.add("**/*Test*.*")
     }
 
     classDirectories.setFrom(kotlinTree)
-    executionData.setFrom(files("${project.buildDir}/jacoco/test.exec"))
+    executionData.setFrom(files("${project.layout.buildDirectory.asFile.get().path}/jacoco/test.exec"))
 
     val files = files("src/main/kotlin")
 
@@ -157,6 +157,18 @@ tasks.register("publishToLocal") {
     }
 }
 
+tasks.register("unsafePublishToLocal") {
+    doLast {
+        exec {
+            commandLine(
+                "./gradlew",
+                "build",
+                "publishToMavenLocal",
+            )
+        }
+    }
+}
+
 tasks.register("validateSourceHeaderLicense") {
     outputs.cacheIf { false }
     doLast {
@@ -185,9 +197,7 @@ tasks.register("publishToGradlePortal") {
 }
 
 detekt {
-    config = files("detekt-config.yml")
+    config.setFrom(files("detekt-config.yml"))
     buildUponDefaultConfig = true
-    source = files(
-        "src/main/kotlin"
-    )
+    source.setFrom(files("src/main/kotlin"))
 }

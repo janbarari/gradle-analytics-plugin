@@ -29,13 +29,16 @@ import org.gradle.api.artifacts.ProjectDependency
 
 object DependencyGraphGenerator {
 
+    private val allowedConfigurations = listOf("api", "implementation")
+
     fun generate(subprojects: List<Project>): ModulesDependencyGraph {
         val dependencies = mutableListOf<ModuleDependency>()
 
         subprojects.forEach { subProject ->
             subProject.configurations.forEach { configuration ->
                 configuration.dependencies.withType(ProjectDependency::class.java).forEach { dependency ->
-                    if (dependency.dependencyProject.path != subProject.path) {
+                    if (dependency.dependencyProject.path != subProject.path &&
+                            allowedConfigurations.contains(configuration.name)) {
                         dependencies.add(
                             ModuleDependency(
                                 path = subProject.path,

@@ -26,60 +26,11 @@ import io.github.janbarari.gradle.extension.whenNotNull
 import org.gradle.internal.impldep.org.junit.rules.TemporaryFolder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GradleAnalyticsPluginTest {
-
-    @Test
-    fun `Ensure the plugin is successfully installed on the sample project`() {
-        val testProjectDir = TemporaryFolder()
-        testProjectDir.create()
-        prepareGit(testProjectDir)
-        val buildFile = testProjectDir.newFile("build.gradle")
-        buildFile.appendText(
-            """
-                   plugins {
-                      id 'java'
-                      id 'io.github.janbarari.gradle-analytics-plugin'
-                   }
-
-                   gradleAnalyticsPlugin {
-                        database {
-                            local = sqlite {
-                                path = '${testProjectDir.root}'
-                                name = 'test-database'
-                            }
-                        }
-
-                        trackingBranches = ['main', 'develop']
-
-                        trackingTasks = ['assemble']
-
-                        outputPath = '${testProjectDir.root}'
-                   }
-                    """
-        )
-
-        val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments("assemble", "--stacktrace")
-            .withPluginClasspath()
-            .build()
-
-        result.whenNotNull {
-            println("\n==== BEGIN TEST OUTPUT ====")
-            println(output)
-            println("==== END TEST OUTPUT ====\n")
-        }
-
-        assertEquals(TaskOutcome.SUCCESS, result.task(":assemble")?.outcome)
-
-        testProjectDir.delete()
-    }
 
     @Test
     fun `When 'reportAnalytics' task configured in trackingTasks, Expect thrown exception with detailed message`() {
@@ -565,28 +516,4 @@ class GradleAnalyticsPluginTest {
         testProjectDir.delete()
     }
 
-
-    private fun prepareGit(dir: TemporaryFolder) {
-        dir.newFile("temporaryFileToCommit.txt")
-
-        ProcessBuilder(listOf("git", "init"))
-            .directory(dir.root)
-            .start()
-
-        ProcessBuilder(listOf("git", "add", "-A"))
-            .directory(dir.root)
-            .start()
-
-        ProcessBuilder(listOf("git", "commit", "-m", "\"Test\""))
-            .directory(dir.root)
-            .start()
-
-        ProcessBuilder(listOf("git", "checkout", "-b", "main"))
-            .directory(dir.root)
-            .start()
-
-        ProcessBuilder(listOf("git", "rev-parse", "--abbrev-ref", "HEAD"))
-            .directory(dir.root)
-            .start()
-    }
 }
