@@ -20,7 +20,7 @@
 # SOFTWARE.
 
 [versions]
-kotlin = "1.8.10"
+kotlin = "1.9.22"
 detekt = "1.23.0"
 sqlite_driver = "3.45.0.0"
 mysql_driver = "8.3.0"
