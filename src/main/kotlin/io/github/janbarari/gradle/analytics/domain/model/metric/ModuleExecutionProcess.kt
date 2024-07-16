@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,19 +32,11 @@ data class ModuleExecutionProcess(
     @Json(name = "path")
     val path: String,
     @Json(name = "median")
-    var medianExecInMillis: Long = 0L,
+    val medianExecInMillis: Long,
     @Json(name = "median_parallel")
-    var medianParallelExecInMillis: Long = 0L,
+    val medianParallelExecInMillis: Long,
     @Json(name = "parallel_rate")
     val parallelRate: Float,
     @Json(name = "coverage")
-    val coverageRate: Float,
-
-    @Deprecated("`averageDuration` deprecated in version `1.0.0-beta4`, replaced with `medianExecInMillis`")
-    @Json(name = "average_duration")
-    val averageDuration: Long = 0L,
-    @Deprecated("`averageParallelDuration` deprecated in version `1.0.0-beta4`, " +
-            "replaced with `medianParallelExecInMillis`")
-    @Json(name = "average_parallel_duration")
-    val averageParallelDuration: Long = 0L
+    val coverageRate: Float
 ) : java.io.Serializable

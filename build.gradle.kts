@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,13 +37,13 @@ val pluginTags: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm") version(libs.versions.kotlin)
+    kotlin("jvm") version libs.versions.kotlin
     alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
-    kotlin("kapt") version(libs.versions.kotlin)
-    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
+    id("com.google.devtools.ksp") version libs.versions.ksp
+    id("com.gradle.plugin-publish") version libs.versions.publish.plugin
 }
 
 group = pluginGroupPackageName
@@ -67,7 +67,7 @@ dependencies {
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
-    kapt(libs.moshi.codegen)
+    ksp(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
 

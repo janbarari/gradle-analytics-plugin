@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -125,9 +125,9 @@ class RenderModulesExecutionProcessReportStage(
             }
 
             var chartHeight = 400
-            // 16 px per each module
-            if (modules.size * 16 > 400) {
-                chartHeight = modules.size * 19
+            // 25 px per each module
+            if (modules.size * 25 > 400) {
+                chartHeight = modules.size * 25
             }
 
             renderedTemplate = renderedTemplate
