@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.database.PostgresDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
 import io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException
@@ -145,6 +146,20 @@ class GradleAnalyticsPlugin @Inject constructor(
                         )
                     }
                 }
+                whenTypeIs<PostgresDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`host` is missing in local Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`name` is missing in local Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
             }
             config.getDatabaseConfig().ci.whenNotNull {
                 whenTypeIs<SqliteDatabaseConnection> {
@@ -171,6 +186,20 @@ class GradleAnalyticsPlugin @Inject constructor(
                     if (name.isNull()) {
                         throw PluginConfigInvalidException(
                             "`name` is missing in ci MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+                whenTypeIs<PostgresDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`host` is missing in ci Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`name` is missing in ci Postgres database configuration.",
                             config.project.buildFile
                         )
                     }
