@@ -1,6 +1,6 @@
 <!--
  MIT License
- Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,10 @@
 -->
 
 # Upcoming Milestone
-Finally, the first stable version of the plugin, planned for release in `Milestone/1.0.1`, is scheduled to be published during the last week of May 2023.
+Upcoming milestone planned for delivery by the second week of August 2024.
 <br>
 
 <b>Upcoming Changes</b>
 
-- [x] Fix bug report #105
-- [x] Fix bug report #121
-- [x] Upgrade gradle version to 8.0.2
-- [x] Upgrade kotlin and other dependencies
-
-<br>
-I'm sorry for the delay in the project. It was caused by unexpected problems, like losing my job and facing personal difficulties, which made it hard for me to contribute effectively. I would really appreciate it if you could donate to support the development of this plugin.
+- [ ] Fix bug report #105
+- [ ] Add new metrics

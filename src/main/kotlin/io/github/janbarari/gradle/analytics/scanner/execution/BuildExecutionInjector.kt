@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,7 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
-import io.github.janbarari.gradle.analytics.data.V100B6DatabaseResultMigrationStage
 import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
@@ -164,15 +162,6 @@ fun BuildExecutionInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdapt
 }
 
 @ExcludeJacocoGenerated
-fun BuildExecutionInjector.provideDatabaseResultMigrationPipeline(): DatabaseResultMigrationPipeline {
-    return DatabaseResultMigrationPipeline(
-        V100B6DatabaseResultMigrationStage(
-            modules = parameters.modules.get().map { it.path }.toSet()
-        )
-    )
-}
-
-@ExcludeJacocoGenerated
 fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
     if (databaseRepository.isNull()) {
         databaseRepository = synchronized(this) {
@@ -182,8 +171,7 @@ fun BuildExecutionInjector.provideDatabaseRepository(): DatabaseRepository {
                 branch = provideCurrentBranch(),
                 requestedTasks = parameters.requestedTasks.get().separateElementsWithSpace(),
                 buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
-                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache(),
-                databaseResultMigrationPipeline = provideDatabaseResultMigrationPipeline()
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
             )
         }
     }

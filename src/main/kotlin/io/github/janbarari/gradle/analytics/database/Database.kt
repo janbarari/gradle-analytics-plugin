@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ class Database(
             when (databaseConfig) {
                 is MySqlDatabaseConnection -> {
                     LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.MEDIUMTEXT
-                    connectToMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
+                    connectMysqlDatabase(databaseConfig as MySqlDatabaseConnection)
                     ResetAutoIncremental.dbType = MySqlDatabaseConnection::class.java
                 }
                 is SqliteDatabaseConnection -> {
@@ -77,13 +77,18 @@ class Database(
                     connectSqliteDatabase(databaseConfig as SqliteDatabaseConnection)
                     ResetAutoIncremental.dbType = SqliteDatabaseConnection::class.java
                 }
+                is PostgresDatabaseConnection -> {
+                    LongTextColumnType.longTextType = LongTextColumnType.Companion.LongTextType.TEXT
+                    connectPostgresDatabase(databaseConfig as PostgresDatabaseConnection)
+                    ResetAutoIncremental.dbType = PostgresDatabaseConnection::class.java
+                }
             }
 
             createTables(MetricTable, TemporaryMetricTable, SingleMetricTable)
         }
     }
 
-    private fun connectToMysqlDatabase(config: MySqlDatabaseConnection) {
+    private fun connectMysqlDatabase(config: MySqlDatabaseConnection) {
         tower.i(clazz, "connectToMysqlDatabase()")
         _database = Database.connect(
             url = "jdbc:mysql://${config.host}:${config.port}/${config.name}",
@@ -103,6 +108,16 @@ class Database(
         )
     }
 
+    private fun connectPostgresDatabase(config: PostgresDatabaseConnection) {
+        tower.i(clazz, "connectPostgresDatabase()")
+        _database = Database.connect(
+            url = "jdbc:postgresql://${config.host}:${config.port}/${config.name}",
+            driver = "org.postgresql.Driver",
+            user = config.user,
+            password = config.password
+        )
+    }
+
     /**
      * Creates the database tables if not exist.
      */
@@ -116,11 +131,10 @@ class Database(
     @ExcludeJacocoGenerated
     fun <T> transaction(statement: Transaction.() -> T): T {
         return transaction(
-            _database.transactionManager.defaultIsolationLevel,
-            _database.transactionManager.defaultRepetitionAttempts,
+            transactionIsolation = _database.transactionManager.defaultIsolationLevel,
             readOnly = false,
-            _database,
-            statement
+            db = _database,
+            statement = statement
         )
     }
 

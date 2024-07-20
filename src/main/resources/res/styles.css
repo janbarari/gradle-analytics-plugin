@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -164,31 +164,48 @@ h4 {
 }
 
 .tag-style-1 {
-    background: #D1C4E9;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    background: #8e6bcf;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 4px;
 }
 
 .tag-style-2 {
-    background: #D7CCC8;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    background: #b37a66;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
 }
 
 .tag-style-3 {
-    background: #C8E6C9;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    background: #43a147;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
 }
 
 .tag-style-4 {
-    background: #e6c8c8;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    background: #b83d3d;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+}
+
+.tag-style-5 {
+    background: #1E88E5;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
 }
 
 .gray-text {
@@ -310,19 +327,48 @@ hr {
 }
 
 .dark-mode .tag-style-1 {
+    background: #268e6bcf;
     color: #FFFFFF;
-    background: #472f79;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 4px;
 }
 
 .dark-mode .tag-style-2 {
+    background: #26b37a66;
     color: #FFFFFF;
-    background: #7f4e3d;
-    border-radius: 20px;
-    padding-left: 6px;
-    padding-right: 6px;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+}
+
+.dark-mode .tag-style-3 {
+    background: #2643a147;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+}
+
+.dark-mode .tag-style-4 {
+    background: #26b83d3d;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
+}
+
+.dark-mode .tag-style-5 {
+    background: #261E88E5;
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 2px;
 }
 
 .dark-mode .tag-style-3 {

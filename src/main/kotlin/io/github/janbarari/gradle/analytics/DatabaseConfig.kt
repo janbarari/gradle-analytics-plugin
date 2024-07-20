@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ import groovy.lang.Closure
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.DatabaseConnection
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.database.PostgresDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 
 @ExcludeJacocoGenerated
@@ -63,6 +64,27 @@ class DatabaseConfig @JvmOverloads constructor() : java.io.Serializable {
      */
     fun mysql(closure: Closure<*>): MySqlDatabaseConnection {
         val temp = MySqlDatabaseConnection { }
+        closure.delegate = temp
+        closure.call()
+        return temp
+    }
+
+    /**
+     * Factory method for create a new instance
+     * of [io.github.janbarari.gradle.analytics.database.PostgresDatabaseConnection].
+     */
+    fun postgres(block: PostgresDatabaseConnection.() -> Unit): PostgresDatabaseConnection {
+        return PostgresDatabaseConnection {
+            also(block)
+        }
+    }
+
+    /**
+     * Factory method for create a new instance
+     * of [io.github.janbarari.gradle.analytics.database.PostgresDatabaseConnection].
+     */
+    fun postgres(closure: Closure<*>): PostgresDatabaseConnection {
+        val temp = PostgresDatabaseConnection { }
         closure.delegate = temp
         closure.call()
         return temp

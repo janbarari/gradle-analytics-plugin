@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,14 @@ import io.github.janbarari.gradle.ExcludeJacocoGenerated
 class MySqlDatabaseConnection(block: MySqlDatabaseConnection.() -> Unit): DatabaseConnection() {
 
     companion object {
-        const val DEFAULT_MYSQL_PORT = 3306
+        const val DEFAULT_PORT = 3306
     }
 
     var host: String? = null
 
     var name: String? = null
 
-    var port: Int = DEFAULT_MYSQL_PORT
+    var port: Int = DEFAULT_PORT
 
     var user: String = "root"
 

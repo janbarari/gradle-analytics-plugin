@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,9 @@ object ResetAutoIncremental {
             }
             if (dbType == SqliteDatabaseConnection::class.java) {
                 return "UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='$tableName';"
+            }
+            if (dbType == PostgresDatabaseConnection::class.java) {
+                return "ALTER SEQUENCE $tableName RESTART WITH 0;"
             }
         }
         return null

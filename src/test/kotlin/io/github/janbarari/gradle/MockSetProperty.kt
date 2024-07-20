@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ package io.github.janbarari.gradle
 import org.gradle.api.Transformer
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
+import org.gradle.api.specs.Spec
 import org.gradle.internal.impldep.org.apache.http.MethodNotSupportedException
 import java.util.function.BiFunction
 
@@ -32,6 +33,9 @@ class MockSetProperty<T>(var value: MutableSet<T>?): SetProperty<T> {
     override fun get(): MutableSet<T> = value!!
 
     override fun getOrNull(): MutableSet<T>? = value
+    override fun filter(spec: Spec<in MutableSet<T>>): Provider<MutableSet<T>> {
+        return this
+    }
 
     override fun isPresent(): Boolean = value != null
 
@@ -54,6 +58,14 @@ class MockSetProperty<T>(var value: MutableSet<T>?): SetProperty<T> {
 
     override fun disallowUnsafeRead() {
         // do nothing
+    }
+
+    override fun unset(): SetProperty<T> {
+        return this
+    }
+
+    override fun unsetConvention(): SetProperty<T> {
+        return this
     }
 
     override fun empty(): SetProperty<T> {

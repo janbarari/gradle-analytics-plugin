@@ -20,11 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.core
+package io.github.janbarari.gradle.analytics.database
 
-/**
- * Pipeline design pattern stage interface.
- */
-interface SuspendStage<I, O> {
-   suspend fun process(input: I): O
+import io.github.janbarari.gradle.ExcludeJacocoGenerated
+
+@ExcludeJacocoGenerated
+class PostgresDatabaseConnection(block: PostgresDatabaseConnection.() -> Unit): DatabaseConnection() {
+
+    companion object {
+        const val DEFAULT_PORT = 5432
+    }
+
+    var host: String? = null
+
+    var name: String? = null
+
+    var port: Int = DEFAULT_PORT
+
+    var user: String = ""
+
+    var password: String = ""
+
+    init {
+        apply(block)
+    }
 }

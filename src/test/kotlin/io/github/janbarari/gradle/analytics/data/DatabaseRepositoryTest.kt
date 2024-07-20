@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,15 +26,10 @@ import com.squareup.moshi.Moshi
 import io.github.janbarari.gradle.TowerMockImpl
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.repository.DatabaseRepository
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -47,11 +42,9 @@ import kotlin.test.assertEquals
 class DatabaseRepositoryTest {
 
     private lateinit var repo: DatabaseRepository
-    private lateinit var databaseResultMigrationPipeline: DatabaseResultMigrationPipeline
 
     @BeforeEach
     fun setup() {
-        databaseResultMigrationPipeline = mockk()
         val databaseConfig = DatabaseConfig().apply {
             local = SqliteDatabaseConnection {
                 path = "./build"
@@ -70,8 +63,7 @@ class DatabaseRepositoryTest {
             branch = "develop",
             requestedTasks = "assembleDebug",
             buildMetricJsonAdapter = BuildMetricJsonAdapter(Moshi.Builder().build()),
-            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl()),
-            databaseResultMigrationPipeline = databaseResultMigrationPipeline
+            temporaryMetricsMemoryCache = TemporaryMetricsMemoryCacheImpl(TowerMockImpl())
         )
     }
 

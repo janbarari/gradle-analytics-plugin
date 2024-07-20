@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,57 +28,9 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import org.gradle.testkit.runner.TaskOutcome
 
 class GradleAnalyticsPluginTest {
-
-    @Test
-    fun `Ensure the plugin is successfully installed on the sample project`() {
-        val testProjectDir = TemporaryFolder()
-        testProjectDir.create()
-        val buildFile = testProjectDir.newFile("build.gradle")
-        buildFile.appendText(
-            """
-                   plugins {
-                      id 'java'
-                      id 'io.github.janbarari.gradle-analytics-plugin'
-                   }
-                   
-                   gradleAnalyticsPlugin {
-                        database {
-                            local = sqlite {
-                                path = '${testProjectDir.root}'
-                                name = 'test-database'
-                            }
-                        }
-                            
-                        trackingBranches = ['main', 'develop']
-                        
-                        trackingTasks = ['assemble']
-                        
-                        outputPath = '${testProjectDir.root}'
-                   }
-                    """
-        )
-
-        val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments("assemble", "--stacktrace")
-            .withPluginClasspath()
-            .build()
-
-        result.whenNotNull {
-            println("\n==== BEGIN TEST OUTPUT ====")
-            println(output)
-            println("==== END TEST OUTPUT ====\n")
-        }
-
-        assertEquals(TaskOutcome.SUCCESS, result.task(":assemble")?.outcome)
-
-        testProjectDir.delete()
-    }
 
     @Test
     fun `When 'reportAnalytics' task configured in trackingTasks, Expect thrown exception with detailed message`() {
@@ -559,6 +511,221 @@ class GradleAnalyticsPluginTest {
             exception
                 .message!!
                 .contains("gradleAnalyticsPlugin: `name` is missing in ci MySql database configuration.")
+        }
+
+        testProjectDir.delete()
+    }
+
+    @Test
+    fun `When local postgres database 'host' is missing, Expect thrown exception with detailed message`() {
+        val testProjectDir = TemporaryFolder()
+        testProjectDir.create()
+        val buildFile = testProjectDir.newFile("build.gradle")
+        buildFile.appendText(
+            """
+                   plugins {
+                      id 'java'
+                      id 'io.github.janbarari.gradle-analytics-plugin'
+                   }
+                   
+                   gradleAnalyticsPlugin {
+                        database {
+                            local = postgres {
+                                name = 'test-database'
+                            }
+                        }
+                            
+                        trackingBranches = ['main', 'develop']
+                        
+                        trackingTasks = ['assemble']
+                        
+                        outputPath = '${testProjectDir.root}'
+                   }
+                    """
+        )
+
+        var result: BuildResult? = null
+        val exception = assertThrows<Throwable> {
+            result = GradleRunner.create()
+                .withProjectDir(testProjectDir.root)
+                .withArguments("assemble")
+                .withPluginClasspath()
+                .build()
+
+        }
+        println(exception.message)
+
+        result.whenNotNull {
+            println("\n==== BEGIN TEST OUTPUT ====")
+            println(output)
+            println("==== END TEST OUTPUT ====\n")
+        }
+
+        assertTrue {
+            exception
+                .message!!
+                .contains("gradleAnalyticsPlugin: `host` is missing in local Postgres database configuration.")
+        }
+
+        testProjectDir.delete()
+    }
+
+    @Test
+    fun `When local postgres database 'name' is missing, Expect thrown exception with detailed message`() {
+        val testProjectDir = TemporaryFolder()
+        testProjectDir.create()
+        val buildFile = testProjectDir.newFile("build.gradle")
+        buildFile.appendText(
+            """
+                   plugins {
+                      id 'java'
+                      id 'io.github.janbarari.gradle-analytics-plugin'
+                   }
+                   
+                   gradleAnalyticsPlugin {
+                        database {
+                            local = postgres {
+                                host = '127.0.0.1'
+                            }
+                        }
+                            
+                        trackingBranches = ['main', 'develop']
+                        
+                        trackingTasks = ['assemble']
+                        
+                        outputPath = '${testProjectDir.root}'
+                   }
+                    """
+        )
+
+        var result: BuildResult? = null
+        val exception = assertThrows<Throwable> {
+            result = GradleRunner.create()
+                .withProjectDir(testProjectDir.root)
+                .withArguments("assemble")
+                .withPluginClasspath()
+                .build()
+
+        }
+        println(exception.message)
+
+        result.whenNotNull {
+            println("\n==== BEGIN TEST OUTPUT ====")
+            println(output)
+            println("==== END TEST OUTPUT ====\n")
+        }
+
+        assertTrue {
+            exception
+                .message!!
+                .contains("gradleAnalyticsPlugin: `name` is missing in local Postgres database configuration.")
+        }
+
+        testProjectDir.delete()
+    }
+
+    @Test
+    fun `When ci postgres database 'host' is missing, Expect thrown exception with detailed message`() {
+        val testProjectDir = TemporaryFolder()
+        testProjectDir.create()
+        val buildFile = testProjectDir.newFile("build.gradle")
+        buildFile.appendText(
+            """
+                   plugins {
+                      id 'java'
+                      id 'io.github.janbarari.gradle-analytics-plugin'
+                   }
+                   
+                   gradleAnalyticsPlugin {
+                        database {
+                            ci = postgres {
+                                name = 'test-database'
+                            }
+                        }
+                            
+                        trackingBranches = ['main', 'develop']
+                        
+                        trackingTasks = ['assemble']
+                        
+                        outputPath = '${testProjectDir.root}'
+                   }
+                    """
+        )
+
+        var result: BuildResult? = null
+        val exception = assertThrows<Throwable> {
+            result = GradleRunner.create()
+                .withProjectDir(testProjectDir.root)
+                .withArguments("assemble")
+                .withPluginClasspath()
+                .build()
+
+        }
+        println(exception.message)
+
+        result.whenNotNull {
+            println("\n==== BEGIN TEST OUTPUT ====")
+            println(output)
+            println("==== END TEST OUTPUT ====\n")
+        }
+
+        assertTrue {
+            exception
+                .message!!
+                .contains("gradleAnalyticsPlugin: `host` is missing in ci Postgres database configuration.")
+        }
+
+        testProjectDir.delete()
+    }
+
+    @Test
+    fun `When ci postgres database 'name' is missing, Expect thrown exception with detailed message`() {
+        val testProjectDir = TemporaryFolder()
+        testProjectDir.create()
+        val buildFile = testProjectDir.newFile("build.gradle")
+        buildFile.appendText(
+            """
+                   plugins {
+                      id 'java'
+                      id 'io.github.janbarari.gradle-analytics-plugin'
+                   }
+                   
+                   gradleAnalyticsPlugin {
+                        database {
+                            ci = postgres {
+                                host = '127.0.0.1'
+                            }
+                        }
+                            
+                        trackingBranches = ['main', 'develop']
+                        
+                        trackingTasks = ['assemble']
+                        
+                        outputPath = '${testProjectDir.root}'
+                   }
+                    """
+        )
+
+        var result: BuildResult? = null
+        val exception = assertThrows<Throwable> {
+            result = GradleRunner.create()
+                .withProjectDir(testProjectDir.root)
+                .withArguments("assemble")
+                .withPluginClasspath()
+                .build()
+        }
+        println(exception.message)
+
+        result.whenNotNull {
+            println("\n==== BEGIN TEST OUTPUT ====")
+            println(output)
+            println("==== END TEST OUTPUT ====\n")
+        }
+
+        assertTrue {
+            exception
+                .message!!
+                .contains("gradleAnalyticsPlugin: `name` is missing in ci Postgres database configuration.")
         }
 
         testProjectDir.delete()

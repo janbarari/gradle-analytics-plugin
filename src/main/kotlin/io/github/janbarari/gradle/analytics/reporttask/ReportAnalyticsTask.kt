@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -142,6 +142,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             excludeModules = excludeModules.get()
         )
         tower = injector.provideTower()
+
         tower.r("report process started")
         tower.r("plugin version: ${GradleAnalyticsPlugin.PLUGIN_VERSION}")
         tower.r("jvm: ${JavaVersion.current()}")
