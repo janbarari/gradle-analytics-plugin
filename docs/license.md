@@ -1,6 +1,6 @@
 <!--
  MIT License
- Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 
 # License
 <strong>MIT License</strong><br/>
-Copyright &copy; 2022 Mehdi Janbarari (<a href="https://github.com/janbarari/">@janbarari</a>)
+Copyright &copy; 2024 Mehdi Janbarari (<a href="https://github.com/janbarari/">@janbarari</a>)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

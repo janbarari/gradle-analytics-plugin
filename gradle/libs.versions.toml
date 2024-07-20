@@ -1,5 +1,5 @@
 # MIT License
-# Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+# Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,23 @@
 # SOFTWARE.
 
 [versions]
-kotlin = "1.8.10"
+kotlin = "1.9.22"
 detekt = "1.23.0"
 sqlite_driver = "3.45.0.0"
-mysql_driver = "8.0.33"
+mysql_driver = "8.3.0"
 jetbrains_exposed = "0.46.0"
-moshi = "1.15.0"
+moshi = "1.15.1"
 commons-io = "2.12.0"
 mockk = "1.13.5"
 coroutines = "1.7.1"
+postgres_driver = "42.5.4"
+ksp = "1.9.22-1.0.17"
+publish-plugin = "1.0.0-rc-1"
 
 [libraries]
 sqlite_driver = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite_driver" }
-mysql_driver = { module = "mysql:mysql-connector-java", version.ref = "mysql_driver" }
+mysql_driver = { module = "com.mysql:mysql-connector-j", version.ref = "mysql_driver" }
+postgres_driver = { module = "org.postgresql:postgresql", version.ref = "postgres_driver"}
 jetbrains_exposed_core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "jetbrains_exposed" }
 jetbrains_exposed_jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "jetbrains_exposed" }
 moshi = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }

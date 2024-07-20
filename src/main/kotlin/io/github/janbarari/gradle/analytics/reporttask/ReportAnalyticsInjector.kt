@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,9 +28,7 @@ import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin.Companion.OUTPUT_DIRECTORY_NAME
 import io.github.janbarari.gradle.analytics.data.DatabaseRepositoryImp
 import io.github.janbarari.gradle.analytics.data.TemporaryMetricsMemoryCacheImpl
-import io.github.janbarari.gradle.analytics.data.V100B6DatabaseResultMigrationStage
 import io.github.janbarari.gradle.analytics.database.Database
-import io.github.janbarari.gradle.analytics.database.DatabaseResultMigrationPipeline
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
 import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetricJsonAdapter
 import io.github.janbarari.gradle.analytics.domain.model.report.ModulesDependencyGraphReportJsonAdapter
@@ -128,11 +126,6 @@ fun ReportAnalyticsInjector.provideBuildMetricJsonAdapter(): BuildMetricJsonAdap
 }
 
 @ExcludeJacocoGenerated
-fun ReportAnalyticsInjector.provideDatabaseResultMigrationPipeline(): DatabaseResultMigrationPipeline {
-    return DatabaseResultMigrationPipeline(V100B6DatabaseResultMigrationStage(modules = modules!!))
-}
-
-@ExcludeJacocoGenerated
 fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
     if (databaseRepository.isNull()) {
         databaseRepository = synchronized(this) {
@@ -142,8 +135,7 @@ fun ReportAnalyticsInjector.provideDatabaseRepository(): DatabaseRepository {
                 branch = branch!!,
                 requestedTasks = requestedTasks!!,
                 buildMetricJsonAdapter = provideBuildMetricJsonAdapter(),
-                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache(),
-                databaseResultMigrationPipeline = provideDatabaseResultMigrationPipeline()
+                temporaryMetricsMemoryCache = provideTemporaryMetricsMemoryCache()
             )
         }
     }

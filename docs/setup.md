@@ -1,6 +1,6 @@
 <!--
  MIT License
- Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -38,13 +38,13 @@ Apply the Gradle Plugin to the root of your project.
 === "Kotlin"
     ``` kotlin
     plugins {
-        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.1"
+        id("io.github.janbarari.gradle-analytics-plugin") version "1.0.2"
     }
     ```
 === "Groovy"
     ``` groovy
     plugins {
-        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.1'
+        id 'io.github.janbarari.gradle-analytics-plugin' version '1.0.2'
     }
     ```
 [For legacy plugin application, see the Gradle Plugin Portal.](https://plugins.gradle.org/plugin/io.github.janbarari.gradle-analytics-plugin)
@@ -141,7 +141,7 @@ Add plugin configuration in the root of your project.
 <strong>Important Notes</strong><br/>
 
 - The plugin will create one automatically if there isn't an SQLite database. You only need to fill in the `name` and `path` (Recommended).
-- Both `sqlite / mysql` can be used to config `local` or `ci` databases.
+- All `sqlite / mysql / postgres` can be used to config `local` or `ci` databases.
 - Both `local` and `ci` configs are optional.
 - If using the plugin in your CI/CD make sure the `CI=true` environment variable exists in your CI system environments and the `ci` database is configured.
 - The `outputPath` can be skipped, it will generate the report inside the project build directory.

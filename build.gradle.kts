@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,13 +37,13 @@ val pluginTags: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm") version(libs.versions.kotlin)
+    kotlin("jvm") version libs.versions.kotlin
     alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
-    kotlin("kapt") version(libs.versions.kotlin)
-    id("com.gradle.plugin-publish") version "1.0.0-rc-1"
+    id("com.google.devtools.ksp") version libs.versions.ksp
+    id("com.gradle.plugin-publish") version libs.versions.publish.plugin
 }
 
 group = pluginGroupPackageName
@@ -63,15 +63,15 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(libs.sqlite.driver)
     implementation(libs.mysql.driver)
+    implementation(libs.postgres.driver)
     implementation(libs.jetbrains.exposed.core)
     implementation(libs.jetbrains.exposed.jdbc)
     implementation(libs.moshi)
-    kapt(libs.moshi.codegen)
+    ksp(libs.moshi.codegen)
     implementation(libs.commons.io)
     implementation(libs.coroutines)
-    implementation("org.postgresql:postgresql:42.5.4")
-}
 
+}
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
@@ -92,13 +92,13 @@ tasks.test {
 
 tasks.jacocoTestReport {
 
-    val kotlinTree = fileTree(baseDir = "${project.buildDir}/classes") {
+    val kotlinTree = fileTree(baseDir = "${project.layout.buildDirectory.asFile.get().path}/classes") {
         excludes.add("**/*JsonAdapter.*")
         excludes.add("**/*Test*.*")
     }
 
     classDirectories.setFrom(kotlinTree)
-    executionData.setFrom(files("${project.buildDir}/jacoco/test.exec"))
+    executionData.setFrom(files("${project.layout.buildDirectory.asFile.get().path}/jacoco/test.exec"))
 
     val files = files("src/main/kotlin")
 
@@ -157,6 +157,18 @@ tasks.register("publishToLocal") {
     }
 }
 
+tasks.register("unsafePublishToLocal") {
+    doLast {
+        exec {
+            commandLine(
+                "./gradlew",
+                "build",
+                "publishToMavenLocal",
+            )
+        }
+    }
+}
+
 tasks.register("validateSourceHeaderLicense") {
     outputs.cacheIf { false }
     doLast {
@@ -185,9 +197,7 @@ tasks.register("publishToGradlePortal") {
 }
 
 detekt {
-    config = files("detekt-config.yml")
+    config.setFrom(files("detekt-config.yml"))
     buildUponDefaultConfig = true
-    source = files(
-        "src/main/kotlin"
-    )
+    source.setFrom(files("src/main/kotlin"))
 }

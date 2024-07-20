@@ -1,6 +1,6 @@
 <!--
  MIT License
- Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,11 @@
 -->
 
 # Changelog
+
+## 1.0.2
+* Add postgres database support
+* Upgrade gradle version to `8.9`
+* Update the copyright information
 
 ## 1.0.1
 * [Issue 105](https://github.com/janbarari/gradle-analytics-plugin/issues/105)

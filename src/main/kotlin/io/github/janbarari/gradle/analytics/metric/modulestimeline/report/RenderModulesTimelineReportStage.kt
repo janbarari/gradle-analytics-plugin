@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,7 @@ class RenderModulesTimelineReportStage(
             append("]")
         }
 
-        val maxLabelWidth = report.modulesTimelineReport?.modules?.maxOf { it.path }?.length?.times(20) ?: 128
+        val maxLabelWidth = report.modulesTimelineReport?.modules?.maxOf { it.path.length }?.times(8)?.plus(24) ?: 128
 
         renderedTemplate = renderedTemplate
             .replace("%timelines%", result)

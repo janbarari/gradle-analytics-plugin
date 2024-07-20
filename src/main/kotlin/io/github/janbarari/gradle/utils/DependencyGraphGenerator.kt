@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,13 +29,16 @@ import org.gradle.api.artifacts.ProjectDependency
 
 object DependencyGraphGenerator {
 
+    private val allowedConfigurations = listOf("api", "implementation")
+
     fun generate(subprojects: List<Project>): ModulesDependencyGraph {
         val dependencies = mutableListOf<ModuleDependency>()
 
         subprojects.forEach { subProject ->
             subProject.configurations.forEach { configuration ->
                 configuration.dependencies.withType(ProjectDependency::class.java).forEach { dependency ->
-                    if (dependency.dependencyProject.path != subProject.path) {
+                    if (dependency.dependencyProject.path != subProject.path &&
+                            allowedConfigurations.contains(configuration.name)) {
                         dependencies.add(
                             ModuleDependency(
                                 path = subProject.path,

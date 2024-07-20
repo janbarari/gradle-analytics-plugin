@@ -1,6 +1,6 @@
 <!--
  MIT License
- Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ Copyright (c) 2024 Mehdi Janbarari (@janbarari)
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ The build is an important process. If we want to have a faster and more efficien
 The Gradle Analytics Plugin helps you analyze and measure your project builds. It provides unique visual and text metrics in HTML format.
 
 To understand the metrics and report that plugin provides, It is required to understand Gradle basics and how this build
-system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
+system works.<br /><a href="https://docs.gradle.org/current/userguide/userguide.html" target="_blank">https://docs.gradle.org/current/userguide/userguide.html</a>
 
 !!! warning "Important"
 

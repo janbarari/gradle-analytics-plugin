@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ package io.github.janbarari.gradle.analytics
 
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.database.MySqlDatabaseConnection
+import io.github.janbarari.gradle.analytics.database.PostgresDatabaseConnection
 import io.github.janbarari.gradle.analytics.database.SqliteDatabaseConnection
 import io.github.janbarari.gradle.analytics.exception.IncompatibleVersionException
 import io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException
@@ -56,7 +57,7 @@ class GradleAnalyticsPlugin @Inject constructor(
 
     companion object {
         const val PLUGIN_NAME = "gradleAnalyticsPlugin"
-        const val PLUGIN_VERSION = "1.0.1"
+        const val PLUGIN_VERSION = "1.0.2"
         const val OUTPUT_DIRECTORY_NAME = "gradle-analytics-plugin"
     }
 
@@ -113,7 +114,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      * @throws io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException when something is missing or wrong.
      */
     @kotlin.jvm.Throws(PluginConfigInvalidException::class)
-    @Suppress("ThrowsCount")
+    @Suppress("ThrowsCount", "LongMethod")
     private fun validateConfig(config: GradleAnalyticsPluginConfig) {
         config.project.gradle.projectsEvaluated {
             config.getDatabaseConfig().local.whenNotNull {
@@ -145,6 +146,20 @@ class GradleAnalyticsPlugin @Inject constructor(
                         )
                     }
                 }
+                whenTypeIs<PostgresDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`host` is missing in local Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`name` is missing in local Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
             }
             config.getDatabaseConfig().ci.whenNotNull {
                 whenTypeIs<SqliteDatabaseConnection> {
@@ -171,6 +186,20 @@ class GradleAnalyticsPlugin @Inject constructor(
                     if (name.isNull()) {
                         throw PluginConfigInvalidException(
                             "`name` is missing in ci MySql database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                }
+                whenTypeIs<PostgresDatabaseConnection> {
+                    if (host.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`host` is missing in ci Postgres database configuration.",
+                            config.project.buildFile
+                        )
+                    }
+                    if (name.isNull()) {
+                        throw PluginConfigInvalidException(
+                            "`name` is missing in ci Postgres database configuration.",
                             config.project.buildFile
                         )
                     }
