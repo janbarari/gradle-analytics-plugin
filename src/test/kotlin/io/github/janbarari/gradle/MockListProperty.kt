@@ -60,6 +60,14 @@ class MockListProperty<T>(var value: MutableList<T>?): ListProperty<T> {
         // do nothing
     }
 
+    override fun unset(): ListProperty<T> {
+        return this
+    }
+
+    override fun unsetConvention(): ListProperty<T> {
+        return this
+    }
+
     override fun empty(): ListProperty<T> {
         return this
     }

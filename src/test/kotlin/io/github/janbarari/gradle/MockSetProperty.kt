@@ -60,6 +60,14 @@ class MockSetProperty<T>(var value: MutableSet<T>?): SetProperty<T> {
         // do nothing
     }
 
+    override fun unset(): SetProperty<T> {
+        return this
+    }
+
+    override fun unsetConvention(): SetProperty<T> {
+        return this
+    }
+
     override fun empty(): SetProperty<T> {
         return this
     }

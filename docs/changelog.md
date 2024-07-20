@@ -23,6 +23,11 @@
 
 # Changelog
 
+## 1.0.2
+* Add postgres database support
+* Upgrade gradle version to `8.9`
+* Update the copyright information
+
 ## 1.0.1
 * [Issue 105](https://github.com/janbarari/gradle-analytics-plugin/issues/105)
 * [Issue 121](https://github.com/janbarari/gradle-analytics-plugin/issues/121)

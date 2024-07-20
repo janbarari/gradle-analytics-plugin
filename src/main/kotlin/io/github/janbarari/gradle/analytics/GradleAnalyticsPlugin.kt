@@ -114,7 +114,7 @@ class GradleAnalyticsPlugin @Inject constructor(
      * @throws io.github.janbarari.gradle.analytics.exception.PluginConfigInvalidException when something is missing or wrong.
      */
     @kotlin.jvm.Throws(PluginConfigInvalidException::class)
-    @Suppress("ThrowsCount")
+    @Suppress("ThrowsCount", "LongMethod")
     private fun validateConfig(config: GradleAnalyticsPluginConfig) {
         config.project.gradle.projectsEvaluated {
             config.getDatabaseConfig().local.whenNotNull {

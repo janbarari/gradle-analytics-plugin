@@ -46,7 +46,7 @@ Gradle Analytics Plugin uses daily basis data to generate reports. So you could 
 <br/>
 
 To understand the metrics and report that plugin provides, It is required to understand Gradle basics and how this build
-system works.<br /><a href="https://docs.gradle.org/current/userguide/what_is_gradle.html" target="_blank">https://docs.gradle.org/current/userguide/what_is_gradle.html</a>
+system works.<br /><a href="https://docs.gradle.org/current/userguide/userguide.html" target="_blank">https://docs.gradle.org/current/userguide/userguide.html</a>
 <br/>
 
 <br/>

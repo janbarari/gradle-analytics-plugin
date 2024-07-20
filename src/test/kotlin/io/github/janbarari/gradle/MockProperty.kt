@@ -60,6 +60,14 @@ class MockProperty<T>(var value: T?): Property<T> {
         // do nothing
     }
 
+    override fun unset(): Property<T> {
+        return this
+    }
+
+    override fun unsetConvention(): Property<T> {
+        return this
+    }
+
     override fun convention(provider: Provider<out T>): Property<T> {
         return this
     }
