@@ -1,6 +1,6 @@
 /**
  * MIT License
- * Copyright (c) 2024 Mehdi Janbarari (@janbarari)
+ * Copyright (c) 2022 Mehdi Janbarari (@janbarari)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.janbarari.gradle.analytics.domain.model.metric
+package io.github.janbarari.gradle.analytics.database
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import io.github.janbarari.gradle.ExcludeJacocoGenerated
+import io.github.janbarari.gradle.analytics.domain.model.metric.BuildMetric
+import io.github.janbarari.gradle.core.Pipeline
+import io.github.janbarari.gradle.core.Stage
 
-@ExcludeJacocoGenerated
-@JsonClass(generateAdapter = true)
-data class ModuleExecutionProcess(
-    @Json(name = "path")
-    val path: String,
-    @Json(name = "median")
-    var medianExecInMillis: Long = 0L,
-    @Json(name = "median_parallel")
-    var medianParallelExecInMillis: Long = 0L,
-    @Json(name = "parallel_rate")
-    val parallelRate: Float,
-    @Json(name = "coverage")
-    val coverageRate: Float,
-
-    @Deprecated("`averageDuration` deprecated in version `1.0.0-beta4`, replaced with `medianExecInMillis`")
-    @Json(name = "average_duration")
-    val averageDuration: Long = 0L,
-    @Deprecated("`averageParallelDuration` deprecated in version `1.0.0-beta4`, " +
-            "replaced with `medianParallelExecInMillis`")
-    @Json(name = "average_parallel_duration")
-    val averageParallelDuration: Long = 0L
-) : java.io.Serializable
+class DatabaseResultMigrationPipeline(firstStage: Stage<BuildMetric, BuildMetric>):
+    Pipeline<BuildMetric, BuildMetric>(firstStage)
