@@ -23,6 +23,9 @@
 
 # Changelog
 
+## 1.0.3
+* Minor issues fixed
+
 ## 1.0.2
 * Add postgres database support
 * Upgrade gradle version to `8.9`

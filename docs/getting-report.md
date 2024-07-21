@@ -26,7 +26,7 @@ Gradle Analytics Plugin uses daily basis data to generate reports. So you could 
 
 <strong>Execute Gradle Task</strong><br/>
 ```Gradle
-./gradlew reportAnalytics --task="REQUESTED_TASK" --branch="BRANCH_NAME" --period="can be like today, s:yyyy/MM/dd,e:yyyy/MM/dd, 1y, 4m, 38d, 3m 06d"
+./gradlew reportAnalytics --task="REQUESTED_TASK" --branch="BRANCH_NAME" --database="ci/local" --period="can be like today, s:yyyy/MM/dd,e:yyyy/MM/dd, 1y, 4m, 38d, 3m 06d"
 ```
 
 <br/>
