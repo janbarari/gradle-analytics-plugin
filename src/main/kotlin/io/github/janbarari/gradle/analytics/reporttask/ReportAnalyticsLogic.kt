@@ -42,6 +42,9 @@ interface ReportAnalyticsLogic {
     @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
     fun ensureTaskArgumentValid(requestedTasksArgument: String)
 
+    @kotlin.jvm.Throws(MissingPropertyException::class, InvalidPropertyException::class)
+    fun ensureDatabaseArgumentValid(databaseArgument: String)
+
     @kotlin.jvm.Throws(InvalidPropertyException::class)
     fun convertQueryToPeriod(query: String): Pair<Long, Long>
 

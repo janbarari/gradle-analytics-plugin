@@ -260,6 +260,11 @@ class ReportAnalyticsLogicImp(
         if (requestedTasksArgument.isEmpty()) throw MissingPropertyException("`--task` is not present!")
     }
 
+    override fun ensureDatabaseArgumentValid(databaseArgument: String) {
+        tower.i(clazz, "ensureDatabaseArgumentValid")
+        if (databaseArgument.isEmpty()) throw MissingPropertyException("`--database` is not present!")
+    }
+
     @kotlin.jvm.Throws(InvalidPropertyException::class)
     override fun convertQueryToPeriod(query: String): Pair<Long, Long> {
         tower.i(clazz, "convertQueryToPeriod() query=$query")

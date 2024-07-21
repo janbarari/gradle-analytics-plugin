@@ -27,7 +27,7 @@ import io.github.janbarari.gradle.analytics.database.table.TemporaryMetricTable
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.database.table.SingleMetricTable
-import io.github.janbarari.gradle.extension.isNotNull
+import io.github.janbarari.gradle.extension.isNull
 import io.github.janbarari.gradle.extension.toRealPath
 import io.github.janbarari.gradle.extension.whenNotNull
 import io.github.janbarari.gradle.logger.Tower
@@ -58,10 +58,13 @@ class Database(
 
     private fun connect(config: DatabaseConfig) {
         tower.i(clazz, "connect()")
-        databaseConfig = config.local
 
-        if (isCI && config.ci.isNotNull()) {
+        if (isCI) {
+            if (config.ci.isNull()) throw InvalidDatabaseConfigException("ci database config is not present!")
             databaseConfig = config.ci
+        } else {
+            if (config.local.isNull()) throw InvalidDatabaseConfigException("local database config is not present!")
+            databaseConfig = config.local
         }
 
         databaseConfig.whenNotNull {

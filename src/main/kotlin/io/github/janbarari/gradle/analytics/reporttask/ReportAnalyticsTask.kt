@@ -22,12 +22,12 @@
  */
 package io.github.janbarari.gradle.analytics.reporttask
 
+import com.mysql.cj.exceptions.WrongArgumentException
 import io.github.janbarari.gradle.ExcludeJacocoGenerated
 import io.github.janbarari.gradle.analytics.DatabaseConfig
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPlugin
 import io.github.janbarari.gradle.analytics.GradleAnalyticsPluginConfig
 import io.github.janbarari.gradle.analytics.reporttask.exception.EmptyMetricsException
-import io.github.janbarari.gradle.extension.envCI
 import io.github.janbarari.gradle.utils.ConsolePrinter
 import io.github.janbarari.gradle.analytics.domain.model.Module
 import io.github.janbarari.gradle.analytics.domain.model.Module.Companion.toModule
@@ -52,6 +52,7 @@ import org.gradle.work.DisableCachingByDefault
  * A quick instruction about how to invoke the task:
  * `./gradlew reportAnalytics --branch="{your-branch}"
  *                            --task="{your-task}"
+ *                            --database="{ci/local}"
  *                            --period can be like "today", "s:yyyy/MM/dd,e:yyyy/MM/dd", "1y", "4m", "38d", "3m 06d"`
  */
 @ExcludeJacocoGenerated
@@ -68,7 +69,6 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             config.project.gradle.projectsEvaluated {
                 with(task) {
                     projectNameProperty.set(config.project.rootProject.name)
-                    envCIProperty.set(envCI())
                     outputPathProperty.set(config.outputPath)
                     trackingTasksProperty.set(config.trackingTasks)
                     trackingBranchesProperty.set(config.trackingBranches)
@@ -100,11 +100,12 @@ abstract class ReportAnalyticsTask : DefaultTask() {
     @get:Input
     var periodArgument: String = ""
 
+    @set:Option(option = "database", description = "Database type")
     @get:Input
-    abstract val projectNameProperty: Property<String>
+    var databaseArgument: String = ""
 
     @get:Input
-    abstract val envCIProperty: Property<Boolean>
+    abstract val projectNameProperty: Property<String>
 
     @get:Input
     abstract val outputPathProperty: Property<String>
@@ -131,9 +132,14 @@ abstract class ReportAnalyticsTask : DefaultTask() {
      */
     @TaskAction
     fun execute() = runBlocking {
+        val isCI = when (databaseArgument.lowercase()) {
+            "ci" -> true
+            "local" -> false
+            else -> throw WrongArgumentException("`--database` can be equals to `ci` or `local`")
+        }
         val injector = ReportAnalyticsInjector(
             requestedTasks = requestedTasksArgument,
-            isCI = envCIProperty.get(),
+            isCI = isCI,
             databaseConfig = databaseConfigProperty.get(),
             branch = branchArgument,
             outputPath = outputPathProperty.get(),
@@ -149,7 +155,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
         tower.r("gradle version: ${GradleVersion.current().version}")
         tower.r("requested tasks: $requestedTasksArgument")
         tower.r("modules count: ${modules.get().size}")
-        tower.r("ci: ${envCIProperty.get()}")
+        tower.r("ci: $isCI")
         tower.r("tracking tasks count: ${trackingTasksProperty.get().size}")
         tower.r("tracking branches count: ${trackingBranchesProperty.get().size}")
 
@@ -157,6 +163,7 @@ abstract class ReportAnalyticsTask : DefaultTask() {
             ensureBranchArgumentValid(branchArgument)
             ensurePeriodArgumentValid(periodArgument)
             ensureTaskArgumentValid(requestedTasksArgument)
+            ensureDatabaseArgumentValid(databaseArgument)
             try {
                 val reportPath = saveReport(generateReport(branchArgument, requestedTasksArgument, periodArgument))
                 printSuccessfulResult(reportPath)
