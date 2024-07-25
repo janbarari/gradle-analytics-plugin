@@ -37,13 +37,13 @@ val pluginTags: String by project
 
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("jvm") version libs.versions.kotlin
+    alias(libs.plugins.kotlin)
     alias(libs.plugins.detekt)
     `java-gradle-plugin`
     `maven-publish`
     jacoco
-    id("com.google.devtools.ksp") version libs.versions.ksp
-    id("com.gradle.plugin-publish") version libs.versions.publish.plugin
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.publish)
 }
 
 group = pluginGroupPackageName
